@@ -1,0 +1,289 @@
+﻿> Task :app:preBuild UP-TO-DATE
+> Task :app:preDebugBuild UP-TO-DATE
+> Task :app:mergeDebugNativeDebugMetadata NO-SOURCE
+> Task :app:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :designsystemv1:preBuild UP-TO-DATE
+> Task :designsystemv1:preDebugBuild UP-TO-DATE
+> Task :designsystemv1:writeDebugAarMetadata UP-TO-DATE
+> Task :app:generateDebugResValues
+> Task :designsystemv1:generateDebugResValues UP-TO-DATE
+> Task :designsystemv1:generateDebugResources UP-TO-DATE
+> Task :designsystemv1:packageDebugResources UP-TO-DATE
+> Task :app:mapDebugSourceSetPaths
+> Task :app:generateDebugResources
+> Task :app:checkDebugAarMetadata
+> Task :app:packageDebugResources
+> Task :app:createDebugCompatibleScreenManifests
+> Task :app:extractDeepLinksDebug
+> Task :designsystemv1:extractDeepLinksDebug UP-TO-DATE
+> Task :designsystemv1:processDebugManifest UP-TO-DATE
+> Task :app:parseDebugLocalResources
+> Task :app:processDebugMainManifest
+> Task :app:processDebugManifest
+> Task :designsystemv1:compileDebugLibraryResources UP-TO-DATE
+> Task :designsystemv1:parseDebugLocalResources UP-TO-DATE
+> Task :designsystemv1:generateDebugRFile UP-TO-DATE
+> Task :designsystemv1:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :designsystemv1:javaPreCompileDebug UP-TO-DATE
+> Task :app:javaPreCompileDebug
+> Task :app:mergeDebugShaders
+> Task :app:compileDebugShaders NO-SOURCE
+> Task :app:generateDebugAssets UP-TO-DATE
+> Task :designsystemv1:mergeDebugShaders UP-TO-DATE
+> Task :designsystemv1:compileDebugShaders NO-SOURCE
+> Task :designsystemv1:generateDebugAssets UP-TO-DATE
+> Task :designsystemv1:mergeDebugAssets UP-TO-DATE
+> Task :app:mergeDebugResources
+> Task :app:mergeDebugAssets
+> Task :app:compressDebugAssets
+> Task :app:desugarDebugFileDependencies
+> Task :app:mergeDebugJniLibFolders
+> Task :designsystemv1:mergeDebugJniLibFolders UP-TO-DATE
+> Task :designsystemv1:mergeDebugNativeLibs NO-SOURCE
+> Task :designsystemv1:copyDebugJniLibsProjectOnly UP-TO-DATE
+> Task :app:mergeDebugNativeLibs
+> Task :app:checkDebugDuplicateClasses
+> Task :app:validateSigningDebug
+> Task :app:writeDebugAppMetadata
+> Task :app:writeDebugSigningConfigVersions
+> Task :designsystemv1:stripDebugDebugSymbols NO-SOURCE
+> Task :designsystemv1:copyDebugJniLibsProjectAndLocalJars UP-TO-DATE
+> Task :designsystemv1:extractDeepLinksForAarDebug UP-TO-DATE
+> Task :designsystemv1:prepareDebugArtProfile UP-TO-DATE
+> Task :designsystemv1:prepareLintJarForPublish UP-TO-DATE
+> Task :app:processDebugManifestForPackage
+> Task :app:processDebugResources FAILED
+> Task :app:stripDebugDebugSymbols
+
+> Task :designsystemv1:compileDebugKotlin FAILED
+.\gradlew : e: file:///C:/Users/Monu/Des
+ktop/prac/Ux4GDesignSystem/designsystemv
+1/src/main/java/com/ux4g/designsystemv1/
+components/tooltip/Ux4gTooltip.kt:20:28 
+Conflicting import: imported name 
+'Modifier' is ambiguous.
+At line:1 char:1
++ .\gradlew assembleDebug 
+--console=plain > build_error_2.log 
+2>&1; Get ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecif 
+   ied: (e: file:///C:/U...' is ambigu  
+  ous.:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCom 
+   mandError
+ 
+e: file:///C:/Users/Monu/Desktop/prac/Ux
+4GDesignSystem/designsystemv1/src/main/j
+ava/com/ux4g/designsystemv1/components/t
+ooltip/Ux4gTooltip.kt:21:37 Conflicting 
+import: imported name 'CornerRadius' is 
+ambiguous.
+e: file:///C:/Users/Monu/Desktop/prac/Ux
+4GDesignSystem/designsystemv1/src/main/j
+ava/com/ux4g/designsystemv1/components/t
+ooltip/Ux4gTooltip.kt:22:37 Conflicting 
+import: imported name 'RoundRect' is 
+ambiguous.
+e: file:///C:/Users/Monu/Desktop/prac/Ux
+4GDesignSystem/designsystemv1/src/main/j
+ava/com/ux4g/designsystemv1/components/t
+ooltip/Ux4gTooltip.kt:23:37 Conflicting 
+import: imported name 'Size' is 
+ambiguous.
+e: file:///C:/Users/Monu/Desktop/prac/Ux
+4GDesignSystem/designsystemv1/src/main/j
+ava/com/ux4g/designsystemv1/components/t
+ooltip/Ux4gTooltip.kt:24:37 Conflicting 
+import: imported name 'Color' is 
+ambiguous.
+e: file:///C:/Users/Monu/Desktop/prac/Ux
+4GDesignSystem/designsystemv1/src/main/j
+ava/com/ux4g/designsystemv1/components/t
+ooltip/Ux4gTooltip.kt:25:37 Conflicting 
+import: imported name 'Outline' is 
+ambiguous.
+e: file:///C:/Users/Monu/Desktop/prac/Ux
+4GDesignSystem/designsystemv1/src/main/j
+ava/com/ux4g/designsystemv1/components/t
+ooltip/Ux4gTooltip.kt:26:37 Conflicting 
+import: imported name 'Path' is 
+ambiguous.
+e: file:///C:/Users/Monu/Desktop/prac/Ux
+4GDesignSystem/designsystemv1/src/main/j
+ava/com/ux4g/designsystemv1/components/t
+ooltip/Ux4gTooltip.kt:27:37 Conflicting 
+import: imported name 'Shape' is 
+ambiguous.
+e: file:///C:/Users/Monu/Desktop/prac/Ux
+4GDesignSystem/designsystemv1/src/main/j
+ava/com/ux4g/designsystemv1/components/t
+ooltip/Ux4gTooltip.kt:28:33 Conflicting 
+import: imported name 'TextStyle' is 
+ambiguous.
+e: file:///C:/Users/Monu/Desktop/prac/Ux
+4GDesignSystem/designsystemv1/src/main/j
+ava/com/ux4g/designsystemv1/components/t
+ooltip/Ux4gTooltip.kt:29:39 Conflicting 
+import: imported name 'TextAlign' is 
+ambiguous.
+e: file:///C:/Users/Monu/Desktop/prac/Ux
+4GDesignSystem/designsystemv1/src/main/j
+ava/com/ux4g/designsystemv1/components/t
+ooltip/Ux4gTooltip.kt:30:44 Conflicting 
+import: imported name 'Preview' is 
+ambiguous.
+e: file:///C:/Users/Monu/Desktop/prac/Ux
+4GDesignSystem/designsystemv1/src/main/j
+ava/com/ux4g/designsystemv1/components/t
+ooltip/Ux4gTooltip.kt:31:33 Conflicting 
+import: imported name 'Density' is 
+ambiguous.
+e: file:///C:/Users/Monu/Desktop/prac/Ux
+4GDesignSystem/designsystemv1/src/main/j
+ava/com/ux4g/designsystemv1/components/t
+ooltip/Ux4gTooltip.kt:32:33 Conflicting 
+import: imported name 'Dp' is ambiguous.
+e: file:///C:/Users/Monu/Desktop/prac/Ux
+4GDesignSystem/designsystemv1/src/main/j
+ava/com/ux4g/designsystemv1/components/t
+ooltip/Ux4gTooltip.kt:36:33 Conflicting 
+import: imported name 'LayoutDirection' 
+is ambiguous.
+e: file:///C:/Users/Monu/Desktop/prac/Ux
+4GDesignSystem/designsystemv1/src/main/j
+ava/com/ux4g/designsystemv1/components/t
+ooltip/Ux4gTooltip.kt:39:28 Conflicting 
+import: imported name 'Modifier' is 
+ambiguous.
+e: file:///C:/Users/Monu/Desktop/prac/Ux
+4GDesignSystem/designsystemv1/src/main/j
+ava/com/ux4g/designsystemv1/components/t
+ooltip/Ux4gTooltip.kt:40:37 Conflicting 
+import: imported name 'CornerRadius' is 
+ambiguous.
+e: file:///C:/Users/Monu/Desktop/prac/Ux
+4GDesignSystem/designsystemv1/src/main/j
+ava/com/ux4g/designsystemv1/components/t
+ooltip/Ux4gTooltip.kt:41:37 Conflicting 
+import: imported name 'RoundRect' is 
+ambiguous.
+e: file:///C:/Users/Monu/Desktop/prac/Ux
+4GDesignSystem/designsystemv1/src/main/j
+ava/com/ux4g/designsystemv1/components/t
+ooltip/Ux4gTooltip.kt:42:37 Conflicting 
+import: imported name 'Size' is 
+ambiguous.
+e: file:///C:/Users/Monu/Desktop/prac/Ux
+4GDesignSystem/designsystemv1/src/main/j
+ava/com/ux4g/designsystemv1/components/t
+ooltip/Ux4gTooltip.kt:43:37 Conflicting 
+import: imported name 'Color' is 
+ambiguous.
+e: file:///C:/Users/Monu/Desktop/prac/Ux
+4GDesignSystem/designsystemv1/src/main/j
+ava/com/ux4g/designsystemv1/components/t
+ooltip/Ux4gTooltip.kt:44:37 Conflicting 
+import: imported name 'Outline' is 
+ambiguous.
+e: file:///C:/Users/Monu/Desktop/prac/Ux
+4GDesignSystem/designsystemv1/src/main/j
+ava/com/ux4g/designsystemv1/components/t
+ooltip/Ux4gTooltip.kt:45:37 Conflicting 
+import: imported name 'Path' is 
+ambiguous.
+e: file:///C:/Users/Monu/Desktop/prac/Ux
+4GDesignSystem/designsystemv1/src/main/j
+ava/com/ux4g/designsystemv1/components/t
+ooltip/Ux4gTooltip.kt:46:37 Conflicting 
+import: imported name 'Shape' is 
+ambiguous.
+e: file:///C:/Users/Monu/Desktop/prac/Ux
+4GDesignSystem/designsystemv1/src/main/j
+ava/com/ux4g/designsystemv1/components/t
+ooltip/Ux4gTooltip.kt:47:33 Conflicting 
+import: imported name 'TextStyle' is 
+ambiguous.
+e: file:///C:/Users/Monu/Desktop/prac/Ux
+4GDesignSystem/designsystemv1/src/main/j
+ava/com/ux4g/designsystemv1/components/t
+ooltip/Ux4gTooltip.kt:48:39 Conflicting 
+import: imported name 'TextAlign' is 
+ambiguous.
+e: file:///C:/Users/Monu/Desktop/prac/Ux
+4GDesignSystem/designsystemv1/src/main/j
+ava/com/ux4g/designsystemv1/components/t
+ooltip/Ux4gTooltip.kt:49:44 Conflicting 
+import: imported name 'Preview' is 
+ambiguous.
+e: file:///C:/Users/Monu/Desktop/prac/Ux
+4GDesignSystem/designsystemv1/src/main/j
+ava/com/ux4g/designsystemv1/components/t
+ooltip/Ux4gTooltip.kt:50:33 Conflicting 
+import: imported name 'Density' is 
+ambiguous.
+e: file:///C:/Users/Monu/Desktop/prac/Ux
+4GDesignSystem/designsystemv1/src/main/j
+ava/com/ux4g/designsystemv1/components/t
+ooltip/Ux4gTooltip.kt:51:33 Conflicting 
+import: imported name 'Dp' is ambiguous.
+e: file:///C:/Users/Monu/Desktop/prac/Ux
+4GDesignSystem/designsystemv1/src/main/j
+ava/com/ux4g/designsystemv1/components/t
+ooltip/Ux4gTooltip.kt:52:33 Conflicting 
+import: imported name 'LayoutDirection' 
+is ambiguous.
+
+> Task :app:mergeExtDexDebug
+
+FAILURE: Build completed with 2 
+failures.
+
+1: Task failed with an exception.
+-----------
+* What went wrong:
+Execution failed for task 
+':app:processDebugResources'.
+> java.io.IOException: Couldn't delete C
+:\Users\Monu\Desktop\prac\Ux4GDesignSyst
+em\app\build\intermediates\compile_and_r
+untime_not_namespaced_r_class_jar\debug\
+processDebugResources\R.jar
+
+* Try:
+> Run with --stacktrace option to get 
+the stack trace.
+> Run with --info or --debug option to 
+get more log output.
+> Run with --scan to get full insights.
+> Get more help at 
+https://help.gradle.org.
+========================================
+======================================
+
+2: Task failed with an exception.
+-----------
+* What went wrong:
+Execution failed for task 
+':designsystemv1:compileDebugKotlin'.
+> A failure occurred while executing org
+.jetbrains.kotlin.compilerRunner.GradleC
+ompilerRunnerWithWorkers$GradleKotlinCom
+pilerWorkAction
+   > Compilation error. See log for 
+more details
+
+* Try:
+> Run with --stacktrace option to get 
+the stack trace.
+> Run with --info or --debug option to 
+get more log output.
+> Run with --scan to get full insights.
+> Get more help at 
+https://help.gradle.org.
+========================================
+======================================
+
+BUILD FAILED in 37s
+45 actionable tasks: 27 executed, 18 up-to-date

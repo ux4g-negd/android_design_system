@@ -1,0 +1,140 @@
+﻿> Task :app:preBuild UP-TO-DATE
+> Task :app:preDebugBuild UP-TO-DATE
+> Task :app:mergeDebugNativeDebugMetadata NO-SOURCE
+> Task :app:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :designsystemv1:preBuild UP-TO-DATE
+> Task :designsystemv1:preDebugBuild UP-TO-DATE
+> Task :designsystemv1:writeDebugAarMetadata UP-TO-DATE
+> Task :app:checkDebugAarMetadata UP-TO-DATE
+> Task :app:generateDebugResValues UP-TO-DATE
+> Task :designsystemv1:generateDebugResValues UP-TO-DATE
+> Task :designsystemv1:generateDebugResources UP-TO-DATE
+> Task :designsystemv1:packageDebugResources UP-TO-DATE
+> Task :app:mapDebugSourceSetPaths UP-TO-DATE
+> Task :app:generateDebugResources UP-TO-DATE
+> Task :app:mergeDebugResources UP-TO-DATE
+> Task :app:packageDebugResources UP-TO-DATE
+> Task :app:parseDebugLocalResources UP-TO-DATE
+> Task :app:createDebugCompatibleScreenManifests UP-TO-DATE
+> Task :app:extractDeepLinksDebug UP-TO-DATE
+> Task :designsystemv1:extractDeepLinksDebug UP-TO-DATE
+> Task :designsystemv1:processDebugManifest UP-TO-DATE
+> Task :app:processDebugMainManifest UP-TO-DATE
+> Task :app:processDebugManifest UP-TO-DATE
+> Task :app:processDebugManifestForPackage UP-TO-DATE
+> Task :designsystemv1:compileDebugLibraryResources UP-TO-DATE
+> Task :designsystemv1:parseDebugLocalResources UP-TO-DATE
+> Task :designsystemv1:generateDebugRFile UP-TO-DATE
+> Task :app:processDebugResources UP-TO-DATE
+> Task :designsystemv1:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :designsystemv1:compileDebugKotlin UP-TO-DATE
+> Task :designsystemv1:javaPreCompileDebug UP-TO-DATE
+> Task :designsystemv1:compileDebugJavaWithJavac NO-SOURCE
+> Task :designsystemv1:bundleLibCompileToJarDebug UP-TO-DATE
+> Task :app:javaPreCompileDebug UP-TO-DATE
+> Task :app:mergeDebugShaders UP-TO-DATE
+> Task :app:compileDebugShaders NO-SOURCE
+> Task :app:generateDebugAssets UP-TO-DATE
+> Task :designsystemv1:mergeDebugShaders UP-TO-DATE
+> Task :designsystemv1:compileDebugShaders NO-SOURCE
+> Task :designsystemv1:generateDebugAssets UP-TO-DATE
+> Task :designsystemv1:mergeDebugAssets UP-TO-DATE
+> Task :app:mergeDebugAssets UP-TO-DATE
+> Task :app:compressDebugAssets UP-TO-DATE
+> Task :designsystemv1:processDebugJavaRes UP-TO-DATE
+> Task :app:checkDebugDuplicateClasses UP-TO-DATE
+> Task :app:desugarDebugFileDependencies UP-TO-DATE
+> Task :app:mergeExtDexDebug UP-TO-DATE
+> Task :designsystemv1:bundleLibRuntimeToDirDebug UP-TO-DATE
+> Task :app:mergeDebugJniLibFolders UP-TO-DATE
+> Task :designsystemv1:mergeDebugJniLibFolders UP-TO-DATE
+> Task :designsystemv1:mergeDebugNativeLibs NO-SOURCE
+> Task :designsystemv1:copyDebugJniLibsProjectOnly UP-TO-DATE
+> Task :app:mergeDebugNativeLibs UP-TO-DATE
+> Task :app:mergeLibDexDebug UP-TO-DATE
+> Task :app:stripDebugDebugSymbols UP-TO-DATE
+> Task :app:validateSigningDebug UP-TO-DATE
+> Task :app:writeDebugAppMetadata UP-TO-DATE
+> Task :app:writeDebugSigningConfigVersions UP-TO-DATE
+> Task :designsystemv1:stripDebugDebugSymbols NO-SOURCE
+> Task :designsystemv1:copyDebugJniLibsProjectAndLocalJars UP-TO-DATE
+> Task :designsystemv1:extractDebugAnnotations UP-TO-DATE
+> Task :designsystemv1:extractDeepLinksForAarDebug UP-TO-DATE
+> Task :designsystemv1:mergeDebugGeneratedProguardFiles UP-TO-DATE
+> Task :designsystemv1:mergeDebugConsumerProguardFiles UP-TO-DATE
+> Task :designsystemv1:prepareDebugArtProfile UP-TO-DATE
+> Task :designsystemv1:prepareLintJarForPublish UP-TO-DATE
+> Task :designsystemv1:mergeDebugJavaResource UP-TO-DATE
+> Task :designsystemv1:syncDebugLibJars UP-TO-DATE
+> Task :designsystemv1:bundleDebugAar UP-TO-DATE
+> Task :designsystemv1:assembleDebug UP-TO-DATE
+
+> Task :app:compileDebugKotlin
+.\gradlew : e: file:///C:/Users/Monu/Des
+ktop/prac/Ux4GDesignSystem/app/src/main/
+java/com/ux4g/ux4gdesignsystem/MainActiv
+ity.kt:400:33 This material API is 
+experimental and is likely to change or 
+to be removed in the future.
+At line:1 char:1
++ .\gradlew assembleDebug 
+--console=plain > build_final.log 2>&1; 
+Get-C ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecif 
+   ied: (e: file:///C:/U... in the fut  
+  ure.:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCom 
+   mandError
+ 
+e: file:///C:/Users/Monu/Desktop/prac/Ux
+4GDesignSystem/app/src/main/java/com/ux4
+g/ux4gdesignsystem/MainActivity.kt:406:3
+3 This material API is experimental and 
+is likely to change or to be removed in 
+the future.
+e: file:///C:/Users/Monu/Desktop/prac/Ux
+4GDesignSystem/app/src/main/java/com/ux4
+g/ux4gdesignsystem/MainActivity.kt:412:3
+3 This material API is experimental and 
+is likely to change or to be removed in 
+the future.
+e: file:///C:/Users/Monu/Desktop/prac/Ux
+4GDesignSystem/app/src/main/java/com/ux4
+g/ux4gdesignsystem/MainActivity.kt:426:3
+3 This material API is experimental and 
+is likely to change or to be removed in 
+the future.
+e: file:///C:/Users/Monu/Desktop/prac/Ux
+4GDesignSystem/app/src/main/java/com/ux4
+g/ux4gdesignsystem/MainActivity.kt:434:3
+3 This material API is experimental and 
+is likely to change or to be removed in 
+the future.
+
+> Task :app:compileDebugKotlin FAILED
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task 
+':app:compileDebugKotlin'.
+> A failure occurred while executing org
+.jetbrains.kotlin.compilerRunner.GradleC
+ompilerRunnerWithWorkers$GradleKotlinCom
+pilerWorkAction
+   > Compilation error. See log for 
+more details
+
+* Try:
+> Run with --stacktrace option to get 
+the stack trace.
+> Run with --info or --debug option to 
+get more log output.
+> Run with --scan to get full insights.
+> Get more help at 
+https://help.gradle.org.
+
+BUILD FAILED in 38s
+56 actionable tasks: 1 executed, 55 up-to-date

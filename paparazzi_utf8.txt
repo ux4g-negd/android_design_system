@@ -1,0 +1,49 @@
+﻿To honour the JVM settings for this build a single-use Daemon process will be forked. For more on this, please refer to https://docs.gradle.org/8.11.1/userguide/gradle_daemon.html#sec:disabling_the_daemon in the Gradle documentation.
+Daemon will be stopped at the end of the build 
+> Task :designsystemv1:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :designsystemv1:preBuild UP-TO-DATE
+> Task :designsystemv1:preDebugBuild UP-TO-DATE
+> Task :designsystemv1:generateDebugResValues UP-TO-DATE
+> Task :designsystemv1:generateDebugResources UP-TO-DATE
+> Task :designsystemv1:packageDebugResources UP-TO-DATE
+> Task :designsystemv1:parseDebugLocalResources UP-TO-DATE
+> Task :designsystemv1:generateDebugRFile UP-TO-DATE
+> Task :designsystemv1:compileDebugKotlin UP-TO-DATE
+> Task :designsystemv1:javaPreCompileDebug UP-TO-DATE
+> Task :designsystemv1:compileDebugJavaWithJavac NO-SOURCE
+> Task :designsystemv1:bundleLibRuntimeToJarDebug UP-TO-DATE
+> Task :designsystemv1:bundleLibCompileToJarDebug FAILED
+.\gradlew.bat : 
+At line:1 char:1
++ .\gradlew.bat --no-daemon 
+:designsystemv1:recordPaparazziDebug > papa 
+...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified:  
+   (:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandE 
+   rror
+ 
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task 
+':designsystemv1:bundleLibCompileToJarDebug'.
+> java.nio.file.FileSystemException: C:\Users
+\Monu\Desktop\prac\Ux4GDesignSystem\designsys
+temv1\build\intermediates\compile_library_cla
+sses_jar\debug\bundleLibCompileToJarDebug\cla
+sses.jar: The process cannot access the file 
+because it is being used by another process
+
+* Try:
+> Run with --stacktrace option to get the 
+stack trace.
+> Run with --info or --debug option to get 
+more log output.
+> Run with --scan to get full insights.
+> Get more help at https://help.gradle.org.
+
+BUILD FAILED in 14s
+9 actionable tasks: 1 executed, 8 up-to-date

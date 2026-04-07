@@ -1,0 +1,16 @@
+Starting a Gradle Daemon, 1 incompatible and 14 stopped Daemons could not be reused, use --status for details
+> Task :designsystemv1:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :designsystemv1:preBuild UP-TO-DATE
+> Task :designsystemv1:preDebugBuild UP-TO-DATE
+> Task :designsystemv1:generateDebugResValues UP-TO-DATE
+> Task :designsystemv1:generateDebugResources UP-TO-DATE
+> Task :designsystemv1:packageDebugResources UP-TO-DATE
+> Task :designsystemv1:parseDebugLocalResources UP-TO-DATE
+> Task :designsystemv1:generateDebugRFile UP-TO-DATE
+> Task :designsystemv1:compileDebugKotlin
+w: file:///C:/Users/Monu/Desktop/prac/Ux4GDesignSystem/designsystemv1/src/main/java/com/ux4g/designsystemv1/components/chips/Ux4gInputChip.kt:153:60 'fun Modifier.menuAnchor(): Modifier' is deprecated. Use overload that takes MenuAnchorType and enabled parameters.
+w: file:///C:/Users/Monu/Desktop/prac/Ux4GDesignSystem/designsystemv1/src/main/java/com/ux4g/designsystemv1/components/dropdowns/Ux4gActionDropdown.kt:68:81 'val Icons.Filled.KeyboardArrowRight: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.KeyboardArrowRight.
+w: file:///C:/Users/Monu/Desktop/prac/Ux4GDesignSystem/designsystemv1/src/main/java/com/ux4g/designsystemv1/foundation/Icons.kt:61:60 'val Icons.Filled.ArrowBack: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.ArrowBack.
+
+BUILD SUCCESSFUL in 1m 13s
+6 actionable tasks: 1 executed, 5 up-to-date

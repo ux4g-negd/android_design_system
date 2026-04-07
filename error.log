@@ -1,0 +1,81 @@
+> Task :app:preBuild UP-TO-DATE
+> Task :app:preDebugBuild UP-TO-DATE
+> Task :app:mergeDebugNativeDebugMetadata NO-SOURCE
+> Task :app:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :designsystemv1:preBuild UP-TO-DATE
+> Task :designsystemv1:preDebugBuild UP-TO-DATE
+> Task :designsystemv1:writeDebugAarMetadata UP-TO-DATE
+> Task :app:checkDebugAarMetadata UP-TO-DATE
+> Task :app:generateDebugResValues UP-TO-DATE
+> Task :designsystemv1:generateDebugResValues UP-TO-DATE
+> Task :designsystemv1:generateDebugResources UP-TO-DATE
+> Task :designsystemv1:packageDebugResources UP-TO-DATE
+> Task :app:mapDebugSourceSetPaths UP-TO-DATE
+> Task :app:generateDebugResources UP-TO-DATE
+> Task :app:mergeDebugResources UP-TO-DATE
+> Task :app:packageDebugResources UP-TO-DATE
+> Task :app:parseDebugLocalResources UP-TO-DATE
+> Task :app:createDebugCompatibleScreenManifests UP-TO-DATE
+> Task :app:extractDeepLinksDebug UP-TO-DATE
+> Task :designsystemv1:extractDeepLinksDebug UP-TO-DATE
+> Task :designsystemv1:processDebugManifest UP-TO-DATE
+> Task :app:processDebugMainManifest UP-TO-DATE
+> Task :app:processDebugManifest UP-TO-DATE
+> Task :app:processDebugManifestForPackage UP-TO-DATE
+> Task :designsystemv1:compileDebugLibraryResources UP-TO-DATE
+> Task :designsystemv1:parseDebugLocalResources UP-TO-DATE
+> Task :designsystemv1:generateDebugRFile UP-TO-DATE
+> Task :app:processDebugResources UP-TO-DATE
+> Task :designsystemv1:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :designsystemv1:javaPreCompileDebug UP-TO-DATE
+> Task :app:javaPreCompileDebug UP-TO-DATE
+> Task :app:mergeDebugShaders UP-TO-DATE
+> Task :app:compileDebugShaders NO-SOURCE
+> Task :app:generateDebugAssets UP-TO-DATE
+> Task :designsystemv1:mergeDebugShaders UP-TO-DATE
+> Task :designsystemv1:compileDebugShaders NO-SOURCE
+> Task :designsystemv1:generateDebugAssets UP-TO-DATE
+> Task :designsystemv1:mergeDebugAssets UP-TO-DATE
+> Task :app:mergeDebugAssets UP-TO-DATE
+> Task :app:compressDebugAssets UP-TO-DATE
+> Task :app:checkDebugDuplicateClasses UP-TO-DATE
+> Task :app:desugarDebugFileDependencies UP-TO-DATE
+> Task :app:mergeExtDexDebug UP-TO-DATE
+> Task :app:mergeDebugJniLibFolders UP-TO-DATE
+> Task :designsystemv1:mergeDebugJniLibFolders UP-TO-DATE
+> Task :designsystemv1:mergeDebugNativeLibs NO-SOURCE
+> Task :designsystemv1:copyDebugJniLibsProjectOnly UP-TO-DATE
+> Task :app:mergeDebugNativeLibs UP-TO-DATE
+> Task :app:stripDebugDebugSymbols UP-TO-DATE
+> Task :app:validateSigningDebug UP-TO-DATE
+> Task :app:writeDebugAppMetadata UP-TO-DATE
+> Task :app:writeDebugSigningConfigVersions UP-TO-DATE
+> Task :designsystemv1:stripDebugDebugSymbols NO-SOURCE
+> Task :designsystemv1:copyDebugJniLibsProjectAndLocalJars UP-TO-DATE
+> Task :designsystemv1:extractDeepLinksForAarDebug UP-TO-DATE
+> Task :designsystemv1:prepareDebugArtProfile UP-TO-DATE
+> Task :designsystemv1:prepareLintJarForPublish UP-TO-DATE
+
+> Task :designsystemv1:compileDebugKotlin FAILED
+45 actionable tasks: 1 executed, 44 up-to-date
+
+
+e: file:///C:/Users/Monu/Desktop/prac/Ux4GDesignSystem/designsystemv1/src/main/java/com/ux4g/designsystemv1/components/avatar_component/Ux4gStatusAvatar.kt:26:10 Functions which invoke @Composable functions must be marked with the @Composable annotation
+e: file:///C:/Users/Monu/Desktop/prac/Ux4GDesignSystem/designsystemv1/src/main/java/com/ux4g/designsystemv1/components/avatar_component/Ux4gStatusAvatar.kt:26:61 @Composable invocations can only happen from the context of a @Composable function
+e: file:///C:/Users/Monu/Desktop/prac/Ux4GDesignSystem/designsystemv1/src/main/java/com/ux4g/designsystemv1/components/avatar_component/Ux4gStatusAvatar.kt:27:10 Functions which invoke @Composable functions must be marked with the @Composable annotation
+e: file:///C:/Users/Monu/Desktop/prac/Ux4GDesignSystem/designsystemv1/src/main/java/com/ux4g/designsystemv1/components/avatar_component/Ux4gStatusAvatar.kt:27:58 @Composable invocations can only happen from the context of a @Composable function
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':designsystemv1:compileDebugKotlin'.
+> A failure occurred while executing org.jetbrains.kotlin.compilerRunner.GradleCompilerRunnerWithWorkers$GradleKotlinCompilerWorkAction
+   > Compilation error. See log for more details
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to get full insights.
+> Get more help at https://help.gradle.org.
+
+BUILD FAILED in 2s
