@@ -29,3 +29,6 @@ build/
 # Scripts
 *.ps1
 recover_main.ps1
+
+# Archives
+*.zip
