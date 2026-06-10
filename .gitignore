@@ -13,3 +13,19 @@
 .externalNativeBuild
 .cxx
 local.properties
+
+# Logs and temporary files
+*.log
+*.txt
+
+# Android Studio / IntelliJ files
+.idea/
+*.iml
+
+# Build output
+build/
+.gradle/
+
+# Scripts
+*.ps1
+recover_main.ps1

@@ -5,17 +5,40 @@
 # For more details, see
 #   http://developer.android.com/guide/developing/tools/proguard.html
 
-# If your project uses WebView with JS, uncomment the following
-# and specify the fully qualified class name to the JavaScript interface
-# class:
-#-keepclassmembers class fqcn.of.javascript.interface.for.webview {
-#   public *;
-#}
+# Keep all Composable functions
+-keep @androidx.compose.runtime.Composable class * { *; }
+-keep @androidx.compose.runtime.Composable fun **()
 
-# Uncomment this to preserve the line number information for
-# debugging stack traces.
-#-keepattributes SourceFile,LineNumberTable
+# Keep all Ux4g Design System classes
+-keep class com.ux4g.designsystemv1.** { *; }
+-keep interface com.ux4g.designsystemv1.** { *; }
+-keep enum com.ux4g.designsystemv1.** { *; }
+
+# Keep Kotlin metadata for reflection
+-keepattributes *Annotation*
+-keepattributes SourceFile,LineNumberTable
+-keepattributes Signature
+-keepattributes Exceptions
+
+# Keep all R8 metadata for Compose
+-keepattributes RuntimeVisibleAnnotations
+-keepattributes RuntimeVisibleParameterAnnotations
+
+# Keep companion objects
+-keep class **$Companion { *; }
+
+# Prevent stripping of classes used by reflection
+-dontwarn com.ux4g.**
+-dontnote com.ux4g.**
+
+# Keep Coil classes
+-keep class coil.** { *; }
+-keep interface coil.** { *; }
+
+# Keep Jetpack Compose classes
+-keep class androidx.compose.** { *; }
+-keep interface androidx.compose.** { *; }
 
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
-#-renamesourcefileattribute SourceFile
+-renamesourcefileattribute SourceFile

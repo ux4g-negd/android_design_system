@@ -102,11 +102,52 @@ fun MainContent(
             modifier = modifier.fillMaxSize().padding(16.dp).verticalScroll(rememberScrollState()),
             verticalArrangement = Arrangement.spacedBy(24.dp)
     ) {
+        var expandedAccordionIndex by remember { mutableStateOf<Int?>(2) }
+
         Text(
                 text = "Ux4g Component Showcase",
                 style = Ux4gTheme.typography.hM_strong,
                 color = Ux4gTheme.colorScheme.onBackground
         )
+
+        Ux4gCard(modifier = Modifier.fillMaxWidth()) {
+            Column(
+                modifier = Modifier.padding(16.dp),
+                verticalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+                Text(text = "Accordion", style = Ux4gTheme.typography.tS_strong)
+
+                Ux4gAccordionGroup(
+                    items = listOf(
+                        Ux4gAccordionItem(title = "Accordion Item"),
+                        Ux4gAccordionItem(title = "Accordion Item"),
+                        Ux4gAccordionItem(title = "Accordion Item"),
+                        Ux4gAccordionItem(title = "Accordion Item"),
+                        Ux4gAccordionItem(title = "Accordion Item", enabled = false)
+                    ),
+                    expandedIndex = expandedAccordionIndex,
+                    onExpandedIndexChange = { expandedAccordionIndex = it }
+                ) { index, item ->
+                    when (index) {
+                        2 -> {
+                            Text(
+                                text = "Lorem ipsum is a dummy or placeholder text commonly used in graphic design, publishing, and web development. Its purpose is to permit a page layout to be designed, independently of the copy that will subsequently populate it, or to demonstrate various fonts of a typeface without meaningful text that could be distracting.",
+                                style = Ux4gTheme.typography.bXS_default,
+                                color = Ux4gPalette.neutral600
+                            )
+                        }
+
+                        else -> {
+                            Text(
+                                text = "Custom content for ${item.title}",
+                                style = Ux4gTheme.typography.bXS_default,
+                                color = Ux4gPalette.neutral600
+                            )
+                        }
+                    }
+                }
+            }
+        }
 
         Ux4gProfileAvatar(
                 size = Ux4gAvatarSize.XL,
