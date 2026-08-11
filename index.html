@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <title>Android Design System - Coming Soon</title>
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="https://doc.ux4g.gov.in/web/meity-emblem.svg" />
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --ux4g-primary: #0057b8;
+            --ux4g-primary-dark: #004494;
+            --ux4g-green: #168c4b;
+            --ux4g-text: #1f2937;
+            --ux4g-text-secondary: #5f6b7a;
+            --ux4g-border: #d9e1ea;
+            --ux4g-background: #f7f9fc;
+            --ux4g-surface: #ffffff;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI",
+                Roboto, "Helvetica Neue", Arial, sans-serif;
+
+            background:
+                radial-gradient(circle at 50% 0%,
+                    rgba(0, 87, 184, 0.07),
+                    transparent 45%),
+                var(--ux4g-background);
+
+            color: var(--ux4g-text);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 24px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 620px;
+            text-align: center;
+            padding: 56px 48px;
+            background: var(--ux4g-surface);
+            border: 1px solid var(--ux4g-border);
+            border-radius: 16px;
+            box-shadow:
+                0 4px 12px rgba(31, 41, 55, 0.06),
+                0 16px 40px rgba(31, 41, 55, 0.06);
+        }
+
+        .status {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 7px 14px;
+            margin-bottom: 24px;
+            border: 1px solid #b9dfca;
+            border-radius: 999px;
+            background: #f0faf4;
+            color: var(--ux4g-green);
+            font-size: 0.875rem;
+            font-weight: 600;
+            line-height: 1.4;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--ux4g-green);
+        }
+
+        h1 {
+            font-size: clamp(2rem, 5vw, 2.75rem);
+            line-height: 1.2;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            color: var(--ux4g-primary);
+            margin-bottom: 16px;
+        }
+
+        p {
+            font-size: 1.125rem;
+            line-height: 1.6;
+            font-weight: 400;
+            color: var(--ux4g-text-secondary);
+        }
+
+        .divider {
+            width: 56px;
+            height: 4px;
+            margin: 28px auto 0;
+            border-radius: 4px;
+            background: var(--ux4g-primary);
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 16px;
+            }
+
+            .container {
+                padding: 40px 24px;
+                border-radius: 12px;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+
+            p {
+                font-size: 1rem;
+            }
+        }
+
+        @media (prefers-reduced-motion: no-preference) {
+            .container {
+                animation: fadeIn 0.5s ease-out;
+            }
+
+            @keyframes fadeIn {
+                from {
+                    opacity: 0;
+                    transform: translateY(8px);
+                }
+
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="status">
+            <span class="status-dot"></span>
+            Coming Soon
+        </div>
+
+        <h1>Android Design System</h1>
+
+        <p>Coming Soon</p>
+
+        <div class="divider"></div>
+    </div>
+</body>
+
+</html>
