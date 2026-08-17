@@ -285,6 +285,145 @@ fun MainContent(
             }
         }
 
+        // Badge Showcase
+        Ux4gCard(modifier = Modifier.fillMaxWidth()) {
+            Column(
+                modifier = Modifier.padding(16.dp),
+                verticalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+                Text(text = "Badge", style = Ux4gTheme.typography.tS_strong)
+
+                Text(
+                    text = "Dot Badges:",
+                    style = Ux4gTheme.typography.bS_strong,
+                    color = Ux4gColors.neutral700
+                )
+                Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
+                    Ux4gBadge(type = Ux4gBadgeType.Dot, containerColor = Ux4gColors.primary600)
+                    Ux4gBadge(type = Ux4gBadgeType.Dot, containerColor = Ux4gColors.neutral300)
+                    Ux4gBadge(type = Ux4gBadgeType.Dot, containerColor = Ux4gColors.cyan600)
+                    Ux4gBadge(type = Ux4gBadgeType.Dot, containerColor = Ux4gColors.green600)
+                    Ux4gBadge(type = Ux4gBadgeType.Dot, containerColor = Ux4gColors.red600)
+                    Ux4gBadge(type = Ux4gBadgeType.Dot, containerColor = Ux4gColors.orange600)
+                }
+
+                Text(
+                    text = "Digit / Count Badges:",
+                    style = Ux4gTheme.typography.bS_strong,
+                    color = Ux4gColors.neutral700
+                )
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(16.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Ux4gBadge(type = Ux4gBadgeType.Count(1), containerColor = Ux4gColors.primary600)
+                    Ux4gBadge(type = Ux4gBadgeType.Count(3), containerColor = Ux4gColors.neutral300)
+                    Ux4gBadge(
+                        type = Ux4gBadgeType.Count(11, Ux4gBadgeLimit.DoubleDigit),
+                        containerColor = Ux4gColors.cyan600
+                    )
+                    Ux4gBadge(
+                        type = Ux4gBadgeType.Count(22, Ux4gBadgeLimit.DoubleDigit),
+                        containerColor = Ux4gColors.green600
+                    )
+                    Ux4gBadge(
+                        type = Ux4gBadgeType.Count(150, Ux4gBadgeLimit.DoubleDigit),
+                        containerColor = Ux4gColors.red600
+                    )
+                    Ux4gBadge(
+                        type = Ux4gBadgeType.Count(12),
+                        containerColor = Ux4gColors.neutral300,
+                        showBorder = true
+                    )
+                }
+
+                Text(
+                    text = "Label Badges:",
+                    style = Ux4gTheme.typography.bS_strong,
+                    color = Ux4gColors.neutral700
+                )
+                Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
+                    Ux4gBadge(type = Ux4gBadgeType.Label("NEW"), containerColor = Ux4gColors.primary600)
+                    Ux4gBadge(type = Ux4gBadgeType.Label("BETA"), containerColor = Ux4gColors.green600)
+                    Ux4gBadge(type = Ux4gBadgeType.Label("DRAFT"), containerColor = Ux4gColors.neutral600)
+                    Ux4gBadge(type = Ux4gBadgeType.Label("EXACT"), containerColor = Ux4gColors.orange600)
+                }
+
+                Text(
+                    text = "Icon Badges & Ready to Use:",
+                    style = Ux4gTheme.typography.bS_strong,
+                    color = Ux4gColors.neutral700
+                )
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(16.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Ux4gBadge(type = Ux4gBadgeType.Icon(Ux4gIcons.Check), containerColor = Ux4gColors.primary600)
+                    Ux4gBadge(type = Ux4gBadgeType.Icon(Ux4gIcons.Settings), containerColor = Ux4gColors.secondary600)
+                    Ux4gBadge(type = Ux4gBadgeType.Icon(Ux4gIcons.Close), containerColor = Ux4gColors.red600)
+                    Ux4gBadge(type = Ux4gBadgeType.ReadyToUse(Ux4gBadgeResource.Verification))
+                    Ux4gBadge(type = Ux4gBadgeType.ReadyToUse(Ux4gBadgeResource.Star))
+                    Ux4gBadge(type = Ux4gBadgeType.ReadyToUse(Ux4gBadgeResource.Shield), showBorder = true)
+                }
+
+                Text(
+                    text = "Overlay Anchored on Widgets:",
+                    style = Ux4gTheme.typography.bS_strong,
+                    color = Ux4gColors.neutral700
+                )
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(28.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Ux4gBadge(type = Ux4gBadgeType.Count(99)) {
+                        Box(
+                            modifier = Modifier
+                                .size(44.dp)
+                                .background(Ux4gColors.neutral200, RoundedCornerShape(8.dp)),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Ux4gIconComponent(
+                                icon = Ux4gIcons.Person,
+                                contentDescription = null,
+                                tint = Ux4gColors.neutral700
+                            )
+                        }
+                    }
+
+                    Ux4gBadge(
+                        type = Ux4gBadgeType.Dot,
+                        containerColor = Ux4gColors.red600,
+                        alignment = Ux4gBadgeAlignment.TopStart
+                    ) {
+                        Box(
+                            modifier = Modifier
+                                .size(44.dp)
+                                .background(Ux4gColors.neutral200, RoundedCornerShape(8.dp)),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Ux4gIconComponent(
+                                icon = Ux4gIcons.Settings,
+                                contentDescription = null,
+                                tint = Ux4gColors.neutral700
+                            )
+                        }
+                    }
+
+                    Ux4gBadge(
+                        type = Ux4gBadgeType.Label("NEW"),
+                        containerColor = Ux4gColors.green600,
+                        alignment = Ux4gBadgeAlignment.TopEnd
+                    ) {
+                        Box(
+                            modifier = Modifier
+                                .size(44.dp)
+                                .background(Ux4gColors.neutral200, RoundedCornerShape(8.dp))
+                        )
+                    }
+                }
+            }
+        }
+
         // Link Showcase
         Ux4gCard(modifier = Modifier.fillMaxWidth()) {
             Column(
