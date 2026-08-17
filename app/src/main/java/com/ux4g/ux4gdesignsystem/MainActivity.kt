@@ -2496,6 +2496,173 @@ fun MainContent(
                     }
                 }
             }
+
+            // 21. Checkbox Component Showcase
+            Ux4gCard(
+                modifier = Modifier.fillMaxWidth(),
+                borderColor = Ux4gColors.neutral300,
+                borderWidth = 1.dp
+            ) {
+                Text(
+                    text = "21. Checkbox",
+                    style = defaultTypography.hS_strong,
+                    color = Ux4gColors.primary
+                )
+
+                // 21.1 Sizes
+                Text(
+                    text = "21.1 Sizes (Small / Medium / Large)",
+                    style = defaultTypography.lS_strong
+                )
+
+                var sizeSmall by remember { mutableStateOf<Boolean?>(true) }
+                Ux4gCheckbox(
+                    value = sizeSmall,
+                    onValueChange = { sizeSmall = it },
+                    label = "Small Checkbox",
+                    size = Ux4gCheckboxSize.Small
+                )
+
+                var sizeMedium by remember { mutableStateOf<Boolean?>(false) }
+                Ux4gCheckbox(
+                    value = sizeMedium,
+                    onValueChange = { sizeMedium = it },
+                    label = "Medium Checkbox",
+                    size = Ux4gCheckboxSize.Medium
+                )
+
+                var sizeLarge by remember { mutableStateOf<Boolean?>(true) }
+                Ux4gCheckbox(
+                    value = sizeLarge,
+                    onValueChange = { sizeLarge = it },
+                    label = "Large Checkbox",
+                    size = Ux4gCheckboxSize.Large
+                )
+
+                Ux4gDivider()
+
+                // 21.2 Tri-State (On / Off / Indeterminate)
+                Text(
+                    text = "21.2 Tri-State (On / Off / Indeterminate)",
+                    style = defaultTypography.lS_strong
+                )
+
+                var triChecked by remember { mutableStateOf<Boolean?>(true) }
+                Ux4gCheckbox(
+                    value = triChecked,
+                    onValueChange = { triChecked = it },
+                    label = "Checked (On)"
+                )
+
+                var triUnchecked by remember { mutableStateOf<Boolean?>(false) }
+                Ux4gCheckbox(
+                    value = triUnchecked,
+                    onValueChange = { triUnchecked = it },
+                    label = "Unchecked (Off)"
+                )
+
+                var triIndet by remember { mutableStateOf<Boolean?>(null) }
+                Ux4gCheckbox(
+                    value = triIndet,
+                    onValueChange = { triIndet = it },
+                    label = "Indeterminate"
+                )
+
+                Ux4gDivider()
+
+                // 21.3 Required with Error
+                Text(
+                    text = "21.3 Required + Error State",
+                    style = defaultTypography.lS_strong
+                )
+
+                var reqErr by remember { mutableStateOf<Boolean?>(false) }
+                Ux4gCheckbox(
+                    value = reqErr,
+                    onValueChange = { reqErr = it },
+                    label = "Accept Terms & Conditions",
+                    isRequired = true,
+                    hasError = true,
+                    description = "You must accept the terms to proceed",
+                    descriptionVariant = Ux4gCheckboxDescriptionVariant.Error
+                )
+
+                Ux4gDivider()
+
+                // 21.4 Description Variants (Helper / Error / Warning / Success)
+                Text(
+                    text = "21.4 Description Variants",
+                    style = defaultTypography.lS_strong
+                )
+
+                var helperCb by remember { mutableStateOf<Boolean?>(true) }
+                Ux4gCheckbox(
+                    value = helperCb,
+                    onValueChange = { helperCb = it },
+                    label = "Helper Description",
+                    description = "This provides additional context",
+                    descriptionVariant = Ux4gCheckboxDescriptionVariant.Helper
+                )
+
+                var errorCb by remember { mutableStateOf<Boolean?>(false) }
+                Ux4gCheckbox(
+                    value = errorCb,
+                    onValueChange = { errorCb = it },
+                    label = "Error Description",
+                    description = "This field has a validation error",
+                    descriptionVariant = Ux4gCheckboxDescriptionVariant.Error
+                )
+
+                var warningCb by remember { mutableStateOf<Boolean?>(true) }
+                Ux4gCheckbox(
+                    value = warningCb,
+                    onValueChange = { warningCb = it },
+                    label = "Warning Description",
+                    description = "Please review before continuing",
+                    descriptionVariant = Ux4gCheckboxDescriptionVariant.Warning
+                )
+
+                var successCb by remember { mutableStateOf<Boolean?>(true) }
+                Ux4gCheckbox(
+                    value = successCb,
+                    onValueChange = { successCb = it },
+                    label = "Success Description",
+                    description = "Successfully validated",
+                    descriptionVariant = Ux4gCheckboxDescriptionVariant.Success
+                )
+
+                Ux4gDivider()
+
+                // 21.5 Disabled States
+                Text(
+                    text = "21.5 Disabled States",
+                    style = defaultTypography.lS_strong
+                )
+
+                Ux4gCheckbox(
+                    value = false,
+                    onValueChange = {},
+                    label = "Disabled Unchecked",
+                    isRequired = true,
+                    enabled = false
+                )
+
+                Ux4gCheckbox(
+                    value = true,
+                    onValueChange = {},
+                    label = "Disabled Checked",
+                    isRequired = true,
+                    enabled = false
+                )
+
+                Ux4gCheckbox(
+                    value = null,
+                    onValueChange = {},
+                    label = "Disabled Indeterminate",
+                    isRequired = true,
+                    enabled = false
+                )
+            }
         }
     }
 }
