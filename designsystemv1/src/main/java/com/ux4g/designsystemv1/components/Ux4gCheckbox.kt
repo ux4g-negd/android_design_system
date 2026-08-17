@@ -41,7 +41,7 @@ import androidx.compose.ui.unit.dp
 import com.ux4g.designsystemv1.foundation.Ux4gIcon
 import com.ux4g.designsystemv1.foundation.Ux4gIconComponent
 import com.ux4g.designsystemv1.foundation.Ux4gIcons
-import com.ux4g.designsystemv1.foundation.Ux4gPalette
+import com.ux4g.designsystemv1.foundation.Ux4gColors
 import com.ux4g.designsystemv1.foundation.Ux4gSpace
 import com.ux4g.designsystemv1.theme.Ux4gTheme
 
@@ -84,8 +84,8 @@ fun Ux4gCheckbox(
                 when (descriptionVariant) {
                         Ux4gCheckboxDescriptionVariant.Helper -> Ux4gTheme.colorScheme.onSurface.copy(alpha = 0.7f)
                         Ux4gCheckboxDescriptionVariant.Error -> Ux4gTheme.colorScheme.error
-                        Ux4gCheckboxDescriptionVariant.Warning -> Ux4gPalette.orange600
-                        Ux4gCheckboxDescriptionVariant.Success -> Ux4gPalette.green600
+                        Ux4gCheckboxDescriptionVariant.Warning -> Ux4gColors.orange600
+                        Ux4gCheckboxDescriptionVariant.Success -> Ux4gColors.green600
                 }
 
         val descriptionIcon =

@@ -9,7 +9,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import com.ux4g.designsystemv1.R
 
-// Define the Custom Font Family
+// Kept available for consumers that explicitly want the bundled Android font.
 val NotoSansFontFamily =
         FontFamily(
                 Font(R.font.notosans_regular, FontWeight.Normal),
@@ -18,10 +18,16 @@ val NotoSansFontFamily =
                 Font(R.font.notosans_bold, FontWeight.Bold)
         )
 
-// 1. Define the Typography System dataclass
+private fun ux4gTextStyle(weight: FontWeight, fontSize: Int, lineHeight: Int): TextStyle =
+        TextStyle(
+                fontWeight = weight,
+                fontSize = fontSize.sp,
+                lineHeight = lineHeight.sp
+        )
+
 @Immutable
 data class Ux4gTypography(
-        // header
+        // Header
         val hXXS_default: TextStyle,
         val hXXS_strong: TextStyle,
         val hXS_default: TextStyle,
@@ -37,7 +43,7 @@ data class Ux4gTypography(
         val hXXL_default: TextStyle,
         val hXXL_strong: TextStyle,
 
-        // display
+        // Display
         val dXS_default: TextStyle,
         val dXS_strong: TextStyle,
         val dS_default: TextStyle,
@@ -47,7 +53,7 @@ data class Ux4gTypography(
         val dL_default: TextStyle,
         val dL_strong: TextStyle,
 
-        // body
+        // Body
         val bXS_default: TextStyle,
         val bXS_strong: TextStyle,
         val bS_default: TextStyle,
@@ -57,7 +63,7 @@ data class Ux4gTypography(
         val bL_default: TextStyle,
         val bL_strong: TextStyle,
 
-        // label
+        // Label
         val lS_default: TextStyle,
         val lS_strong: TextStyle,
         val lM_default: TextStyle,
@@ -67,7 +73,7 @@ data class Ux4gTypography(
         val lXL_default: TextStyle,
         val lXL_strong: TextStyle,
 
-        // title
+        // Title
         val tS_default: TextStyle,
         val tS_strong: TextStyle,
         val tM_default: TextStyle,
@@ -76,329 +82,56 @@ data class Ux4gTypography(
         val tL_strong: TextStyle,
 )
 
-// 2. Define the implementations
 val defaultTypography =
         Ux4gTypography(
-                hXXS_default =
-                        TextStyle(
-                                fontFamily = NotoSansFontFamily,
-                                fontWeight = FontWeight.SemiBold,
-                                fontSize = 14.sp,
-                                lineHeight = 16.sp,
-                        ),
-                hXXS_strong =
-                        TextStyle(
-                                fontFamily = NotoSansFontFamily,
-                                fontWeight = FontWeight.Bold,
-                                fontSize = 14.sp,
-                                lineHeight = 16.sp,
-                        ),
-                hXS_default =
-                        TextStyle(
-                                fontFamily = NotoSansFontFamily,
-                                fontWeight = FontWeight.SemiBold,
-                                fontSize = 16.sp,
-                                lineHeight = 20.sp,
-                        ),
-                hXS_strong =
-                        TextStyle(
-                                fontFamily = NotoSansFontFamily,
-                                fontWeight = FontWeight.Bold,
-                                fontSize = 16.sp,
-                                lineHeight = 20.sp,
-                        ),
-                hS_default =
-                        TextStyle(
-                                fontFamily = NotoSansFontFamily,
-                                fontWeight = FontWeight.SemiBold,
-                                fontSize = 20.sp,
-                                lineHeight = 24.sp
-                        ),
-                hS_strong =
-                        TextStyle(
-                                fontFamily = NotoSansFontFamily,
-                                fontWeight = FontWeight.Bold,
-                                fontSize = 20.sp,
-                                lineHeight = 24.sp,
-                        ),
-                hM_default =
-                        TextStyle(
-                                fontFamily = NotoSansFontFamily,
-                                fontWeight = FontWeight.SemiBold,
-                                fontSize = 24.sp,
-                                lineHeight = 28.sp
-                        ),
-                hM_strong =
-                        TextStyle(
-                                fontFamily = NotoSansFontFamily,
-                                fontWeight = FontWeight.Bold,
-                                fontSize = 24.sp,
-                                lineHeight = 28.sp
-                        ),
-                hL_default =
-                        TextStyle(
-                                fontFamily = NotoSansFontFamily,
-                                fontWeight = FontWeight.SemiBold,
-                                fontSize = 28.sp,
-                                lineHeight = 32.sp
-                        ),
-                hL_strong =
-                        TextStyle(
-                                fontFamily = NotoSansFontFamily,
-                                fontWeight = FontWeight.Bold,
-                                fontSize = 28.sp,
-                                lineHeight = 32.sp
-                        ),
-                hXL_default =
-                        TextStyle(
-                                fontFamily = NotoSansFontFamily,
-                                fontWeight = FontWeight.SemiBold,
-                                fontSize = 32.sp,
-                                lineHeight = 36.sp
-                        ),
-                hXL_strong =
-                        TextStyle(
-                                fontFamily = NotoSansFontFamily,
-                                fontWeight = FontWeight.Bold,
-                                fontSize = 32.sp,
-                                lineHeight = 36.sp
-                        ),
-                hXXL_default =
-                        TextStyle(
-                                fontFamily = NotoSansFontFamily,
-                                fontWeight = FontWeight.SemiBold,
-                                fontSize = 40.sp,
-                                lineHeight = 44.sp
-                        ),
-                hXXL_strong =
-                        TextStyle(
-                                fontFamily = NotoSansFontFamily,
-                                fontWeight = FontWeight.Bold,
-                                fontSize = 40.sp,
-                                lineHeight = 44.sp
-                        ),
-                // Display styles
+                hXXS_default = ux4gTextStyle(FontWeight.SemiBold, 14, 16),
+                hXXS_strong = ux4gTextStyle(FontWeight.Bold, 14, 16),
+                hXS_default = ux4gTextStyle(FontWeight.SemiBold, 16, 20),
+                hXS_strong = ux4gTextStyle(FontWeight.Bold, 16, 20),
+                hS_default = ux4gTextStyle(FontWeight.SemiBold, 20, 24),
+                hS_strong = ux4gTextStyle(FontWeight.Bold, 20, 24),
+                hM_default = ux4gTextStyle(FontWeight.SemiBold, 24, 28),
+                hM_strong = ux4gTextStyle(FontWeight.Bold, 24, 28),
+                hL_default = ux4gTextStyle(FontWeight.SemiBold, 28, 32),
+                hL_strong = ux4gTextStyle(FontWeight.Bold, 28, 32),
+                hXL_default = ux4gTextStyle(FontWeight.SemiBold, 32, 36),
+                hXL_strong = ux4gTextStyle(FontWeight.Bold, 32, 36),
+                hXXL_default = ux4gTextStyle(FontWeight.SemiBold, 40, 44),
+                hXXL_strong = ux4gTextStyle(FontWeight.Bold, 40, 44),
 
-                dXS_default =
-                        TextStyle(
-                                fontFamily = NotoSansFontFamily,
-                                fontWeight = FontWeight.SemiBold,
-                                fontSize = 36.sp,
-                                lineHeight = 44.sp
-                        ),
-                dXS_strong =
-                        TextStyle(
-                                fontFamily = NotoSansFontFamily,
-                                fontWeight = FontWeight.Bold,
-                                fontSize = 36.sp,
-                                lineHeight = 44.sp
-                        ),
-                dS_default =
-                        TextStyle(
-                                fontFamily = NotoSansFontFamily,
-                                fontWeight = FontWeight.SemiBold,
-                                fontSize = 40.sp,
-                                lineHeight = 52.sp
-                        ),
-                dS_strong =
-                        TextStyle(
-                                fontFamily = NotoSansFontFamily,
-                                fontWeight = FontWeight.Bold,
-                                fontSize = 40.sp,
-                                lineHeight = 52.sp
-                        ),
-                dM_default =
-                        TextStyle(
-                                fontFamily = NotoSansFontFamily,
-                                fontWeight = FontWeight.SemiBold,
-                                fontSize = 52.sp,
-                                lineHeight = 72.sp
-                        ),
-                dM_strong =
-                        TextStyle(
-                                fontFamily = NotoSansFontFamily,
-                                fontWeight = FontWeight.Bold,
-                                fontSize = 52.sp,
-                                lineHeight = 72.sp
-                        ),
-                dL_default =
-                        TextStyle(
-                                fontFamily = NotoSansFontFamily,
-                                fontWeight = FontWeight.SemiBold,
-                                fontSize = 60.sp,
-                                lineHeight = 80.sp
-                        ),
-                dL_strong =
-                        TextStyle(
-                                fontFamily = NotoSansFontFamily,
-                                fontWeight = FontWeight.Bold,
-                                fontSize = 60.sp,
-                                lineHeight = 80.sp
-                        ),
+                dXS_default = ux4gTextStyle(FontWeight.SemiBold, 36, 44),
+                dXS_strong = ux4gTextStyle(FontWeight.Bold, 36, 44),
+                dS_default = ux4gTextStyle(FontWeight.SemiBold, 40, 52),
+                dS_strong = ux4gTextStyle(FontWeight.Bold, 40, 52),
+                dM_default = ux4gTextStyle(FontWeight.SemiBold, 52, 72),
+                dM_strong = ux4gTextStyle(FontWeight.Bold, 52, 72),
+                dL_default = ux4gTextStyle(FontWeight.SemiBold, 60, 80),
+                dL_strong = ux4gTextStyle(FontWeight.Bold, 60, 80),
 
-                // body styles
+                bXS_default = ux4gTextStyle(FontWeight.Medium, 11, 14),
+                bXS_strong = ux4gTextStyle(FontWeight.Bold, 11, 14),
+                bS_default = ux4gTextStyle(FontWeight.Medium, 12, 16),
+                bS_strong = ux4gTextStyle(FontWeight.Bold, 12, 16),
+                bM_default = ux4gTextStyle(FontWeight.Medium, 14, 18),
+                bM_strong = ux4gTextStyle(FontWeight.Bold, 14, 18),
+                bL_default = ux4gTextStyle(FontWeight.Medium, 16, 20),
+                bL_strong = ux4gTextStyle(FontWeight.Bold, 16, 20),
 
-                bXS_default =
-                        TextStyle(
-                                fontFamily = NotoSansFontFamily,
-                                fontWeight = FontWeight.SemiBold,
-                                fontSize = 12.sp,
-                                lineHeight = 16.sp
-                        ),
-                bXS_strong =
-                        TextStyle(
-                                fontFamily = NotoSansFontFamily,
-                                fontWeight = FontWeight.Bold,
-                                fontSize = 12.sp,
-                                lineHeight = 16.sp
-                        ),
-                bS_default =
-                        TextStyle(
-                                fontFamily = NotoSansFontFamily,
-                                fontWeight = FontWeight.SemiBold,
-                                fontSize = 14.sp,
-                                lineHeight = 40.sp
-                        ),
-                bS_strong =
-                        TextStyle(
-                                fontFamily = NotoSansFontFamily,
-                                fontWeight = FontWeight.Bold,
-                                fontSize = 14.sp,
-                                lineHeight = 40.sp
-                        ),
-                bM_default =
-                        TextStyle(
-                                fontFamily = NotoSansFontFamily,
-                                fontWeight = FontWeight.SemiBold,
-                                fontSize = 16.sp,
-                                lineHeight = 24.sp
-                        ),
-                bM_strong =
-                        TextStyle(
-                                fontFamily = NotoSansFontFamily,
-                                fontWeight = FontWeight.Bold,
-                                fontSize = 16.sp,
-                                lineHeight = 24.sp
-                        ),
-                bL_default =
-                        TextStyle(
-                                fontFamily = NotoSansFontFamily,
-                                fontWeight = FontWeight.SemiBold,
-                                fontSize = 18.sp,
-                                lineHeight = 24.sp
-                        ),
-                bL_strong =
-                        TextStyle(
-                                fontFamily = NotoSansFontFamily,
-                                fontWeight = FontWeight.Bold,
-                                fontSize = 18.sp,
-                                lineHeight = 24.sp
-                        ),
+                lS_default = ux4gTextStyle(FontWeight.Medium, 11, 14),
+                lS_strong = ux4gTextStyle(FontWeight.Bold, 11, 14),
+                lM_default = ux4gTextStyle(FontWeight.Medium, 12, 16),
+                lM_strong = ux4gTextStyle(FontWeight.Bold, 12, 16),
+                lL_default = ux4gTextStyle(FontWeight.Medium, 14, 18),
+                lL_strong = ux4gTextStyle(FontWeight.Bold, 14, 18),
+                lXL_default = ux4gTextStyle(FontWeight.Medium, 16, 20),
+                lXL_strong = ux4gTextStyle(FontWeight.Bold, 16, 20),
 
-                // label styles
-
-                lS_default =
-                        TextStyle(
-                                fontFamily = NotoSansFontFamily,
-                                fontWeight = FontWeight.SemiBold,
-                                fontSize = 11.sp,
-                                lineHeight = 14.sp
-                        ),
-                lS_strong =
-                        TextStyle(
-                                fontFamily = NotoSansFontFamily,
-                                fontWeight = FontWeight.Bold,
-                                fontSize = 11.sp,
-                                lineHeight = 14.sp
-                        ),
-                lM_default =
-                        TextStyle(
-                                fontFamily = NotoSansFontFamily,
-                                fontWeight = FontWeight.SemiBold,
-                                fontSize = 12.sp,
-                                lineHeight = 16.sp
-                        ),
-                lM_strong =
-                        TextStyle(
-                                fontFamily = NotoSansFontFamily,
-                                fontWeight = FontWeight.Bold,
-                                fontSize = 12.sp,
-                                lineHeight = 16.sp
-                        ),
-                lL_default =
-                        TextStyle(
-                                fontFamily = NotoSansFontFamily,
-                                fontWeight = FontWeight.SemiBold,
-                                fontSize = 14.sp,
-                                lineHeight = 18.sp
-                        ),
-                lL_strong =
-                        TextStyle(
-                                fontFamily = NotoSansFontFamily,
-                                fontWeight = FontWeight.Bold,
-                                fontSize = 14.sp,
-                                lineHeight = 18.sp
-                        ),
-                lXL_default =
-                        TextStyle(
-                                fontFamily = NotoSansFontFamily,
-                                fontWeight = FontWeight.SemiBold,
-                                fontSize = 16.sp,
-                                lineHeight = 20.sp
-                        ),
-                lXL_strong =
-                        TextStyle(
-                                fontFamily = NotoSansFontFamily,
-                                fontWeight = FontWeight.Bold,
-                                fontSize = 16.sp,
-                                lineHeight = 20.sp
-                        ),
-
-                // title styles
-
-                tS_default =
-                        TextStyle(
-                                fontFamily = NotoSansFontFamily,
-                                fontWeight = FontWeight.SemiBold,
-                                fontSize = 16.sp,
-                                lineHeight = 20.sp
-                        ),
-                tS_strong =
-                        TextStyle(
-                                fontFamily = NotoSansFontFamily,
-                                fontWeight = FontWeight.Bold,
-                                fontSize = 16.sp,
-                                lineHeight = 20.sp
-                        ),
-                tM_default =
-                        TextStyle(
-                                fontFamily = NotoSansFontFamily,
-                                fontWeight = FontWeight.SemiBold,
-                                fontSize = 20.sp,
-                                lineHeight = 24.sp
-                        ),
-                tM_strong =
-                        TextStyle(
-                                fontFamily = NotoSansFontFamily,
-                                fontWeight = FontWeight.Bold,
-                                fontSize = 20.sp,
-                                lineHeight = 24.sp
-                        ),
-                tL_default =
-                        TextStyle(
-                                fontFamily = NotoSansFontFamily,
-                                fontWeight = FontWeight.SemiBold,
-                                fontSize = 24.sp,
-                                lineHeight = 28.sp
-                        ),
-                tL_strong =
-                        TextStyle(
-                                fontFamily = NotoSansFontFamily,
-                                fontWeight = FontWeight.Bold,
-                                fontSize = 24.sp,
-                                lineHeight = 28.sp
-                        ),
+                tS_default = ux4gTextStyle(FontWeight.Normal, 14, 20),
+                tS_strong = ux4gTextStyle(FontWeight.SemiBold, 14, 20),
+                tM_default = ux4gTextStyle(FontWeight.Normal, 16, 24),
+                tM_strong = ux4gTextStyle(FontWeight.SemiBold, 16, 24),
+                tL_default = ux4gTextStyle(FontWeight.Normal, 18, 24),
+                tL_strong = ux4gTextStyle(FontWeight.SemiBold, 18, 24),
         )
 
-// 3. CompositionLocal
 val LocalUx4gTypography = staticCompositionLocalOf { defaultTypography }

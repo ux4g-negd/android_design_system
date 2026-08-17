@@ -26,7 +26,7 @@ import com.ux4g.designsystemv1.components.Ux4gToastHost
 import com.ux4g.designsystemv1.components.Ux4gToastHostState
 import com.ux4g.designsystemv1.foundation.Ux4gIconComponent
 import com.ux4g.designsystemv1.foundation.Ux4gIcons
-import com.ux4g.designsystemv1.foundation.Ux4gPalette
+import com.ux4g.designsystemv1.foundation.Ux4gColors
 import com.ux4g.designsystemv1.theme.Ux4gTheme
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -158,10 +158,10 @@ fun DesignSystemShowcase(
             horizontalArrangement = Arrangement.spacedBy(16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Ux4gLoader(size = 48.dp, percentage = 90f, color = Ux4gPalette.primary)
-            Ux4gLoader(size = 40.dp, percentage = 75f, color = Ux4gPalette.secondary)
-            Ux4gLoader(size = 32.dp, percentage = 50f, color = Ux4gPalette.tertiary)
-            Ux4gLoader(size = 24.dp, percentage = 25f, color = Ux4gPalette.red)
+            Ux4gLoader(size = 48.dp, percentage = 90f, color = Ux4gColors.primary)
+            Ux4gLoader(size = 40.dp, percentage = 75f, color = Ux4gColors.secondary)
+            Ux4gLoader(size = 32.dp, percentage = 50f, color = Ux4gColors.tertiary)
+            Ux4gLoader(size = 24.dp, percentage = 25f, color = Ux4gColors.red)
         }
 
         // Pagination showcase

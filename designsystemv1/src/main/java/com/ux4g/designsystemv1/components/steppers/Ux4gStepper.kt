@@ -20,7 +20,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.tooling.preview.Preview
 import android.content.res.Configuration
-import com.ux4g.designsystemv1.foundation.Ux4gPalette
+import com.ux4g.designsystemv1.foundation.Ux4gColors
 import com.ux4g.designsystemv1.foundation.Ux4gIcons
 import com.ux4g.designsystemv1.foundation.Ux4gIconComponent
 import com.ux4g.designsystemv1.theme.Ux4gTheme
@@ -179,7 +179,7 @@ private fun HorizontalStepper(
                             Text(
                                 text = stepData.description,
                                 style = Ux4gTheme.typography.lM_default,
-                                color = if (stepData.isError) Ux4gPalette.red400 else Ux4gTheme.colorScheme.onSurface.copy(alpha = 0.4f),
+                                color = if (stepData.isError) Ux4gColors.red400 else Ux4gTheme.colorScheme.onSurface.copy(alpha = 0.4f),
                                 textAlign = TextAlign.Center
                             )
                         }
@@ -195,7 +195,7 @@ private fun HorizontalStepper(
                                 style = Ux4gTheme.typography.lS_strong,
                                 color = when {
                                     stepData?.isError == true -> Ux4gTheme.colorScheme.error
-                                    isCompleted -> Ux4gPalette.green
+                                    isCompleted -> Ux4gColors.green
                                     isActive -> Ux4gTheme.colorScheme.primary
                                     else -> Ux4gTheme.colorScheme.onSurface.copy(alpha = 0.4f)
                                 },
@@ -272,7 +272,7 @@ private fun VerticalStepper(
                         Text(
                             text = stepData.description,
                             style = Ux4gTheme.typography.lM_default,
-                            color = if (stepData.isError) Ux4gPalette.red400 else Ux4gTheme.colorScheme.onSurface.copy(alpha = 0.4f)
+                            color = if (stepData.isError) Ux4gColors.red400 else Ux4gTheme.colorScheme.onSurface.copy(alpha = 0.4f)
                         )
                     }
                     val statusText = stepData?.statusLabel ?: when {
@@ -287,7 +287,7 @@ private fun VerticalStepper(
                             style = Ux4gTheme.typography.lS_strong,
                             color = when {
                                 stepData?.isError == true -> Ux4gTheme.colorScheme.error
-                                isCompleted -> Ux4gPalette.green
+                                isCompleted -> Ux4gColors.green
                                 isActive -> Ux4gTheme.colorScheme.primary
                                 else -> Ux4gTheme.colorScheme.onSurface.copy(alpha = 0.4f)
                             }

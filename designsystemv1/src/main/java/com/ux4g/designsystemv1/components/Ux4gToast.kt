@@ -32,7 +32,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import com.ux4g.designsystemv1.foundation.Ux4gIconComponent
 import com.ux4g.designsystemv1.foundation.Ux4gIcons
-import com.ux4g.designsystemv1.foundation.Ux4gPalette
+import com.ux4g.designsystemv1.foundation.Ux4gColors
 import com.ux4g.designsystemv1.foundation.Ux4gRadius
 import com.ux4g.designsystemv1.foundation.Ux4gSpace
 import com.ux4g.designsystemv1.theme.Ux4gTheme
@@ -282,33 +282,33 @@ private data class ToastStyle(
 private fun getToastStyle(category: Ux4gToastCategory): ToastStyle {
     return when (category) {
         Ux4gToastCategory.Info -> ToastStyle(
-            backgroundColor = Ux4gPalette.cyan50,
-            iconColor = Ux4gPalette.cyan500,
-            actionColor = Ux4gPalette.cyan600,
+            backgroundColor = Ux4gColors.cyan50,
+            iconColor = Ux4gColors.cyan500,
+            actionColor = Ux4gColors.cyan600,
             icon = Ux4gIcons.info_circle
         )
         Ux4gToastCategory.Success -> ToastStyle(
-            backgroundColor = Ux4gPalette.green50,
-            iconColor = Ux4gPalette.green500,
-            actionColor = Ux4gPalette.green600,
+            backgroundColor = Ux4gColors.green50,
+            iconColor = Ux4gColors.green500,
+            actionColor = Ux4gColors.green600,
             icon = Ux4gIcons.success_circle
         )
         Ux4gToastCategory.Warning -> ToastStyle(
-            backgroundColor = Ux4gPalette.gold50,
-            iconColor = Ux4gPalette.gold600,
-            actionColor = Ux4gPalette.gold700,
+            backgroundColor = Ux4gColors.gold50,
+            iconColor = Ux4gColors.gold600,
+            actionColor = Ux4gColors.gold700,
             icon = Ux4gIcons.warning
         )
         Ux4gToastCategory.Error -> ToastStyle(
-            backgroundColor = Ux4gPalette.red50,
+            backgroundColor = Ux4gColors.red50,
             iconColor = Ux4gTheme.colorScheme.error,
-            actionColor = Ux4gPalette.red600,
+            actionColor = Ux4gColors.red600,
             icon = Ux4gIcons.error
         )
         Ux4gToastCategory.Slot -> ToastStyle(
-            backgroundColor = Ux4gPalette.purple50,
-            iconColor = Ux4gPalette.purple500,
-            actionColor = Ux4gPalette.purple600,
+            backgroundColor = Ux4gColors.purple50,
+            iconColor = Ux4gColors.purple500,
+            actionColor = Ux4gColors.purple600,
             icon = Ux4gIcons.Settings
         )
     }

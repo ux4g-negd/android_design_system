@@ -17,7 +17,7 @@ import androidx.compose.ui.unit.dp
 import com.ux4g.designsystemv1.foundation.Ux4gIcon
 import com.ux4g.designsystemv1.foundation.Ux4gIconComponent
 import com.ux4g.designsystemv1.foundation.Ux4gIcons
-import com.ux4g.designsystemv1.foundation.Ux4gPalette
+import com.ux4g.designsystemv1.foundation.Ux4gColors
 import com.ux4g.designsystemv1.theme.Ux4gTheme
 
 /**

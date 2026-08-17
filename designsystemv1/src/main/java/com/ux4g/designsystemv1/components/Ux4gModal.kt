@@ -42,7 +42,7 @@ import com.ux4g.designsystemv1.components.buttons.Ux4gOutlineButton
 import com.ux4g.designsystemv1.foundation.Ux4gIcon
 import com.ux4g.designsystemv1.foundation.Ux4gIconComponent
 import com.ux4g.designsystemv1.foundation.Ux4gIcons
-import com.ux4g.designsystemv1.foundation.Ux4gPalette
+import com.ux4g.designsystemv1.foundation.Ux4gColors
 import com.ux4g.designsystemv1.foundation.Ux4gRadius
 import com.ux4g.designsystemv1.foundation.Ux4gSpace
 import com.ux4g.designsystemv1.theme.Ux4gTheme
@@ -477,7 +477,7 @@ fun Ux4gModalContent(
                                                         modifier =
                                                                 Modifier.fillMaxSize()
                                                                         .background(
-                                                                                Ux4gPalette
+                                                                                Ux4gColors
                                                                                         .neutral200
                                                                         )
                                                 )

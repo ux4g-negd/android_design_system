@@ -15,7 +15,7 @@ import androidx.compose.ui.graphics.drawscope.rotate
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.ux4g.designsystemv1.foundation.Ux4gPalette
+import com.ux4g.designsystemv1.foundation.Ux4gColors
 import com.ux4g.designsystemv1.theme.Ux4gTheme
 import java.lang.Math.toRadians
 import kotlin.math.cos
@@ -114,9 +114,9 @@ private fun Ux4gLoaderGridPreview() {
                         LoaderSetPreview(
                                 colors =
                                         listOf(
-                                                Ux4gPalette.primary,
-                                                Ux4gPalette.primary400,
-                                                Ux4gPalette.primary300
+                                                Ux4gColors.primary,
+                                                Ux4gColors.primary400,
+                                                Ux4gColors.primary300
                                         )
                         )
 
@@ -124,7 +124,7 @@ private fun Ux4gLoaderGridPreview() {
                         LoaderSetPreview(
                                 colors =
                                         listOf(
-                                                Ux4gPalette.white,
+                                                Ux4gColors.white,
                                                 Ux4gTheme.colorScheme.onSurface.copy(alpha = 0.2f),
                                                 Ux4gTheme.colorScheme.onSurface.copy(alpha = 0.1f)
                                         )
@@ -134,9 +134,9 @@ private fun Ux4gLoaderGridPreview() {
                         LoaderSetPreview(
                                 colors =
                                         listOf(
-                                                Ux4gPalette.red,
-                                                Ux4gPalette.red400,
-                                                Ux4gPalette.red300
+                                                Ux4gColors.red,
+                                                Ux4gColors.red400,
+                                                Ux4gColors.red300
                                         )
                         )
                 }

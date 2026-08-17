@@ -40,7 +40,7 @@ import com.ux4g.designsystemv1.components.avatar_component.Ux4gAvatar
 import com.ux4g.designsystemv1.components.avatar_component.Ux4gAvatarSize
 import com.ux4g.designsystemv1.components.buttons.Ux4gButton
 import com.ux4g.designsystemv1.components.buttons.Ux4gOutlineButton
-import com.ux4g.designsystemv1.foundation.Ux4gPalette
+import com.ux4g.designsystemv1.foundation.Ux4gColors
 import com.ux4g.designsystemv1.foundation.Ux4gRadius
 import com.ux4g.designsystemv1.foundation.Ux4gSpace
 import com.ux4g.designsystemv1.theme.Ux4gTheme
@@ -355,7 +355,7 @@ private fun CardMediaImage(
                 Ux4gBadge(
                     type = Ux4gBadgeType.Label(labelText),
                     containerColor = Ux4gTheme.colorScheme.onSurface,
-                    contentColor = Ux4gPalette.white
+                    contentColor = Ux4gColors.white
                 )
             }
         }
@@ -666,8 +666,8 @@ private fun Ux4gCardPreview() {
                     Ux4gAvatar(
                         size = Ux4gAvatarSize.S,
                         initials = "JD",
-                        containerColor = Ux4gPalette.primary100,
-                        contentColor = Ux4gPalette.primary700
+                        containerColor = Ux4gColors.primary100,
+                        contentColor = Ux4gColors.primary700
                     )
                 },
                 title = "Title",
@@ -683,7 +683,7 @@ private fun Ux4gCardPreview() {
 
             // ── Card with outlined border, no image, no avatar ──
             Ux4gCard(
-                borderColor = Ux4gPalette.primary,
+                borderColor = Ux4gColors.primary,
                 borderWidth = 1.dp,
                 title = "Outlined Card",
                 subtitle = "No image, no avatar",
@@ -697,7 +697,7 @@ private fun Ux4gCardPreview() {
             // ── Elevated card, primary only, right-aligned footer ──
             Ux4gCard(
                 elevation = 4.dp,
-                backgroundColor = Ux4gPalette.primary50,
+                backgroundColor = Ux4gColors.primary50,
                 title = "Elevated Card",
                 bodyText = "This card has a custom background color and elevated shadow.",
                 bottomChips = listOf("Kotlin", "Compose", "Ux4G"),

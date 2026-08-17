@@ -41,7 +41,7 @@ import com.ux4g.designsystemv1.foundation.ExperimentalUx4gApi
 import com.ux4g.designsystemv1.foundation.Ux4gIcon
 import com.ux4g.designsystemv1.foundation.Ux4gIconComponent
 import com.ux4g.designsystemv1.foundation.Ux4gIcons
-import com.ux4g.designsystemv1.foundation.Ux4gPalette
+import com.ux4g.designsystemv1.foundation.Ux4gColors
 import com.ux4g.designsystemv1.foundation.Ux4gRadius
 import com.ux4g.designsystemv1.theme.Ux4gTheme
 
@@ -583,7 +583,7 @@ private fun Ux4gTooltipBubblePreview() {
                 icon = Ux4gIcons.info_circle,
                 placement = Ux4gTooltipPlacement.Top,
                 action = {
-                    Text("Action", color = Ux4gPalette.primary, style = Ux4gTheme.typography.lS_strong)
+                    Text("Action", color = Ux4gColors.primary, style = Ux4gTheme.typography.lS_strong)
                 }
             )
         }

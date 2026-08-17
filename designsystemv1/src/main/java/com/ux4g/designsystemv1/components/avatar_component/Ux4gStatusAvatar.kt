@@ -17,34 +17,33 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.ux4g.designsystemv1.foundation.Ux4gIcon
 import com.ux4g.designsystemv1.foundation.Ux4gIcons
-import com.ux4g.designsystemv1.foundation.Ux4gPalette
+import com.ux4g.designsystemv1.foundation.Ux4gColors
 import com.ux4g.designsystemv1.theme.Ux4gTheme
 
 /** Variants for Ux4gStatusAvatar indicator. */
 sealed class Ux4gStatusAvatarVariant {
-    @get:Composable
     abstract val color: Color
 
     data object Online : Ux4gStatusAvatarVariant() {
-        override val color: Color @Composable get() = Ux4gPalette.green500
+        override val color: Color get() = Ux4gColors.green500
     }
     data object Offline : Ux4gStatusAvatarVariant() {
-        override val color: Color @Composable get() = Ux4gTheme.colorScheme.onSurface.copy(alpha = 0.5f)
+        override val color: Color get() = Ux4gColors.neutral900.copy(alpha = 0.5f)
     }
     data object Busy : Ux4gStatusAvatarVariant() {
-        override val color: Color @Composable get() = Ux4gTheme.colorScheme.error
+        override val color: Color get() = Ux4gColors.red600
     }
     data object Success : Ux4gStatusAvatarVariant() {
-        override val color: Color @Composable get() = Ux4gPalette.green500
+        override val color: Color get() = Ux4gColors.green500
     }
     data object Error : Ux4gStatusAvatarVariant() {
-        override val color: Color @Composable get() = Ux4gPalette.red600
+        override val color: Color get() = Ux4gColors.red600
     }
     data object Warning : Ux4gStatusAvatarVariant() {
-        override val color: Color @Composable get() = Ux4gPalette.orange500
+        override val color: Color get() = Ux4gColors.orange500
     }
     class Custom(val customColor: Color) : Ux4gStatusAvatarVariant() {
-        override val color: Color @Composable get() = customColor
+        override val color: Color get() = customColor
     }
 }
 
@@ -99,7 +98,7 @@ fun Ux4gStatusAvatar(
             Spacer(
                     modifier =
                             Modifier.matchParentSize()
-                                    .background(Color.White, CircleShape)
+                                    .background(Ux4gTheme.colorScheme.surface, CircleShape)
                                     .padding(2.dp)
                                     .background(variant.color, CircleShape)
             )

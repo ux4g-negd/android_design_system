@@ -21,7 +21,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.ux4g.designsystemv1.foundation.Ux4gBorderWidth
-import com.ux4g.designsystemv1.foundation.Ux4gPalette
+import com.ux4g.designsystemv1.foundation.Ux4gColors
 import com.ux4g.designsystemv1.theme.Ux4gTheme
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -273,7 +273,7 @@ private fun Ux4gDividerPreview() {
             Text("Horizontal – Dashed, Brand Color, Label", style = Ux4gTheme.typography.lS_default)
             Ux4gDivider(
                 style = Ux4gDividerStyle.Dashed,
-                color = Ux4gPalette.primary300,
+                color = Ux4gColors.primary300,
                 thickness = 1.5.dp,
                 label = {
                     Text(

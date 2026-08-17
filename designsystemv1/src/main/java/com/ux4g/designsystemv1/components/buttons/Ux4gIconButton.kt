@@ -24,7 +24,7 @@ import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.ux4g.designsystemv1.components.Ux4gLoader
-import com.ux4g.designsystemv1.foundation.Ux4gPalette
+import com.ux4g.designsystemv1.foundation.Ux4gColors
 import com.ux4g.designsystemv1.foundation.Ux4gRadius
 import com.ux4g.designsystemv1.theme.Ux4gTheme
 
@@ -85,14 +85,14 @@ fun Ux4gIconButton(
     val defaultContainerColor =
             when (type) {
                 Ux4gIconButtonStyle.Filled -> Ux4gTheme.colorScheme.primary
-                Ux4gIconButtonStyle.Tonal -> Ux4gPalette.primary50
+                Ux4gIconButtonStyle.Tonal -> Ux4gColors.primary50
                 Ux4gIconButtonStyle.Outline, Ux4gIconButtonStyle.Text -> Color.Transparent
             }
 
     val defaultContentColor =
             when (type) {
                 Ux4gIconButtonStyle.Filled -> Ux4gTheme.colorScheme.onPrimary
-                Ux4gIconButtonStyle.Tonal -> Ux4gPalette.primary700
+                Ux4gIconButtonStyle.Tonal -> Ux4gColors.primary700
                 Ux4gIconButtonStyle.Outline, Ux4gIconButtonStyle.Text ->
                         Ux4gTheme.colorScheme.primary
             }

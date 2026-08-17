@@ -32,7 +32,7 @@ import com.ux4g.designsystemv1.foundation.Ux4gBorderWidth
 import com.ux4g.designsystemv1.foundation.Ux4gIcon
 import com.ux4g.designsystemv1.foundation.Ux4gIconComponent
 import com.ux4g.designsystemv1.foundation.Ux4gIcons
-import com.ux4g.designsystemv1.foundation.Ux4gPalette
+import com.ux4g.designsystemv1.foundation.Ux4gColors
 import com.ux4g.designsystemv1.foundation.Ux4gRadius
 import com.ux4g.designsystemv1.theme.Ux4gTheme
 
@@ -80,18 +80,18 @@ fun getUx4gTagColors(style: Ux4gTagStyle, tagColor: Ux4gTagColor): Ux4gTagColors
                         )
                 Ux4gTagColor.Brand ->
                         Triple(
-                                Ux4gPalette.primary50,
+                                Ux4gColors.primary50,
                                 Ux4gTheme.colorScheme.primary,
-                                Ux4gPalette.primary700
+                                Ux4gColors.primary700
                         )
                 Ux4gTagColor.Success ->
-                        Triple(Ux4gPalette.green50, Ux4gPalette.green500, Ux4gPalette.green700)
+                        Triple(Ux4gColors.green50, Ux4gColors.green500, Ux4gColors.green700)
                 Ux4gTagColor.Warning ->
-                        Triple(Ux4gPalette.orange50, Ux4gPalette.orange500, Ux4gPalette.orange700)
+                        Triple(Ux4gColors.orange50, Ux4gColors.orange500, Ux4gColors.orange700)
                 Ux4gTagColor.Error ->
-                        Triple(Ux4gPalette.red50, Ux4gTheme.colorScheme.error, Ux4gPalette.red700)
+                        Triple(Ux4gColors.red50, Ux4gTheme.colorScheme.error, Ux4gColors.red700)
                 Ux4gTagColor.Info ->
-                        Triple(Ux4gPalette.blue50, Ux4gPalette.blue500, Ux4gPalette.blue700)
+                        Triple(Ux4gColors.blue50, Ux4gColors.blue500, Ux4gColors.blue700)
             }
 
     return when (style) {
@@ -334,7 +334,7 @@ private fun Ux4gTagPreview() {
                             SampleIconForTag(
                                     Ux4gIcons.Home,
                                     size = Ux4gTagSize.M,
-                                    color = Ux4gPalette.green700
+                                    color = Ux4gColors.green700
                             )
                         }
                 )
@@ -346,7 +346,7 @@ private fun Ux4gTagPreview() {
                             SampleAvatarForTag(
                                     "A",
                                     size = Ux4gTagSize.M,
-                                    color = Ux4gPalette.white,
+                                    color = Ux4gColors.white,
                                     backgroundColor = Ux4gTheme.colorScheme.primary
                             )
                         }

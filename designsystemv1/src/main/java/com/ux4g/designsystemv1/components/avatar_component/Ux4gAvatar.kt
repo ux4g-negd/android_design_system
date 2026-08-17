@@ -23,6 +23,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.foundation.isSystemInDarkTheme
+import com.ux4g.designsystemv1.foundation.Ux4gColors
 import com.ux4g.designsystemv1.foundation.Ux4gIcon
 import com.ux4g.designsystemv1.foundation.Ux4gIconComponent
 import com.ux4g.designsystemv1.foundation.Ux4gIcons
@@ -128,12 +130,21 @@ fun Ux4gAvatar(
         imageUrl: Any? = null,
         initials: String? = null,
         icon: Ux4gIcon? = Ux4gIcons.Person,
-        containerColor: Color = Ux4gTheme.colorScheme.primary.copy(alpha = 0.1f),
-        contentColor: Color = Ux4gTheme.colorScheme.primary,
-        iconColor: Color = Ux4gTheme.colorScheme.primary
+        containerColor: Color? = null,
+        contentColor: Color? = null,
+        iconColor: Color? = null
 ) {
+        val isDark = androidx.compose.foundation.isSystemInDarkTheme()
+        val resolvedPrimary = Ux4gTheme.colorScheme.primary
+        val finalContainerColor =
+                containerColor
+                        ?: if (isDark) Ux4gColors.primary900
+                        else resolvedPrimary.copy(alpha = 0.1f)
+        val finalContentColor = contentColor ?: resolvedPrimary
+        val finalIconColor = iconColor ?: resolvedPrimary
+
         Box(
-                modifier = modifier.size(size.size).clip(shape).background(containerColor),
+                modifier = modifier.size(size.size).clip(shape).background(finalContainerColor),
                 contentAlignment = Alignment.Center
         ) {
                 if (imageUrl != null) {
@@ -151,7 +162,7 @@ fun Ux4gAvatar(
                                                         icon = Ux4gIcons.Person,
                                                         contentDescription = "Avatar Loading Icon",
                                                         modifier = Modifier.size(size.iconSize),
-                                                        tint = iconColor
+                                                        tint = finalIconColor
                                                 )
                                         }
                                 },
@@ -164,7 +175,7 @@ fun Ux4gAvatar(
                                                         Text(
                                                                 text = initials.take(2).uppercase(),
                                                                 style = size.textStyle(),
-                                                                color = contentColor
+                                                                color = finalContentColor
                                                         )
                                                 } else if (icon != null) {
                                                         Ux4gIconComponent(
@@ -174,7 +185,7 @@ fun Ux4gAvatar(
                                                                         Modifier.size(
                                                                                 size.iconSize
                                                                         ),
-                                                                tint = iconColor
+                                                                tint = finalIconColor
                                                         )
                                                 } else {
                                                         Ux4gIconComponent(
@@ -185,7 +196,7 @@ fun Ux4gAvatar(
                                                                         Modifier.size(
                                                                                 size.iconSize
                                                                         ),
-                                                                tint = iconColor
+                                                                tint = finalIconColor
                                                         )
                                                 }
                                         }
@@ -195,14 +206,14 @@ fun Ux4gAvatar(
                         Text(
                                 text = initials.take(2).uppercase(),
                                 style = size.textStyle(),
-                                color = contentColor
+                                color = finalContentColor
                         )
                 } else if (icon != null) {
                         Ux4gIconComponent(
                                 icon = icon,
                                 contentDescription = "Avatar Icon",
                                 modifier = Modifier.size(size.iconSize),
-                                tint = iconColor
+                                tint = finalIconColor
                         )
                 } else {
                         // Fallback completely
@@ -210,7 +221,7 @@ fun Ux4gAvatar(
                                 icon = Ux4gIcons.Person,
                                 contentDescription = "Avatar Default Icon",
                                 modifier = Modifier.size(size.iconSize),
-                                tint = iconColor
+                                tint = finalIconColor
                         )
                 }
         }

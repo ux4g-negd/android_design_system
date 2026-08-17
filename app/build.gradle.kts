@@ -57,6 +57,6 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
 
-    // Test with fixed version 1.0.1 from Maven Local
-    implementation("io.github.ux4g-negd:designsystemv1:1.0.4")
+    // Local project module (dev). Publish a new version to Maven Local when releasing.
+    implementation(project(":designsystemv1"))
 }

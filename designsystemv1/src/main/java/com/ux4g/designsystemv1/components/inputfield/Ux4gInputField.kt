@@ -28,7 +28,7 @@ import com.ux4g.designsystemv1.R
 import com.ux4g.designsystemv1.foundation.Ux4gIcon
 import com.ux4g.designsystemv1.foundation.Ux4gIconComponent
 import com.ux4g.designsystemv1.foundation.Ux4gIcons
-import com.ux4g.designsystemv1.foundation.Ux4gPalette
+import com.ux4g.designsystemv1.foundation.Ux4gColors
 import com.ux4g.designsystemv1.foundation.Ux4gRadius
 import com.ux4g.designsystemv1.theme.Ux4gTheme
 
@@ -251,7 +251,7 @@ private fun getBorderColor(
     return when (status) {
         Ux4gInputFieldStatus.Error -> Ux4gTheme.colorScheme.error
         Ux4gInputFieldStatus.Warning -> Ux4gTheme.colorScheme.secondary
-        Ux4gInputFieldStatus.Success -> Ux4gPalette.green500
+        Ux4gInputFieldStatus.Success -> Ux4gColors.green500
         Ux4gInputFieldStatus.Default ->
                 if (isFocused) Ux4gTheme.colorScheme.primary else Ux4gTheme.colorScheme.onSurface.copy(alpha = 0.3f)
     }
@@ -277,7 +277,7 @@ private fun getLabelColor(
     return when (status) {
         Ux4gInputFieldStatus.Error -> Ux4gTheme.colorScheme.error
         Ux4gInputFieldStatus.Warning -> Ux4gTheme.colorScheme.secondary
-        Ux4gInputFieldStatus.Success -> Ux4gPalette.green500
+        Ux4gInputFieldStatus.Success -> Ux4gColors.green500
         Ux4gInputFieldStatus.Default ->
                 if (isFocused) Ux4gTheme.colorScheme.primary else Ux4gTheme.colorScheme.onBackground
     }
@@ -289,7 +289,7 @@ private fun getCaptionColor(status: Ux4gInputFieldStatus, enabled: Boolean): Col
     return when (status) {
         Ux4gInputFieldStatus.Error -> Ux4gTheme.colorScheme.error
         Ux4gInputFieldStatus.Warning -> Ux4gTheme.colorScheme.secondary
-        Ux4gInputFieldStatus.Success -> Ux4gPalette.green500
+        Ux4gInputFieldStatus.Success -> Ux4gColors.green500
         Ux4gInputFieldStatus.Default -> Ux4gTheme.colorScheme.onSurface.copy(alpha = 0.6f)
     }
 }
@@ -309,7 +309,7 @@ private fun getStatusIconColor(status: Ux4gInputFieldStatus): Color {
     return when (status) {
         Ux4gInputFieldStatus.Error -> Ux4gTheme.colorScheme.error
         Ux4gInputFieldStatus.Warning -> Ux4gTheme.colorScheme.secondary
-        Ux4gInputFieldStatus.Success -> Ux4gPalette.green500
+        Ux4gInputFieldStatus.Success -> Ux4gColors.green500
         Ux4gInputFieldStatus.Default -> Ux4gTheme.colorScheme.onSurface.copy(alpha = 0.5f)
     }
 }

@@ -33,7 +33,7 @@ import androidx.compose.ui.unit.dp
 import com.ux4g.designsystemv1.foundation.Ux4gIcon
 import com.ux4g.designsystemv1.foundation.Ux4gIconComponent
 import com.ux4g.designsystemv1.foundation.Ux4gIcons
-import com.ux4g.designsystemv1.foundation.Ux4gPalette
+import com.ux4g.designsystemv1.foundation.Ux4gColors
 import com.ux4g.designsystemv1.foundation.Ux4gSpace
 import com.ux4g.designsystemv1.theme.Ux4gTheme
 
@@ -69,8 +69,8 @@ fun Ux4gRadioButton(
             when (descriptionVariant) {
                 Ux4gRadioButtonDescriptionVariant.Helper -> Ux4gTheme.colorScheme.onSurface.copy(alpha = 0.7f)
                 Ux4gRadioButtonDescriptionVariant.Error -> Ux4gTheme.colorScheme.error
-                Ux4gRadioButtonDescriptionVariant.Warning -> Ux4gPalette.orange600
-                Ux4gRadioButtonDescriptionVariant.Success -> Ux4gPalette.green600
+                Ux4gRadioButtonDescriptionVariant.Warning -> Ux4gColors.orange600
+                Ux4gRadioButtonDescriptionVariant.Success -> Ux4gColors.green600
             }
 
     val descriptionIcon =

@@ -51,7 +51,7 @@ import com.ux4g.designsystemv1.components.chips.Ux4gInputChipSize
 import com.ux4g.designsystemv1.foundation.Ux4gIcon
 import com.ux4g.designsystemv1.foundation.Ux4gIconComponent
 import com.ux4g.designsystemv1.foundation.Ux4gIcons
-import com.ux4g.designsystemv1.foundation.Ux4gPalette
+import com.ux4g.designsystemv1.foundation.Ux4gColors
 import com.ux4g.designsystemv1.foundation.Ux4gRadius
 import com.ux4g.designsystemv1.foundation.Ux4gSpace
 import com.ux4g.designsystemv1.theme.Ux4gTheme
@@ -371,7 +371,7 @@ fun Ux4gSelectionDropdown(
                     val isSelected = selectedOptionIds.contains(option.id)
                     val bg =
                             if (isSelected && mode == Ux4gSelectionDropdownMode.SingleSelect)
-                                    Ux4gPalette.primary50
+                                    Ux4gColors.primary50
                             else Color.Transparent
 
                     DropdownMenuItem(

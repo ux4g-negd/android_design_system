@@ -3,6 +3,7 @@ package com.ux4g.designsystemv1.foundation
 import androidx.compose.ui.unit.sp
 
 object Ux4gFontSizes {
+    val Size60 = 60.sp
     val Size52 = 52.sp
     val Size40 = 40.sp
     val Size36 = 36.sp

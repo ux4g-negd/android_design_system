@@ -8,6 +8,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
@@ -27,10 +28,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.ux4g.designsystemv1.components.*
-import com.ux4g.designsystemv1.components.avatar_component.Ux4gAvatar
-import com.ux4g.designsystemv1.components.avatar_component.Ux4gAvatarSize
-import com.ux4g.designsystemv1.components.avatar_component.Ux4gProfileAvatar
-import com.ux4g.designsystemv1.components.avatar_component.Ux4gProfileAvatarVariant
+import com.ux4g.designsystemv1.components.avatar_component.*
+import androidx.compose.foundation.shape.CircleShape
 import com.ux4g.designsystemv1.components.buttons.Ux4gButton
 import com.ux4g.designsystemv1.components.dropdowns.Ux4gDropdownOption
 import com.ux4g.designsystemv1.components.dropdowns.Ux4gSelectionDropdown
@@ -44,10 +43,11 @@ import com.ux4g.designsystemv1.components.steppers.Ux4gCapsuleStepperLayout
 import com.ux4g.designsystemv1.components.steppers.Ux4gStepItem
 import com.ux4g.designsystemv1.components.steppers.Ux4gStepper
 import com.ux4g.designsystemv1.components.tooltip.*
+import com.ux4g.designsystemv1.R
 import com.ux4g.designsystemv1.foundation.ExperimentalUx4gApi
 import com.ux4g.designsystemv1.foundation.Ux4gIconComponent
 import com.ux4g.designsystemv1.foundation.Ux4gIcons
-import com.ux4g.designsystemv1.foundation.Ux4gPalette
+import com.ux4g.designsystemv1.foundation.Ux4gColors
 import com.ux4g.designsystemv1.foundation.Ux4gRadius
 import com.ux4g.designsystemv1.theme.Ux4gTheme
 import com.ux4g.ux4gdesignsystem.ui.theme.Ux4GDesignSystemTheme
@@ -133,7 +133,7 @@ fun MainContent(
                             Text(
                                 text = "Lorem ipsum is a dummy or placeholder text commonly used in graphic design, publishing, and web development. Its purpose is to permit a page layout to be designed, independently of the copy that will subsequently populate it, or to demonstrate various fonts of a typeface without meaningful text that could be distracting.",
                                 style = Ux4gTheme.typography.bXS_default,
-                                color = Ux4gPalette.neutral600
+                                color = Ux4gColors.neutral600
                             )
                         }
 
@@ -141,7 +141,7 @@ fun MainContent(
                             Text(
                                 text = "Custom content for ${item.title}",
                                 style = Ux4gTheme.typography.bXS_default,
-                                color = Ux4gPalette.neutral600
+                                color = Ux4gColors.neutral600
                             )
                         }
                     }
@@ -149,12 +149,421 @@ fun MainContent(
             }
         }
 
-        Ux4gProfileAvatar(
-                size = Ux4gAvatarSize.XL,
-                variant = Ux4gProfileAvatarVariant.Action.Edit,
-                imageUrl =
-                        "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=1200&auto=format&fit=crop&q=60"
-        )
+        // Link Showcase
+        Ux4gCard(modifier = Modifier.fillMaxWidth()) {
+            Column(
+                modifier = Modifier.padding(16.dp),
+                verticalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+                Text(text = "Link", style = Ux4gTheme.typography.tS_strong)
+
+                Text(
+                    text = "Tap to open the website in your browser:",
+                    style = Ux4gTheme.typography.bS_default,
+                    color = Ux4gColors.neutral600
+                )
+
+                Ux4gLink(url = "https://ux4g.gov.in") {
+                    Text(
+                        text = "Open Ux4G website",
+                        style = Ux4gTheme.typography.lM_strong,
+                        color = Ux4gTheme.colorScheme.primary,
+                        modifier = Modifier.padding(vertical = 4.dp)
+                    )
+                }
+
+                Text(
+                    text = "The Link component wraps any composable and opens the URL in the device's browser when tapped.",
+                    style = Ux4gTheme.typography.bXS_default,
+                    color = Ux4gColors.neutral500
+                )
+            }
+        }
+
+        // Badge Showcase
+        Ux4gCard(modifier = Modifier.fillMaxWidth()) {
+            Column(
+                modifier = Modifier.padding(16.dp),
+                verticalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+                Text(text = "Badges", style = Ux4gTheme.typography.tS_strong)
+
+                // 1. Dot
+                Text(text = "Dot", style = Ux4gTheme.typography.lS_strong)
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(16.dp)
+                ) {
+                    Ux4gBadge(type = Ux4gBadgeType.Dot, containerColor = Ux4gColors.primary)
+                    Ux4gBadge(type = Ux4gBadgeType.Dot, containerColor = Ux4gColors.secondary)
+                    Ux4gBadge(type = Ux4gBadgeType.Dot, containerColor = Ux4gColors.green)
+                    Ux4gBadge(type = Ux4gBadgeType.Dot, containerColor = Ux4gColors.gold)
+                    Ux4gBadge(type = Ux4gBadgeType.Dot, containerColor = Ux4gColors.red)
+                    Ux4gBadge(type = Ux4gBadgeType.Dot, containerColor = Ux4gColors.blue)
+                    Ux4gBadge(type = Ux4gBadgeType.Dot, containerColor = Ux4gColors.cyan)
+                    Ux4gBadge(type = Ux4gBadgeType.Dot, containerColor = Ux4gColors.neutral600)
+                    Ux4gBadge(
+                        type = Ux4gBadgeType.Dot,
+                        containerColor = Ux4gColors.neutral300,
+                        showBorder = true
+                    )
+                }
+
+                // 2. Count – Single Digit limit
+                Text(text = "Count – SingleDigit (9+)", style = Ux4gTheme.typography.lS_strong)
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(16.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Ux4gBadge(type = Ux4gBadgeType.Text(3))
+                    Ux4gBadge(type = Ux4gBadgeType.Text(9))
+                    Ux4gBadge(type = Ux4gBadgeType.Text(10))
+                    Ux4gBadge(type = Ux4gBadgeType.Text(32))
+                }
+
+                // 3. Count – Double Digit limit
+                Text(text = "Count – DoubleDigit (99+)", style = Ux4gTheme.typography.lS_strong)
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(16.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Ux4gBadge(
+                        type = Ux4gBadgeType.Text(99, Ux4gBadgeLimit.DoubleDigit),
+                        containerColor = Ux4gColors.secondary
+                    )
+                    Ux4gBadge(
+                        type = Ux4gBadgeType.Text(100, Ux4gBadgeLimit.DoubleDigit),
+                        containerColor = Ux4gColors.green
+                    )
+                    Ux4gBadge(
+                        type = Ux4gBadgeType.Text(150, Ux4gBadgeLimit.DoubleDigit),
+                        containerColor = Ux4gColors.red
+                    )
+                }
+
+                // 4. Count – Custom colors
+                Text(text = "Count – Colors", style = Ux4gTheme.typography.lS_strong)
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(16.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Ux4gBadge(type = Ux4gBadgeType.Text(7), containerColor = Ux4gColors.primary)
+                    Ux4gBadge(type = Ux4gBadgeType.Text(15), containerColor = Ux4gColors.gold)
+                    Ux4gBadge(type = Ux4gBadgeType.Text(42), containerColor = Ux4gColors.neutral600)
+                    Ux4gBadge(
+                        type = Ux4gBadgeType.Text(8),
+                        containerColor = Ux4gColors.neutral300,
+                        contentColor = Ux4gColors.neutral900
+                    )
+                    Ux4gBadge(
+                        type = Ux4gBadgeType.Text(21),
+                        containerColor = Ux4gColors.red,
+                        contentColor = Ux4gColors.white
+                    )
+                }
+
+                // 5. Label
+                Text(text = "Label", style = Ux4gTheme.typography.lS_strong)
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(16.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Ux4gBadge(
+                        type = Ux4gBadgeType.Label("New"),
+                        containerColor = Ux4gColors.primary
+                    )
+                    Ux4gBadge(
+                        type = Ux4gBadgeType.Label("Beta"),
+                        containerColor = Ux4gColors.secondary
+                    )
+                    Ux4gBadge(
+                        type = Ux4gBadgeType.Label("Live"),
+                        containerColor = Ux4gColors.green
+                    )
+                    Ux4gBadge(
+                        type = Ux4gBadgeType.Label("Hot"),
+                        containerColor = Ux4gColors.red
+                    )
+                    Ux4gBadge(
+                        type = Ux4gBadgeType.Label("Info"),
+                        containerColor = Ux4gColors.blue
+                    )
+                    Ux4gBadge(
+                        type = Ux4gBadgeType.Label("Draft"),
+                        containerColor = Ux4gColors.neutral600
+                    )
+                    Ux4gBadge(
+                        type = Ux4gBadgeType.Label("VIP"),
+                        containerColor = Ux4gColors.gold,
+                        contentColor = Ux4gColors.neutral900
+                    )
+                }
+
+                // 6. Icon
+                Text(text = "Icon", style = Ux4gTheme.typography.lS_strong)
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(16.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Ux4gBadge(
+                        type = Ux4gBadgeType.Icon(R.drawable.ic_tick),
+                        containerColor = Ux4gColors.primary
+                    )
+                    Ux4gBadge(
+                        type = Ux4gBadgeType.Icon(R.drawable.ic_tick),
+                        containerColor = Ux4gColors.green
+                    )
+                    Ux4gBadge(
+                        type = Ux4gBadgeType.Icon(R.drawable.ic_tick),
+                        containerColor = Ux4gColors.red,
+                        contentColor = Ux4gColors.white
+                    )
+                    Ux4gBadge(
+                        type = Ux4gBadgeType.Icon(R.drawable.ic_i_desc),
+                        containerColor = Ux4gColors.blue
+                    )
+                    Ux4gBadge(
+                        type = Ux4gBadgeType.Icon(R.drawable.ic_warning_triangle),
+                        containerColor = Ux4gColors.gold,
+                        contentColor = Ux4gColors.neutral900
+                    )
+                    Ux4gBadge(
+                        type = Ux4gBadgeType.Icon(R.drawable.ic_error_circle_red),
+                        containerColor = Ux4gColors.neutral300,
+                        contentColor = Ux4gColors.red
+                    )
+                }
+
+                // 7. Ready to use
+                Text(text = "Ready To Use", style = Ux4gTheme.typography.lS_strong)
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(16.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Ux4gBadge(type = Ux4gBadgeType.ReadyToUse(Ux4gBadgeResource.Verification))
+                    Ux4gBadge(type = Ux4gBadgeType.ReadyToUse(Ux4gBadgeResource.Star))
+                    Ux4gBadge(type = Ux4gBadgeType.ReadyToUse(Ux4gBadgeResource.Shield))
+                    Ux4gBadge(
+                        type = Ux4gBadgeType.ReadyToUse(Ux4gBadgeResource.Shield),
+                        showBorder = true
+                    )
+                }
+
+                // 8. With border
+                Text(text = "With Border", style = Ux4gTheme.typography.lS_strong)
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(16.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Ux4gBadge(
+                        type = Ux4gBadgeType.Text(12),
+                        containerColor = Ux4gColors.primary,
+                        showBorder = true
+                    )
+                    Ux4gBadge(
+                        type = Ux4gBadgeType.Label("New"),
+                        containerColor = Ux4gColors.green,
+                        showBorder = true,
+                        borderColor = Ux4gColors.green600
+                    )
+                    Ux4gBadge(
+                        type = Ux4gBadgeType.Icon(R.drawable.ic_tick),
+                        containerColor = Ux4gColors.secondary,
+                        showBorder = true
+                    )
+                    Ux4gBadge(
+                        type = Ux4gBadgeType.Dot,
+                        containerColor = Ux4gColors.red,
+                        showBorder = true,
+                        borderColor = Ux4gColors.red600
+                    )
+                }
+
+                // 9. Overlay on child
+                Text(text = "Overlay on Child", style = Ux4gTheme.typography.lS_strong)
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(24.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Ux4gBadge(type = Ux4gBadgeType.Text(99)) {
+                        Box(
+                            modifier = Modifier
+                                .size(48.dp)
+                                .background(
+                                    Ux4gColors.neutral300,
+                                    RoundedCornerShape(8.dp)
+                                )
+                        )
+                    }
+                    Ux4gBadge(
+                        type = Ux4gBadgeType.Dot,
+                        containerColor = Ux4gColors.red,
+                        alignment = Ux4gBadgeAlignment.TopStart
+                    ) {
+                        Box(
+                            modifier = Modifier
+                                .size(48.dp)
+                                .background(
+                                    Ux4gColors.neutral300,
+                                    RoundedCornerShape(8.dp)
+                                )
+                        )
+                    }
+                    Ux4gBadge(
+                        type = Ux4gBadgeType.Label("New"),
+                        containerColor = Ux4gColors.green,
+                        alignment = Ux4gBadgeAlignment.BottomEnd,
+                        showBorder = true
+                    ) {
+                        Box(
+                            modifier = Modifier
+                                .size(48.dp)
+                                .background(
+                                    Ux4gColors.neutral300,
+                                    RoundedCornerShape(8.dp)
+                                )
+                        )
+                    }
+                    Ux4gBadge(
+                        type = Ux4gBadgeType.Icon(R.drawable.ic_tick),
+                        containerColor = Ux4gColors.primary,
+                        alignment = Ux4gBadgeAlignment.TopEnd,
+                        showBorder = true
+                    ) {
+                        Box(
+                            modifier = Modifier
+                                .size(48.dp)
+                                .background(
+                                    Ux4gColors.primary50,
+                                    RoundedCornerShape(8.dp)
+                                )
+                        )
+                    }
+                }
+            }
+        }
+
+        // Avatar Variants Showcase (matching requested image)
+        Ux4gCard(modifier = Modifier.fillMaxWidth()) {
+            Column(
+                modifier = Modifier.padding(16.dp),
+                verticalArrangement = Arrangement.spacedBy(24.dp)
+            ) {
+                Text(text = "Avatar Varieties", style = Ux4gTheme.typography.tS_strong)
+
+                val owlUrl = "https://miro.medium.com/v2/resize:fill:72:72/1*NfVk3LQfhRaDFW8qZ4MhCQ.jpeg"
+
+                // Row 1: Base Avatars & Status Avatars
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(24.dp)
+                ) {
+                    // Base Avatars
+                    Column(modifier = Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                        Text(text = "Base Avatars", style = Ux4gTheme.typography.lS_strong)
+                        Ux4gCard(
+                            modifier = Modifier.fillMaxWidth(),
+                            backgroundColor = Color.White,
+                            borderColor = Ux4gColors.neutral200,
+                            borderWidth = 1.dp
+                        ) {
+                            Row(
+                                modifier = Modifier.padding(12.dp),
+                                horizontalArrangement = Arrangement.spacedBy(12.dp),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Ux4gAvatar(size = Ux4gAvatarSize.M, imageUrl = owlUrl)
+                                Ux4gAvatar(size = Ux4gAvatarSize.M, initials = "JD")
+                                Ux4gAvatar(size = Ux4gAvatarSize.M, icon = Ux4gIcons.Person)
+                            }
+                        }
+                    }
+
+                    // Status Avatars
+                    Column(modifier = Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                        Text(text = "Status Avatars", style = Ux4gTheme.typography.lS_strong)
+                        Ux4gCard(
+                            modifier = Modifier.fillMaxWidth(),
+                            backgroundColor = Color.White,
+                            borderColor = Ux4gColors.neutral200,
+                            borderWidth = 1.dp
+                        ) {
+                            Row(
+                                modifier = Modifier.padding(12.dp),
+                                horizontalArrangement = Arrangement.spacedBy(12.dp),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Ux4gStatusAvatar(size = Ux4gAvatarSize.M, imageUrl = owlUrl, variant = Ux4gStatusAvatarVariant.Success)
+                                Ux4gStatusAvatar(size = Ux4gAvatarSize.M, imageUrl = owlUrl, variant = Ux4gStatusAvatarVariant.Warning)
+                            }
+                        }
+                    }
+                }
+
+                // Row 2: Avatar Groups & Profile Avatars
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(24.dp)
+                ) {
+                    // Avatar Groups
+                    Column(modifier = Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                        Text(text = "Avatar Groups", style = Ux4gTheme.typography.lS_strong)
+                        Ux4gCard(
+                            modifier = Modifier.fillMaxWidth(),
+                            backgroundColor = Color.White,
+                            borderColor = Ux4gColors.neutral200,
+                            borderWidth = 1.dp
+                        ) {
+                            Box(modifier = Modifier.padding(12.dp)) {
+                                Ux4gAvatarGroup(
+                                    size = Ux4gAvatarSize.M,
+                                    maxLimit = 4,
+                                    items = listOf(
+                                        Ux4gAvatarGroupItem(imageUrl = owlUrl),
+                                        Ux4gAvatarGroupItem(imageUrl = owlUrl),
+                                        Ux4gAvatarGroupItem(imageUrl = owlUrl),
+                                        Ux4gAvatarGroupItem(imageUrl = owlUrl),
+                                        Ux4gAvatarGroupItem(imageUrl = owlUrl),
+                                        Ux4gAvatarGroupItem(imageUrl = owlUrl)
+                                    )
+                                )
+                            }
+                        }
+                    }
+
+                    // Profile Avatars
+                    Column(modifier = Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                        Text(text = "Profile Avatars", style = Ux4gTheme.typography.lS_strong)
+                        Ux4gCard(
+                            modifier = Modifier.fillMaxWidth(),
+                            backgroundColor = Color.White,
+                            borderColor = Ux4gColors.neutral200,
+                            borderWidth = 1.dp
+                        ) {
+                            Row(
+                                modifier = Modifier.padding(12.dp),
+                                horizontalArrangement = Arrangement.spacedBy(12.dp),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Ux4gProfileAvatar(
+                                    size = Ux4gAvatarSize.M,
+                                    imageUrl = owlUrl,
+                                    variant = Ux4gProfileAvatarVariant.Badge.Verified
+                                )
+                            }
+                        }
+                    }
+                }
+            }
+        }
 
         // 1. Default Primary Button
         Ux4gCard(modifier = Modifier.fillMaxWidth()) {
@@ -202,8 +611,8 @@ fun MainContent(
                 Ux4gButton(
                         onClick = {},
                         modifier = Modifier.fillMaxWidth(),
-                        backgroundColor = Ux4gPalette.secondary,
-                        contentColor = Ux4gPalette.neutral1000black,
+                        backgroundColor = Ux4gColors.secondary,
+                        contentColor = Ux4gColors.neutral1000black,
                         borderRadius = 24.dp,
                         elevation = 8.dp
                 ) { Text("Secondary Pill Button") }
@@ -237,10 +646,10 @@ fun MainContent(
         }
 
         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly) {
-            Ux4gLoader(size = 40.dp, percentage = 100f, color = Ux4gPalette.primary)
-            Ux4gLoader(size = 40.dp, percentage = 60f, color = Ux4gPalette.secondary)
-            Ux4gLoader(size = 40.dp, percentage = 30f, color = Ux4gPalette.red)
-            Ux4gLoader(color = Ux4gPalette.green, percentage = 75f)
+            Ux4gLoader(size = 40.dp, percentage = 100f, color = Ux4gColors.primary)
+            Ux4gLoader(size = 40.dp, percentage = 60f, color = Ux4gColors.secondary)
+            Ux4gLoader(size = 40.dp, percentage = 30f, color = Ux4gColors.red)
+            Ux4gLoader(color = Ux4gColors.green, percentage = 75f)
         }
 
         // 6. Radio Buttons
@@ -498,8 +907,8 @@ fun MainContent(
                     Ux4gTooltip(
                             tooltipText = "Custom Color",
                             placement = Ux4gTooltipPlacement.Left,
-                            backgroundColor = Ux4gPalette.primary,
-                            contentColor = Ux4gPalette.white
+                            backgroundColor = Ux4gColors.primary,
+                            contentColor = Ux4gColors.white
                     ) { Ux4gButton(onClick = {}) { Text("Left") } }
                     Ux4gTooltip(
                             tooltipText = "Top Start",
@@ -531,7 +940,7 @@ fun MainContent(
                                 Ux4gButton(
                                         onClick = {},
                                         borderRadius = 4.dp,
-                                        backgroundColor = Ux4gPalette.primary
+                                        backgroundColor = Ux4gColors.primary
                                 ) { Text("Action", style = Ux4gTheme.typography.lS_strong) }
                             }
                     ) { Ux4gButton(onClick = {}) { Text("Long Press Me") } }
@@ -559,7 +968,7 @@ fun MainContent(
                 Text("Horizontal – Dotted, Primary", style = Ux4gTheme.typography.lM_default)
                 Ux4gDivider(
                         style = Ux4gDividerStyle.Dotted,
-                        color = Ux4gPalette.primary500,
+                        color = Ux4gColors.primary500,
                         thickness = 1.5.dp
                 )
 
@@ -570,7 +979,7 @@ fun MainContent(
                             Text(
                                     text = "OR",
                                     style = Ux4gTheme.typography.lS_strong,
-                                    color = Ux4gPalette.neutral500
+                                    color = Ux4gColors.neutral500
                             )
                         }
                 )
@@ -580,7 +989,7 @@ fun MainContent(
                         "Horizontal – Error 2dp, Start Indent 32dp",
                         style = Ux4gTheme.typography.lM_default
                 )
-                Ux4gDivider(thickness = 2.dp, color = Ux4gPalette.red500, startIndent = 32.dp)
+                Ux4gDivider(thickness = 2.dp, color = Ux4gColors.red500, startIndent = 32.dp)
 
                 // Vertical dividers
                 Text("Vertical – Solid / Dashed / Primary", style = Ux4gTheme.typography.lM_default)
@@ -599,7 +1008,7 @@ fun MainContent(
                     Text("Right", style = Ux4gTheme.typography.bM_default)
                     Ux4gDivider(
                             orientation = Ux4gDividerOrientation.Vertical,
-                            color = Ux4gPalette.primary500,
+                            color = Ux4gColors.primary500,
                             thickness = 2.dp
                     )
                     Text("End", style = Ux4gTheme.typography.bM_default)
@@ -629,13 +1038,13 @@ fun MainContent(
                 Ux4gButton(
                         onClick = { showDestructiveModal = true },
                         modifier = Modifier.fillMaxWidth(),
-                        backgroundColor = Ux4gPalette.red500
+                        backgroundColor = Ux4gColors.red500
                 ) { Text("Open Destructive Modal (Centered)") }
 
                 Ux4gButton(
                         onClick = { showMinimalModal = true },
                         modifier = Modifier.fillMaxWidth(),
-                        backgroundColor = Ux4gPalette.neutral700
+                        backgroundColor = Ux4gColors.neutral700
                 ) { Text("Open Minimal Confirm Modal") }
 
                 if (showDefaultModal) {
@@ -732,7 +1141,7 @@ fun MainContent(
                 Ux4gButton(
                         onClick = { showAvatarModal = true },
                         modifier = Modifier.fillMaxWidth(),
-                        backgroundColor = Ux4gPalette.primary700
+                        backgroundColor = Ux4gColors.primary700
                 ) { Text("Open Avatar Modal (Centered + Padded image)") }
 
                 if (showAvatarModal) {
@@ -774,7 +1183,7 @@ fun MainContent(
                 Ux4gButton(
                         onClick = { showIconModal = true },
                         modifier = Modifier.fillMaxWidth(),
-                        backgroundColor = Ux4gPalette.red700
+                        backgroundColor = Ux4gColors.red700
                 ) { Text("Open Icon Modal (No image + Split footer)") }
 
                 if (showIconModal) {
@@ -783,7 +1192,7 @@ fun MainContent(
                             headerImageStyle = Ux4gModalHeaderImage.None,
                             leadingItem = Ux4gModalLeadingItem.Icon,
                             leadingIcon = Ux4gIcons.info_circle,
-                            leadingIconTint = Ux4gPalette.red500,
+                            leadingIconTint = Ux4gColors.red500,
                             alignment = Ux4gModalAlignment.LeftAligned,
                             showHeader = true,
                             headerTitle = "Header",
@@ -816,8 +1225,8 @@ fun MainContent(
                             Ux4gAvatar(
                                     size = Ux4gAvatarSize.S,
                                     initials = "JD",
-                                    containerColor = Ux4gPalette.primary100,
-                                    contentColor = Ux4gPalette.primary700
+                                    containerColor = Ux4gColors.primary100,
+                                    contentColor = Ux4gColors.primary700
                             )
                         },
                         title = "Title",
@@ -839,7 +1248,7 @@ fun MainContent(
                         modifier = Modifier.fillMaxWidth(),
                         mediaImageUrl = "https://picsum.photos/seed/card2/600/300",
                         mediaLabelText = "New",
-                        borderColor = Ux4gPalette.primary,
+                        borderColor = Ux4gColors.primary,
                         borderWidth = 1.dp,
                         title = "Outlined Card",
                         subtitle = "No avatar shown here",
@@ -858,7 +1267,7 @@ fun MainContent(
                 Ux4gCard(
                         modifier = Modifier.fillMaxWidth(),
                         elevation = 4.dp,
-                        backgroundColor = Ux4gPalette.primary50,
+                        backgroundColor = Ux4gColors.primary50,
                         cornerRadius = Ux4gRadius.Radius16,
                         title = "Elevated Card",
                         bodyText =
@@ -980,7 +1389,7 @@ fun MainContent(
                 Ux4gButton(
                     onClick = onToggleToastPosition,
                     modifier = Modifier.fillMaxWidth(),
-                    backgroundColor = Ux4gPalette.neutral800
+                    backgroundColor = Ux4gColors.neutral800
                 ) {
                     Text("Toggle Toast Position")
                 }
@@ -1002,7 +1411,7 @@ fun MainContent(
                             }
                         },
                         modifier = Modifier.weight(1f),
-                        backgroundColor = Ux4gPalette.green500
+                        backgroundColor = Ux4gColors.green500
                     ) { Text("Success") }
 
                     Ux4gButton(
@@ -1018,7 +1427,7 @@ fun MainContent(
                             }
                         },
                         modifier = Modifier.weight(1f),
-                        backgroundColor = Ux4gPalette.red500
+                        backgroundColor = Ux4gColors.red500
                     ) { Text("Error") }
                 }
 
@@ -1039,7 +1448,7 @@ fun MainContent(
                             }
                         },
                         modifier = Modifier.weight(1f),
-                        backgroundColor = Ux4gPalette.gold600
+                        backgroundColor = Ux4gColors.gold600
                     ) { Text("Warning") }
 
                     Ux4gButton(
@@ -1055,7 +1464,7 @@ fun MainContent(
                             }
                         },
                         modifier = Modifier.weight(1f),
-                        backgroundColor = Ux4gPalette.cyan600
+                        backgroundColor = Ux4gColors.cyan600
                     ) { Text("Info") }
                 }
             }
@@ -1160,7 +1569,7 @@ fun MainContent(
                         onClick = { if (currentStep > 1) currentStep-- },
                         modifier = Modifier.weight(1f),
                         enabled = currentStep > 1,
-                        backgroundColor = Ux4gPalette.neutral700
+                        backgroundColor = Ux4gColors.neutral700
                     ) {
                         Text("Previous")
                     }
@@ -1252,25 +1661,25 @@ fun MainContent(
                 Ux4gButton(
                     onClick = { showFullSheet = true },
                     modifier = Modifier.fillMaxWidth(),
-                    backgroundColor = Ux4gPalette.primary700
+                    backgroundColor = Ux4gColors.primary700
                 ) { Text("Open Full Bottom Sheet (Justified)") }
 
                 Ux4gButton(
                     onClick = { showNonDraggableSheet = true },
                     modifier = Modifier.fillMaxWidth(),
-                    backgroundColor = Ux4gPalette.neutral700
+                    backgroundColor = Ux4gColors.neutral700
                 ) { Text("Open Non-Draggable Sheet") }
 
                 Ux4gButton(
                     onClick = { showCustomContentSheet = true },
                     modifier = Modifier.fillMaxWidth(),
-                    backgroundColor = Ux4gPalette.green700
+                    backgroundColor = Ux4gColors.green700
                 ) { Text("Open Custom Content Sheet") }
 
                 Ux4gButton(
                     onClick = { showLongContentSheet = true },
                     modifier = Modifier.fillMaxWidth(),
-                    backgroundColor = Ux4gPalette.cyan700
+                    backgroundColor = Ux4gColors.cyan700
                 ) { Text("Open Long Content Sheet") }
 
                 if (showBasicSheet) {
@@ -1300,7 +1709,7 @@ fun MainContent(
                             Text(
                                 text = "A Drawer is a panel that slides out from the edge of the screen to show extra information or options. It follows the same footer structure as the Card component.",
                                 style = Ux4gTheme.typography.bM_default,
-                                color = Ux4gPalette.neutral700
+                                color = Ux4gColors.neutral700
                             )
                         }
                     )
@@ -1367,7 +1776,7 @@ fun MainContent(
                                 Text(
                                     "Notice how the sheet automatically expands to fit these custom components.",
                                     style = Ux4gTheme.typography.bS_default,
-                                    color = Ux4gPalette.neutral500
+                                    color = Ux4gColors.neutral500
                                 )
                             }
                         }

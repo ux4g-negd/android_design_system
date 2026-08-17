@@ -33,7 +33,7 @@ import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import com.ux4g.designsystemv1.foundation.Ux4gBorderWidth
-import com.ux4g.designsystemv1.foundation.Ux4gPalette
+import com.ux4g.designsystemv1.foundation.Ux4gColors
 import com.ux4g.designsystemv1.foundation.Ux4gRadius
 import com.ux4g.designsystemv1.foundation.Ux4gSpace
 import com.ux4g.designsystemv1.theme.Ux4gTheme
@@ -47,12 +47,12 @@ fun Ux4gAccordion(
     onExpandedChange: (Boolean) -> Unit = {},
     backgroundColor: Color = Ux4gTheme.colorScheme.surface,
     contentBackgroundColor: Color = Ux4gTheme.colorScheme.surface,
-    collapsedBorderColor: Color = Ux4gPalette.neutral200,
+    collapsedBorderColor: Color = Ux4gColors.neutral200,
     expandedBorderColor: Color = Ux4gTheme.colorScheme.primary,
-    titleColor: Color = Ux4gPalette.neutral800,
-    disabledTitleColor: Color = Ux4gPalette.neutral300,
-    iconColor: Color = Ux4gPalette.neutral800,
-    disabledIconColor: Color = Ux4gPalette.neutral300,
+    titleColor: Color = Ux4gColors.neutral800,
+    disabledTitleColor: Color = Ux4gColors.neutral300,
+    iconColor: Color = Ux4gColors.neutral800,
+    disabledIconColor: Color = Ux4gColors.neutral300,
     content: @Composable () -> Unit
 ) {
     val rotation by animateFloatAsState(
@@ -167,7 +167,7 @@ private fun Ux4gAccordionPreview() {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .background(Ux4gPalette.white)
+                .background(Ux4gColors.white)
                 .padding(Ux4gSpace.Space24),
             verticalArrangement = Arrangement.spacedBy(Ux4gSpace.Space20)
         ) {
@@ -186,7 +186,7 @@ private fun Ux4gAccordionPreview() {
                     Text(
                         text = "Lorem ipsum is a dummy or placeholder text commonly used in graphic design, publishing, and web development. Its purpose is to permit a page layout to be designed, independently of the copy that will subsequently populate it.",
                         style = Ux4gTheme.typography.bXS_default,
-                        color = Ux4gPalette.neutral600
+                        color = Ux4gColors.neutral600
                     )
                 }
             }

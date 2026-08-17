@@ -19,6 +19,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
+import androidx.compose.foundation.isSystemInDarkTheme
+import com.ux4g.designsystemv1.foundation.Ux4gColors
 import com.ux4g.designsystemv1.foundation.Ux4gIcon
 import com.ux4g.designsystemv1.foundation.Ux4gIcons
 import com.ux4g.designsystemv1.theme.Ux4gTheme
@@ -33,47 +35,26 @@ data class Ux4gAvatarGroupItem(
 
 /** Extension to get overlapping spacing for avatars based on their size */
 val Ux4gAvatarSize.overlapSpacing: Dp
-    get() =
-            when (this) {
-                Ux4gAvatarSize.XS -> (-4).dp
-                Ux4gAvatarSize.S -> (-8).dp
-                Ux4gAvatarSize.M -> (-10).dp
-                Ux4gAvatarSize.L -> (-12).dp
-                Ux4gAvatarSize.XL -> (-16).dp
-                Ux4gAvatarSize.XXL -> (-20).dp
-                Ux4gAvatarSize.XXXL -> (-26).dp
-            }
+    get() = -(this.size * 0.25f)
 
 /** Extension to get separated spacing for avatars based on their size */
 val Ux4gAvatarSize.groupSpacing: Dp
-    get() =
-            when (this) {
-                Ux4gAvatarSize.XS -> 4.dp
-                Ux4gAvatarSize.S -> 6.dp
-                Ux4gAvatarSize.M -> 8.dp
-                Ux4gAvatarSize.L -> 10.dp
-                Ux4gAvatarSize.XL -> 12.dp
-                Ux4gAvatarSize.XXL -> 16.dp
-                Ux4gAvatarSize.XXXL -> 24.dp
-            }
+    get() = 8.dp
 
 /**
  * A component that displays a group of Avatars with overlap/spacing and a remaining items count
- * limit.
+ * limit. The right-most avatar is stacked on top of preceding avatars.
  *
  * @param modifier The modifier to be applied to the group layout.
  * @param items The ordered list of avatar images, initials, or icons to display.
  * @param size The size of the avatars in the group.
  * @param maxLimit The maximum number of avatars to display. If the total exceeds this number, the
- * last
- * ```
- *                 avatar is replaced with a "+X" placeholder showing the remaining count. If null, no limit is applied.
- * @param collapsed
- * ```
- * Whether the avatars should be overlapped (true) with cutouts, or spaced out (false).
+ *                 last avatar is replaced with a "+X" placeholder showing the remaining count. If null, no limit is applied.
+ * @param collapsed Whether the avatars should be overlapped (true) with cutouts, or spaced out (false).
  * @param borderColor The color of the stroke border around each avatar (creates the cutout effect
- * when collapsed).
+ *                    when collapsed). Defaults to theme surface color.
  * @param borderWidth The width of the stroke border around avatars.
+ * @param onRemainingClick Callback when the remaining "+X" counter is clicked.
  */
 @Composable
 fun Ux4gAvatarGroup(
@@ -82,15 +63,20 @@ fun Ux4gAvatarGroup(
         size: Ux4gAvatarSize = Ux4gAvatarSize.M,
         maxLimit: Int? = null,
         collapsed: Boolean = true,
-        borderColor: Color = Color.White,
+        borderColor: Color? = null,
         borderWidth: Dp = 2.dp,
         onRemainingClick: (() -> Unit)? = null
 ) {
     if (items.isEmpty()) return
 
+    val resolvedBorderColor = borderColor ?: Ux4gTheme.colorScheme.surface
+    val isDark = androidx.compose.foundation.isSystemInDarkTheme()
+    val overflowBgColor = if (isDark) Ux4gColors.primary900 else Ux4gColors.primary50
+    val overflowTextColor = if (isDark) Ux4gColors.primary300 else Ux4gColors.primary900
+
     // Limit calculation
     // e.g. If limit is 3, and list is 4 -> we show 2 avatars, and the 3rd is the "+2" placeholder
-    val actualLimit = maxLimit ?: Int.MAX_VALUE
+    val actualLimit = maxLimit ?: items.size
     val exceedsLimit = items.size > actualLimit
     val visibleItems = if (exceedsLimit) items.take(actualLimit - 1) else items
     val remainingCount = if (exceedsLimit) items.size - (actualLimit - 1) else 0
@@ -110,15 +96,14 @@ fun Ux4gAvatarGroup(
                     icon = item.icon,
                     modifier =
                             Modifier
-                                    // Make sure first item is drawn on top, going down
-                                    // left-to-right
-                                    .zIndex((visibleItems.size - index).toFloat() + 1f)
+                                    // Rightmost avatar is stacked on top of previous items
+                                    .zIndex((index + 1).toFloat())
                                     .let {
                                         if (collapsed)
-                                                it.background(borderColor, CircleShape)
+                                                it.background(resolvedBorderColor, CircleShape)
                                                         .border(
                                                                 borderWidth,
-                                                                borderColor,
+                                                                resolvedBorderColor,
                                                                 CircleShape
                                                         )
                                         else it
@@ -134,16 +119,18 @@ fun Ux4gAvatarGroup(
             Ux4gAvatar(
                     size = size,
                     initials = "+$remainingCount",
+                    containerColor = overflowBgColor,
+                    contentColor = overflowTextColor,
                     modifier =
                             Modifier
-                                    // Drawn below all avatars in the group
-                                    .zIndex(0f)
+                                    // Rightmost "+X" placeholder is stacked on top of all preceding avatars
+                                    .zIndex((visibleItems.size + 1).toFloat())
                                     .let {
                                         if (collapsed)
-                                                it.background(borderColor, CircleShape)
+                                                it.background(resolvedBorderColor, CircleShape)
                                                         .border(
                                                                 borderWidth,
-                                                                borderColor,
+                                                                resolvedBorderColor,
                                                                 CircleShape
                                                         )
                                         else it

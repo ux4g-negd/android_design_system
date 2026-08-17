@@ -27,7 +27,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.ux4g.designsystemv1.foundation.Ux4gIconComponent
 import com.ux4g.designsystemv1.foundation.Ux4gIcons
-import com.ux4g.designsystemv1.foundation.Ux4gPalette
+import com.ux4g.designsystemv1.foundation.Ux4gColors
 import com.ux4g.designsystemv1.foundation.Ux4gRadius
 import com.ux4g.designsystemv1.theme.Ux4gTheme
 
@@ -200,7 +200,7 @@ fun Ux4gSearchField(
             if (isSubmitVariant) {
                 val buttonBg =
                         if (buttonStyle == Ux4gSearchFieldButtonStyle.Filled) Ux4gTheme.colorScheme.primary
-                        else Ux4gPalette.primary100
+                        else Ux4gColors.primary100
                 val buttonIconColor =
                         if (buttonStyle == Ux4gSearchFieldButtonStyle.Filled) Ux4gTheme.colorScheme.onPrimary
                         else Ux4gTheme.colorScheme.primary
@@ -325,7 +325,7 @@ private fun getBorderColor(
     return when (status) {
         Ux4gSearchFieldStatus.Error -> Ux4gTheme.colorScheme.error
         Ux4gSearchFieldStatus.Warning -> Ux4gTheme.colorScheme.secondary
-        Ux4gSearchFieldStatus.Success -> Ux4gPalette.green500
+        Ux4gSearchFieldStatus.Success -> Ux4gColors.green500
         Ux4gSearchFieldStatus.Default -> {
             if (isFocused) Ux4gTheme.colorScheme.primary else Ux4gTheme.colorScheme.onSurface.copy(alpha = 0.3f)
         }
@@ -352,7 +352,7 @@ private fun getLabelColor(
     return when (status) {
         Ux4gSearchFieldStatus.Error -> Ux4gTheme.colorScheme.error
         Ux4gSearchFieldStatus.Warning -> Ux4gTheme.colorScheme.secondary
-        Ux4gSearchFieldStatus.Success -> Ux4gPalette.green500
+        Ux4gSearchFieldStatus.Success -> Ux4gColors.green500
         Ux4gSearchFieldStatus.Default -> {
             if (isFocused) Ux4gTheme.colorScheme.primary else Ux4gTheme.colorScheme.onBackground
         }
@@ -365,7 +365,7 @@ private fun getCaptionColor(status: Ux4gSearchFieldStatus, enabled: Boolean): Co
     return when (status) {
         Ux4gSearchFieldStatus.Error -> Ux4gTheme.colorScheme.error
         Ux4gSearchFieldStatus.Warning -> Ux4gTheme.colorScheme.secondary
-        Ux4gSearchFieldStatus.Success -> Ux4gPalette.green500
+        Ux4gSearchFieldStatus.Success -> Ux4gColors.green500
         Ux4gSearchFieldStatus.Default -> Ux4gTheme.colorScheme.onSurface.copy(alpha = 0.6f)
     }
 }

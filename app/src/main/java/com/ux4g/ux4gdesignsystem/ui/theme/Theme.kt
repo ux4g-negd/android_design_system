@@ -7,38 +7,38 @@ import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 import com.ux4g.designsystemv1.foundation.Ux4gColors
-import com.ux4g.designsystemv1.foundation.Ux4gPalette
+import com.ux4g.designsystemv1.foundation.Ux4gThemeColors
 import com.ux4g.designsystemv1.theme.Ux4gTheme
 import com.ux4g.designsystemv1.theme.toUx4gColors
 
 // Define your Dark Color Scheme using Ux4gColors
 private val DarkColorScheme =
-        Ux4gColors(
-                primary = Ux4gPalette.primary,
-                onPrimary = Ux4gPalette.gray900,
+        Ux4gThemeColors(
+                primary = Ux4gColors.primary,
+                onPrimary = Ux4gColors.gray900,
                 secondary = PurpleGrey80,
-                onSecondary = Ux4gPalette.white,
-                background = Ux4gPalette.gray900,
-                onBackground = Ux4gPalette.white,
-                surface = Ux4gPalette.gray800,
-                onSurface = Ux4gPalette.white,
-                error = Ux4gPalette.red400,
-                onError = Ux4gPalette.gray900
+                onSecondary = Ux4gColors.white,
+                background = Ux4gColors.gray900,
+                onBackground = Ux4gColors.white,
+                surface = Ux4gColors.gray800,
+                onSurface = Ux4gColors.white,
+                error = Ux4gColors.red400,
+                onError = Ux4gColors.gray900
         )
 
 // Define your Light Color Scheme using Ux4gColors
 private val LightColorScheme =
-        Ux4gColors(
-                primary = Ux4gPalette.primary400,
-                onPrimary = Ux4gPalette.white,
+        Ux4gThemeColors(
+                primary = Ux4gColors.primary400,
+                onPrimary = Ux4gColors.white,
                 secondary = PurpleGrey40,
-                onSecondary = Ux4gPalette.gray900,
-                background = Ux4gPalette.gray100,
-                onBackground = Ux4gPalette.gray900,
-                surface = Ux4gPalette.white,
-                onSurface = Ux4gPalette.gray900,
-                error = Ux4gPalette.red,
-                onError = Ux4gPalette.white
+                onSecondary = Ux4gColors.gray900,
+                background = Ux4gColors.gray100,
+                onBackground = Ux4gColors.gray900,
+                surface = Ux4gColors.white,
+                onSurface = Ux4gColors.gray900,
+                error = Ux4gColors.red,
+                onError = Ux4gColors.white
         )
 
 @Composable

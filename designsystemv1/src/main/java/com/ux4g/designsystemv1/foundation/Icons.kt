@@ -79,6 +79,12 @@ object Ux4gIcons {
     val ic_left_arrow: Ux4gIcon = Ux4gIcon.Drawable(R.drawable.ic_left_arrow)
     val ic_right_arrow: Ux4gIcon = Ux4gIcon.Drawable(R.drawable.ic_right_arrow)
 
+    // Flutter foundation aliases.
+    val info: Ux4gIcon = info_circle
+    val success: Ux4gIcon = success_circle
+    val arrowLeft: Ux4gIcon = ic_left_arrow
+    val arrowRight: Ux4gIcon = ic_right_arrow
+
     // Example of using your own SVG properly:
     // val MyCustomSVG: Ux4gIcon = Ux4gIcon.Drawable(R.drawable.my_custom_svg)
 }

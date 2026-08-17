@@ -700,8 +700,8 @@ private fun Ux4gSliderCaption(
             when (variant) {
                 Ux4gSliderCaptionVariant.Helper -> Ux4gTheme.colorScheme.onSurface.copy(alpha = 0.7f)
                 Ux4gSliderCaptionVariant.Error -> Ux4gTheme.colorScheme.error
-                Ux4gSliderCaptionVariant.Warning -> Ux4gPalette.orange600
-                Ux4gSliderCaptionVariant.Success -> Ux4gPalette.green600
+                Ux4gSliderCaptionVariant.Warning -> Ux4gColors.orange600
+                Ux4gSliderCaptionVariant.Success -> Ux4gColors.green600
             }
 
     val icon =

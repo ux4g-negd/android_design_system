@@ -8,7 +8,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import com.ux4g.designsystemv1.foundation.LocalUx4gColors
 import com.ux4g.designsystemv1.foundation.LocalUx4gTypography
-import com.ux4g.designsystemv1.foundation.Ux4gColors
+import com.ux4g.designsystemv1.foundation.Ux4gThemeColors
 import com.ux4g.designsystemv1.foundation.Ux4gTypography
 import com.ux4g.designsystemv1.foundation.darkColors
 import com.ux4g.designsystemv1.foundation.defaultTypography
@@ -18,7 +18,7 @@ import com.ux4g.designsystemv1.foundation.lightColors
 fun Ux4gTheme(
         darkTheme: Boolean = isSystemInDarkTheme(),
         // User can override colorScheme here. Defaults to our standard set.
-        colorScheme: Ux4gColors = if (darkTheme) darkColors else lightColors,
+        colorScheme: Ux4gThemeColors = if (darkTheme) darkColors else lightColors,
         // User can override typography here.
         typography: Ux4gTypography = defaultTypography,
         content: @Composable () -> Unit
@@ -78,15 +78,15 @@ fun Ux4gTheme(
 
 // Singleton object to access the values
 object Ux4gTheme {
-        val colorScheme: Ux4gColors
+        val colorScheme: Ux4gThemeColors
                 @Composable get() = LocalUx4gColors.current
 
         val typography: Ux4gTypography
                 @Composable get() = LocalUx4gTypography.current
 }
 
-fun androidx.compose.material3.ColorScheme.toUx4gColors(): Ux4gColors {
-        return Ux4gColors(
+fun androidx.compose.material3.ColorScheme.toUx4gColors(): Ux4gThemeColors {
+        return Ux4gThemeColors(
                 primary = this.primary,
                 onPrimary = this.onPrimary,
                 secondary = this.secondary,

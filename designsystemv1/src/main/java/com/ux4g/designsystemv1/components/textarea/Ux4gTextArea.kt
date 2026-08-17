@@ -25,7 +25,7 @@ import androidx.compose.ui.unit.dp
 import com.ux4g.designsystemv1.foundation.Ux4gIcon
 import com.ux4g.designsystemv1.foundation.Ux4gIconComponent
 import com.ux4g.designsystemv1.foundation.Ux4gIcons
-import com.ux4g.designsystemv1.foundation.Ux4gPalette
+import com.ux4g.designsystemv1.foundation.Ux4gColors
 import com.ux4g.designsystemv1.foundation.Ux4gRadius
 import com.ux4g.designsystemv1.theme.Ux4gTheme
 
@@ -200,7 +200,7 @@ private fun getBorderColor(
     return when (status) {
         Ux4gTextAreaStatus.Error -> Ux4gTheme.colorScheme.error
         Ux4gTextAreaStatus.Warning -> Ux4gTheme.colorScheme.secondary
-        Ux4gTextAreaStatus.Success -> Ux4gPalette.green500
+        Ux4gTextAreaStatus.Success -> Ux4gColors.green500
         Ux4gTextAreaStatus.Default -> {
             if (isFocused) Ux4gTheme.colorScheme.primary else Ux4gTheme.colorScheme.onSurface.copy(alpha = 0.3f)
         }
@@ -223,7 +223,7 @@ private fun getLabelColor(status: Ux4gTextAreaStatus, isFocused: Boolean, enable
     return when (status) {
         Ux4gTextAreaStatus.Error -> Ux4gTheme.colorScheme.error
         Ux4gTextAreaStatus.Warning -> Ux4gTheme.colorScheme.secondary
-        Ux4gTextAreaStatus.Success -> Ux4gPalette.green500
+        Ux4gTextAreaStatus.Success -> Ux4gColors.green500
         Ux4gTextAreaStatus.Default -> {
             if (isFocused) Ux4gTheme.colorScheme.primary else Ux4gTheme.colorScheme.onBackground
         }
@@ -236,7 +236,7 @@ private fun getCaptionColor(status: Ux4gTextAreaStatus, enabled: Boolean): Color
     return when (status) {
         Ux4gTextAreaStatus.Error -> Ux4gTheme.colorScheme.error
         Ux4gTextAreaStatus.Warning -> Ux4gTheme.colorScheme.secondary
-        Ux4gTextAreaStatus.Success -> Ux4gPalette.green500
+        Ux4gTextAreaStatus.Success -> Ux4gColors.green500
         Ux4gTextAreaStatus.Default -> Ux4gTheme.colorScheme.onSurface.copy(alpha = 0.6f)
     }
 }
