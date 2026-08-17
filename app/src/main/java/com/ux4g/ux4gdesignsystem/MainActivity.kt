@@ -146,6 +146,21 @@ fun MainContent(
                         }
                     }
                 }
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                Text(
+                    text = "Disabled State:",
+                    style = Ux4gTheme.typography.bS_strong,
+                    color = Ux4gColors.neutral700
+                )
+
+                Ux4gAccordion(
+                    title = "Accordion Item",
+                    enabled = false,
+                    iconColor = Ux4gTheme.colorScheme.primary,
+                    disabledIconColor = Ux4gTheme.colorScheme.primary
+                )
             }
         }
 

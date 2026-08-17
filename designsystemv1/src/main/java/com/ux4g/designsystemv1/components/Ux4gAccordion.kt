@@ -21,8 +21,10 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.KeyboardArrowDown
 import androidx.compose.material3.Icon
+import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -32,11 +34,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import com.ux4g.designsystemv1.foundation.Ux4gBorderWidth
 import com.ux4g.designsystemv1.foundation.Ux4gColors
 import com.ux4g.designsystemv1.foundation.Ux4gRadius
 import com.ux4g.designsystemv1.foundation.Ux4gSpace
 import com.ux4g.designsystemv1.theme.Ux4gTheme
+
+enum class Ux4gAccordionChevronPosition {
+    Leading,
+    Trailing
+}
 
 @Composable
 fun Ux4gAccordion(
@@ -44,75 +52,126 @@ fun Ux4gAccordion(
     modifier: Modifier = Modifier,
     expanded: Boolean = false,
     enabled: Boolean = true,
-    onExpandedChange: (Boolean) -> Unit = {},
-    backgroundColor: Color = Ux4gTheme.colorScheme.surface,
-    contentBackgroundColor: Color = Ux4gTheme.colorScheme.surface,
-    collapsedBorderColor: Color = Ux4gColors.neutral200,
-    expandedBorderColor: Color = Ux4gTheme.colorScheme.primary,
-    titleColor: Color = Ux4gColors.neutral800,
-    disabledTitleColor: Color = Ux4gColors.neutral300,
-    iconColor: Color = Ux4gColors.neutral800,
-    disabledIconColor: Color = Ux4gColors.neutral300,
-    content: @Composable () -> Unit
+    onExpandedChange: ((Boolean) -> Unit)? = null,
+    backgroundColor: Color? = null,
+    disabledBackgroundColor: Color? = null,
+    contentBackgroundColor: Color? = null,
+    collapsedBorderColor: Color? = null,
+    expandedBorderColor: Color? = null,
+    disabledBorderColor: Color? = null,
+    titleColor: Color? = null,
+    disabledTitleColor: Color? = null,
+    iconColor: Color? = null,
+    disabledIconColor: Color? = null,
+    leadingIcon: (@Composable () -> Unit)? = null,
+    chevronPosition: Ux4gAccordionChevronPosition = Ux4gAccordionChevronPosition.Trailing,
+    content: @Composable () -> Unit = {}
 ) {
+    val resolvedBackgroundColor = if (enabled) {
+        backgroundColor ?: Ux4gTheme.colorScheme.surface
+    } else {
+        disabledBackgroundColor ?: backgroundColor ?: Ux4gColors.neutral100
+    }
+    val resolvedContentBackgroundColor = contentBackgroundColor ?: backgroundColor ?: Ux4gTheme.colorScheme.surface
+    val resolvedCollapsedBorderColor =
+        collapsedBorderColor ?: Ux4gTheme.colorScheme.onSurface.copy(alpha = 0.12f)
+    val resolvedExpandedBorderColor =
+        expandedBorderColor ?: resolvedCollapsedBorderColor
+    val resolvedDisabledBorderColor =
+        disabledBorderColor ?: Ux4gTheme.colorScheme.onSurface.copy(alpha = 0.12f)
+
+    val resolvedTitleColor = titleColor ?: Ux4gTheme.colorScheme.onSurface
+    val resolvedDisabledTitleColor =
+        disabledTitleColor ?: Ux4gTheme.colorScheme.onSurface.copy(alpha = 0.38f)
+    val resolvedIconColor = iconColor ?: Ux4gTheme.colorScheme.onSurface
+    val resolvedDisabledIconColor =
+        disabledIconColor ?: Ux4gTheme.colorScheme.onSurface.copy(alpha = 0.38f)
+
+    val borderColor = when {
+        !enabled -> resolvedDisabledBorderColor
+        expanded -> resolvedExpandedBorderColor
+        else -> resolvedCollapsedBorderColor
+    }
+
+    val currentTitleColor = if (enabled) resolvedTitleColor else resolvedDisabledTitleColor
+    val currentIconColor = if (enabled) resolvedIconColor else resolvedDisabledIconColor
+
     val rotation by animateFloatAsState(
         targetValue = if (expanded) 180f else 0f,
         animationSpec = tween(durationMillis = 220),
         label = "accordionIconRotation"
     )
 
-    val borderColor = when {
-        !enabled -> Color.Transparent
-        expanded -> expandedBorderColor
-        else -> collapsedBorderColor
+    val chevron = @Composable {
+        Icon(
+            imageVector = Icons.Outlined.KeyboardArrowDown,
+            contentDescription = if (expanded) "Collapse accordion" else "Expand accordion",
+            modifier = Modifier
+                .size(Ux4gSpace.Space16)
+                .rotate(rotation),
+            tint = currentIconColor
+        )
     }
-
-    val currentTitleColor = if (enabled) titleColor else disabledTitleColor
-    val currentIconColor = if (enabled) iconColor else disabledIconColor
 
     Column(modifier = modifier.fillMaxWidth()) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
                 .border(
-                    width = if (enabled) Ux4gBorderWidth.Thin else Ux4gBorderWidth.None,
+                    width = Ux4gBorderWidth.Thin,
                     color = borderColor,
                     shape = RoundedCornerShape(Ux4gRadius.RadiusNone)
                 )
-                .background(backgroundColor)
+                .background(resolvedBackgroundColor)
                 .clickable(
                     enabled = enabled,
                     interactionSource = remember { MutableInteractionSource() },
                     indication = null
-                ) { onExpandedChange(!expanded) }
+                ) { onExpandedChange?.invoke(!expanded) }
                 .padding(horizontal = Ux4gSpace.Space12, vertical = Ux4gSpace.Space8),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Text(
-                text = title,
+            if (chevronPosition == Ux4gAccordionChevronPosition.Leading) {
+                chevron()
+                Spacer(modifier = Modifier.width(Ux4gSpace.Space8))
+            }
+
+            Row(
                 modifier = Modifier.weight(1f),
-                style = Ux4gTheme.typography.lL_default,
-                color = currentTitleColor
-            )
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                if (leadingIcon != null) {
+                    CompositionLocalProvider(LocalContentColor provides currentIconColor) {
+                        Box(
+                            modifier = Modifier.size(Ux4gSpace.Space16),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            leadingIcon()
+                        }
+                    }
+                    Spacer(modifier = Modifier.width(Ux4gSpace.Space8))
+                }
 
-            Spacer(modifier = Modifier.width(Ux4gSpace.Space8))
+                Text(
+                    text = title,
+                    modifier = Modifier.weight(1f),
+                    style = Ux4gTheme.typography.lL_default,
+                    color = currentTitleColor
+                )
+            }
 
-            Icon(
-                imageVector = Icons.Outlined.KeyboardArrowDown,
-                contentDescription = if (expanded) "Collapse accordion" else "Expand accordion",
-                modifier = Modifier
-                    .size(Ux4gSpace.Space16)
-                    .rotate(rotation),
-                tint = currentIconColor
-            )
+            if (chevronPosition == Ux4gAccordionChevronPosition.Trailing) {
+                Spacer(modifier = Modifier.width(Ux4gSpace.Space8))
+                chevron()
+            }
         }
 
         AnimatedVisibility(visible = expanded && enabled) {
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
+                    .background(resolvedContentBackgroundColor)
                     .padding(top = Ux4gSpace.Space12, start = Ux4gSpace.Space12, end = Ux4gSpace.Space12)
-                    .background(contentBackgroundColor)
             ) {
                 content()
             }
@@ -122,7 +181,9 @@ fun Ux4gAccordion(
 
 data class Ux4gAccordionItem(
     val title: String,
-    val enabled: Boolean = true
+    val enabled: Boolean = true,
+    val leadingIcon: (@Composable () -> Unit)? = null,
+    val chevronPosition: Ux4gAccordionChevronPosition = Ux4gAccordionChevronPosition.Trailing
 )
 
 @Composable
@@ -131,7 +192,7 @@ fun Ux4gAccordionGroup(
     modifier: Modifier = Modifier,
     expandedIndex: Int? = null,
     onExpandedIndexChange: (Int?) -> Unit = {},
-    itemSpacing: androidx.compose.ui.unit.Dp = Ux4gSpace.Space20,
+    itemSpacing: Dp = Ux4gSpace.Space20,
     content: @Composable (index: Int, item: Ux4gAccordionItem) -> Unit
 ) {
     Column(
@@ -141,6 +202,8 @@ fun Ux4gAccordionGroup(
         items.forEachIndexed { index, item ->
             Ux4gAccordion(
                 title = item.title,
+                leadingIcon = item.leadingIcon,
+                chevronPosition = item.chevronPosition,
                 expanded = expandedIndex == index,
                 enabled = item.enabled,
                 onExpandedChange = { isExpanded ->
@@ -171,6 +234,8 @@ private fun Ux4gAccordionPreview() {
                 .padding(Ux4gSpace.Space24),
             verticalArrangement = Arrangement.spacedBy(Ux4gSpace.Space20)
         ) {
+            Text(text = "Accordion Group (with active & disabled items)", style = Ux4gTheme.typography.tS_strong)
+
             Ux4gAccordionGroup(
                 items = listOf(
                     Ux4gAccordionItem(title = "Accordion Item"),
@@ -190,6 +255,18 @@ private fun Ux4gAccordionPreview() {
                     )
                 }
             }
+
+            Spacer(modifier = Modifier.padding(top = Ux4gSpace.Space8))
+
+            Text(text = "Standalone Disabled State", style = Ux4gTheme.typography.tS_strong)
+
+            // Standalone Disabled State Showcase
+            Ux4gAccordion(
+                title = "Accordion Item",
+                enabled = false,
+                iconColor = Ux4gTheme.colorScheme.primary,
+                disabledIconColor = Ux4gTheme.colorScheme.primary
+            )
         }
     }
 }
