@@ -12,6 +12,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -160,6 +161,126 @@ fun MainContent(
                     enabled = false,
                     iconColor = Ux4gTheme.colorScheme.primary,
                     disabledIconColor = Ux4gTheme.colorScheme.primary
+                )
+            }
+        }
+
+        // App Header Showcase
+        Ux4gCard(modifier = Modifier.fillMaxWidth()) {
+            Column(
+                modifier = Modifier.padding(16.dp),
+                verticalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+                Text(text = "App Header", style = Ux4gTheme.typography.tS_strong)
+
+                Text(
+                    text = "Header with Emblem, Union, Settings & Avatar:",
+                    style = Ux4gTheme.typography.bS_strong,
+                    color = Ux4gColors.neutral700
+                )
+                Surface(
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = RoundedCornerShape(8.dp),
+                    color = Ux4gTheme.colorScheme.surface,
+                    shadowElevation = 1.dp
+                ) {
+                    Ux4gAppHeader(
+                        title = "Title",
+                        variant = Ux4gAppHeaderVariant.Light,
+                        useSafeArea = false,
+                        leadingContent = {
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                            ) {
+                                Ux4gIconComponent(
+                                    icon = Ux4gIcons.NationalEmblem,
+                                    contentDescription = "National Emblem",
+                                    modifier = Modifier.size(32.dp),
+                                    tint = Color.Unspecified
+                                )
+                                Box(
+                                    modifier = Modifier
+                                        .width(1.dp)
+                                        .height(24.dp)
+                                        .background(Ux4gTheme.colorScheme.onSurface.copy(alpha = 0.12f))
+                                )
+                                Ux4gIconComponent(
+                                    icon = Ux4gIcons.Union,
+                                    contentDescription = "Union",
+                                    modifier = Modifier.size(32.dp),
+                                    tint = Color.Unspecified
+                                )
+                            }
+                        },
+                        actions = listOf(
+                            Ux4gAppHeaderAction(icon = Ux4gIcons.Settings)
+                        ),
+                        showAvatar = true,
+                        avatarInitials = "JD"
+                    )
+                }
+
+                Text(
+                    text = "Header with Emblem, Union, Settings & Menu:",
+                    style = Ux4gTheme.typography.bS_strong,
+                    color = Ux4gColors.neutral700
+                )
+                Surface(
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = RoundedCornerShape(8.dp),
+                    color = Ux4gTheme.colorScheme.surface,
+                    shadowElevation = 1.dp
+                ) {
+                    Ux4gAppHeader(
+                        title = "Title",
+                        variant = Ux4gAppHeaderVariant.Light,
+                        useSafeArea = false,
+                        leadingContent = {
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                            ) {
+                                Ux4gIconComponent(
+                                    icon = Ux4gIcons.NationalEmblem,
+                                    contentDescription = "National Emblem",
+                                    modifier = Modifier.size(32.dp),
+                                    tint = Color.Unspecified
+                                )
+                                Box(
+                                    modifier = Modifier
+                                        .width(1.dp)
+                                        .height(24.dp)
+                                        .background(Ux4gTheme.colorScheme.onSurface.copy(alpha = 0.12f))
+                                )
+                                Ux4gIconComponent(
+                                    icon = Ux4gIcons.Union,
+                                    contentDescription = "Union",
+                                    modifier = Modifier.size(32.dp),
+                                    tint = Color.Unspecified
+                                )
+                            }
+                        },
+                        actions = listOf(
+                            Ux4gAppHeaderAction(icon = Ux4gIcons.Settings),
+                            Ux4gAppHeaderAction(icon = Ux4gIcons.Menu)
+                        )
+                    )
+                }
+
+                Text(
+                    text = "Filled Variant (Primary with Back Button):",
+                    style = Ux4gTheme.typography.bS_strong,
+                    color = Ux4gColors.neutral700
+                )
+                Ux4gAppHeader(
+                    title = "Profile Settings",
+                    variant = Ux4gAppHeaderVariant.Filled,
+                    useSafeArea = false,
+                    showBackButton = true,
+                    actions = listOf(
+                        Ux4gAppHeaderAction(icon = Ux4gIcons.Settings)
+                    )
                 )
             }
         }

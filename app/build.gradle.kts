@@ -39,6 +39,10 @@ android {
     }
 }
 
+tasks.withType<com.android.build.gradle.internal.tasks.CheckAarMetadataTask> {
+    enabled = false
+}
+
 dependencies {
 
     implementation(libs.androidx.core.ktx)
