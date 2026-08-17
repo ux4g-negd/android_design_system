@@ -2339,7 +2339,7 @@ fun MainContent(
                 Ux4gDivider()
 
                 // 19.3 Dynamic Contrast / Elevated Dark Card
-                Text(text = "Elevated Dark Card (Auto Contrast)", style = Ux4gTheme.typography.lS_strong)
+                Text(text = "Elevated Dark Card (Auto Contrast)", style = defaultTypography.lS_strong)
                 Ux4gCard(
                     elevation = 4.dp,
                     backgroundColor = Ux4gColors.primary700,
@@ -2351,6 +2351,150 @@ fun MainContent(
                     footerAlignment = Ux4gCardFooterAlignment.Right,
                     primaryButtonText = "Get Started"
                 )
+            }
+
+            // 20. Carousel Component Showcase
+            Ux4gCard(
+                modifier = Modifier.fillMaxWidth(),
+                borderColor = Ux4gColors.neutral300,
+                borderWidth = 1.dp
+            ) {
+                Text(
+                    text = "20. Carousel (Image / Widget Slider)",
+                    style = defaultTypography.hS_strong,
+                    color = Ux4gColors.primary
+                )
+
+                // 20.1 Hero Banner Carousel (Screenshot 1)
+                Text(
+                    text = "20.1 Hero Banner Carousel (Gradient & Action Button)",
+                    style = defaultTypography.lS_strong
+                )
+
+                Ux4gCarousel(
+                    height = 240.dp,
+                    autoPlay = true,
+                    autoPlayIntervalMs = 3500L,
+                    showPaginationArrows = true,
+                    activePaginationColor = Color(0xFF5E3CEE),
+                    inactivePaginationColor = Color(0xFFDCD6FD),
+                    paginationArrowBackgroundColor = Color(0xFFDCD6FD),
+                    paginationArrowColor = Color(0xFF5E3CEE),
+                    items = listOf(
+                        {
+                            Ux4gHeroCarouselSlide(
+                                gradientColors = listOf(Color(0xFF5E3CEE), Color(0xFF7C3AED)),
+                                badgeText = "FEATURED",
+                                title = "Digital Services Portal 2.0",
+                                description = "Seamlessly access government citizen services with single sign-on and instant verification.",
+                                buttonText = "Explore Services"
+                            )
+                        },
+                        {
+                            Ux4gHeroCarouselSlide(
+                                gradientColors = listOf(Color(0xFF0D9488), Color(0xFF0284C7)),
+                                badgeText = "NEW UPDATE",
+                                title = "Biometric Identity Capture",
+                                description = "Fast, secure face verification integration with real-time liveness checks.",
+                                buttonText = "View Documentation"
+                            )
+                        },
+                        {
+                            Ux4gHeroCarouselSlide(
+                                gradientColors = listOf(Color(0xFFD97706), Color(0xFFE11D48)),
+                                badgeText = "POPULAR",
+                                title = "Unified Design System",
+                                description = "Production-ready accessible Android UI components built for digital infrastructure.",
+                                buttonText = "Get Started"
+                            )
+                        }
+                    )
+                )
+
+                Ux4gDivider()
+
+                // 20.2 Image Gallery Carousel (Screenshot 2)
+                Text(
+                    text = "20.2 Image Gallery Carousel (Dark Image Overlay)",
+                    style = defaultTypography.lS_strong
+                )
+
+                Ux4gCarousel(
+                    height = 240.dp,
+                    autoPlay = true,
+                    autoPlayIntervalMs = 4000L,
+                    showPaginationArrows = true,
+                    activePaginationColor = Color(0xFF5E3CEE),
+                    inactivePaginationColor = Color.White.copy(alpha = 0.85f),
+                    paginationArrowBackgroundColor = Color(0xFFDCD6FD),
+                    paginationArrowColor = Color(0xFF5E3CEE),
+                    items = listOf(
+                        {
+                            Ux4gImageCarouselSlide(
+                                imageUrl = "https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=800&q=80",
+                                badgeText = "NETWORK",
+                                title = "Global Cloud Infrastructure",
+                                subtitle = "High availability and low latency cross-region deployment."
+                            )
+                        },
+                        {
+                            Ux4gImageCarouselSlide(
+                                imageUrl = "https://images.unsplash.com/photo-1579546929518-9e396f3cc809?auto=format&fit=crop&w=800&q=80",
+                                badgeText = "DESIGN",
+                                title = "Modern UI System Architecture",
+                                subtitle = "Crafted with accessible design tokens & fluid responsive components."
+                            )
+                        },
+                        {
+                            Ux4gImageCarouselSlide(
+                                imageUrl = "https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=800&q=80",
+                                badgeText = "SECURITY",
+                                title = "Cryptographic Hardware Modules",
+                                subtitle = "Next-generation secure key storage and identity management."
+                            )
+                        }
+                    )
+                )
+
+                Ux4gDivider()
+
+                // 20.3 Card Slider with Capsule Pagination
+                Text(
+                    text = "20.3 Card Slider with Capsule Pagination",
+                    style = defaultTypography.lS_strong
+                )
+
+                Ux4gCarousel(
+                    height = 160.dp,
+                    autoPlay = false,
+                    paginationVariant = Ux4gPaginationVariant.Capsule,
+                    itemCount = 4
+                ) { index ->
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(horizontal = 8.dp)
+                            .clip(RoundedCornerShape(12.dp))
+                            .background(Ux4gColors.primary.copy(alpha = 0.1f)),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Column(
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.spacedBy(6.dp)
+                        ) {
+                            Text(
+                                text = "Slide ${index + 1}",
+                                style = defaultTypography.hM_strong,
+                                color = Ux4gColors.primary
+                            )
+                            Text(
+                                text = "(Replace with desired banner content)",
+                                style = defaultTypography.lS_default,
+                                color = Ux4gColors.neutral600
+                            )
+                        }
+                    }
+                }
             }
         }
     }
