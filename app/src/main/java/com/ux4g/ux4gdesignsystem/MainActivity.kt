@@ -14,10 +14,9 @@ import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.ui.draw.clip
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.ArrowDropDown
-import androidx.compose.material.icons.filled.Category
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -2662,6 +2661,294 @@ fun MainContent(
                     isRequired = true,
                     enabled = false
                 )
+            }
+
+            // 22. Chips Component Showcase
+            Ux4gCard(
+                modifier = Modifier.fillMaxWidth(),
+                borderColor = Ux4gColors.neutral300,
+                borderWidth = 1.dp
+            ) {
+                Text(
+                    text = "22. Chips",
+                    style = defaultTypography.hS_strong,
+                    color = Ux4gColors.primary
+                )
+
+                // 22.1 Choice Chips
+                Text(
+                    text = "22.1 Choice Chips (Single / Multi Select, Sizes, Custom Colors)",
+                    style = defaultTypography.lS_strong
+                )
+
+                var selectedChoice by remember { mutableStateOf("Design") }
+                val choiceCategories = listOf("Design", "Development", "Marketing", "Research")
+
+                Text(text = "Single Select Choice Chips (Medium):", style = defaultTypography.lS_default, color = Ux4gColors.neutral600)
+                Row(
+                    modifier = Modifier.horizontalScroll(rememberScrollState()),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    choiceCategories.forEach { category ->
+                        Ux4gChoiceChip(
+                            text = category,
+                            selected = selectedChoice == category,
+                            onClick = { selectedChoice = category },
+                            size = Ux4gChoiceChipSize.M
+                        )
+                    }
+                }
+
+                var selectedSmallChoice by remember { mutableStateOf("Android") }
+                val techOptions = listOf("Android", "Flutter", "Compose", "Kotlin")
+
+                Text(text = "Small Choice Chips with Leading/Trailing Icons:", style = defaultTypography.lS_default, color = Ux4gColors.neutral600)
+                Row(
+                    modifier = Modifier.horizontalScroll(rememberScrollState()),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    techOptions.forEach { tech ->
+                        val isSelected = selectedSmallChoice == tech
+                        Ux4gChoiceChip(
+                            text = tech,
+                            selected = isSelected,
+                            onClick = { selectedSmallChoice = tech },
+                            size = Ux4gChoiceChipSize.S,
+                            leadingContent = if (isSelected) {
+                                {
+                                    Icon(
+                                        imageVector = Icons.Default.Check,
+                                        contentDescription = null,
+                                        modifier = Modifier.size(12.dp),
+                                        tint = Ux4gColors.neutral50
+                                    )
+                                }
+                            } else null,
+                            trailingContent = {
+                                Icon(
+                                    imageVector = Icons.Default.Star,
+                                    contentDescription = null,
+                                    modifier = Modifier.size(12.dp),
+                                    tint = if (isSelected) Ux4gColors.neutral50 else Ux4gColors.neutral500
+                                )
+                            }
+                        )
+                    }
+                }
+
+                Ux4gDivider()
+
+                // 22.2 Filter Chips
+                Text(
+                    text = "22.2 Filter Chips (Multi-select Filtering, 8% Primary Bg on Select)",
+                    style = defaultTypography.lS_strong
+                )
+
+                var selectedFilters by remember { mutableStateOf(setOf("Trending", "Newest")) }
+                val filterOptions = listOf("Trending", "Top Rated", "Newest", "Featured", "Free")
+
+                Row(
+                    modifier = Modifier.horizontalScroll(rememberScrollState()),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    filterOptions.forEach { filter ->
+                        val isSelected = selectedFilters.contains(filter)
+                        Ux4gFilterChip(
+                            text = filter,
+                            selected = isSelected,
+                            onClick = {
+                                selectedFilters = if (isSelected) {
+                                    selectedFilters - filter
+                                } else {
+                                    selectedFilters + filter
+                                }
+                            },
+                            size = Ux4gFilterChipSize.M,
+                            leadingContent = if (isSelected) {
+                                {
+                                    Icon(
+                                        imageVector = Icons.Default.Check,
+                                        contentDescription = null,
+                                        modifier = Modifier.size(16.dp),
+                                        tint = Ux4gColors.primary
+                                    )
+                                }
+                            } else null
+                        )
+                    }
+                }
+
+                var smallSelectedFilters by remember { mutableStateOf(setOf("UI/UX")) }
+                val smallFilterOptions = listOf("UI/UX", "Backend", "Mobile", "Web", "Cloud")
+
+                Text(text = "Small Filter Chips:", style = defaultTypography.lS_default, color = Ux4gColors.neutral600)
+                Row(
+                    modifier = Modifier.horizontalScroll(rememberScrollState()),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    smallFilterOptions.forEach { filter ->
+                        val isSelected = smallSelectedFilters.contains(filter)
+                        Ux4gFilterChip(
+                            text = filter,
+                            selected = isSelected,
+                            onClick = {
+                                smallSelectedFilters = if (isSelected) {
+                                    smallSelectedFilters - filter
+                                } else {
+                                    smallSelectedFilters + filter
+                                }
+                            },
+                            size = Ux4gFilterChipSize.S
+                        )
+                    }
+                }
+
+                Ux4gDivider()
+
+                // 22.3 Input Chips
+                Text(
+                    text = "22.3 Input Chips (Dismissible, Sizes: Medium, Small, XS)",
+                    style = defaultTypography.lS_strong
+                )
+
+                var inputChipsList by remember {
+                    mutableStateOf(listOf("John Doe", "Jane Smith", "Alex Rivera", "Emma Watson"))
+                }
+
+                Text(text = "Interactive Input Chips (Click 'x' to remove):", style = defaultTypography.lS_default, color = Ux4gColors.neutral600)
+                Row(
+                    modifier = Modifier.horizontalScroll(rememberScrollState()),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    inputChipsList.forEach { user ->
+                        Ux4gInputChip(
+                            text = user,
+                            onDismiss = {
+                                inputChipsList = inputChipsList - user
+                            },
+                            size = Ux4gInputChipSize.M,
+                            leadingContent = {
+                                Icon(
+                                    imageVector = Icons.Default.Person,
+                                    contentDescription = null,
+                                    modifier = Modifier.size(16.dp),
+                                    tint = Ux4gColors.neutral700
+                                )
+                            }
+                        )
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(4.dp))
+                Row(
+                    modifier = Modifier.horizontalScroll(rememberScrollState()),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    Ux4gInputChip(text = "Medium (32dp)", onDismiss = {}, size = Ux4gInputChipSize.M)
+                    Ux4gInputChip(text = "Small (28dp)", onDismiss = {}, size = Ux4gInputChipSize.S)
+                    Ux4gInputChip(text = "XS (20dp)", onDismiss = {}, size = Ux4gInputChipSize.XS)
+                }
+
+                Ux4gDivider()
+
+                // 22.4 Input Chip Field
+                Text(
+                    text = "22.4 Input Chip Field (Interactive Input & Dropdown Add)",
+                    style = defaultTypography.lS_strong
+                )
+
+                var textInputValue by remember { mutableStateOf("") }
+                var tagsList by remember { mutableStateOf(listOf("Kotlin", "Jetpack Compose")) }
+
+                Text(text = "Text Input Mode (Type & press Add/Enter):", style = defaultTypography.lS_default, color = Ux4gColors.neutral600)
+                Ux4gInputChipField(
+                    value = textInputValue,
+                    onValueChange = { textInputValue = it },
+                    onAddChip = { newTag ->
+                        if (newTag.isNotBlank() && !tagsList.contains(newTag)) {
+                            tagsList = tagsList + newTag
+                        }
+                    },
+                    placeholder = "Add a skill tag...",
+                    chips = tagsList.map { tag ->
+                        {
+                            Ux4gInputChip(
+                                text = tag,
+                                onDismiss = { tagsList = tagsList - tag },
+                                size = Ux4gInputChipSize.S
+                            )
+                        }
+                    }
+                )
+
+                var dropdownValue by remember { mutableStateOf("") }
+                var selectedSkills by remember { mutableStateOf(listOf("Android SDK", "Material Design")) }
+
+                Text(text = "Dropdown Mode (Select option to add chip):", style = defaultTypography.lS_default, color = Ux4gColors.neutral600)
+                Ux4gInputChipField(
+                    value = dropdownValue,
+                    onValueChange = { dropdownValue = it },
+                    onAddChip = { newSkill ->
+                        if (!selectedSkills.contains(newSkill)) {
+                            selectedSkills = selectedSkills + newSkill
+                        }
+                    },
+                    isDropdown = true,
+                    placeholder = "Select skill to add...",
+                    dropdownOptions = listOf("Android SDK", "Material Design", "Coroutines", "Flow", "Ktor", "Hilt"),
+                    chips = selectedSkills.map { skill ->
+                        {
+                            Ux4gInputChip(
+                                text = skill,
+                                onDismiss = { selectedSkills = selectedSkills - skill },
+                                size = Ux4gInputChipSize.S
+                            )
+                        }
+                    }
+                )
+
+                Ux4gDivider()
+
+                // 22.5 Chip Group Arrangements
+                Text(
+                    text = "22.5 Chip Group Arrangement (Wrap vs Horizontal)",
+                    style = defaultTypography.lS_strong
+                )
+
+                val sampleTags = listOf("React", "Vue", "Angular", "Svelte", "Next.js", "Nuxt", "Remix", "Astro", "Gatsby", "Vite")
+
+                Text(text = "Wrap Flow Layout (Multi-line):", style = defaultTypography.lS_default, color = Ux4gColors.neutral600)
+                Ux4gChipGroup(
+                    chips = sampleTags.map { tag ->
+                        {
+                            Ux4gFilterChip(
+                                text = tag,
+                                selected = tag == "React" || tag == "Next.js",
+                                onClick = {},
+                                size = Ux4gFilterChipSize.S
+                            )
+                        }
+                    },
+                    arrangement = Ux4gChipGroupArrangement.Wrap
+                )
+
+                Ux4gDivider()
+
+                // 22.6 Disabled States
+                Text(
+                    text = "22.6 Disabled States (Opacity 50%)",
+                    style = defaultTypography.lS_strong
+                )
+
+                Row(
+                    modifier = Modifier.horizontalScroll(rememberScrollState()),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    Ux4gChoiceChip(text = "Disabled Selected", selected = true, onClick = {}, enabled = false)
+                    Ux4gChoiceChip(text = "Disabled Unselected", selected = false, onClick = {}, enabled = false)
+                    Ux4gFilterChip(text = "Disabled Filter", selected = true, onClick = {}, enabled = false)
+                    Ux4gInputChip(text = "Disabled Input", onDismiss = {}, enabled = false)
+                }
             }
         }
     }

@@ -46,8 +46,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.ux4g.designsystemv1.components.Ux4gCheckbox
 import com.ux4g.designsystemv1.components.Ux4gCheckboxSize
-import com.ux4g.designsystemv1.components.chips.Ux4gInputChip
-import com.ux4g.designsystemv1.components.chips.Ux4gInputChipSize
+import com.ux4g.designsystemv1.components.Ux4gInputChip
+import com.ux4g.designsystemv1.components.Ux4gInputChipSize
 import com.ux4g.designsystemv1.foundation.Ux4gIcon
 import com.ux4g.designsystemv1.foundation.Ux4gIconComponent
 import com.ux4g.designsystemv1.foundation.Ux4gIcons
@@ -299,7 +299,7 @@ fun Ux4gSelectionDropdown(
                                         },
                                         size = if (size == Ux4gSelectionDropdownSize.S) Ux4gInputChipSize.S else Ux4gInputChipSize.M,
                                         leadingContent = selectedOpt.leadingIcon?.let { icon ->
-                                            {
+                                            @Composable {
                                                 Ux4gIconComponent(
                                                     icon = icon,
                                                     contentDescription = null,
