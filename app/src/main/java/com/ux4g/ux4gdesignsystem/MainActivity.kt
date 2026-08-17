@@ -13,6 +13,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.ui.draw.clip
+import java.time.LocalDate
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -2953,6 +2954,105 @@ fun MainContent(
                     Ux4gFilterChip(text = "Disabled Filter", selected = true, onClick = {}, enabled = false)
                     Ux4gInputChip(text = "Disabled Input", onDismiss = {}, enabled = false)
                 }
+            }
+
+            // 23. Date Picker Component Showcase
+            Ux4gCard(
+                modifier = Modifier.fillMaxWidth(),
+                borderColor = Ux4gColors.neutral300,
+                borderWidth = 1.dp
+            ) {
+                Text(
+                    text = "23. Date Picker",
+                    style = defaultTypography.hS_strong,
+                    color = Ux4gColors.primary
+                )
+
+                // 23.1 Single Date Picker Mode
+                Text(
+                    text = "23.1 Single Date Picker (Interactive Calendar Dialog)",
+                    style = defaultTypography.lS_strong
+                )
+
+                var singleSelectedDate by remember { mutableStateOf<LocalDate?>(null) }
+                Ux4gDatePicker(
+                    label = "Date of Birth",
+                    isRequired = true,
+                    placeholder = "Select birth date",
+                    selectedDate = singleSelectedDate,
+                    onDateSelected = { singleSelectedDate = it },
+                    description = if (singleSelectedDate != null) "Selected: $singleSelectedDate" else "Tap to choose a date from calendar dialog"
+                )
+
+                Ux4gDivider()
+
+                // 23.2 Date Range Picker Mode
+                Text(
+                    text = "23.2 Date Range Picker (Start – End Date Selector)",
+                    style = defaultTypography.lS_strong
+                )
+
+                var selectedRange by remember { mutableStateOf<Ux4gDateRange?>(null) }
+                Ux4gDatePicker(
+                    mode = Ux4gDatePickerMode.Range,
+                    label = "Travel Duration",
+                    isRequired = true,
+                    placeholder = "Select date",
+                    selectedDateRange = selectedRange,
+                    onDateRangeSelected = { selectedRange = it },
+                    description = if (selectedRange != null) "From ${selectedRange?.start} to ${selectedRange?.end}" else "Select start and end dates"
+                )
+
+                Ux4gDivider()
+
+                // 23.3 Validation & Status States
+                Text(
+                    text = "23.3 Validation Statuses (Error, Warning, Success)",
+                    style = defaultTypography.lS_strong
+                )
+
+                var errorDate by remember { mutableStateOf<LocalDate?>(null) }
+                Ux4gDatePicker(
+                    label = "Appointment Date (Error Status)",
+                    isRequired = true,
+                    selectedDate = errorDate,
+                    onDateSelected = { errorDate = it },
+                    status = Ux4gInputFieldStatus.Error,
+                    description = "Date is required to book appointment"
+                )
+
+                var warningDate by remember { mutableStateOf<LocalDate?>(LocalDate.now().plusDays(2)) }
+                Ux4gDatePicker(
+                    label = "Event Date (Warning Status)",
+                    selectedDate = warningDate,
+                    onDateSelected = { warningDate = it },
+                    status = Ux4gInputFieldStatus.Warning,
+                    description = "High demand expected on this day"
+                )
+
+                var successDate by remember { mutableStateOf<LocalDate?>(LocalDate.now()) }
+                Ux4gDatePicker(
+                    label = "Verification Date (Success Status)",
+                    selectedDate = successDate,
+                    onDateSelected = { successDate = it },
+                    status = Ux4gInputFieldStatus.Success,
+                    description = "Date successfully verified and locked"
+                )
+
+                Ux4gDivider()
+
+                // 23.4 Disabled State
+                Text(
+                    text = "23.4 Disabled State",
+                    style = defaultTypography.lS_strong
+                )
+
+                Ux4gDatePicker(
+                    label = "Disabled Date Picker",
+                    selectedDate = LocalDate.now(),
+                    enabled = false,
+                    description = "This field cannot be edited"
+                )
             }
         }
     }
