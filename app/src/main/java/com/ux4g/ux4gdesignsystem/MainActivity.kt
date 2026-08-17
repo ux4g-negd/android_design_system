@@ -9,7 +9,14 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.ui.draw.clip
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.ArrowDropDown
+import androidx.compose.material.icons.filled.Category
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
@@ -50,6 +57,7 @@ import com.ux4g.designsystemv1.foundation.Ux4gIconComponent
 import com.ux4g.designsystemv1.foundation.Ux4gIcons
 import com.ux4g.designsystemv1.foundation.Ux4gColors
 import com.ux4g.designsystemv1.foundation.Ux4gRadius
+import com.ux4g.designsystemv1.foundation.defaultTypography
 import com.ux4g.designsystemv1.theme.Ux4gTheme
 import com.ux4g.ux4gdesignsystem.ui.theme.Ux4GDesignSystemTheme
 
@@ -2144,6 +2152,204 @@ fun MainContent(
                     layout = Ux4gCapsuleStepperLayout.Split,
                     onNext = { if (capsuleStep < totalSteps) capsuleStep++ },
                     onPrevious = { if (capsuleStep > 1) capsuleStep-- }
+                )
+            }
+        }
+
+        // 19. Card Component Showcase
+        Ux4gCard(modifier = Modifier.fillMaxWidth()) {
+            Column(
+                modifier = Modifier.padding(16.dp),
+                verticalArrangement = Arrangement.spacedBy(20.dp)
+            ) {
+                Text(text = "Card Component Showcase", style = Ux4gTheme.typography.tS_strong)
+
+                // 19.1 Rich Card Matching User Design
+                Text(text = "Rich Card (Full Spec)", style = Ux4gTheme.typography.lS_strong)
+                Ux4gCard(
+                    mediaImageUrl = "https://picsum.photos/seed/canyon/600/300",
+                    mediaHeight = 180.dp,
+                    mediaLabelText = "Label",
+                    mediaLabelLeading = {
+                        androidx.compose.material3.Icon(
+                            imageVector = androidx.compose.material.icons.Icons.Filled.Category,
+                            contentDescription = null,
+                            tint = Color.White,
+                            modifier = Modifier.size(12.dp)
+                        )
+                    },
+                    mediaTopEndAction = {
+                        Box(
+                            modifier = Modifier
+                                .size(32.dp)
+                                .clip(CircleShape)
+                                .background(Color(0x66000000)),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            androidx.compose.material3.Icon(
+                                imageVector = androidx.compose.material.icons.Icons.Filled.Category,
+                                contentDescription = null,
+                                tint = Color.White,
+                                modifier = Modifier.size(16.dp)
+                            )
+                        }
+                    },
+                    avatar = {
+                        Ux4gAvatar(
+                            size = Ux4gAvatarSize.M,
+                            initials = "JD",
+                            containerColor = Ux4gColors.primary100,
+                            contentColor = Ux4gColors.primary700
+                        )
+                    },
+                    title = "Title",
+                    subtitle = "Subtitle",
+                    headerTrailing = {
+                        androidx.compose.material3.Icon(
+                            imageVector = androidx.compose.material.icons.Icons.Filled.Category,
+                            contentDescription = null,
+                            tint = Ux4gColors.primary,
+                            modifier = Modifier.size(24.dp)
+                        )
+                    },
+                    statusContent = {
+                        Row(
+                            horizontalArrangement = Arrangement.spacedBy(16.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            repeat(3) {
+                                Row(
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    horizontalArrangement = Arrangement.spacedBy(4.dp)
+                                ) {
+                                    androidx.compose.material3.Icon(
+                                        imageVector = androidx.compose.material.icons.Icons.Filled.Category,
+                                        contentDescription = null,
+                                        tint = Ux4gColors.neutral500,
+                                        modifier = Modifier.size(14.dp)
+                                    )
+                                    Text(
+                                        text = "Label",
+                                        style = defaultTypography.bS_default,
+                                        color = Ux4gColors.neutral600
+                                    )
+                                }
+                            }
+                        }
+                    },
+                    body = "Lorem ipsum is a dummy or placeholder text commonly used in graphic design, publishing, and web development.",
+                    bottomChipsContent = {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .horizontalScroll(rememberScrollState()),
+                            horizontalArrangement = Arrangement.spacedBy(8.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            repeat(4) {
+                                Box(
+                                    modifier = Modifier
+                                        .clip(RoundedCornerShape(4.dp))
+                                        .background(Ux4gColors.neutral100)
+                                        .padding(horizontal = 8.dp, vertical = 6.dp)
+                                ) {
+                                    Row(
+                                        verticalAlignment = Alignment.CenterVertically,
+                                        horizontalArrangement = Arrangement.spacedBy(4.dp)
+                                    ) {
+                                        androidx.compose.material3.Icon(
+                                            imageVector = androidx.compose.material.icons.Icons.Filled.Category,
+                                            contentDescription = null,
+                                            tint = Ux4gColors.neutral600,
+                                            modifier = Modifier.size(12.dp)
+                                        )
+                                        Text(
+                                            text = "Label",
+                                            style = defaultTypography.lS_default,
+                                            color = Ux4gColors.neutral700
+                                        )
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    footerContent = {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.spacedBy(12.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Ux4gButton(
+                                onClick = {},
+                                modifier = Modifier.weight(1f)
+                            ) {
+                                androidx.compose.material3.Icon(
+                                    imageVector = androidx.compose.material.icons.Icons.Filled.Add,
+                                    contentDescription = null,
+                                    modifier = Modifier.size(16.dp)
+                                )
+                                Spacer(modifier = Modifier.width(4.dp))
+                                Text("Button", style = defaultTypography.bM_strong)
+                                Spacer(modifier = Modifier.width(4.dp))
+                                androidx.compose.material3.Icon(
+                                    imageVector = androidx.compose.material.icons.Icons.Filled.ArrowDropDown,
+                                    contentDescription = null,
+                                    modifier = Modifier.size(18.dp)
+                                )
+                            }
+
+                            com.ux4g.designsystemv1.components.buttons.Ux4gOutlineButton(
+                                onClick = {},
+                                modifier = Modifier.weight(1f)
+                            ) {
+                                androidx.compose.material3.Icon(
+                                    imageVector = androidx.compose.material.icons.Icons.Filled.Add,
+                                    contentDescription = null,
+                                    modifier = Modifier.size(16.dp)
+                                )
+                                Spacer(modifier = Modifier.width(4.dp))
+                                Text("Button", style = defaultTypography.bM_strong)
+                                Spacer(modifier = Modifier.width(4.dp))
+                                androidx.compose.material3.Icon(
+                                    imageVector = androidx.compose.material.icons.Icons.Filled.ArrowDropDown,
+                                    contentDescription = null,
+                                    modifier = Modifier.size(18.dp)
+                                )
+                            }
+                        }
+                    }
+                )
+
+                Ux4gDivider()
+
+                // 19.2 Horizontal Card Layout
+                Text(text = "Horizontal Layout Card", style = Ux4gTheme.typography.lS_strong)
+                Ux4gCard(
+                    direction = Ux4gCardDirection.Horizontal,
+                    borderColor = Ux4gColors.neutral300,
+                    borderWidth = 1.dp,
+                    mediaImageUrl = "https://picsum.photos/seed/canyon/300/300",
+                    title = "Horizontal Card",
+                    subtitle = "Image on the left",
+                    body = "Cards can display media horizontally for compact list feeds and desktop layouts.",
+                    footerType = Ux4gCardFooterType.SecondaryOnly,
+                    secondaryButtonText = "Learn More"
+                )
+
+                Ux4gDivider()
+
+                // 19.3 Dynamic Contrast / Elevated Dark Card
+                Text(text = "Elevated Dark Card (Auto Contrast)", style = Ux4gTheme.typography.lS_strong)
+                Ux4gCard(
+                    elevation = 4.dp,
+                    backgroundColor = Ux4gColors.primary700,
+                    title = "Dark Surface Card",
+                    subtitle = "Automated text luminance",
+                    body = "All title, subtitle, chip, and body styles automatically calibrate to high-contrast white text.",
+                    bottomChips = listOf("Jetpack Compose", "UX4G", "Android"),
+                    footerType = Ux4gCardFooterType.PrimaryOnly,
+                    footerAlignment = Ux4gCardFooterAlignment.Right,
+                    primaryButtonText = "Get Started"
                 )
             }
         }
