@@ -2865,16 +2865,18 @@ fun MainContent(
                     value = textInputValue,
                     onValueChange = { textInputValue = it },
                     onAddChip = { newTag ->
-                        if (newTag.isNotBlank() && !tagsList.contains(newTag)) {
+                        if (newTag.isNotBlank()) {
                             tagsList = tagsList + newTag
                         }
                     },
                     placeholder = "Add a skill tag...",
-                    chips = tagsList.map { tag ->
+                    chips = tagsList.mapIndexed { index, tag ->
                         {
                             Ux4gInputChip(
                                 text = tag,
-                                onDismiss = { tagsList = tagsList - tag },
+                                onDismiss = {
+                                    tagsList = tagsList.filterIndexed { i, _ -> i != index }
+                                },
                                 size = Ux4gInputChipSize.S
                             )
                         }
@@ -2889,18 +2891,20 @@ fun MainContent(
                     value = dropdownValue,
                     onValueChange = { dropdownValue = it },
                     onAddChip = { newSkill ->
-                        if (!selectedSkills.contains(newSkill)) {
+                        if (newSkill.isNotBlank()) {
                             selectedSkills = selectedSkills + newSkill
                         }
                     },
                     isDropdown = true,
                     placeholder = "Select skill to add...",
                     dropdownOptions = listOf("Android SDK", "Material Design", "Coroutines", "Flow", "Ktor", "Hilt"),
-                    chips = selectedSkills.map { skill ->
+                    chips = selectedSkills.mapIndexed { index, skill ->
                         {
                             Ux4gInputChip(
                                 text = skill,
-                                onDismiss = { selectedSkills = selectedSkills - skill },
+                                onDismiss = {
+                                    selectedSkills = selectedSkills.filterIndexed { i, _ -> i != index }
+                                },
                                 size = Ux4gInputChipSize.S
                             )
                         }

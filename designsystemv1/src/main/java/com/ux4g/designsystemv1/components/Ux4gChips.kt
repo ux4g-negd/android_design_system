@@ -312,8 +312,7 @@ fun Ux4gInputChip(
                 text = text,
                 style = textStyleVal.copy(color = finalTextColor),
                 maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
-                modifier = Modifier.weight(1f, fill = false)
+                overflow = TextOverflow.Ellipsis
             )
             Spacer(modifier = Modifier.width(8.dp))
             Icon(
@@ -435,13 +434,18 @@ fun Ux4gInputChipField(
                         }
                     ),
                     decorationBox = { innerTextField ->
-                        if (value.isEmpty()) {
-                            Text(
-                                text = placeholder,
-                                style = defaultTypography.bM_default.copy(color = Ux4gColors.neutral400)
-                            )
+                        Box(
+                            modifier = Modifier.fillMaxWidth(),
+                            contentAlignment = Alignment.CenterStart
+                        ) {
+                            if (value.isEmpty()) {
+                                Text(
+                                    text = placeholder,
+                                    style = defaultTypography.bM_default.copy(color = Ux4gColors.neutral400)
+                                )
+                            }
+                            innerTextField()
                         }
-                        innerTextField()
                     },
                     modifier = Modifier.weight(1f)
                 )
