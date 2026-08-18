@@ -4687,9 +4687,349 @@ fun MainContent(
                     )
                 }
             }
+
+            // ══════════════════════════════════════════════════════════════════
+            // 27. JOURNEY TIMELINE COMPONENT SHOWCASE
+            // ══════════════════════════════════════════════════════════════════
+            Ux4gCard(modifier = Modifier.fillMaxWidth()) {
+                Column(
+                    modifier = Modifier.padding(16.dp),
+                    verticalArrangement = Arrangement.spacedBy(20.dp)
+                ) {
+                    Text(
+                        text = "27. Journey Timeline (UX4G 1:1 Complete Feature Parity)",
+                        style = Ux4gTheme.typography.tS_strong
+                    )
+
+                    // ──────────────────────────────────────────────────────────
+                    // 🌟 INTERACTIVE TESTING PLAYGROUND
+                    // ──────────────────────────────────────────────────────────
+                    Ux4gCard(modifier = Modifier.fillMaxWidth()) {
+                        Column(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .background(Ux4gTheme.colorScheme.surface)
+                                .padding(16.dp),
+                            verticalArrangement = Arrangement.spacedBy(14.dp)
+                        ) {
+                            Text(
+                                text = "🧪 Interactive Journey Playground",
+                                style = Ux4gTheme.typography.hS_strong,
+                                color = Ux4gTheme.colorScheme.primary
+                            )
+                            Text(
+                                text = "Dynamically control the active step, toggle orientation, step numbering, and test real-time timeline state transitions.",
+                                style = Ux4gTheme.typography.bXS_default,
+                                color = Ux4gTheme.colorScheme.onSurface.copy(alpha = 0.7f)
+                            )
+
+                            // Interactive State
+                            var currentJourneyStep by remember { mutableStateOf(1) }
+                            var journeyOrientation by remember { mutableStateOf(Ux4gJourneyOrientation.Vertical) }
+                            var useStepNumbers by remember { mutableStateOf(false) }
+
+                            // Live Status Badge
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .clip(RoundedCornerShape(8.dp))
+                                    .background(Ux4gColors.primary50)
+                                    .padding(horizontal = 12.dp, vertical = 8.dp)
+                            ) {
+                                Row(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    horizontalArrangement = Arrangement.SpaceBetween,
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    Text(
+                                        text = "Current Step Index: $currentJourneyStep (Step ${currentJourneyStep + 1} of 4)",
+                                        style = Ux4gTheme.typography.lS_strong,
+                                        color = Ux4gColors.primary700
+                                    )
+                                    Text(
+                                        text = "Orientation: ${journeyOrientation.name}",
+                                        style = Ux4gTheme.typography.lS_default,
+                                        color = Ux4gColors.primary600
+                                    )
+                                }
+                            }
+
+                            // Interactive Controls
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Ux4gButton(
+                                    text = "◀ Previous",
+                                    variant = Ux4gButtonVariant.Outline,
+                                    size = Ux4gButtonSize.Small,
+                                    enabled = currentJourneyStep > 0,
+                                    onClick = { if (currentJourneyStep > 0) currentJourneyStep-- }
+                                )
+
+                                Ux4gButton(
+                                    text = "Next ▶",
+                                    variant = Ux4gButtonVariant.Primary,
+                                    size = Ux4gButtonSize.Small,
+                                    enabled = currentJourneyStep < 3,
+                                    onClick = { if (currentJourneyStep < 3) currentJourneyStep++ }
+                                )
+
+                                Ux4gButton(
+                                    text = "Reset",
+                                    variant = Ux4gButtonVariant.Text,
+                                    size = Ux4gButtonSize.Small,
+                                    onClick = { currentJourneyStep = 0 }
+                                )
+                            }
+
+                            // Toggle Controls
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Ux4gButton(
+                                    text = if (journeyOrientation == Ux4gJourneyOrientation.Vertical) "Orientation: Vertical" else "Orientation: Horizontal",
+                                    variant = Ux4gButtonVariant.Outline,
+                                    size = Ux4gButtonSize.Small,
+                                    onClick = {
+                                        journeyOrientation = if (journeyOrientation == Ux4gJourneyOrientation.Vertical) {
+                                            Ux4gJourneyOrientation.Horizontal
+                                        } else {
+                                            Ux4gJourneyOrientation.Vertical
+                                        }
+                                    }
+                                )
+
+                                Ux4gButton(
+                                    text = if (useStepNumbers) "Numbers: ON" else "Numbers: OFF",
+                                    variant = if (useStepNumbers) Ux4gButtonVariant.Secondary else Ux4gButtonVariant.Outline,
+                                    size = Ux4gButtonSize.Small,
+                                    onClick = { useStepNumbers = !useStepNumbers }
+                                )
+                            }
+
+                            Spacer(modifier = Modifier.height(4.dp))
+
+                            // Interactive Timeline Component
+                            Ux4gJourneyTimeline(
+                                currentStep = currentJourneyStep,
+                                orientation = journeyOrientation,
+                                header = Ux4gJourneyHeader(
+                                    title = "Passport Application Lifecycle",
+                                    description = "Real-time verification and dispatch pipeline",
+                                    icon = Ux4gIcons.info
+                                ),
+                                steps = listOf(
+                                    Ux4gJourneyStep(
+                                        title = "Online Application Submitted",
+                                        date = "10 Aug, 09:30 AM",
+                                        tag = "ARN: 2498214",
+                                        helpingText = "Application details and fee payment confirmed.",
+                                        stepNumber = if (useStepNumbers) "1" else null
+                                    ),
+                                    Ux4gJourneyStep(
+                                        title = "PSK Appointment & Biometrics",
+                                        date = "12 Aug, 11:00 AM",
+                                        tag = "Slot Confirmed",
+                                        helpingText = "Biometric scanning and document verification completed.",
+                                        stepNumber = if (useStepNumbers) "2" else null,
+                                        status = Ux4gJourneyStepStatus(
+                                            text = "Verification Completed",
+                                            badgeText = "Verified",
+                                            badgePosition = Ux4gJourneyBadgePosition.Bottom
+                                        )
+                                    ),
+                                    Ux4gJourneyStep(
+                                        title = "Police Verification",
+                                        date = "15 Aug, 03:00 PM",
+                                        tag = "In Progress",
+                                        helpingText = "Local police station inquiry and address verification.",
+                                        stepNumber = if (useStepNumbers) "3" else null,
+                                        status = Ux4gJourneyStepStatus(
+                                            text = "Pending Report",
+                                            badgeText = "Active",
+                                            badgePosition = Ux4gJourneyBadgePosition.TopRight
+                                        )
+                                    ),
+                                    Ux4gJourneyStep(
+                                        title = "Passport Printing & Speed Post Dispatch",
+                                        date = "Estimated: 20 Aug",
+                                        tag = "Final Stage",
+                                        helpingText = "Passport will be printed and dispatched via Speed Post.",
+                                        stepNumber = if (useStepNumbers) "4" else null
+                                    )
+                                )
+                            )
+                        }
+                    }
+
+                    // ──────────────────────────────────────────────────────────
+                    // 📋 STATIC VARIANT SHOWCASES
+                    // ──────────────────────────────────────────────────────────
+                    Text(text = "Visual Variants & Orientations", style = Ux4gTheme.typography.hXS_strong)
+
+                    // 1. Standard Vertical with Rich Metadata & Pill Status
+                    Text(text = "1. Vertical Journey with Unified Pill Tags & Badges", style = Ux4gTheme.typography.lM_strong)
+                    Ux4gJourneyTimeline(
+                        header = Ux4gJourneyHeader(
+                            title = "Scholarship Disbursal Journey",
+                            description = "Academic Year 2026-27 Merit Grant",
+                            icon = Ux4gIcons.Home
+                        ),
+                        steps = listOf(
+                            Ux4gJourneyStep(
+                                state = Ux4gJourneyStepState.Completed,
+                                date = "01 Jul 2026",
+                                tag = "Stage 1",
+                                title = "Student Application",
+                                helpingText = "All academic transcripts verified by University.",
+                                icon = Ux4gIcons.Check
+                            ),
+                            Ux4gJourneyStep(
+                                state = Ux4gJourneyStepState.Completed,
+                                date = "15 Jul 2026",
+                                tag = "Stage 2",
+                                title = "Nodal Officer Verification",
+                                helpingText = "Income and caste certificates approved.",
+                                icon = Ux4gIcons.Check
+                            ),
+                            Ux4gJourneyStep(
+                                state = Ux4gJourneyStepState.Current,
+                                date = "01 Aug 2026",
+                                title = "State Board Sanction",
+                                helpingText = "Fund allocation order under processing by Finance Dept.",
+                                status = Ux4gJourneyStepStatus(
+                                    text = "3 days remaining",
+                                    badgeText = "Sanction In-Progress",
+                                    badgePosition = Ux4gJourneyBadgePosition.Bottom
+                                )
+                            ),
+                            Ux4gJourneyStep(
+                                state = Ux4gJourneyStepState.Upcoming,
+                                date = "15 Aug 2026",
+                                title = "Direct DBT Bank Transfer",
+                                helpingText = "Amount will be credited directly to Aadhaar-seeded bank account.",
+                                status = Ux4gJourneyStepStatus(
+                                    text = "Awaiting Release",
+                                    badgeText = "Pending",
+                                    badgePosition = Ux4gJourneyBadgePosition.TopRight
+                                )
+                            )
+                        )
+                    )
+
+                    // 2. Horizontal Stepper Timeline
+                    Text(text = "2. Horizontal Timeline with Dynamic Active Step Card", style = Ux4gTheme.typography.lM_strong)
+                    Ux4gJourneyTimeline(
+                        orientation = Ux4gJourneyOrientation.Horizontal,
+                        currentStep = 2,
+                        header = Ux4gJourneyHeader(
+                            title = "Order Delivery Status",
+                            description = "Package tracking #IN-89324-912"
+                        ),
+                        steps = listOf(
+                            Ux4gJourneyStep(
+                                title = "Order Placed",
+                                date = "10 Aug"
+                            ),
+                            Ux4gJourneyStep(
+                                title = "Dispatched from Hub",
+                                date = "12 Aug"
+                            ),
+                            Ux4gJourneyStep(
+                                title = "Out for Delivery",
+                                date = "Today, 10:00 AM",
+                                helpingText = "Delivery agent Rajesh is on the way with your package.",
+                                status = Ux4gJourneyStepStatus(
+                                    text = "Arriving by 5:00 PM",
+                                    badgeText = "On Track",
+                                    badgePosition = Ux4gJourneyBadgePosition.Bottom
+                                )
+                            ),
+                            Ux4gJourneyStep(
+                                title = "Delivered",
+                                date = "Pending"
+                            )
+                        )
+                    )
+
+                    // 3. Step Number Indicators
+                    Text(text = "3. Step Number Indicators (Numeric Stepper)", style = Ux4gTheme.typography.lM_strong)
+                    Ux4gJourneyTimeline(
+                        currentStep = 1,
+                        steps = listOf(
+                            Ux4gJourneyStep(
+                                title = "Fill Personal Information",
+                                date = "Step 1",
+                                stepNumber = "1",
+                                helpingText = "Name, date of birth, address."
+                            ),
+                            Ux4gJourneyStep(
+                                title = "Upload Supporting Documents",
+                                date = "Step 2",
+                                stepNumber = "2",
+                                helpingText = "Proof of address, photo ID, salary slips.",
+                                status = Ux4gJourneyStepStatus(
+                                    text = "2 Documents Pending",
+                                    badgeText = "Action Required",
+                                    badgePosition = Ux4gJourneyBadgePosition.Bottom
+                                )
+                            ),
+                            Ux4gJourneyStep(
+                                title = "Review & Submit",
+                                date = "Step 3",
+                                stepNumber = "3",
+                                helpingText = "Confirm all entered details before payment."
+                            )
+                        )
+                    )
+
+                    // 4. Custom Styling & Custom Content Slot
+                    Text(text = "4. Custom Card Colors, Borders, and Embedded Content", style = Ux4gTheme.typography.lM_strong)
+                    Ux4gJourneyTimeline(
+                        steps = listOf(
+                            Ux4gJourneyStep(
+                                state = Ux4gJourneyStepState.Completed,
+                                title = "Custom Card Styling Example",
+                                date = "Special Step",
+                                cardColor = Color(0xFFF0FDF4),
+                                cardBorderColor = Color(0xFF86EFAC),
+                                titleColor = Color(0xFF166534),
+                                dateColor = Color(0xFF15803D),
+                                helpingText = "This card uses custom background and border color overrides.",
+                                customContent = {
+                                    Box(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .clip(RoundedCornerShape(6.dp))
+                                            .background(Color(0xFFDCFCE7))
+                                            .padding(8.dp)
+                                    ) {
+                                        Text(
+                                            text = "✓ Embedded custom content composable",
+                                            style = Ux4gTheme.typography.bXS_strong,
+                                            color = Color(0xFF166534)
+                                        )
+                                    }
+                                }
+                            ),
+                            Ux4gJourneyStep(
+                                state = Ux4gJourneyStepState.Current,
+                                title = "Standard Theme Step",
+                                date = "Normal Step",
+                                helpingText = "This card uses the standard design system theme styling."
+                            )
+                        )
+                    )
+                }
+            }
         }
     }
 }
+
 
 
 @Preview(name = "Light", showBackground = false, showSystemUi = true)
