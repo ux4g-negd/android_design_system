@@ -4162,6 +4162,140 @@ fun MainContent(
                     )
                 }
             }
+
+            // 30. PAN Input Field Component Showcase
+            Ux4gCard(
+                modifier = Modifier.fillMaxWidth(),
+                borderColor = Ux4gColors.neutral300,
+                borderWidth = 1.dp
+            ) {
+                Text(
+                    text = "30. PAN Input Field",
+                    style = defaultTypography.hS_strong,
+                    color = Ux4gColors.primary
+                )
+
+                // 30.1 Live Interactive Validation
+                Text(
+                    text = "30.1 Live Auto-Uppercase & Regex Validation (ABCDE1234F)",
+                    style = defaultTypography.lS_strong
+                )
+
+                var livePan by remember { mutableStateOf("") }
+
+                Column(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    Ux4gPanInputField(
+                        value = livePan,
+                        onValueChange = { livePan = it },
+                        label = "Taxpayer PAN Number",
+                        required = true,
+                        leadingIcon = Icons.Default.CreditCard,
+                        trailingIcon = if (livePan.isNotEmpty()) Icons.Default.Close else null,
+                        onTrailingIconPressed = { livePan = "" }
+                    )
+
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        Ux4gButton(
+                            text = "Fill Valid PAN",
+                            variant = Ux4gButtonVariant.Outline,
+                            size = Ux4gButtonSize.Small,
+                            onClick = { livePan = "ABCDE1234F" }
+                        )
+                        Ux4gButton(
+                            text = "Fill Invalid PAN",
+                            variant = Ux4gButtonVariant.Outline,
+                            size = Ux4gButtonSize.Small,
+                            onClick = { livePan = "12345ABCDE" }
+                        )
+                    }
+                }
+
+                Ux4gDivider()
+
+                // 30.2 Validation States Comparison
+                Text(
+                    text = "30.2 Validation States Comparison",
+                    style = defaultTypography.lS_strong
+                )
+
+                var validPan by remember { mutableStateOf("ABCDE1234F") }
+                var invalidPan by remember { mutableStateOf("ABCD12345F") }
+
+                Column(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    Ux4gPanInputField(
+                        value = validPan,
+                        onValueChange = { validPan = it },
+                        label = "Valid PAN (Auto-Detected Success)",
+                        leadingIcon = Icons.Default.CreditCard
+                    )
+
+                    Ux4gPanInputField(
+                        value = invalidPan,
+                        onValueChange = { invalidPan = it },
+                        label = "Invalid PAN (Auto-Detected Error)",
+                        leadingIcon = Icons.Default.CreditCard
+                    )
+                }
+
+                Ux4gDivider()
+
+                // 30.3 Sizes
+                Text(
+                    text = "30.3 PAN Field Sizes (XL, Large, Medium, Small)",
+                    style = defaultTypography.lS_strong
+                )
+
+                var sizePanXl by remember { mutableStateOf("ABCDE1234F") }
+                var sizePanL by remember { mutableStateOf("ABCDE1234F") }
+                var sizePanM by remember { mutableStateOf("ABCDE1234F") }
+                var sizePanS by remember { mutableStateOf("ABCDE1234F") }
+
+                Column(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    Ux4gPanInputField(
+                        value = sizePanXl,
+                        onValueChange = { sizePanXl = it },
+                        size = Ux4gInputFieldSize.XL,
+                        label = "XL Size (56dp)",
+                        leadingIcon = Icons.Default.CreditCard
+                    )
+
+                    Ux4gPanInputField(
+                        value = sizePanL,
+                        onValueChange = { sizePanL = it },
+                        size = Ux4gInputFieldSize.Large,
+                        label = "Large Size (48dp)",
+                        leadingIcon = Icons.Default.CreditCard
+                    )
+
+                    Ux4gPanInputField(
+                        value = sizePanM,
+                        onValueChange = { sizePanM = it },
+                        size = Ux4gInputFieldSize.Medium,
+                        label = "Medium Size (40dp) [Default]",
+                        leadingIcon = Icons.Default.CreditCard
+                    )
+
+                    Ux4gPanInputField(
+                        value = sizePanS,
+                        onValueChange = { sizePanS = it },
+                        size = Ux4gInputFieldSize.Small,
+                        label = "Small Size (32dp)",
+                        leadingIcon = Icons.Default.CreditCard
+                    )
+                }
+            }
         }
     }
 }
