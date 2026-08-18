@@ -2063,38 +2063,63 @@ fun MainContent(
         Ux4gCard(modifier = Modifier.fillMaxWidth()) {
             Column(
                 modifier = Modifier.padding(16.dp),
-                verticalArrangement = Arrangement.spacedBy(24.dp),
+                verticalArrangement = Arrangement.spacedBy(16.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
-                    text = "Pagination Indicators",
+                    text = "Pagination Dotted (UX4G 1:1 Parity)",
                     style = Ux4gTheme.typography.tS_strong,
                     modifier = Modifier.align(Alignment.Start)
                 )
 
                 var pageIndex by remember { mutableStateOf(1) }
+                var pageIndexRightArrows by remember { mutableStateOf(2) }
 
                 Text(text = "Default", style = Ux4gTheme.typography.lM_strong, modifier = Modifier.align(Alignment.Start))
-                Ux4gPaginationIndicator(
+                Ux4gPaginationDotted(
                     totalPageCount = 7,
                     currentPageIndex = pageIndex,
-                    onPageChange = { pageIndex = it }
+                    onPageChange = { pageIndex = it },
+                    variant = Ux4gPaginationVariant.Default,
+                    size = Ux4gPaginationSize.Small
                 )
 
                 Text(text = "Capsule", style = Ux4gTheme.typography.lM_strong, modifier = Modifier.align(Alignment.Start))
-                Ux4gPaginationIndicator(
+                Ux4gPaginationDotted(
                     totalPageCount = 7,
                     currentPageIndex = pageIndex,
                     onPageChange = { pageIndex = it },
-                    variant = Ux4gPaginationVariant.Capsule
+                    variant = Ux4gPaginationVariant.Capsule,
+                    size = Ux4gPaginationSize.Small
                 )
 
-                Text(text = "Dots Only", style = Ux4gTheme.typography.lM_strong, modifier = Modifier.align(Alignment.Start))
-                Ux4gPaginationIndicator(
+                Text(text = "Dots Only (No Arrows)", style = Ux4gTheme.typography.lM_strong, modifier = Modifier.align(Alignment.Start))
+                Ux4gPaginationDotted(
                     totalPageCount = 7,
                     currentPageIndex = pageIndex,
                     onPageChange = { pageIndex = it },
-                    showArrows = false
+                    showArrows = false,
+                    variant = Ux4gPaginationVariant.Default
+                )
+
+                Text(text = "Right Aligned Arrows", style = Ux4gTheme.typography.lM_strong, modifier = Modifier.align(Alignment.Start))
+                Ux4gPaginationDotted(
+                    totalPageCount = 7,
+                    currentPageIndex = pageIndexRightArrows,
+                    onPageChange = { pageIndexRightArrows = it },
+                    arrowsOnRight = true,
+                    variant = Ux4gPaginationVariant.Default,
+                    size = Ux4gPaginationSize.Medium
+                )
+
+                Text(text = "Right Aligned Arrows + Capsule", style = Ux4gTheme.typography.lM_strong, modifier = Modifier.align(Alignment.Start))
+                Ux4gPaginationDotted(
+                    totalPageCount = 7,
+                    currentPageIndex = pageIndexRightArrows,
+                    onPageChange = { pageIndexRightArrows = it },
+                    arrowsOnRight = true,
+                    variant = Ux4gPaginationVariant.Capsule,
+                    size = Ux4gPaginationSize.Medium
                 )
             }
         }
