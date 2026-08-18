@@ -5277,6 +5277,117 @@ fun MainContent(
                     }
                 }
             }
+
+            // ══════════════════════════════════════════════════════════════════
+            // 29. TOOLTIP COMPONENT SHOWCASE
+            // ══════════════════════════════════════════════════════════════════
+            Ux4gCard(modifier = Modifier.fillMaxWidth()) {
+                Column(
+                    modifier = Modifier.padding(16.dp),
+                    verticalArrangement = Arrangement.spacedBy(16.dp)
+                ) {
+                    Text(
+                        text = "29. Tooltips (UX4G 1:1 Complete Parity)",
+                        style = Ux4gTheme.typography.tS_strong
+                    )
+                    Text(
+                        text = "Floating contextual tooltips with directional arrows, 12 placement orientations, rich headers, icons, action buttons, and interactive triggers.",
+                        style = Ux4gTheme.typography.bS_default,
+                        color = Ux4gTheme.colorScheme.onSurface.copy(alpha = 0.7f)
+                    )
+
+                    // 1. Directional Placements
+                    Text(text = "Top Placements (Arrow Down)", style = Ux4gTheme.typography.lM_strong)
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Ux4gTooltipBubble(text = "TopStart", icon = Ux4gIcons.info_circle, placement = Ux4gTooltipPlacement.TopStart)
+                        Ux4gTooltipBubble(text = "Top", icon = Ux4gIcons.info_circle, placement = Ux4gTooltipPlacement.Top)
+                        Ux4gTooltipBubble(text = "TopEnd", icon = Ux4gIcons.info_circle, placement = Ux4gTooltipPlacement.TopEnd)
+                    }
+
+                    Text(text = "Bottom Placements (Arrow Up)", style = Ux4gTheme.typography.lM_strong)
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Ux4gTooltipBubble(text = "BottomStart", icon = Ux4gIcons.info_circle, placement = Ux4gTooltipPlacement.BottomStart)
+                        Ux4gTooltipBubble(text = "Bottom", icon = Ux4gIcons.info_circle, placement = Ux4gTooltipPlacement.Bottom)
+                        Ux4gTooltipBubble(text = "BottomEnd", icon = Ux4gIcons.info_circle, placement = Ux4gTooltipPlacement.BottomEnd)
+                    }
+
+                    Text(text = "Side Placements (Left & Right)", style = Ux4gTheme.typography.lM_strong)
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Ux4gTooltipBubble(text = "Left", icon = Ux4gIcons.info_circle, placement = Ux4gTooltipPlacement.Left)
+                        Ux4gTooltipBubble(text = "Right", icon = Ux4gIcons.info_circle, placement = Ux4gTooltipPlacement.Right)
+                    }
+
+                    // 2. Rich Tooltip Bubble
+                    Text(text = "Rich Tooltip Bubble", style = Ux4gTheme.typography.lM_strong)
+                    Ux4gRichTooltipBubble(
+                        title = "Tooltip Title",
+                        text = "This is a rich tooltip bubble with a title, an icon, and body text.",
+                        icon = Ux4gIcons.info_circle,
+                        placement = Ux4gTooltipPlacement.Top,
+                        action = {
+                            Text(
+                                text = "Action",
+                                color = Ux4gColors.primary,
+                                style = Ux4gTheme.typography.lS_strong,
+                                modifier = Modifier.clickable { }
+                            )
+                        }
+                    )
+
+                    // 3. Interactive Floating Tooltip Boxes
+                    Text(text = "Interactive Tooltip Triggers (Tap or Long-Press)", style = Ux4gTheme.typography.lM_strong)
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(16.dp)
+                    ) {
+                        Ux4gTooltip(
+                            tooltipText = "Standard tooltip text!",
+                            icon = Ux4gIcons.info_circle,
+                            placement = Ux4gTooltipPlacement.Top
+                        ) {
+                            Ux4gButton(
+                                text = "Tap Tooltip",
+                                variant = Ux4gButtonVariant.Outline,
+                                size = Ux4gButtonSize.Small,
+                                onClick = {}
+                            )
+                        }
+
+                        Ux4gRichTooltip(
+                            title = "Rich Popup",
+                            tooltipText = "Tap anywhere outside to dismiss.",
+                            icon = Ux4gIcons.info_circle,
+                            placement = Ux4gTooltipPlacement.Bottom,
+                            action = {
+                                Text(
+                                    text = "Learn More",
+                                    color = Ux4gColors.primary,
+                                    style = Ux4gTheme.typography.lS_strong
+                                )
+                            }
+                        ) {
+                            Ux4gButton(
+                                text = "Rich Tooltip",
+                                variant = Ux4gButtonVariant.Primary,
+                                size = Ux4gButtonSize.Small,
+                                onClick = {}
+                            )
+                        }
+                    }
+                }
+            }
         }
     }
 }

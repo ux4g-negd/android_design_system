@@ -2,6 +2,7 @@ package com.ux4g.designsystemv1.components.tooltip
 
 import android.content.res.Configuration
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -9,6 +10,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
 import androidx.compose.material3.TooltipBox
@@ -16,6 +18,7 @@ import androidx.compose.material3.TooltipState
 import androidx.compose.material3.rememberTooltipState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.CornerRadius
@@ -37,26 +40,28 @@ import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.PopupPositionProvider
-import com.ux4g.designsystemv1.foundation.ExperimentalUx4gApi
+import com.ux4g.designsystemv1.foundation.Ux4gColors
 import com.ux4g.designsystemv1.foundation.Ux4gIcon
 import com.ux4g.designsystemv1.foundation.Ux4gIconComponent
 import com.ux4g.designsystemv1.foundation.Ux4gIcons
-import com.ux4g.designsystemv1.foundation.Ux4gColors
 import com.ux4g.designsystemv1.foundation.Ux4gRadius
 import com.ux4g.designsystemv1.theme.Ux4gTheme
+import kotlinx.coroutines.launch
+import kotlin.math.max
+import kotlin.math.min
 
 // -----------------------------------------------------------------------
-// Placement Enum
+// Placement Enum (Matching Flutter Ux4gTooltipPlacement)
 // -----------------------------------------------------------------------
 
 /**
  * Defines where the tooltip arrow points, which determines on which side of
  * the anchor the tooltip bubble will appear.
  *
- *  - Top*   → bubble appears ABOVE the anchor (arrow points down)
- *  - Bottom*→ bubble appears BELOW the anchor (arrow points up)
- *  - Left*  → bubble appears to the LEFT of the anchor (arrow points right)
- *  - Right* → bubble appears to the RIGHT of the anchor (arrow points left)
+ *  - Top*    → bubble appears ABOVE the anchor (arrow points down to anchor)
+ *  - Bottom* → bubble appears BELOW the anchor (arrow points up to anchor)
+ *  - Left*   → bubble appears to the LEFT of the anchor (arrow points right to anchor)
+ *  - Right*  → bubble appears to the RIGHT of the anchor (arrow points left to anchor)
  */
 enum class Ux4gTooltipPlacement {
     TopStart, Top, TopEnd,
@@ -66,14 +71,14 @@ enum class Ux4gTooltipPlacement {
 }
 
 // -----------------------------------------------------------------------
-// Custom Shape – draws the rounded rect body + directional arrow
+// Custom Tooltip Shape – draws the rounded rect body + directional arrow
 // -----------------------------------------------------------------------
 
 class TooltipShape(
     private val placement: Ux4gTooltipPlacement,
-    private val arrowWidth: Dp,
-    private val arrowHeight: Dp,
-    private val cornerRadius: Dp
+    private val arrowWidth: Dp = 10.dp,
+    private val arrowHeight: Dp = 6.dp,
+    private val cornerRadius: Dp = Ux4gRadius.Radius4
 ) : Shape {
     override fun createOutline(
         size: Size,
@@ -85,7 +90,7 @@ class TooltipShape(
         val ah = with(density) { arrowHeight.toPx() }
         val cr = with(density) { cornerRadius.toPx() }
 
-        // Minimum horizontal/vertical offset so the arrow tip clears the rounded corner
+        // Offset so the arrow tip clears the rounded corner
         val tipOffset = cr + (aw / 2f) + with(density) { 8.dp.toPx() }
 
         var rectLeft = 0f
@@ -130,8 +135,8 @@ class TooltipShape(
             Ux4gTooltipPlacement.TopEnd -> {
                 val arrowTipY = size.height
                 val arrowTipX = when (placement) {
-                    Ux4gTooltipPlacement.TopStart -> (rectLeft + tipOffset).coerceAtMost(size.width / 2f)
-                    Ux4gTooltipPlacement.TopEnd   -> (rectRight - tipOffset).coerceAtLeast(size.width / 2f)
+                    Ux4gTooltipPlacement.TopStart -> min(rectLeft + tipOffset, size.width / 2f)
+                    Ux4gTooltipPlacement.TopEnd   -> max(rectRight - tipOffset, size.width / 2f)
                     else                           -> size.width / 2f
                 }
                 path.moveTo(arrowTipX - aw / 2f, rectBottom)
@@ -144,8 +149,8 @@ class TooltipShape(
             Ux4gTooltipPlacement.BottomEnd -> {
                 val arrowTipY = 0f
                 val arrowTipX = when (placement) {
-                    Ux4gTooltipPlacement.BottomStart -> (rectLeft + tipOffset).coerceAtMost(size.width / 2f)
-                    Ux4gTooltipPlacement.BottomEnd   -> (rectRight - tipOffset).coerceAtLeast(size.width / 2f)
+                    Ux4gTooltipPlacement.BottomStart -> min(rectLeft + tipOffset, size.width / 2f)
+                    Ux4gTooltipPlacement.BottomEnd   -> max(rectRight - tipOffset, size.width / 2f)
                     else                              -> size.width / 2f
                 }
                 path.moveTo(arrowTipX - aw / 2f, rectTop)
@@ -158,8 +163,8 @@ class TooltipShape(
             Ux4gTooltipPlacement.LeftEnd -> {
                 val arrowTipX = size.width
                 val arrowTipY = when (placement) {
-                    Ux4gTooltipPlacement.LeftStart -> (rectTop + tipOffset).coerceAtMost(size.height / 2f)
-                    Ux4gTooltipPlacement.LeftEnd   -> (rectBottom - tipOffset).coerceAtLeast(size.height / 2f)
+                    Ux4gTooltipPlacement.LeftStart -> min(rectTop + tipOffset, size.height / 2f)
+                    Ux4gTooltipPlacement.LeftEnd   -> max(rectBottom - tipOffset, size.height / 2f)
                     else                            -> size.height / 2f
                 }
                 path.moveTo(rectRight, arrowTipY - aw / 2f)
@@ -172,8 +177,8 @@ class TooltipShape(
             Ux4gTooltipPlacement.RightEnd -> {
                 val arrowTipX = 0f
                 val arrowTipY = when (placement) {
-                    Ux4gTooltipPlacement.RightStart -> (rectTop + tipOffset).coerceAtMost(size.height / 2f)
-                    Ux4gTooltipPlacement.RightEnd   -> (rectBottom - tipOffset).coerceAtLeast(size.height / 2f)
+                    Ux4gTooltipPlacement.RightStart -> min(rectTop + tipOffset, size.height / 2f)
+                    Ux4gTooltipPlacement.RightEnd   -> max(rectBottom - tipOffset, size.height / 2f)
                     else                             -> size.height / 2f
                 }
                 path.moveTo(rectLeft, arrowTipY - aw / 2f)
@@ -254,141 +259,128 @@ class Ux4gTooltipPositionProvider(
             }
         }
 
+        // Clamp to screen bounds with margin
+        x = x.coerceIn(8, max(8, windowSize.width - popupContentSize.width - 8))
+        y = y.coerceIn(8, max(8, windowSize.height - popupContentSize.height - 8))
+
         return IntOffset(x, y)
     }
 }
 
 // -----------------------------------------------------------------------
-// Plain Tooltip Bubble (visual content only, standalone composable)
+// Plain Tooltip Bubble (visual content, standalone composable)
 // -----------------------------------------------------------------------
 
 /**
- * The visual body of a plain tooltip. Renders the rounded-rect + arrow shape
- * with optional icon and text.
- *
- * Normally you don't call this directly – use [Ux4gTooltip] which wraps it
- * inside a [TooltipBox] so it floats above the UI as a popup.
+ * The visual body of a tooltip bubble. Renders the rounded-rect + arrow shape
+ * with optional icon, title, text, action, or custom content.
+ * 
+ * Direct 1:1 parity with Flutter's `_TooltipBubble`.
  */
 @Composable
 fun Ux4gTooltipBubble(
-    text: String,
-    modifier: Modifier = Modifier,
-    icon: Ux4gIcon? = null,
-    placement: Ux4gTooltipPlacement = Ux4gTooltipPlacement.Top,
-    backgroundColor: Color = Ux4gTheme.colorScheme.onSurface,
-    contentColor: Color = Ux4gTheme.colorScheme.surface,
-    textStyle: TextStyle? = null,
-    cornerRadius: Dp = Ux4gRadius.Radius4,
-    arrowWidth: Dp = 10.dp,
-    arrowHeight: Dp = 6.dp
-) {
-    val style = textStyle ?: Ux4gTheme.typography.lS_default
-    val shape = TooltipShape(placement, arrowWidth, arrowHeight, cornerRadius)
-
-    // Add padding on the arrow side so content doesn't overlap the arrow tip
-    val paddingStart   = if (placement in listOf(Ux4gTooltipPlacement.RightStart, Ux4gTooltipPlacement.Right, Ux4gTooltipPlacement.RightEnd)) arrowHeight else 0.dp
-    val paddingEnd     = if (placement in listOf(Ux4gTooltipPlacement.LeftStart, Ux4gTooltipPlacement.Left, Ux4gTooltipPlacement.LeftEnd)) arrowHeight else 0.dp
-    val paddingTop     = if (placement in listOf(Ux4gTooltipPlacement.BottomStart, Ux4gTooltipPlacement.Bottom, Ux4gTooltipPlacement.BottomEnd)) arrowHeight else 0.dp
-    val paddingBottom  = if (placement in listOf(Ux4gTooltipPlacement.TopStart, Ux4gTooltipPlacement.Top, Ux4gTooltipPlacement.TopEnd)) arrowHeight else 0.dp
-
-    Box(
-        modifier = modifier
-            .background(color = backgroundColor, shape = shape)
-            .padding(start = paddingStart, top = paddingTop, end = paddingEnd, bottom = paddingBottom)
-            .padding(horizontal = 12.dp, vertical = 8.dp),
-        contentAlignment = Alignment.Center
-    ) {
-        Row(
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            if (icon != null) {
-                Ux4gIconComponent(
-                    icon = icon,
-                    contentDescription = null,
-                    modifier = Modifier.size(16.dp),
-                    tint = contentColor
-                )
-            }
-            Text(
-                text = text,
-                color = contentColor,
-                style = style,
-                textAlign = TextAlign.Start
-            )
-        }
-    }
-}
-
-// -----------------------------------------------------------------------
-// Rich Tooltip Bubble (visual content only, standalone composable)
-// -----------------------------------------------------------------------
-
-/**
- * The visual body of a rich tooltip. Supports an optional title, icon,
- * body text, and an action composable.
- *
- * Normally you don't call this directly – use [Ux4gRichTooltip].
- */
-@Composable
-fun Ux4gRichTooltipBubble(
-    text: String,
+    text: String? = null,
     modifier: Modifier = Modifier,
     title: String? = null,
     icon: Ux4gIcon? = null,
     placement: Ux4gTooltipPlacement = Ux4gTooltipPlacement.Top,
-    backgroundColor: Color = Ux4gTheme.colorScheme.onSurface,
-    contentColor: Color = Ux4gTheme.colorScheme.surface,
+    backgroundColor: Color = Ux4gColors.neutral700,
+    contentColor: Color = Ux4gColors.neutral50,
+    textStyle: TextStyle? = null,
     cornerRadius: Dp = Ux4gRadius.Radius4,
     arrowWidth: Dp = 10.dp,
     arrowHeight: Dp = 6.dp,
-    action: (@Composable () -> Unit)? = null
+    action: (@Composable () -> Unit)? = null,
+    customContent: (@Composable () -> Unit)? = null,
+    maxWidth: Dp? = null
 ) {
+    val style = textStyle ?: Ux4gTheme.typography.lS_default
     val shape = TooltipShape(placement, arrowWidth, arrowHeight, cornerRadius)
 
-    val paddingStart   = if (placement in listOf(Ux4gTooltipPlacement.RightStart, Ux4gTooltipPlacement.Right, Ux4gTooltipPlacement.RightEnd)) arrowHeight else 0.dp
-    val paddingEnd     = if (placement in listOf(Ux4gTooltipPlacement.LeftStart, Ux4gTooltipPlacement.Left, Ux4gTooltipPlacement.LeftEnd)) arrowHeight else 0.dp
-    val paddingTop     = if (placement in listOf(Ux4gTooltipPlacement.BottomStart, Ux4gTooltipPlacement.Bottom, Ux4gTooltipPlacement.BottomEnd)) arrowHeight else 0.dp
-    val paddingBottom  = if (placement in listOf(Ux4gTooltipPlacement.TopStart, Ux4gTooltipPlacement.Top, Ux4gTooltipPlacement.TopEnd)) arrowHeight else 0.dp
+    val isRich = title != null || action != null
+    val horizontalPadding = if (isRich) 16.dp else 12.dp
+    val verticalPadding = if (isRich) 16.dp else 8.dp
+
+    // Directional padding so inner content never overlaps the arrow tip
+    val paddingStart = if (placement in listOf(Ux4gTooltipPlacement.RightStart, Ux4gTooltipPlacement.Right, Ux4gTooltipPlacement.RightEnd)) arrowHeight else 0.dp
+    val paddingEnd = if (placement in listOf(Ux4gTooltipPlacement.LeftStart, Ux4gTooltipPlacement.Left, Ux4gTooltipPlacement.LeftEnd)) arrowHeight else 0.dp
+    val paddingTop = if (placement in listOf(Ux4gTooltipPlacement.BottomStart, Ux4gTooltipPlacement.Bottom, Ux4gTooltipPlacement.BottomEnd)) arrowHeight else 0.dp
+    val paddingBottom = if (placement in listOf(Ux4gTooltipPlacement.TopStart, Ux4gTooltipPlacement.Top, Ux4gTooltipPlacement.TopEnd)) arrowHeight else 0.dp
 
     Box(
         modifier = modifier
+            .widthIn(max = maxWidth ?: 240.dp)
             .background(color = backgroundColor, shape = shape)
-            .padding(start = paddingStart, top = paddingTop, end = paddingEnd, bottom = paddingBottom)
-            .padding(16.dp)
+            .padding(
+                start = horizontalPadding + paddingStart,
+                top = verticalPadding + paddingTop,
+                end = horizontalPadding + paddingEnd,
+                bottom = verticalPadding + paddingBottom
+            ),
+        contentAlignment = Alignment.CenterStart
     ) {
-        Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-            if (title != null || icon != null) {
-                Row(
-                    horizontalArrangement = Arrangement.spacedBy(8.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    if (icon != null) {
-                        Ux4gIconComponent(
-                            icon = icon,
-                            contentDescription = null,
-                            modifier = Modifier.size(20.dp),
-                            tint = contentColor
-                        )
-                    }
-                    if (title != null) {
-                        Text(
-                            text = title,
-                            color = contentColor,
-                            style = Ux4gTheme.typography.hXXS_strong
-                        )
-                    }
+        if (customContent != null) {
+            customContent()
+        } else if (!isRich) {
+            // Plain Tooltip (Single line / small paragraph with optional icon)
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                if (icon != null) {
+                    Ux4gIconComponent(
+                        icon = icon,
+                        contentDescription = null,
+                        modifier = Modifier.size(16.dp),
+                        tint = contentColor
+                    )
+                }
+                if (text != null) {
+                    Text(
+                        text = text,
+                        color = contentColor,
+                        style = style,
+                        textAlign = TextAlign.Start
+                    )
                 }
             }
-            Text(
-                text = text,
-                color = contentColor,
-                style = Ux4gTheme.typography.lS_default
-            )
-            if (action != null) {
-                Spacer(modifier = Modifier.size(4.dp))
-                Box(modifier = Modifier.align(Alignment.End)) {
-                    action()
+        } else {
+            // Rich Tooltip (Title, Icon, Body Text, Action Button)
+            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                if (title != null || icon != null) {
+                    Row(
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        if (icon != null) {
+                            Ux4gIconComponent(
+                                icon = icon,
+                                contentDescription = null,
+                                modifier = Modifier.size(20.dp),
+                                tint = contentColor
+                            )
+                        }
+                        if (title != null) {
+                            Text(
+                                text = title,
+                                color = contentColor,
+                                style = Ux4gTheme.typography.hXXS_strong
+                            )
+                        }
+                    }
+                }
+                if (text != null) {
+                    Text(
+                        text = text,
+                        color = contentColor,
+                        style = style
+                    )
+                }
+                if (action != null) {
+                    Spacer(modifier = Modifier.size(4.dp))
+                    Box(modifier = Modifier.align(Alignment.End)) {
+                        action()
+                    }
                 }
             }
         }
@@ -396,42 +388,90 @@ fun Ux4gRichTooltipBubble(
 }
 
 // -----------------------------------------------------------------------
-// Ux4gTooltip – Interactive wrapper (plain)
+// Rich Tooltip Bubble (dedicated helper composable)
 // -----------------------------------------------------------------------
 
 /**
- * Wraps [content] in Material 3's [TooltipBox] so the tooltip appears as a
- * **floating popup** (does NOT shift any layout) when the user:
- *  - **Long-presses** the content on touch screens, or
- *  - **Hovers** the cursor over it on desktop/emulator.
- *
- * The tooltip auto-dismisses after a short delay (plain) or stays until the
- * user taps elsewhere / calls `state.dismiss()` (rich / persistent).
- *
- * @param tooltipText Text to display inside the tooltip bubble.
- * @param modifier    Modifier applied to the [TooltipBox] itself.
- * @param icon        Optional leading icon shown inside the bubble.
- * @param placement   Which side of the anchor the tooltip should appear on.
- * @param state       Tooltip state – use [rememberTooltipState] or pass your own for programmatic control.
- * @param enableUserInput When true (default) long-press / hover gesture triggers the tooltip.
- * @param content     The composable that the user interacts with (button, icon, etc.).
+ * Convenience visual body for a rich tooltip bubble.
  */
-@OptIn(ExperimentalMaterial3Api::class)
-@ExperimentalUx4gApi
 @Composable
-fun Ux4gTooltip(
-    tooltipText: String,
+fun Ux4gRichTooltipBubble(
+    text: String? = null,
     modifier: Modifier = Modifier,
+    title: String? = null,
     icon: Ux4gIcon? = null,
     placement: Ux4gTooltipPlacement = Ux4gTooltipPlacement.Top,
-    backgroundColor: Color = Ux4gTheme.colorScheme.onSurface,
-    contentColor: Color = Ux4gTheme.colorScheme.surface,
+    backgroundColor: Color = Ux4gColors.neutral700,
+    contentColor: Color = Ux4gColors.neutral50,
+    cornerRadius: Dp = Ux4gRadius.Radius4,
+    arrowWidth: Dp = 10.dp,
+    arrowHeight: Dp = 6.dp,
+    maxWidth: Dp? = null,
+    action: (@Composable () -> Unit)? = null
+) {
+    Ux4gTooltipBubble(
+        text = text,
+        modifier = modifier,
+        title = title,
+        icon = icon,
+        placement = placement,
+        backgroundColor = backgroundColor,
+        contentColor = contentColor,
+        cornerRadius = cornerRadius,
+        arrowWidth = arrowWidth,
+        arrowHeight = arrowHeight,
+        action = action,
+        maxWidth = maxWidth
+    )
+}
+
+// -----------------------------------------------------------------------
+// Ux4gTooltip – Interactive Plain / Standard Tooltip
+// -----------------------------------------------------------------------
+
+/**
+ * Interactive tooltip wrapper matching Flutter's `Ux4gTooltip`.
+ * Wraps [content] in Compose's [TooltipBox] so the tooltip appears as a
+ * floating popup when hovered, long-pressed, or tapped.
+ *
+ * @param tooltipText Text to display inside the tooltip bubble.
+ * @param title Optional title heading.
+ * @param icon Optional leading icon.
+ * @param placement Tooltip placement relative to the anchor (default: [Ux4gTooltipPlacement.Top]).
+ * @param backgroundColor Background color of the tooltip bubble (default: [Ux4gColors.neutral700]).
+ * @param contentColor Foreground text and icon color (default: [Ux4gColors.neutral50]).
+ * @param textStyle Optional custom text style for the body text.
+ * @param cornerRadius Bubble corner radius (default: 4.dp).
+ * @param arrowWidth Arrow base width (default: 10.dp).
+ * @param arrowHeight Arrow height (default: 6.dp).
+ * @param enableUserInput Whether user interactions (hover, long press, tap) trigger the tooltip.
+ * @param isPersistent Whether tooltip stays open until dismissed (default: false).
+ * @param action Optional action button / composable.
+ * @param customContent Optional fully custom bubble content.
+ * @param maxWidth Optional max width constraint (default: 240.dp).
+ * @param state Tooltip state for programmatic control.
+ * @param content The anchor composable that the user interacts with.
+ */
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun Ux4gTooltip(
+    tooltipText: String? = null,
+    modifier: Modifier = Modifier,
+    title: String? = null,
+    icon: Ux4gIcon? = null,
+    placement: Ux4gTooltipPlacement = Ux4gTooltipPlacement.Top,
+    backgroundColor: Color = Ux4gColors.neutral700,
+    contentColor: Color = Ux4gColors.neutral50,
     textStyle: TextStyle? = null,
     cornerRadius: Dp = Ux4gRadius.Radius4,
     arrowWidth: Dp = 10.dp,
     arrowHeight: Dp = 6.dp,
-    state: TooltipState = rememberTooltipState(),
     enableUserInput: Boolean = true,
+    isPersistent: Boolean = false,
+    action: (@Composable () -> Unit)? = null,
+    customContent: (@Composable () -> Unit)? = null,
+    maxWidth: Dp? = null,
+    state: TooltipState = rememberTooltipState(isPersistent = isPersistent),
     content: @Composable () -> Unit
 ) {
     val density = LocalDensity.current
@@ -439,12 +479,14 @@ fun Ux4gTooltip(
     val positionProvider = remember(placement, spacingPx) {
         Ux4gTooltipPositionProvider(placement, spacing = spacingPx)
     }
+    val coroutineScope = rememberCoroutineScope()
 
     TooltipBox(
         positionProvider = positionProvider,
         tooltip = {
             Ux4gTooltipBubble(
                 text = tooltipText,
+                title = title,
                 icon = icon,
                 placement = placement,
                 backgroundColor = backgroundColor,
@@ -452,79 +494,80 @@ fun Ux4gTooltip(
                 textStyle = textStyle,
                 cornerRadius = cornerRadius,
                 arrowWidth = arrowWidth,
-                arrowHeight = arrowHeight
+                arrowHeight = arrowHeight,
+                action = action,
+                customContent = customContent,
+                maxWidth = maxWidth
             )
         },
         state = state,
         modifier = modifier,
         enableUserInput = enableUserInput,
-        content = content
+        content = {
+            Box(
+                modifier = if (enableUserInput) {
+                    Modifier.clickable {
+                        coroutineScope.launch {
+                            if (state.isVisible) state.dismiss() else state.show()
+                        }
+                    }
+                } else {
+                    Modifier
+                }
+            ) {
+                content()
+            }
+        }
     )
 }
 
 // -----------------------------------------------------------------------
-// Ux4gRichTooltip – Interactive wrapper (rich / persistent)
+// Ux4gRichTooltip – Interactive Rich / Persistent Tooltip
 // -----------------------------------------------------------------------
 
 /**
- * Wraps [content] in Material 3's [TooltipBox] using a **rich tooltip** bubble
- * that can display a title, icon, body text, and an action button.
- *
- * Rich tooltips are **persistent** by default – they stay visible until the
- * user taps outside or the action calls `state.dismiss()`.
- *
- * @param tooltipText Main body text.
- * @param title       Optional heading shown above the body.
- * @param icon        Optional icon next to the title.
- * @param action      Optional composable shown at the bottom (e.g. a button).
- * @param placement   Which side of the anchor the tooltip appears on.
- * @param state       Tooltip state – defaults to `rememberTooltipState(isPersistent = true)`.
- * @param content     The anchor composable.
+ * Interactive rich tooltip wrapper matching Flutter's `Ux4gRichTooltip`.
+ * Defaults to `isPersistent = true` and supports title, icon, body text, and action buttons.
  */
 @OptIn(ExperimentalMaterial3Api::class)
-@ExperimentalUx4gApi
 @Composable
 fun Ux4gRichTooltip(
-    tooltipText: String,
+    tooltipText: String? = null,
     modifier: Modifier = Modifier,
     title: String? = null,
     icon: Ux4gIcon? = null,
     placement: Ux4gTooltipPlacement = Ux4gTooltipPlacement.Top,
-    backgroundColor: Color = Ux4gTheme.colorScheme.onSurface,
-    contentColor: Color = Ux4gTheme.colorScheme.surface,
+    backgroundColor: Color = Ux4gColors.neutral700,
+    contentColor: Color = Ux4gColors.neutral50,
+    textStyle: TextStyle? = null,
     cornerRadius: Dp = Ux4gRadius.Radius4,
     arrowWidth: Dp = 10.dp,
     arrowHeight: Dp = 6.dp,
-    state: TooltipState = rememberTooltipState(isPersistent = true),
     enableUserInput: Boolean = true,
     action: (@Composable () -> Unit)? = null,
+    customContent: (@Composable () -> Unit)? = null,
+    maxWidth: Dp? = null,
+    state: TooltipState = rememberTooltipState(isPersistent = true),
     content: @Composable () -> Unit
 ) {
-    val density = LocalDensity.current
-    val spacingPx = with(density) { 8.dp.toPx().toInt() }
-    val positionProvider = remember(placement, spacingPx) {
-        Ux4gTooltipPositionProvider(placement, spacing = spacingPx)
-    }
-
-    TooltipBox(
-        positionProvider = positionProvider,
-        tooltip = {
-            Ux4gRichTooltipBubble(
-                text = tooltipText,
-                title = title,
-                icon = icon,
-                placement = placement,
-                backgroundColor = backgroundColor,
-                contentColor = contentColor,
-                cornerRadius = cornerRadius,
-                arrowWidth = arrowWidth,
-                arrowHeight = arrowHeight,
-                action = action
-            )
-        },
-        state = state,
+    Ux4gTooltip(
+        tooltipText = tooltipText,
         modifier = modifier,
+        title = title,
+        icon = icon,
+        placement = placement,
+        backgroundColor = backgroundColor,
+        contentColor = contentColor,
+        textStyle = textStyle,
+        cornerRadius = cornerRadius,
+        arrowWidth = arrowWidth,
+        arrowHeight = arrowHeight,
         enableUserInput = enableUserInput,
+        isPersistent = true,
+        action = action,
+        customContent = customContent,
+        maxWidth = maxWidth,
+        state = state,
         content = content
     )
 }
@@ -533,7 +576,6 @@ fun Ux4gRichTooltip(
 // Previews
 // -----------------------------------------------------------------------
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Preview(name = "Light", showBackground = true)
 @Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
@@ -541,37 +583,37 @@ private fun Ux4gTooltipBubblePreview() {
     Ux4gTheme {
         Column(
             modifier = Modifier.padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(32.dp),
+            verticalArrangement = Arrangement.spacedBy(24.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text("Tooltip Bubble Placements", style = Ux4gTheme.typography.hS_default)
 
             // Top group (arrow points down)
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                Ux4gTooltipBubble("TopStart", icon = Ux4gIcons.info_circle, placement = Ux4gTooltipPlacement.TopStart)
-                Ux4gTooltipBubble("Top",      icon = Ux4gIcons.info_circle, placement = Ux4gTooltipPlacement.Top)
-                Ux4gTooltipBubble("TopEnd",   icon = Ux4gIcons.info_circle, placement = Ux4gTooltipPlacement.TopEnd)
+                Ux4gTooltipBubble(text = "TopStart", icon = Ux4gIcons.info_circle, placement = Ux4gTooltipPlacement.TopStart)
+                Ux4gTooltipBubble(text = "Top", icon = Ux4gIcons.info_circle, placement = Ux4gTooltipPlacement.Top)
+                Ux4gTooltipBubble(text = "TopEnd", icon = Ux4gIcons.info_circle, placement = Ux4gTooltipPlacement.TopEnd)
             }
 
             // Bottom group (arrow points up)
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                Ux4gTooltipBubble("BottomStart", icon = Ux4gIcons.info_circle, placement = Ux4gTooltipPlacement.BottomStart)
-                Ux4gTooltipBubble("Bottom",      icon = Ux4gIcons.info_circle, placement = Ux4gTooltipPlacement.Bottom)
-                Ux4gTooltipBubble("BottomEnd",   icon = Ux4gIcons.info_circle, placement = Ux4gTooltipPlacement.BottomEnd)
+                Ux4gTooltipBubble(text = "BottomStart", icon = Ux4gIcons.info_circle, placement = Ux4gTooltipPlacement.BottomStart)
+                Ux4gTooltipBubble(text = "Bottom", icon = Ux4gIcons.info_circle, placement = Ux4gTooltipPlacement.Bottom)
+                Ux4gTooltipBubble(text = "BottomEnd", icon = Ux4gIcons.info_circle, placement = Ux4gTooltipPlacement.BottomEnd)
             }
 
             // Left group (arrow points right)
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                Ux4gTooltipBubble("LeftStart", icon = Ux4gIcons.info_circle, placement = Ux4gTooltipPlacement.LeftStart)
-                Ux4gTooltipBubble("Left",      icon = Ux4gIcons.info_circle, placement = Ux4gTooltipPlacement.Left)
-                Ux4gTooltipBubble("LeftEnd",   icon = Ux4gIcons.info_circle, placement = Ux4gTooltipPlacement.LeftEnd)
+                Ux4gTooltipBubble(text = "LeftStart", icon = Ux4gIcons.info_circle, placement = Ux4gTooltipPlacement.LeftStart)
+                Ux4gTooltipBubble(text = "Left", icon = Ux4gIcons.info_circle, placement = Ux4gTooltipPlacement.Left)
+                Ux4gTooltipBubble(text = "LeftEnd", icon = Ux4gIcons.info_circle, placement = Ux4gTooltipPlacement.LeftEnd)
             }
 
             // Right group (arrow points left)
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                Ux4gTooltipBubble("RightStart", icon = Ux4gIcons.info_circle, placement = Ux4gTooltipPlacement.RightStart)
-                Ux4gTooltipBubble("Right",      icon = Ux4gIcons.info_circle, placement = Ux4gTooltipPlacement.Right)
-                Ux4gTooltipBubble("RightEnd",   icon = Ux4gIcons.info_circle, placement = Ux4gTooltipPlacement.RightEnd)
+                Ux4gTooltipBubble(text = "RightStart", icon = Ux4gIcons.info_circle, placement = Ux4gTooltipPlacement.RightStart)
+                Ux4gTooltipBubble(text = "Right", icon = Ux4gIcons.info_circle, placement = Ux4gTooltipPlacement.Right)
+                Ux4gTooltipBubble(text = "RightEnd", icon = Ux4gIcons.info_circle, placement = Ux4gTooltipPlacement.RightEnd)
             }
 
             Spacer(Modifier.size(8.dp))
