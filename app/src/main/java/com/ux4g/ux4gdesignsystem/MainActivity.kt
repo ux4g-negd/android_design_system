@@ -4028,6 +4028,140 @@ fun MainContent(
                     )
                 }
             }
+
+            // 29. Aadhaar Input Field Component Showcase
+            Ux4gCard(
+                modifier = Modifier.fillMaxWidth(),
+                borderColor = Ux4gColors.neutral300,
+                borderWidth = 1.dp
+            ) {
+                Text(
+                    text = "29. Aadhaar Input Field",
+                    style = defaultTypography.hS_strong,
+                    color = Ux4gColors.primary
+                )
+
+                // 29.1 Live Interactive Validation
+                Text(
+                    text = "29.1 Live Auto-Formatting & Verhoeff Validation",
+                    style = defaultTypography.lS_strong
+                )
+
+                var liveAadhaar by remember { mutableStateOf("") }
+
+                Column(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    Ux4gAadhaarInputField(
+                        value = liveAadhaar,
+                        onValueChange = { liveAadhaar = it },
+                        label = "Applicant Aadhaar Number",
+                        required = true,
+                        leadingIcon = Icons.Default.Badge,
+                        trailingIcon = if (liveAadhaar.isNotEmpty()) Icons.Default.Close else null,
+                        onTrailingIconPressed = { liveAadhaar = "" }
+                    )
+
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        Ux4gButton(
+                            text = "Fill Valid Aadhaar",
+                            variant = Ux4gButtonVariant.Outline,
+                            size = Ux4gButtonSize.Small,
+                            onClick = { liveAadhaar = "9999 4105 7058" }
+                        )
+                        Ux4gButton(
+                            text = "Fill Invalid Aadhaar",
+                            variant = Ux4gButtonVariant.Outline,
+                            size = Ux4gButtonSize.Small,
+                            onClick = { liveAadhaar = "2345 6789 0123" }
+                        )
+                    }
+                }
+
+                Ux4gDivider()
+
+                // 29.2 Validation States Comparison
+                Text(
+                    text = "29.2 Validation States Comparison",
+                    style = defaultTypography.lS_strong
+                )
+
+                var validAadhaar by remember { mutableStateOf("9999 4105 7058") }
+                var invalidAadhaar by remember { mutableStateOf("4123 4567 8901") }
+
+                Column(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    Ux4gAadhaarInputField(
+                        value = validAadhaar,
+                        onValueChange = { validAadhaar = it },
+                        label = "Valid Aadhaar (Auto-Detected Success)",
+                        leadingIcon = Icons.Default.Badge
+                    )
+
+                    Ux4gAadhaarInputField(
+                        value = invalidAadhaar,
+                        onValueChange = { invalidAadhaar = it },
+                        label = "Invalid Aadhaar (Auto-Detected Error)",
+                        leadingIcon = Icons.Default.Badge
+                    )
+                }
+
+                Ux4gDivider()
+
+                // 29.3 Sizes
+                Text(
+                    text = "29.3 Aadhaar Field Sizes (XL, Large, Medium, Small)",
+                    style = defaultTypography.lS_strong
+                )
+
+                var sizeXl by remember { mutableStateOf("9999 4105 7058") }
+                var sizeL by remember { mutableStateOf("9999 4105 7058") }
+                var sizeM by remember { mutableStateOf("9999 4105 7058") }
+                var sizeS by remember { mutableStateOf("9999 4105 7058") }
+
+                Column(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    Ux4gAadhaarInputField(
+                        value = sizeXl,
+                        onValueChange = { sizeXl = it },
+                        size = Ux4gInputFieldSize.XL,
+                        label = "XL Size (56dp)",
+                        leadingIcon = Icons.Default.Badge
+                    )
+
+                    Ux4gAadhaarInputField(
+                        value = sizeL,
+                        onValueChange = { sizeL = it },
+                        size = Ux4gInputFieldSize.Large,
+                        label = "Large Size (48dp)",
+                        leadingIcon = Icons.Default.Badge
+                    )
+
+                    Ux4gAadhaarInputField(
+                        value = sizeM,
+                        onValueChange = { sizeM = it },
+                        size = Ux4gInputFieldSize.Medium,
+                        label = "Medium Size (40dp) [Default]",
+                        leadingIcon = Icons.Default.Badge
+                    )
+
+                    Ux4gAadhaarInputField(
+                        value = sizeS,
+                        onValueChange = { sizeS = it },
+                        size = Ux4gInputFieldSize.Small,
+                        label = "Small Size (32dp)",
+                        leadingIcon = Icons.Default.Badge
+                    )
+                }
+            }
         }
     }
 }
