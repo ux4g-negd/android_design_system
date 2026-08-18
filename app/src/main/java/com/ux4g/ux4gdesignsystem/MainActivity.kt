@@ -3054,6 +3054,114 @@ fun MainContent(
                     description = "This field cannot be edited"
                 )
             }
+
+            // 24. Divider Component Showcase
+            Ux4gCard(
+                modifier = Modifier.fillMaxWidth(),
+                borderColor = Ux4gColors.neutral300,
+                borderWidth = 1.dp
+            ) {
+                Text(
+                    text = "24. Divider",
+                    style = defaultTypography.hS_strong,
+                    color = Ux4gColors.primary
+                )
+
+                // 24.1 Line Styles (Solid, Dashed, Dotted)
+                Text(
+                    text = "24.1 Line Styles (Solid, Dashed, Dotted)",
+                    style = defaultTypography.lS_strong
+                )
+
+                Text("Solid Divider (Default):", style = defaultTypography.bS_default, color = Ux4gColors.neutral600)
+                Ux4gDivider(style = Ux4gDividerStyle.Solid)
+
+                Text("Dashed Divider (12dp dashes, 8dp gaps):", style = defaultTypography.bS_default, color = Ux4gColors.neutral600)
+                Ux4gDivider(style = Ux4gDividerStyle.Dashed)
+
+                Text("Dotted Divider (4dp dots, 4dp gaps):", style = defaultTypography.bS_default, color = Ux4gColors.neutral600)
+                Ux4gDivider(style = Ux4gDividerStyle.Dotted)
+
+                Ux4gDivider()
+
+                // 24.2 Divider with Center Labels
+                Text(
+                    text = "24.2 Dividers with Center Labels",
+                    style = defaultTypography.lS_strong
+                )
+
+                Text("Horizontal with 'OR' Text Label:", style = defaultTypography.bS_default, color = Ux4gColors.neutral600)
+                Ux4gDivider(
+                    label = {
+                        Text(
+                            text = "OR",
+                            style = defaultTypography.lS_strong,
+                            color = Ux4gColors.neutral600
+                        )
+                    }
+                )
+
+                Text("Dashed with Primary Badge/Tag Label:", style = defaultTypography.bS_default, color = Ux4gColors.neutral600)
+                Ux4gDivider(
+                    style = Ux4gDividerStyle.Dashed,
+                    color = Ux4gColors.primary300,
+                    thickness = 1.5.dp,
+                    label = {
+                        Text(
+                            text = "SECTION 24",
+                            style = defaultTypography.lS_strong,
+                            color = Ux4gColors.primary
+                        )
+                    }
+                )
+
+                Ux4gDivider()
+
+                // 24.3 Custom Thickness, Colors & Indents
+                Text(
+                    text = "24.3 Custom Thickness, Color & Indentation",
+                    style = defaultTypography.lS_strong
+                )
+
+                Text("Thick Primary Divider (3dp):", style = defaultTypography.bS_default, color = Ux4gColors.neutral600)
+                Ux4gDivider(thickness = 3.dp, color = Ux4gColors.primary)
+
+                Text("Divider with Start & End Indent (40dp):", style = defaultTypography.bS_default, color = Ux4gColors.neutral600)
+                Ux4gDivider(startIndent = 40.dp, endIndent = 40.dp, color = Ux4gColors.neutral500)
+
+                Ux4gDivider()
+
+                // 24.4 Vertical Dividers
+                Text(
+                    text = "24.4 Vertical Dividers in Horizontal Layout",
+                    style = defaultTypography.lS_strong
+                )
+
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(56.dp)
+                        .background(Ux4gColors.neutral100, RoundedCornerShape(8.dp))
+                        .padding(horizontal = 16.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text("Option 1", style = defaultTypography.bM_strong)
+                    Ux4gDivider(orientation = Ux4gDividerOrientation.Vertical)
+                    Text("Option 2", style = defaultTypography.bM_strong)
+                    Ux4gDivider(
+                        orientation = Ux4gDividerOrientation.Vertical,
+                        style = Ux4gDividerStyle.Dashed
+                    )
+                    Text("Option 3", style = defaultTypography.bM_strong)
+                    Ux4gDivider(
+                        orientation = Ux4gDividerOrientation.Vertical,
+                        style = Ux4gDividerStyle.Dotted,
+                        color = Ux4gColors.primary
+                    )
+                    Text("Option 4", style = defaultTypography.bM_strong)
+                }
+            }
         }
     }
 }
