@@ -7,6 +7,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -17,6 +18,7 @@ import androidx.compose.ui.draw.clip
 import java.time.LocalDate
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
+import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -4293,6 +4295,395 @@ fun MainContent(
                         size = Ux4gInputFieldSize.Small,
                         label = "Small Size (32dp)",
                         leadingIcon = Icons.Default.CreditCard
+                    )
+                }
+            }
+
+            Ux4gCard(modifier = Modifier.fillMaxWidth()) {
+                Column(
+                    modifier = Modifier.padding(16.dp),
+                    verticalArrangement = Arrangement.spacedBy(20.dp)
+                ) {
+                    Text(
+                        text = "OTP Input (UX4G 1:1 Complete Feature Parity)",
+                        style = Ux4gTheme.typography.tS_strong
+                    )
+
+                    // ══════════════════════════════════════════════════════════════════
+                    // 🌟 FULL INTERACTIVE TESTING PLAYGROUND
+                    // ══════════════════════════════════════════════════════════════════
+                    Ux4gCard(
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Column(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .background(Ux4gTheme.colorScheme.surface)
+                                .padding(16.dp),
+                            verticalArrangement = Arrangement.spacedBy(14.dp)
+                        ) {
+                            Text(
+                                text = "🧪 Interactive Test Playground",
+                                style = Ux4gTheme.typography.hS_strong,
+                                color = Ux4gTheme.colorScheme.primary
+                            )
+                            Text(
+                                text = "Test typing, backspace, per-box tap, paste, auto-complete, timer, obscure, and validation states.",
+                                style = Ux4gTheme.typography.bXS_default,
+                                color = Ux4gTheme.colorScheme.onSurface.copy(alpha = 0.7f)
+                            )
+
+                            // Interactive State
+                            var testOtp by remember { mutableStateOf("") }
+                            var testLength by remember { mutableStateOf(6) }
+                            var testObscure by remember { mutableStateOf(false) }
+                            var testShowSeparator by remember { mutableStateOf(true) }
+                            var testStatus by remember { mutableStateOf(Ux4gOtpInputStatus.Default) }
+                            var testEnabled by remember { mutableStateOf(true) }
+                            var testCountdownSeconds by remember { mutableStateOf<Int?>(30) }
+                            var testAttemptsLeft by remember { mutableStateOf(3) }
+                            var lastEventLog by remember { mutableStateOf("Ready for testing") }
+
+                            // Live Status Display Box
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .clip(RoundedCornerShape(Ux4gRadius.Radius8))
+                                    .background(Ux4gTheme.colorScheme.onSurface.copy(alpha = 0.04f))
+                                    .border(
+                                        width = 1.dp,
+                                        color = Ux4gTheme.colorScheme.onSurface.copy(alpha = 0.15f),
+                                        shape = RoundedCornerShape(Ux4gRadius.Radius8)
+                                    )
+                                    .padding(12.dp)
+                            ) {
+                                Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                                    Row(
+                                        modifier = Modifier.fillMaxWidth(),
+                                        horizontalArrangement = Arrangement.SpaceBetween
+                                    ) {
+                                        Text(
+                                            text = "Value: \"$testOtp\" (${testOtp.length}/$testLength)",
+                                            style = Ux4gTheme.typography.bS_strong,
+                                            color = Ux4gTheme.colorScheme.onSurface
+                                        )
+                                        Text(
+                                            text = if (testOtp.length == testLength) "Completed ✅" else "Pending...",
+                                            style = Ux4gTheme.typography.bXS_strong,
+                                            color = if (testOtp.length == testLength) Ux4gColors.green600 else Ux4gColors.orange600
+                                        )
+                                    }
+                                    Text(
+                                        text = "Event Log: $lastEventLog",
+                                        style = Ux4gTheme.typography.bXS_default,
+                                        color = Ux4gTheme.colorScheme.onSurface.copy(alpha = 0.6f)
+                                    )
+                                }
+                            }
+
+                            // ── The Interactive Component ────────────────────
+                            Ux4gOtpInput(
+                                value = testOtp,
+                                onValueChange = { newCode ->
+                                    testOtp = newCode
+                                    lastEventLog = "Typed: \"$newCode\""
+                                    if (testStatus == Ux4gOtpInputStatus.Error && newCode.isNotEmpty()) {
+                                        testStatus = Ux4gOtpInputStatus.Default
+                                    }
+                                },
+                                length = testLength,
+                                obscure = testObscure,
+                                showSeparator = testShowSeparator,
+                                status = testStatus,
+                                enabled = testEnabled,
+                                label = "Verification Code",
+                                required = true,
+                                labelTrailingIcon = Icons.Outlined.Info,
+                                captionVariant = when (testStatus) {
+                                    Ux4gOtpInputStatus.Success -> Ux4gOtpCaptionVariant.Success
+                                    Ux4gOtpInputStatus.Error -> Ux4gOtpCaptionVariant.AttemptWithTimer
+                                    Ux4gOtpInputStatus.Locked -> Ux4gOtpCaptionVariant.Locked
+                                    Ux4gOtpInputStatus.Warning -> Ux4gOtpCaptionVariant.Warning
+                                    Ux4gOtpInputStatus.Default -> Ux4gOtpCaptionVariant.ResendTimer
+                                },
+                                captionLeadingText = when (testStatus) {
+                                    Ux4gOtpInputStatus.Error -> "Attempt ${4 - testAttemptsLeft} of 3"
+                                    Ux4gOtpInputStatus.Locked -> "Locked for 28:43"
+                                    else -> "Didn't receive OTP?"
+                                },
+                                captionTrailingText = when (testStatus) {
+                                    Ux4gOtpInputStatus.Error -> "Resend in 00:30"
+                                    Ux4gOtpInputStatus.Locked -> "Resend OTP"
+                                    else -> "Resend in"
+                                },
+                                captionText = when (testStatus) {
+                                    Ux4gOtpInputStatus.Success -> "OTP Verification successful!"
+                                    Ux4gOtpInputStatus.Warning -> "Warning: Code expires in 60s"
+                                    else -> null
+                                },
+                                autoCountdownSeconds = if (testStatus == Ux4gOtpInputStatus.Default) testCountdownSeconds else null,
+                                onCompleted = { fullOtp ->
+                                    lastEventLog = "onCompleted fired with: \"$fullOtp\""
+                                    scope.launch {
+                                        toastHostState.showToast(category = Ux4gToastCategory.Success, title = "OTP Completed", subtitle = fullOtp)
+                                    }
+                                },
+                                onCountdownComplete = {
+                                    lastEventLog = "Countdown finished! Ready to resend."
+                                },
+                                onCaptionTrailingTap = {
+                                    lastEventLog = "Resend OTP tapped! Restarting 30s timer."
+                                    testCountdownSeconds = 30
+                                    scope.launch {
+                                        toastHostState.showToast(category = Ux4gToastCategory.Success, title = "New OTP Sent", subtitle = "Sent new code to your device")
+                                    }
+                                }
+                            )
+
+                            // ── Controls: Length & Obscure ───────────────────
+                            Text(text = "Configuration Controls:", style = Ux4gTheme.typography.bS_strong)
+                            FlowRow(
+                                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                                verticalArrangement = Arrangement.spacedBy(8.dp)
+                            ) {
+                                Ux4gButton(
+                                    text = if (testLength == 6) "Length: 6 Digits (Active)" else "Switch to 6 Digits",
+                                    variant = if (testLength == 6) Ux4gButtonVariant.Primary else Ux4gButtonVariant.Outline,
+                                    size = Ux4gButtonSize.Small,
+                                    onClick = {
+                                        testLength = 6
+                                        testOtp = testOtp.take(6)
+                                        lastEventLog = "Length set to 6"
+                                    }
+                                )
+
+                                Ux4gButton(
+                                    text = if (testLength == 4) "Length: 4 Digits (Active)" else "Switch to 4 Digits",
+                                    variant = if (testLength == 4) Ux4gButtonVariant.Primary else Ux4gButtonVariant.Outline,
+                                    size = Ux4gButtonSize.Small,
+                                    onClick = {
+                                        testLength = 4
+                                        testOtp = testOtp.take(4)
+                                        lastEventLog = "Length set to 4"
+                                    }
+                                )
+
+                                Ux4gButton(
+                                    text = if (testObscure) "Masked: ON (•)" else "Masked: OFF",
+                                    variant = if (testObscure) Ux4gButtonVariant.Secondary else Ux4gButtonVariant.Outline,
+                                    size = Ux4gButtonSize.Small,
+                                    onClick = {
+                                        testObscure = !testObscure
+                                        lastEventLog = "Obscure toggled to $testObscure"
+                                    }
+                                )
+
+                                Ux4gButton(
+                                    text = if (testShowSeparator) "Separator: ON (–)" else "Separator: OFF",
+                                    variant = if (testShowSeparator) Ux4gButtonVariant.Secondary else Ux4gButtonVariant.Outline,
+                                    size = Ux4gButtonSize.Small,
+                                    onClick = {
+                                        testShowSeparator = !testShowSeparator
+                                        lastEventLog = "Separator toggled to $testShowSeparator"
+                                    }
+                                )
+
+                                Ux4gButton(
+                                    text = if (testEnabled) "Enabled" else "Disabled",
+                                    variant = if (testEnabled) Ux4gButtonVariant.Secondary else Ux4gButtonVariant.Outline,
+                                    size = Ux4gButtonSize.Small,
+                                    onClick = {
+                                        testEnabled = !testEnabled
+                                        lastEventLog = "Enabled toggled to $testEnabled"
+                                    }
+                                )
+                            }
+
+                            // ── Controls: Status Switches ────────────────────
+                            Text(text = "Simulate Status:", style = Ux4gTheme.typography.bS_strong)
+                            FlowRow(
+                                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                                verticalArrangement = Arrangement.spacedBy(8.dp)
+                            ) {
+                                Ux4gButton(
+                                    text = "Default",
+                                    variant = if (testStatus == Ux4gOtpInputStatus.Default) Ux4gButtonVariant.Primary else Ux4gButtonVariant.Outline,
+                                    size = Ux4gButtonSize.Small,
+                                    onClick = { testStatus = Ux4gOtpInputStatus.Default }
+                                )
+                                Ux4gButton(
+                                    text = "Success",
+                                    variant = if (testStatus == Ux4gOtpInputStatus.Success) Ux4gButtonVariant.Primary else Ux4gButtonVariant.Outline,
+                                    size = Ux4gButtonSize.Small,
+                                    onClick = { testStatus = Ux4gOtpInputStatus.Success }
+                                )
+                                Ux4gButton(
+                                    text = "Error",
+                                    variant = if (testStatus == Ux4gOtpInputStatus.Error) Ux4gButtonVariant.Secondary else Ux4gButtonVariant.Outline,
+                                    size = Ux4gButtonSize.Small,
+                                    onClick = { testStatus = Ux4gOtpInputStatus.Error }
+                                )
+                                Ux4gButton(
+                                    text = "Warning",
+                                    variant = if (testStatus == Ux4gOtpInputStatus.Warning) Ux4gButtonVariant.Secondary else Ux4gButtonVariant.Outline,
+                                    size = Ux4gButtonSize.Small,
+                                    onClick = { testStatus = Ux4gOtpInputStatus.Warning }
+                                )
+                                Ux4gButton(
+                                    text = "Locked",
+                                    variant = if (testStatus == Ux4gOtpInputStatus.Locked) Ux4gButtonVariant.Secondary else Ux4gButtonVariant.Outline,
+                                    size = Ux4gButtonSize.Small,
+                                    onClick = { testStatus = Ux4gOtpInputStatus.Locked }
+                                )
+                            }
+
+                            // ── Action Buttons ───────────────────────────────
+                            Text(text = "Quick Actions:", style = Ux4gTheme.typography.bS_strong)
+                            FlowRow(
+                                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                                verticalArrangement = Arrangement.spacedBy(8.dp)
+                            ) {
+                                Ux4gButton(
+                                    text = "Verify (Correct: 123456)",
+                                    variant = Ux4gButtonVariant.Primary,
+                                    size = Ux4gButtonSize.Small,
+                                    onClick = {
+                                        val correct = if (testLength == 4) "1234" else "123456"
+                                        if (testOtp == correct) {
+                                            testStatus = Ux4gOtpInputStatus.Success
+                                            lastEventLog = "Verification successful! Code matches $correct"
+                                            scope.launch {
+                                                toastHostState.showToast(category = Ux4gToastCategory.Success, title = "Verified", subtitle = "Code verified successfully!")
+                                            }
+                                        } else {
+                                            val remaining = (testAttemptsLeft - 1).coerceAtLeast(0)
+                                            testAttemptsLeft = remaining
+                                            if (remaining == 0) {
+                                                testStatus = Ux4gOtpInputStatus.Locked
+                                                lastEventLog = "Max attempts reached! Account locked."
+                                                scope.launch {
+                                                    toastHostState.showToast(category = Ux4gToastCategory.Error, title = "Account Locked", subtitle = "Locked due to 3 failed attempts")
+                                                }
+                                            } else {
+                                                testStatus = Ux4gOtpInputStatus.Error
+                                                lastEventLog = "Incorrect code! Attempts left: $remaining"
+                                                scope.launch {
+                                                    toastHostState.showToast(category = Ux4gToastCategory.Error, title = "Incorrect Code", subtitle = "$remaining attempts remaining")
+                                                }
+                                            }
+                                        }
+                                    }
+                                )
+
+                                Ux4gButton(
+                                    text = "Paste \"${if (testLength == 4) "5821" else "492815"}\"",
+                                    variant = Ux4gButtonVariant.Outline,
+                                    size = Ux4gButtonSize.Small,
+                                    onClick = {
+                                        val pasteCode = if (testLength == 4) "5821" else "492815"
+                                        testOtp = pasteCode
+                                        lastEventLog = "Pasted SMS OTP: $pasteCode"
+                                        scope.launch {
+                                            toastHostState.showToast(category = Ux4gToastCategory.Info, title = "Pasted SMS OTP", subtitle = pasteCode)
+                                        }
+                                    }
+                                )
+
+                                Ux4gButton(
+                                    text = "Clear",
+                                    variant = Ux4gButtonVariant.Outline,
+                                    size = Ux4gButtonSize.Small,
+                                    onClick = {
+                                        testOtp = ""
+                                        testStatus = Ux4gOtpInputStatus.Default
+                                        lastEventLog = "OTP cleared"
+                                    }
+                                )
+                            }
+                        }
+                    }
+
+                    // ══════════════════════════════════════════════════════════════════
+                    // 📋 STATIC VARIANT SHOWCASE
+                    // ══════════════════════════════════════════════════════════════════
+                    Text(text = "Visual Variants & States", style = Ux4gTheme.typography.hXS_strong)
+
+                    var staticOtp1 by remember { mutableStateOf("123") }
+                    var staticOtp2 by remember { mutableStateOf("123456") }
+                    var staticOtp3 by remember { mutableStateOf("987") }
+                    var staticOtp4 by remember { mutableStateOf("") }
+                    var staticOtp5 by remember { mutableStateOf("5678") }
+                    var staticOtp6 by remember { mutableStateOf("12") }
+
+                    // 1. Standard 6-Digit with Timer
+                    Text(text = "1. Standard 6-Digit with Auto Countdown", style = Ux4gTheme.typography.lM_strong)
+                    Ux4gOtpInput(
+                        value = staticOtp1,
+                        onValueChange = { staticOtp1 = it },
+                        label = "Enter Verification Code",
+                        required = true,
+                        labelTrailingIcon = Icons.Outlined.Info,
+                        captionVariant = Ux4gOtpCaptionVariant.ResendTimer,
+                        autoCountdownSeconds = 30
+                    )
+
+                    // 2. Success State
+                    Text(text = "2. Success State", style = Ux4gTheme.typography.lM_strong)
+                    Ux4gOtpInput(
+                        value = staticOtp2,
+                        onValueChange = { staticOtp2 = it },
+                        status = Ux4gOtpInputStatus.Success,
+                        label = "Verified OTP",
+                        captionVariant = Ux4gOtpCaptionVariant.Success,
+                        captionText = "Verification successful"
+                    )
+
+                    // 3. Error with Attempt Counter
+                    Text(text = "3. Error State with Attempt Counter", style = Ux4gTheme.typography.lM_strong)
+                    Ux4gOtpInput(
+                        value = staticOtp3,
+                        onValueChange = { staticOtp3 = it },
+                        status = Ux4gOtpInputStatus.Error,
+                        label = "Invalid OTP",
+                        captionVariant = Ux4gOtpCaptionVariant.AttemptWithTimer,
+                        captionLeadingText = "Attempt 2 of 3",
+                        captionTrailingText = "Resend in 00:45"
+                    )
+
+                    // 4. Locked State
+                    Text(text = "4. Locked State", style = Ux4gTheme.typography.lM_strong)
+                    Ux4gOtpInput(
+                        value = staticOtp4,
+                        onValueChange = { staticOtp4 = it },
+                        status = Ux4gOtpInputStatus.Locked,
+                        label = "Account Temporarily Locked",
+                        captionVariant = Ux4gOtpCaptionVariant.Locked,
+                        captionLeadingText = "Locked for 28:43",
+                        captionTrailingText = "Resend OTP",
+                        onCaptionTrailingTap = {}
+                    )
+
+                    // 5. Password / Obscured Mode
+                    Text(text = "5. Obscure Mode (4-Digit PIN)", style = Ux4gTheme.typography.lM_strong)
+                    Ux4gOtpInput(
+                        value = staticOtp5,
+                        onValueChange = { staticOtp5 = it },
+                        length = 4,
+                        obscure = true,
+                        label = "Secure Transaction PIN",
+                        captionVariant = Ux4gOtpCaptionVariant.Plain,
+                        captionText = "PIN is encrypted and securely sent"
+                    )
+
+                    // 6. Warning State
+                    Text(text = "6. Warning State", style = Ux4gTheme.typography.lM_strong)
+                    Ux4gOtpInput(
+                        value = staticOtp6,
+                        onValueChange = { staticOtp6 = it },
+                        status = Ux4gOtpInputStatus.Warning,
+                        label = "OTP Expiring Soon",
+                        captionVariant = Ux4gOtpCaptionVariant.Warning,
+                        captionText = "Code will expire in less than 1 minute"
                     )
                 }
             }
