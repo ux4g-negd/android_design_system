@@ -5,6 +5,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -16,6 +17,7 @@ import androidx.compose.ui.draw.clip
 import java.time.LocalDate
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
@@ -37,8 +39,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.ux4g.designsystemv1.components.*
 import com.ux4g.designsystemv1.components.avatar_component.*
-import androidx.compose.foundation.shape.CircleShape
 import com.ux4g.designsystemv1.components.buttons.Ux4gButton
+import com.ux4g.designsystemv1.components.buttons.Ux4gButtonSize
+import com.ux4g.designsystemv1.components.buttons.Ux4gButtonVariant
 import com.ux4g.designsystemv1.components.dropdowns.Ux4gDropdownOption
 import com.ux4g.designsystemv1.components.dropdowns.Ux4gSelectionDropdown
 import com.ux4g.designsystemv1.components.dropdowns.Ux4gSelectionDropdownMode
@@ -3161,6 +3164,246 @@ fun MainContent(
                     )
                     Text("Option 4", style = defaultTypography.bM_strong)
                 }
+            }
+
+            // 25. Status Banner Component Showcase
+            Ux4gCard(
+                modifier = Modifier.fillMaxWidth(),
+                borderColor = Ux4gColors.neutral300,
+                borderWidth = 1.dp
+            ) {
+                Text(
+                    text = "25. Status Banner",
+                    style = defaultTypography.hS_strong,
+                    color = Ux4gColors.primary
+                )
+
+                // 25.1 Expandable Draft Application Banner (Matching Screenshots)
+                Text(
+                    text = "25.1 Expandable Draft Application Banner (Collapsible with Actions)",
+                    style = defaultTypography.lS_strong
+                )
+
+                var isBannerExpanded by remember { mutableStateOf(false) }
+                Ux4gStatusBanner(
+                    variant = Ux4gBannerVariant.WarningLight,
+                    title = "Income Certificate Application",
+                    subtitleWidget = {
+                        Column {
+                            Spacer(modifier = Modifier.height(4.dp))
+                            Box(
+                                modifier = Modifier
+                                    .clip(RoundedCornerShape(4.dp))
+                                    .background(Color(0xFFFFEBD6))
+                                    .padding(horizontal = 8.dp, vertical = 2.dp)
+                            ) {
+                                Text(
+                                    text = "Step 3 of 5 Document Upload",
+                                    style = defaultTypography.bXS_default.copy(
+                                        color = Color(0xFFA46800),
+                                        fontWeight = androidx.compose.ui.text.font.FontWeight.Medium
+                                    )
+                                )
+                            }
+                            Spacer(modifier = Modifier.height(4.dp))
+                            Text(
+                                text = "Last saved: 10 Apr 2026",
+                                style = defaultTypography.bS_default.copy(color = Ux4gColors.neutral700)
+                            )
+                        }
+                    },
+                    trailingIcon = {
+                        Icon(
+                            imageVector = if (isBannerExpanded) Icons.Default.KeyboardArrowUp else Icons.Default.KeyboardArrowDown,
+                            contentDescription = "Toggle Details",
+                            tint = Ux4gColors.neutral900,
+                            modifier = Modifier
+                                .size(24.dp)
+                                .clickable { isBannerExpanded = !isBannerExpanded }
+                        )
+                    },
+                    actions = if (isBannerExpanded) {
+                        {
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.SpaceBetween,
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Text(
+                                    text = "Discard",
+                                    style = defaultTypography.bM_strong.copy(color = Ux4gColors.red600),
+                                    modifier = Modifier.clickable { /* Handle discard */ }
+                                )
+                                Ux4gButton(
+                                    text = "Resume",
+                                    variant = Ux4gButtonVariant.Primary,
+                                    size = Ux4gButtonSize.Small,
+                                    backgroundColor = Ux4gColors.primary,
+                                    contentColor = Ux4gColors.neutral50,
+                                    onClick = { /* Handle resume */ }
+                                )
+                            }
+                        }
+                    } else null,
+                    margin = PaddingValues(0.dp)
+                )
+
+                Ux4gDivider()
+
+                // 25.2 Warning Solid Banner
+                Text(
+                    text = "25.2 Warning Solid Banner",
+                    style = defaultTypography.lS_strong
+                )
+
+                Ux4gStatusBanner(
+                    variant = Ux4gBannerVariant.WarningSolid,
+                    title = "Your draft expires tomorrow. Submit today",
+                    margin = PaddingValues(0.dp)
+                )
+
+                Ux4gDivider()
+
+                // 25.3 Saving State Banner
+                Text(
+                    text = "25.3 Saving State Banner",
+                    style = defaultTypography.lS_strong
+                )
+
+                Ux4gStatusBanner(
+                    variant = Ux4gBannerVariant.WarningLight,
+                    title = "",
+                    trailingIcon = {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(8.dp)
+                        ) {
+                            CircularProgressIndicator(
+                                modifier = Modifier.size(16.dp),
+                                strokeWidth = 2.dp,
+                                color = Ux4gColors.primary
+                            )
+                            Text(
+                                text = "Saving",
+                                style = defaultTypography.bM_default.copy(color = Ux4gColors.neutral700)
+                            )
+                        }
+                    },
+                    margin = PaddingValues(0.dp)
+                )
+
+                Ux4gDivider()
+
+                // 25.4 Success Saved Banner
+                Text(
+                    text = "25.4 Draft Saved Banner (Leading Check)",
+                    style = defaultTypography.lS_strong
+                )
+
+                Ux4gStatusBanner(
+                    variant = Ux4gBannerVariant.SuccessLight,
+                    title = "Draft saved successfully at 3:14 PM",
+                    leadingIcon = {
+                        Icon(
+                            imageVector = Icons.Default.CheckCircle,
+                            contentDescription = null,
+                            tint = Color(0xFF128937),
+                            modifier = Modifier.size(20.dp)
+                        )
+                    },
+                    margin = PaddingValues(0.dp)
+                )
+
+                Ux4gDivider()
+
+                // 25.5 Expiry Banner with Badge
+                Text(
+                    text = "25.5 Draft Expiry with Badge",
+                    style = defaultTypography.lS_strong
+                )
+
+                Ux4gStatusBanner(
+                    variant = Ux4gBannerVariant.WarningLight,
+                    title = "Your draft expires in 5 days",
+                    badge = {
+                        Box(
+                            modifier = Modifier
+                                .clip(RoundedCornerShape(4.dp))
+                                .background(Color(0xFFFFEBD6))
+                                .padding(horizontal = 8.dp, vertical = 2.dp)
+                        ) {
+                            Text(
+                                text = "16 Apr",
+                                style = defaultTypography.bXS_default.copy(
+                                    color = Color(0xFFA46800),
+                                    fontWeight = androidx.compose.ui.text.font.FontWeight.Medium
+                                )
+                            )
+                        }
+                    },
+                    margin = PaddingValues(0.dp)
+                )
+
+                Ux4gDivider()
+
+                // 25.6 Error / Expired Banner with Action
+                Text(
+                    text = "25.6 Draft Expired Banner with Action Link",
+                    style = defaultTypography.lS_strong
+                )
+
+                Ux4gStatusBanner(
+                    variant = Ux4gBannerVariant.ErrorLight,
+                    title = "Draft expired on 9 April",
+                    subtitle = "2026",
+                    leadingIcon = {
+                        Icon(
+                            imageVector = Icons.Default.Error,
+                            contentDescription = null,
+                            tint = Ux4gColors.red600,
+                            modifier = Modifier.size(20.dp)
+                        )
+                    },
+                    trailingIcon = {
+                        Text(
+                            text = "Action",
+                            style = defaultTypography.bM_strong.copy(color = Color(0xFFA44030)),
+                            modifier = Modifier.clickable { /* Action click */ }
+                        )
+                    },
+                    margin = PaddingValues(0.dp)
+                )
+
+                Ux4gDivider()
+
+                // 25.7 Success Light (Right Aligned Timestamp)
+                Text(
+                    text = "25.7 Saved Timestamp Banner (Right Aligned)",
+                    style = defaultTypography.lS_strong
+                )
+
+                Ux4gStatusBanner(
+                    variant = Ux4gBannerVariant.SuccessLight,
+                    title = "",
+                    trailingIcon = {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(6.dp)
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.CheckCircle,
+                                contentDescription = null,
+                                tint = Color(0xFF128937),
+                                modifier = Modifier.size(18.dp)
+                            )
+                            Text(
+                                text = "Saved 3:14 PM",
+                                style = defaultTypography.bM_strong.copy(color = Color(0xFF128937))
+                            )
+                        }
+                    },
+                    margin = PaddingValues(0.dp)
+                )
             }
         }
     }
