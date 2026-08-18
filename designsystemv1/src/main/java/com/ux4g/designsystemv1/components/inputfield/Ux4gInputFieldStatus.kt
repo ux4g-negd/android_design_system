@@ -5,5 +5,13 @@ enum class Ux4gInputFieldStatus {
     Default,
     Success,
     Warning,
-    Error
+    Error;
+
+    companion object {
+        val defaultStatus = Default
+        val default = Default
+        val success = Success
+        val warning = Warning
+        val error = Error
+    }
 }

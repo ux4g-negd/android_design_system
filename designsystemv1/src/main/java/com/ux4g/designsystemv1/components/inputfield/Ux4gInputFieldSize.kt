@@ -11,5 +11,12 @@ enum class Ux4gInputFieldSize(val height: Dp) {
     Small(32.dp),
     Medium(40.dp),
     Large(48.dp),
-    XL(56.dp)
+    XL(56.dp);
+
+    companion object {
+        val small = Small
+        val medium = Medium
+        val large = Large
+        val xl = XL
+    }
 }

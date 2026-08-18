@@ -3792,6 +3792,242 @@ fun MainContent(
                     )
                 }
             }
+
+            // 28. Input Field Component Showcase
+            Ux4gCard(
+                modifier = Modifier.fillMaxWidth(),
+                borderColor = Ux4gColors.neutral300,
+                borderWidth = 1.dp
+            ) {
+                Text(
+                    text = "28. Input Field",
+                    style = defaultTypography.hS_strong,
+                    color = Ux4gColors.primary
+                )
+
+                // 28.1 Sizes
+                Text(
+                    text = "28.1 Input Field Sizes (XL, Large, Medium, Small)",
+                    style = defaultTypography.lS_strong
+                )
+
+                var textXl by remember { mutableStateOf("") }
+                var textL by remember { mutableStateOf("") }
+                var textM by remember { mutableStateOf("") }
+                var textS by remember { mutableStateOf("") }
+
+                Column(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    Ux4gInputField(
+                        value = textXl,
+                        onValueChange = { textXl = it },
+                        label = "XL Size (56dp)",
+                        placeholder = "Enter value...",
+                        caption = "Extra large height input field",
+                        size = Ux4gInputFieldSize.XL,
+                        leadingIcon = Icons.Default.Person,
+                        trailingIcon = Icons.Default.Close,
+                        onTrailingIconPressed = { textXl = "" }
+                    )
+
+                    Ux4gInputField(
+                        value = textL,
+                        onValueChange = { textL = it },
+                        label = "Large Size (48dp)",
+                        placeholder = "Enter value...",
+                        caption = "Large height input field",
+                        size = Ux4gInputFieldSize.Large,
+                        leadingIcon = Icons.Default.Person,
+                        trailingIcon = Icons.Default.Close,
+                        onTrailingIconPressed = { textL = "" }
+                    )
+
+                    Ux4gInputField(
+                        value = textM,
+                        onValueChange = { textM = it },
+                        label = "Medium Size (40dp) [Default]",
+                        placeholder = "Enter value...",
+                        caption = "Standard input field",
+                        size = Ux4gInputFieldSize.Medium,
+                        leadingIcon = Icons.Default.Person,
+                        trailingIcon = Icons.Default.Close,
+                        onTrailingIconPressed = { textM = "" }
+                    )
+
+                    Ux4gInputField(
+                        value = textS,
+                        onValueChange = { textS = it },
+                        label = "Small Size (32dp)",
+                        placeholder = "Enter value...",
+                        caption = "Compact input field",
+                        size = Ux4gInputFieldSize.Small,
+                        leadingIcon = Icons.Default.Person,
+                        trailingIcon = Icons.Default.Close,
+                        onTrailingIconPressed = { textS = "" }
+                    )
+                }
+
+                Ux4gDivider()
+
+                // 28.2 Types & Password Visibility Toggle
+                Text(
+                    text = "28.2 Input Field Types & Password Toggle",
+                    style = defaultTypography.lS_strong
+                )
+
+                var textVal by remember { mutableStateOf("Monu Kumar") }
+                var passVal by remember { mutableStateOf("MySecurePass123") }
+                var numVal by remember { mutableStateOf("9876543210") }
+                var emailVal by remember { mutableStateOf("monu@openforge.gov.in") }
+
+                Column(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    Ux4gInputField(
+                        value = textVal,
+                        onValueChange = { textVal = it },
+                        label = "Full Name (Text Type)",
+                        type = Ux4gInputFieldType.Text,
+                        placeholder = "Enter full name",
+                        leadingIcon = Icons.Default.Person
+                    )
+
+                    Ux4gInputField(
+                        value = passVal,
+                        onValueChange = { passVal = it },
+                        label = "Password (Password Type)",
+                        type = Ux4gInputFieldType.Password,
+                        placeholder = "Enter password",
+                        caption = "Click the eye icon to toggle visibility",
+                        leadingIcon = Icons.Default.Lock
+                    )
+
+                    Ux4gInputField(
+                        value = numVal,
+                        onValueChange = { numVal = it },
+                        label = "Mobile Number (Number Type)",
+                        type = Ux4gInputFieldType.Number,
+                        placeholder = "10 digit mobile",
+                        prefixText = "+91"
+                    )
+
+                    Ux4gInputField(
+                        value = emailVal,
+                        onValueChange = { emailVal = it },
+                        label = "Official Email (Email Type)",
+                        type = Ux4gInputFieldType.Email,
+                        placeholder = "user@domain.gov.in",
+                        leadingIcon = Icons.Default.Email
+                    )
+                }
+
+                Ux4gDivider()
+
+                // 28.3 Validation & Status States
+                Text(
+                    text = "28.3 Validation & Status States",
+                    style = defaultTypography.lS_strong
+                )
+
+                var defaultStatusText by remember { mutableStateOf("Active user input") }
+                var errorStatusText by remember { mutableStateOf("invalid-email-format") }
+                var warningStatusText by remember { mutableStateOf("weakpass") }
+                var successStatusText by remember { mutableStateOf("valid_user_99") }
+
+                Column(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    Ux4gInputField(
+                        value = defaultStatusText,
+                        onValueChange = { defaultStatusText = it },
+                        label = "Default State",
+                        status = Ux4gInputFieldStatus.Default,
+                        caption = "Standard input field with focus state"
+                    )
+
+                    Ux4gInputField(
+                        value = errorStatusText,
+                        onValueChange = { errorStatusText = it },
+                        label = "Error State",
+                        required = true,
+                        status = Ux4gInputFieldStatus.Error,
+                        caption = "Please enter a valid email address format."
+                    )
+
+                    Ux4gInputField(
+                        value = warningStatusText,
+                        onValueChange = { warningStatusText = it },
+                        label = "Warning State",
+                        status = Ux4gInputFieldStatus.Warning,
+                        caption = "Password strength is weak (add numbers & symbols)."
+                    )
+
+                    Ux4gInputField(
+                        value = successStatusText,
+                        onValueChange = { successStatusText = it },
+                        label = "Success State",
+                        status = Ux4gInputFieldStatus.Success,
+                        caption = "Username is available and verified."
+                    )
+
+                    Ux4gInputField(
+                        value = "Disabled content",
+                        onValueChange = {},
+                        label = "Disabled / Read-Only State",
+                        enabled = false,
+                        caption = "This field cannot be edited by the user."
+                    )
+                }
+
+                Ux4gDivider()
+
+                // 28.4 Affixes & Labels
+                Text(
+                    text = "28.4 Prefix, Postfix, Required & Helper Labels",
+                    style = defaultTypography.lS_strong
+                )
+
+                var currencyVal by remember { mutableStateOf("25000.00") }
+                var websiteVal by remember { mutableStateOf("myportal") }
+                var weightVal by remember { mutableStateOf("72.5") }
+
+                Column(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    Ux4gInputField(
+                        value = currencyVal,
+                        onValueChange = { currencyVal = it },
+                        label = "Annual Income",
+                        required = true,
+                        prefixText = "₹",
+                        postfixText = "INR",
+                        caption = "Gross income before deductions"
+                    )
+
+                    Ux4gInputField(
+                        value = websiteVal,
+                        onValueChange = { websiteVal = it },
+                        label = "Department Domain",
+                        trailingIconLabel = Icons.Default.Info,
+                        prefixText = "https://",
+                        postfixText = ".gov.in",
+                        caption = "Custom public portal endpoint"
+                    )
+
+                    Ux4gInputField(
+                        value = weightVal,
+                        onValueChange = { weightVal = it },
+                        label = "Package Weight",
+                        postfixText = "kg",
+                        caption = "Total consignment net weight"
+                    )
+                }
+            }
         }
     }
 }
