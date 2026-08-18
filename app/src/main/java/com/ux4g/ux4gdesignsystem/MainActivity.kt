@@ -3577,6 +3577,102 @@ fun MainContent(
                     margin = PaddingValues(0.dp)
                 )
             }
+
+            // 26. Empty State Component Showcase
+            Ux4gCard(
+                modifier = Modifier.fillMaxWidth(),
+                borderColor = Ux4gColors.neutral300,
+                borderWidth = 1.dp
+            ) {
+                Text(
+                    text = "26. Empty State",
+                    style = defaultTypography.hS_strong,
+                    color = Ux4gColors.primary
+                )
+
+                // 26.1 No Results State
+                Text(
+                    text = "26.1 No Results Found (Search Filter)",
+                    style = defaultTypography.lS_strong
+                )
+                Ux4gCard(
+                    modifier = Modifier.fillMaxWidth(),
+                    borderColor = Ux4gColors.neutral200,
+                    borderWidth = 1.dp
+                ) {
+                    Ux4gEmptyState(
+                        variant = Ux4gEmptyStateVariant.NoResults,
+                        title = "No results found",
+                        subtitle = "Did you mean: Driving License, Ration Card",
+                        buttonText = "Clear all filters",
+                        onButtonPressed = {}
+                    )
+                }
+
+                Ux4gDivider()
+
+                // 26.2 No Data State
+                Text(
+                    text = "26.2 No Data / Empty Inbox",
+                    style = defaultTypography.lS_strong
+                )
+                Ux4gCard(
+                    modifier = Modifier.fillMaxWidth(),
+                    borderColor = Ux4gColors.neutral200,
+                    borderWidth = 1.dp
+                ) {
+                    Ux4gEmptyState(
+                        variant = Ux4gEmptyStateVariant.NoData,
+                        title = "No items in your inbox",
+                        subtitle = "When you receive messages or official documents, they will appear here.",
+                        buttonText = "Refresh Inbox",
+                        onButtonPressed = {}
+                    )
+                }
+
+                Ux4gDivider()
+
+                // 26.3 Coming Soon State
+                Text(
+                    text = "26.3 Feature Coming Soon",
+                    style = defaultTypography.lS_strong
+                )
+                Ux4gCard(
+                    modifier = Modifier.fillMaxWidth(),
+                    borderColor = Ux4gColors.neutral200,
+                    borderWidth = 1.dp
+                ) {
+                    Ux4gEmptyState(
+                        variant = Ux4gEmptyStateVariant.ComingSoon,
+                        title = "Feature Coming Soon",
+                        subtitle = "We are working hard to bring digital verification services to you. Stay tuned!",
+                        buttonText = "Notify Me",
+                        onButtonPressed = {}
+                    )
+                }
+
+                Ux4gDivider()
+
+                // 26.4 Error State
+                Text(
+                    text = "26.4 Error / Loading Failed",
+                    style = defaultTypography.lS_strong
+                )
+                Ux4gCard(
+                    modifier = Modifier.fillMaxWidth(),
+                    borderColor = Ux4gColors.neutral200,
+                    borderWidth = 1.dp
+                ) {
+                    Ux4gEmptyState(
+                        variant = Ux4gEmptyStateVariant.Error,
+                        title = "Unable to load data",
+                        subtitle = "Please check your network connection and try again.",
+                        iconColor = Ux4gColors.red600,
+                        buttonText = "Try Again",
+                        onButtonPressed = {}
+                    )
+                }
+            }
         }
     }
 }
