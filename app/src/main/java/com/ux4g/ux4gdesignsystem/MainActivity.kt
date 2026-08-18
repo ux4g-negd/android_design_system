@@ -42,10 +42,10 @@ import com.ux4g.designsystemv1.components.avatar_component.*
 import com.ux4g.designsystemv1.components.buttons.Ux4gButton
 import com.ux4g.designsystemv1.components.buttons.Ux4gButtonSize
 import com.ux4g.designsystemv1.components.buttons.Ux4gButtonVariant
-import com.ux4g.designsystemv1.components.dropdowns.Ux4gDropdownOption
-import com.ux4g.designsystemv1.components.dropdowns.Ux4gSelectionDropdown
-import com.ux4g.designsystemv1.components.dropdowns.Ux4gSelectionDropdownMode
-import com.ux4g.designsystemv1.components.dropdowns.Ux4gDropdownFilterType
+import com.ux4g.designsystemv1.components.buttons.Ux4gIconButton
+import com.ux4g.designsystemv1.components.buttons.Ux4gIconButtonSize
+import com.ux4g.designsystemv1.components.buttons.Ux4gIconButtonStyle
+import com.ux4g.designsystemv1.components.dropdowns.*
 import com.ux4g.designsystemv1.components.inputfield.*
 import com.ux4g.designsystemv1.components.searchfield.*
 import com.ux4g.designsystemv1.components.steppers.StepperOrientation
@@ -969,48 +969,139 @@ fun MainContent(
         }
 
         // 7. Dropdown Showcase
-        Ux4gCard(modifier = Modifier.fillMaxWidth()) {
+        Ux4gCard(
+            modifier = Modifier.fillMaxWidth(),
+            borderColor = Ux4gColors.neutral300,
+            borderWidth = 1.dp
+        ) {
             Column(
-                    modifier = Modifier.padding(16.dp),
-                    verticalArrangement = Arrangement.spacedBy(16.dp)
+                modifier = Modifier.padding(16.dp),
+                verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                Text(text = "Selection Dropdowns", style = Ux4gTheme.typography.tS_strong)
+                Text(
+                    text = "7. Selection Dropdowns",
+                    style = defaultTypography.hS_strong,
+                    color = Ux4gColors.primary
+                )
+
                 val mockOptions = remember {
                     listOf(
-                            Ux4gDropdownOption("opt_1", "Option A"),
-                            Ux4gDropdownOption("opt_2", "Option B"),
-                            Ux4gDropdownOption("opt_3", "Option C", leadingIcon = Ux4gIcons.Person)
+                        Ux4gDropdownOption("opt_1", "Option A (English)"),
+                        Ux4gDropdownOption("opt_2", "Option B (Hindi)"),
+                        Ux4gDropdownOption("opt_3", "Option C (Spanish)", leadingIcon = Ux4gIcons.Person),
+                        Ux4gDropdownOption("opt_4", "Option D (French)")
                     )
                 }
                 var singleSelected by remember { mutableStateOf(listOf("opt_1")) }
                 var multiSelected by remember { mutableStateOf(listOf("opt_1", "opt_3")) }
 
+                // 7.1 Single & Multi Selection
+                Text("7.1 Single & Multi Selection", style = defaultTypography.lS_strong)
                 Ux4gSelectionDropdown(
-                        options = mockOptions,
-                        selectedOptionIds = singleSelected,
-                        onSelectionChange = { singleSelected = it },
-                        label = "Single Select",
-                        description = "Choose one option",
-                        mode = Ux4gSelectionDropdownMode.SingleSelect
+                    options = mockOptions,
+                    selectedOptionIds = singleSelected,
+                    onSelectionChange = { singleSelected = it },
+                    label = "Single Select",
+                    isRequired = true,
+                    description = "Choose one option from the list",
+                    mode = Ux4gDropdownMode.Single
                 )
                 Ux4gSelectionDropdown(
-                        options = mockOptions,
-                        selectedOptionIds = multiSelected,
-                        onSelectionChange = { multiSelected = it },
-                        label = "Multi Select",
-                        description = "Choose multiple options",
-                        mode = Ux4gSelectionDropdownMode.MultiSelect
+                    options = mockOptions,
+                    selectedOptionIds = multiSelected,
+                    onSelectionChange = { multiSelected = it },
+                    label = "Multi Select",
+                    isRequired = true,
+                    description = "Choose multiple options (chips displayed with remove action)",
+                    mode = Ux4gDropdownMode.Multi
+                )
+
+                Ux4gDivider()
+
+                // 7.2 Dropdown Sizes
+                Text("7.2 Dropdown Sizes (Small, Medium, Large)", style = defaultTypography.lS_strong)
+                var sizeSelectedS by remember { mutableStateOf(listOf("opt_1")) }
+                var sizeSelectedM by remember { mutableStateOf(listOf("opt_2")) }
+                var sizeSelectedL by remember { mutableStateOf(listOf("opt_3")) }
+
+                Ux4gSelectionDropdown(
+                    options = mockOptions,
+                    selectedOptionIds = sizeSelectedS,
+                    onSelectionChange = { sizeSelectedS = it },
+                    label = "Size Small (32dp)",
+                    size = Ux4gDropdownSize.S
+                )
+                Ux4gSelectionDropdown(
+                    options = mockOptions,
+                    selectedOptionIds = sizeSelectedM,
+                    onSelectionChange = { sizeSelectedM = it },
+                    label = "Size Medium (40dp)",
+                    size = Ux4gDropdownSize.M
+                )
+                Ux4gSelectionDropdown(
+                    options = mockOptions,
+                    selectedOptionIds = sizeSelectedL,
+                    onSelectionChange = { sizeSelectedL = it },
+                    label = "Size Large (48dp)",
+                    size = Ux4gDropdownSize.L
+                )
+
+                Ux4gDivider()
+
+                // 7.3 Validation & Status States
+                Text("7.3 Validation & Status States", style = defaultTypography.lS_strong)
+                Ux4gSelectionDropdown(
+                    options = mockOptions,
+                    selectedOptionIds = emptyList(),
+                    onSelectionChange = {},
+                    label = "Error State",
+                    isRequired = true,
+                    status = Ux4gDropdownStatus.Error,
+                    description = "This field is required and cannot be empty"
+                )
+                Ux4gSelectionDropdown(
+                    options = mockOptions,
+                    selectedOptionIds = listOf("opt_2"),
+                    onSelectionChange = {},
+                    label = "Warning State",
+                    status = Ux4gDropdownStatus.Warning,
+                    description = "Selected language has partial translation coverage"
+                )
+                Ux4gSelectionDropdown(
+                    options = mockOptions,
+                    selectedOptionIds = listOf("opt_1"),
+                    onSelectionChange = {},
+                    label = "Success State",
+                    status = Ux4gDropdownStatus.Success,
+                    description = "Language preference verified successfully"
+                )
+                Ux4gSelectionDropdown(
+                    options = mockOptions,
+                    selectedOptionIds = listOf("opt_1"),
+                    onSelectionChange = {},
+                    label = "Disabled State",
+                    status = Ux4gDropdownStatus.Disabled,
+                    description = "Selection is locked by administrator"
                 )
             }
         }
 
         // 7.1. Searchable Dropdown Showcase
-        Ux4gCard(modifier = Modifier.fillMaxWidth()) {
+        Ux4gCard(
+            modifier = Modifier.fillMaxWidth(),
+            borderColor = Ux4gColors.neutral300,
+            borderWidth = 1.dp
+        ) {
             Column(
-                    modifier = Modifier.padding(16.dp),
-                    verticalArrangement = Arrangement.spacedBy(16.dp)
+                modifier = Modifier.padding(16.dp),
+                verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                Text(text = "Searchable Selection Dropdowns", style = Ux4gTheme.typography.tS_strong)
+                Text(
+                    text = "7.4 Searchable Selection Dropdowns",
+                    style = defaultTypography.hS_strong,
+                    color = Ux4gColors.primary
+                )
+
                 val stateOptions = remember {
                     listOf(
                         Ux4gDropdownOption("ap", "Andhra Pradesh"),
@@ -1020,24 +1111,33 @@ fun MainContent(
                         Ux4gDropdownOption("cg", "Chhattisgarh"),
                         Ux4gDropdownOption("ga", "Goa"),
                         Ux4gDropdownOption("gj", "Gujarat"),
+                        Ux4gDropdownOption("hp", "Himachal Pradesh"),
+                        Ux4gDropdownOption("jk", "Jammu and Kashmir"),
+                        Ux4gDropdownOption("ka", "Karnataka"),
+                        Ux4gDropdownOption("kl", "Kerala"),
+                        Ux4gDropdownOption("mh", "Maharashtra"),
+                        Ux4gDropdownOption("mp", "Madhya Pradesh"),
+                        Ux4gDropdownOption("tn", "Tamil Nadu"),
+                        Ux4gDropdownOption("up", "Uttar Pradesh"),
+                        Ux4gDropdownOption("wb", "West Bengal")
                     )
                 }
                 var searchableSingleSelected by remember { mutableStateOf(listOf("br")) }
                 var searchableMultiSelected by remember { mutableStateOf(listOf("arp", "br")) }
 
-                Text("Filter Mode: StartsWithPerTerm", style = Ux4gTheme.typography.lS_strong)
+                Text("Filter Mode: StartsWithPerTerm", style = defaultTypography.lS_strong)
                 Ux4gSelectionDropdown(
                     options = stateOptions,
                     selectedOptionIds = searchableSingleSelected,
                     onSelectionChange = { searchableSingleSelected = it },
-                    label = "Single Select - Starts With Word",
-                    description = "Typing 'Pra' matches 'Pradesh'",
+                    label = "Single Select - Starts With Word (Per Term)",
+                    description = "Typing 'Pra' matches 'Pradesh' anywhere",
                     searchEnabled = true,
                     filterType = Ux4gDropdownFilterType.StartsWithPerTerm,
-                    mode = Ux4gSelectionDropdownMode.SingleSelect
+                    mode = Ux4gDropdownMode.Single
                 )
 
-                Text("Filter Mode: Contains", style = Ux4gTheme.typography.lS_strong)
+                Text("Filter Mode: Contains", style = defaultTypography.lS_strong)
                 Ux4gSelectionDropdown(
                     options = stateOptions,
                     selectedOptionIds = searchableSingleSelected,
@@ -1046,32 +1146,104 @@ fun MainContent(
                     description = "Typing 'esh' matches 'Pradesh'",
                     searchEnabled = true,
                     filterType = Ux4gDropdownFilterType.Contains,
-                    mode = Ux4gSelectionDropdownMode.SingleSelect
+                    mode = Ux4gDropdownMode.Single
                 )
 
-                Text("Filter Mode: StartsWith", style = Ux4gTheme.typography.lS_strong)
+                Text("Filter Mode: StartsWith (Strict)", style = defaultTypography.lS_strong)
                 Ux4gSelectionDropdown(
                     options = stateOptions,
                     selectedOptionIds = searchableSingleSelected,
                     onSelectionChange = { searchableSingleSelected = it },
-                    label = "Single Select - Starts With (Strict)",
+                    label = "Single Select - Starts With",
                     description = "Typing 'And' matches 'Andhra Pradesh'",
                     searchEnabled = true,
                     filterType = Ux4gDropdownFilterType.StartsWith,
-                    mode = Ux4gSelectionDropdownMode.SingleSelect
+                    mode = Ux4gDropdownMode.Single
                 )
 
-                Text("Multi Select Examples", style = Ux4gTheme.typography.lS_strong)
+                Text("Searchable Multi Select", style = defaultTypography.lS_strong)
                 Ux4gSelectionDropdown(
                     options = stateOptions,
                     selectedOptionIds = searchableMultiSelected,
                     onSelectionChange = { searchableMultiSelected = it },
-                    label = "Multi Select - Contains",
-                    description = "Choose multiple states",
+                    label = "Multi Select - Searchable",
+                    description = "Search and select multiple states",
                     searchEnabled = true,
                     filterType = Ux4gDropdownFilterType.Contains,
-                    mode = Ux4gSelectionDropdownMode.MultiSelect
+                    mode = Ux4gDropdownMode.Multi
                 )
+            }
+        }
+
+        // 7.2. Action Dropdown Showcase
+        Ux4gCard(
+            modifier = Modifier.fillMaxWidth(),
+            borderColor = Ux4gColors.neutral300,
+            borderWidth = 1.dp
+        ) {
+            Column(
+                modifier = Modifier.padding(16.dp),
+                verticalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+                Text(
+                    text = "7.5 Action Dropdowns",
+                    style = defaultTypography.hS_strong,
+                    color = Ux4gColors.primary
+                )
+
+                val actionOptions = remember {
+                    listOf(
+                        Ux4gActionDropdownOption("1", "Account Settings", showTrailingArrow = true),
+                        Ux4gActionDropdownOption("2", "Profile & Privacy", showTrailingArrow = true),
+                        Ux4gActionDropdownOption("3", "Notification Preferences", showTrailingArrow = true),
+                        Ux4gActionDropdownOption("4", "Current Active Plan", showTrailingArrow = false)
+                    )
+                }
+
+                var selectedActionId by remember { mutableStateOf("4") }
+
+                Text("Icon Button Trigger (More Options)", style = defaultTypography.lS_strong)
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(16.dp)
+                ) {
+                    Ux4gActionDropdown(
+                        options = actionOptions,
+                        selectedOptionId = selectedActionId,
+                        onOptionClick = { selectedActionId = it.id }
+                    ) { onClick ->
+                        Ux4gIconButton(
+                            onClick = onClick,
+                            type = Ux4gIconButtonStyle.Tonal,
+                            size = Ux4gIconButtonSize.M
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.MoreVert,
+                                contentDescription = "Menu Options",
+                                modifier = Modifier.size(24.dp),
+                                tint = Ux4gColors.neutral900
+                            )
+                        }
+                    }
+                    Text(
+                        text = "Selected Action ID: $selectedActionId",
+                        style = defaultTypography.bS_default,
+                        color = Ux4gColors.neutral700
+                    )
+                }
+
+                Text("Button Trigger (Custom Actions)", style = defaultTypography.lS_strong)
+                Ux4gActionDropdown(
+                    options = actionOptions,
+                    selectedOptionId = selectedActionId,
+                    onOptionClick = { selectedActionId = it.id }
+                ) { onClick ->
+                    Ux4gButton(
+                        text = "Open Quick Actions",
+                        variant = Ux4gButtonVariant.Outline,
+                        onClick = onClick
+                    )
+                }
             }
         }
 

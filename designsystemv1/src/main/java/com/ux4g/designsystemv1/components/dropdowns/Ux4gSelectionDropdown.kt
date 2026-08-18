@@ -3,69 +3,91 @@ package com.ux4g.designsystemv1.components.dropdowns
 import android.content.res.Configuration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
-import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.widthIn
-import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.CheckCircle
+import androidx.compose.material.icons.filled.Error
 import androidx.compose.material.icons.filled.KeyboardArrowDown
+import androidx.compose.material.icons.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.KeyboardArrowUp
+import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.Warning
+import androidx.compose.material.icons.outlined.Info
+import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MenuAnchorType
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.FocusRequester
-import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
-import androidx.compose.ui.state.ToggleableState
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.res.painterResource
 import com.ux4g.designsystemv1.components.Ux4gCheckbox
 import com.ux4g.designsystemv1.components.Ux4gCheckboxSize
+import com.ux4g.designsystemv1.components.Ux4gDivider
 import com.ux4g.designsystemv1.components.Ux4gInputChip
 import com.ux4g.designsystemv1.components.Ux4gInputChipSize
+import com.ux4g.designsystemv1.components.buttons.Ux4gButton
+import com.ux4g.designsystemv1.components.buttons.Ux4gIconButton
+import com.ux4g.designsystemv1.components.buttons.Ux4gIconButtonSize
+import com.ux4g.designsystemv1.components.buttons.Ux4gIconButtonStyle
+import com.ux4g.designsystemv1.foundation.Ux4gColors
 import com.ux4g.designsystemv1.foundation.Ux4gIcon
 import com.ux4g.designsystemv1.foundation.Ux4gIconComponent
-import com.ux4g.designsystemv1.foundation.Ux4gIcons
-import com.ux4g.designsystemv1.foundation.Ux4gColors
 import com.ux4g.designsystemv1.foundation.Ux4gRadius
-import com.ux4g.designsystemv1.foundation.Ux4gSpace
-import com.ux4g.designsystemv1.theme.Ux4gTheme
+import com.ux4g.designsystemv1.foundation.defaultTypography
 
-enum class Ux4gSelectionDropdownSize {
-    S,
-    M,
-    L
+@Composable
+private fun DropdownOptionLeadingIcon(
+    icon: Any?,
+    tint: Color,
+    modifier: Modifier = Modifier.size(20.dp)
+) {
+    when (icon) {
+        is ImageVector -> Icon(imageVector = icon, contentDescription = null, tint = tint, modifier = modifier)
+        is Ux4gIcon -> Ux4gIconComponent(icon = icon, contentDescription = null, tint = tint, modifier = modifier)
+        is Int -> Icon(painter = painterResource(id = icon), contentDescription = null, tint = tint, modifier = modifier)
+    }
 }
 
-enum class Ux4gSelectionDropdownMode {
-    SingleSelect,
-    MultiSelect
-}
+// ─────────────────────────────────────────────────────────────────────────────
+// Enums & Option Models
+// ─────────────────────────────────────────────────────────────────────────────
 
 enum class Ux4gDropdownFilterType {
     Contains,
@@ -73,57 +95,89 @@ enum class Ux4gDropdownFilterType {
     StartsWithPerTerm
 }
 
-enum class Ux4gSelectionDropdownStatus {
+enum class Ux4gDropdownSize {
+    S,
+    M,
+    L
+}
+typealias Ux4gSelectionDropdownSize = Ux4gDropdownSize
+
+enum class Ux4gDropdownMode {
+    Single,
+    Multi;
+
+    companion object {
+        val SingleSelect = Single
+        val MultiSelect = Multi
+    }
+}
+typealias Ux4gSelectionDropdownMode = Ux4gDropdownMode
+
+enum class Ux4gDropdownStatus {
     Default,
     Error,
-    Disabled
+    Disabled,
+    Warning,
+    Success
 }
+typealias Ux4gSelectionDropdownStatus = Ux4gDropdownStatus
 
-data class Ux4gDropdownOption(val id: String, val label: String, val leadingIcon: Ux4gIcon? = null)
+data class Ux4gDropdownOption(
+    val id: String,
+    val label: String,
+    val leadingIcon: Any? = null
+)
 
+// ─────────────────────────────────────────────────────────────────────────────
+// Selection Dropdown
+// ─────────────────────────────────────────────────────────────────────────────
+
+/**
+ * A highly customizable Selection Dropdown component supporting single and multi-select modes,
+ * search filtering, chips display, validation statuses (Error, Warning, Success, Disabled),
+ * sizes, and label/description styling.
+ *
+ * Matches UX4G Flutter design specifications 1:1.
+ */
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
 fun Ux4gSelectionDropdown(
-        options: List<Ux4gDropdownOption>,
-        selectedOptionIds: List<String>,
-        onSelectionChange: (List<String>) -> Unit,
-        modifier: Modifier = Modifier,
-        label: String? = null,
-        description: String? = null,
-        placeholder: String = "Please select..",
-        size: Ux4gSelectionDropdownSize = Ux4gSelectionDropdownSize.M,
-        mode: Ux4gSelectionDropdownMode = Ux4gSelectionDropdownMode.SingleSelect,
-        status: Ux4gSelectionDropdownStatus = Ux4gSelectionDropdownStatus.Default,
-        searchEnabled: Boolean = false,
-        filterType: Ux4gDropdownFilterType = Ux4gDropdownFilterType.Contains,
+    options: List<Ux4gDropdownOption>,
+    selectedOptionIds: List<String>,
+    onSelectionChange: (List<String>) -> Unit,
+    modifier: Modifier = Modifier,
+    label: String? = null,
+    isRequired: Boolean = false,
+    description: String? = null,
+    placeholder: String = "Please select..",
+    size: Ux4gDropdownSize = Ux4gDropdownSize.M,
+    mode: Ux4gDropdownMode = Ux4gDropdownMode.Single,
+    status: Ux4gDropdownStatus = Ux4gDropdownStatus.Default,
+    searchEnabled: Boolean = false,
+    filterType: Ux4gDropdownFilterType = Ux4gDropdownFilterType.Contains,
+    leadingIcon: ImageVector? = null,
+    labelTextStyle: TextStyle? = null,
+    valueTextStyle: TextStyle? = null
 ) {
     var expanded by remember { mutableStateOf(false) }
     var searchQuery by remember { mutableStateOf("") }
-    val focusRequester = remember { FocusRequester() }
-
-    LaunchedEffect(expanded) {
-        if (expanded && searchEnabled) {
-            focusRequester.requestFocus()
-        }
-    }
 
     val filteredOptions = remember(options, searchQuery, filterType, searchEnabled) {
         if (!searchEnabled || searchQuery.isEmpty()) options
         else {
-            val query = searchQuery.trim()
+            val query = searchQuery.trim().lowercase()
             if (query.isEmpty()) options
             else {
                 options.filter { option ->
+                    val labelLower = option.label.lowercase()
                     when (filterType) {
-                        Ux4gDropdownFilterType.Contains ->
-                            option.label.contains(query, ignoreCase = true)
-                        Ux4gDropdownFilterType.StartsWith ->
-                            option.label.startsWith(query, ignoreCase = true)
+                        Ux4gDropdownFilterType.Contains -> labelLower.contains(query)
+                        Ux4gDropdownFilterType.StartsWith -> labelLower.startsWith(query)
                         Ux4gDropdownFilterType.StartsWithPerTerm -> {
                             val queryTerms = query.split(" ").filter { it.isNotEmpty() }
-                            val labelTerms = option.label.split(" ").filter { it.isNotEmpty() }
+                            val labelTerms = labelLower.split(" ").filter { it.isNotEmpty() }
                             queryTerms.all { qTerm ->
-                                labelTerms.any { lTerm -> lTerm.startsWith(qTerm, ignoreCase = true) }
+                                labelTerms.any { lTerm -> lTerm.startsWith(qTerm) }
                             }
                         }
                     }
@@ -132,160 +186,134 @@ fun Ux4gSelectionDropdown(
         }
     }
 
-    val (minHeight, verticalPadding) =
-            when (size) {
-                Ux4gSelectionDropdownSize.S -> 32.dp to 6.dp
-                Ux4gSelectionDropdownSize.M -> 40.dp to 8.dp
-                Ux4gSelectionDropdownSize.L -> 48.dp to 12.dp
-            }
+    val (minHeight, verticalPadding) = when (size) {
+        Ux4gDropdownSize.S -> 32.dp to 6.dp
+        Ux4gDropdownSize.M -> 40.dp to 8.dp
+        Ux4gDropdownSize.L -> 48.dp to 12.dp
+    }
 
-    val textStyle =
-            when (size) {
-                Ux4gSelectionDropdownSize.S -> Ux4gTheme.typography.lM_default
-                Ux4gSelectionDropdownSize.M -> Ux4gTheme.typography.lL_default
-                Ux4gSelectionDropdownSize.L -> Ux4gTheme.typography.lXL_default
-            }
+    val defaultTextStyle = when (size) {
+        Ux4gDropdownSize.S -> defaultTypography.lM_default
+        Ux4gDropdownSize.M -> defaultTypography.lL_default
+        Ux4gDropdownSize.L -> defaultTypography.lXL_default
+    }
 
-    val borderColor =
-            when (status) {
-                Ux4gSelectionDropdownStatus.Disabled ->
-                        Ux4gTheme.colorScheme.onSurface.copy(alpha = 0.2f)
-                Ux4gSelectionDropdownStatus.Error -> Ux4gTheme.colorScheme.error
-                Ux4gSelectionDropdownStatus.Default ->
-                        if (expanded) Ux4gTheme.colorScheme.primary
-                        else Ux4gTheme.colorScheme.onSurface.copy(alpha = 0.2f)
-            }
+    val onSurface = Ux4gColors.neutral900
+    val defaultBgColor = Ux4gColors.neutral0
+    val defaultBorderColor = Ux4gColors.neutral200
 
-    val backgroundColor =
-            when (status) {
-                Ux4gSelectionDropdownStatus.Disabled ->
-                        Ux4gTheme.colorScheme.onSurface.copy(alpha = 0.04f)
-                else -> Ux4gTheme.colorScheme.surface
-            }
+    val borderColor = when (status) {
+        Ux4gDropdownStatus.Disabled -> onSurface.copy(alpha = 0.2f)
+        Ux4gDropdownStatus.Error -> Ux4gColors.red600
+        Ux4gDropdownStatus.Warning -> Ux4gColors.orange600
+        Ux4gDropdownStatus.Success -> Ux4gColors.green600
+        Ux4gDropdownStatus.Default -> if (expanded) Ux4gColors.primary else defaultBorderColor
+    }
 
-    val descriptionColor =
-            if (status == Ux4gSelectionDropdownStatus.Error) Ux4gTheme.colorScheme.error
-            else Ux4gTheme.colorScheme.onSurface.copy(alpha = 0.7f)
-    val descriptionIcon =
-            if (status == Ux4gSelectionDropdownStatus.Error) Ux4gIcons.error
-            else Ux4gIcons.info_circle
+    val descriptionColor = when (status) {
+        Ux4gDropdownStatus.Error -> Ux4gColors.red600
+        Ux4gDropdownStatus.Warning -> Ux4gColors.orange600
+        Ux4gDropdownStatus.Success -> Ux4gColors.green600
+        else -> onSurface.copy(alpha = 0.7f)
+    }
+
+    fun handleSelection(id: String) {
+        if (mode == Ux4gDropdownMode.Single) {
+            onSelectionChange(listOf(id))
+            expanded = false
+            searchQuery = ""
+        } else {
+            val newSelection = if (selectedOptionIds.contains(id)) {
+                selectedOptionIds - id
+            } else {
+                selectedOptionIds + id
+            }
+            onSelectionChange(newSelection)
+        }
+    }
 
     Column(modifier = modifier.fillMaxWidth()) {
+        // Label
         if (label != null) {
-            Text(
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.padding(bottom = 4.dp)
+            ) {
+                Text(
                     text = label,
-                    style = Ux4gTheme.typography.hS_default,
-                    color =
-                            if (status == Ux4gSelectionDropdownStatus.Disabled)
-                                    Ux4gTheme.colorScheme.onSurface.copy(alpha = 0.38f)
-                            else Ux4gTheme.colorScheme.onSurface,
-                    modifier = Modifier.padding(bottom = Ux4gSpace.Space4)
-            )
+                    style = (labelTextStyle ?: defaultTypography.lL_default).copy(
+                        color = if (status == Ux4gDropdownStatus.Disabled) onSurface.copy(alpha = 0.38f) else onSurface
+                    )
+                )
+                if (isRequired) {
+                    Spacer(modifier = Modifier.width(4.dp))
+                    Text(
+                        text = "*",
+                        style = defaultTypography.bS_strong.copy(color = Ux4gColors.red600)
+                    )
+                }
+            }
         }
 
+        // Trigger Box & Exposed Dropdown Menu
         ExposedDropdownMenuBox(
-                expanded = expanded,
-                onExpandedChange = {
-                    if (status != Ux4gSelectionDropdownStatus.Disabled) expanded = it
+            expanded = expanded,
+            onExpandedChange = {
+                if (status != Ux4gDropdownStatus.Disabled) {
+                    expanded = it
+                    if (!it) searchQuery = ""
                 }
+            }
         ) {
             Row(
-                    modifier =
-                            Modifier.fillMaxWidth()
-                                    .heightIn(min = minHeight)
-                                    .menuAnchor(
-                                            type = if (searchEnabled) MenuAnchorType.PrimaryEditable else MenuAnchorType.PrimaryNotEditable,
-                                            enabled = status != Ux4gSelectionDropdownStatus.Disabled
-                                    )
-                                    .background(
-                                            backgroundColor,
-                                            RoundedCornerShape(Ux4gRadius.Radius8)
-                                    )
-                                    .border(
-                                            1.dp,
-                                            borderColor,
-                                            RoundedCornerShape(Ux4gRadius.Radius8)
-                                    )
-                                    .padding(horizontal = 12.dp, vertical = verticalPadding),
-                    verticalAlignment = Alignment.CenterVertically
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .heightIn(min = minHeight)
+                    .menuAnchor(
+                        type = MenuAnchorType.PrimaryNotEditable,
+                        enabled = status != Ux4gDropdownStatus.Disabled
+                    )
+                    .clip(RoundedCornerShape(Ux4gRadius.Radius8))
+                    .background(
+                        if (status == Ux4gDropdownStatus.Disabled) onSurface.copy(alpha = 0.04f)
+                        else defaultBgColor
+                    )
+                    .border(
+                        1.dp,
+                        borderColor,
+                        RoundedCornerShape(Ux4gRadius.Radius8)
+                    )
+                    .padding(horizontal = 12.dp, vertical = verticalPadding),
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                if (selectedOptionIds.isEmpty() && (!searchEnabled || !expanded)) {
-                    Row(
-                        modifier = Modifier.weight(1f),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        if (searchEnabled && expanded) {
-                            Ux4gIconComponent(
-                                icon = Ux4gIcons.Search,
-                                contentDescription = null,
-                                modifier = Modifier.size(20.dp),
-                                tint = Ux4gTheme.colorScheme.onSurface.copy(alpha = 0.6f)
-                            )
-                            Spacer(modifier = Modifier.width(8.dp))
-                        }
+                if (leadingIcon != null) {
+                    Icon(
+                        imageVector = leadingIcon,
+                        contentDescription = null,
+                        tint = onSurface.copy(alpha = 0.6f),
+                        modifier = Modifier.size(20.dp)
+                    )
+                    Spacer(modifier = Modifier.width(8.dp))
+                }
+
+                Box(modifier = Modifier.weight(1f)) {
+                    if (selectedOptionIds.isEmpty()) {
                         Text(
                             text = placeholder,
-                            style = textStyle,
-                            color = Ux4gTheme.colorScheme.onSurface.copy(alpha = 0.38f),
-                            modifier = Modifier.weight(1f)
+                            style = defaultTextStyle.copy(color = Ux4gColors.neutral500)
                         )
-                    }
-                } else {
-                    if (mode == Ux4gSelectionDropdownMode.SingleSelect) {
+                    } else if (mode == Ux4gDropdownMode.Single) {
                         val selectedOpt = options.find { it.id == selectedOptionIds.firstOrNull() }
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            modifier = Modifier.weight(1f)
-                        ) {
-                            if (searchEnabled && expanded) {
-                                Ux4gIconComponent(
-                                    icon = Ux4gIcons.Search,
-                                    contentDescription = null,
-                                    modifier = Modifier.size(20.dp),
-                                    tint = Ux4gTheme.colorScheme.onSurface.copy(alpha = 0.6f)
-                                )
-                                Spacer(modifier = Modifier.width(8.dp))
-                                BasicTextField(
-                                    value = searchQuery,
-                                    onValueChange = { searchQuery = it },
-                                    modifier = Modifier.weight(1f).focusRequester(focusRequester),
-                                    textStyle = textStyle.copy(color = Ux4gTheme.colorScheme.onSurface),
-                                    cursorBrush = SolidColor(Ux4gTheme.colorScheme.primary),
-                                    decorationBox = { innerTextField ->
-                                        if (searchQuery.isEmpty()) {
-                                            Text(
-                                                text = "Start typing..",
-                                                style = textStyle,
-                                                color = Ux4gTheme.colorScheme.onSurface.copy(alpha = 0.38f)
-                                            )
-                                        }
-                                        innerTextField()
-                                    }
-                                )
-                            } else {
-                                if (selectedOpt?.leadingIcon != null) {
-                                    Ux4gIconComponent(
-                                        icon = selectedOpt.leadingIcon,
-                                        contentDescription = null,
-                                        modifier = Modifier.size(20.dp),
-                                        tint = Ux4gTheme.colorScheme.onSurface
-                                    )
-                                    Spacer(modifier = Modifier.width(8.dp))
-                                }
-                                Text(
-                                    text = selectedOpt?.label ?: "",
-                                    style = textStyle,
-                                    color = Ux4gTheme.colorScheme.onSurface,
-                                    modifier = Modifier.weight(1f)
-                                )
-                            }
-                        }
+                        Text(
+                            text = selectedOpt?.label ?: "",
+                            style = valueTextStyle ?: defaultTextStyle.copy(color = onSurface)
+                        )
                     } else {
-                        // Multi Select Mode
+                        // Multi Select Chips
                         FlowRow(
-                            modifier = Modifier.weight(1f),
                             horizontalArrangement = Arrangement.spacedBy(4.dp),
-                            verticalArrangement = Arrangement.spacedBy(4.dp)
+                            verticalArrangement = Arrangement.spacedBy(4.dp),
+                            modifier = Modifier.fillMaxWidth()
                         ) {
                             selectedOptionIds.forEach { id ->
                                 val selectedOpt = options.find { it.id == id }
@@ -293,52 +321,11 @@ fun Ux4gSelectionDropdown(
                                     Ux4gInputChip(
                                         text = selectedOpt.label,
                                         onDismiss = {
-                                            if (status != Ux4gSelectionDropdownStatus.Disabled) {
+                                            if (status != Ux4gDropdownStatus.Disabled) {
                                                 onSelectionChange(selectedOptionIds - id)
                                             }
                                         },
-                                        size = if (size == Ux4gSelectionDropdownSize.S) Ux4gInputChipSize.S else Ux4gInputChipSize.M,
-                                        leadingContent = selectedOpt.leadingIcon?.let { icon ->
-                                            @Composable {
-                                                Ux4gIconComponent(
-                                                    icon = icon,
-                                                    contentDescription = null,
-                                                    modifier = Modifier.size(16.dp),
-                                                    tint = Ux4gTheme.colorScheme.onSurface
-                                                )
-                                            }
-                                        }
-                                    )
-                                }
-                            }
-                            if (searchEnabled && expanded) {
-                                Row(
-                                    verticalAlignment = Alignment.CenterVertically,
-                                    modifier = Modifier.width(IntrinsicSize.Min).defaultMinSize(minWidth = 100.dp)
-                                ) {
-                                    Ux4gIconComponent(
-                                        icon = Ux4gIcons.Search,
-                                        contentDescription = null,
-                                        modifier = Modifier.size(16.dp),
-                                        tint = Ux4gTheme.colorScheme.onSurface.copy(alpha = 0.6f)
-                                    )
-                                    Spacer(modifier = Modifier.width(4.dp))
-                                    BasicTextField(
-                                        value = searchQuery,
-                                        onValueChange = { searchQuery = it },
-                                        modifier = Modifier.widthIn(min = 80.dp).focusRequester(focusRequester),
-                                        textStyle = textStyle.copy(color = Ux4gTheme.colorScheme.onSurface),
-                                        cursorBrush = SolidColor(Ux4gTheme.colorScheme.primary),
-                                        decorationBox = { innerTextField ->
-                                            if (searchQuery.isEmpty()) {
-                                                Text(
-                                                    text = "Start typing..",
-                                                    style = textStyle,
-                                                    color = Ux4gTheme.colorScheme.onSurface.copy(alpha = 0.38f)
-                                                )
-                                            }
-                                            innerTextField()
-                                        }
+                                        size = if (size == Ux4gDropdownSize.S) Ux4gInputChipSize.XS else Ux4gInputChipSize.S
                                     )
                                 }
                             }
@@ -346,246 +333,242 @@ fun Ux4gSelectionDropdown(
                     }
                 }
 
-                Ux4gIconComponent(
-                        icon =
-                                Ux4gIcon.Vector(
-                                        if (expanded) Icons.Filled.KeyboardArrowUp
-                                        else Icons.Filled.KeyboardArrowDown
-                                ),
-                        contentDescription = null,
-                        modifier = Modifier.size(20.dp),
-                        tint = Ux4gTheme.colorScheme.onSurface.copy(alpha = 0.6f)
+                Spacer(modifier = Modifier.width(8.dp))
+                Icon(
+                    imageVector = if (expanded) Icons.Default.KeyboardArrowUp else Icons.Default.KeyboardArrowDown,
+                    contentDescription = "Toggle Dropdown",
+                    tint = onSurface.copy(alpha = 0.6f),
+                    modifier = Modifier.size(20.dp)
                 )
             }
 
+            // Dropdown Menu Popover
             ExposedDropdownMenu(
-                    expanded = expanded,
-                    onDismissRequest = { 
-                        expanded = false
-                        searchQuery = ""
-                    },
-                    modifier =
-                            Modifier.background(Ux4gTheme.colorScheme.surface).exposedDropdownSize()
+                expanded = expanded,
+                onDismissRequest = {
+                    expanded = false
+                    searchQuery = ""
+                },
+                modifier = Modifier
+                    .background(Ux4gColors.neutral0)
+                    .border(1.dp, Ux4gColors.neutral900.copy(alpha = 0.12f), RoundedCornerShape(Ux4gRadius.Radius8))
             ) {
-                filteredOptions.forEach { option ->
-                    val isSelected = selectedOptionIds.contains(option.id)
-                    val bg =
-                            if (isSelected && mode == Ux4gSelectionDropdownMode.SingleSelect)
-                                    Ux4gColors.primary50
-                            else Color.Transparent
+                // Search Field inside dropdown
+                if (searchEnabled) {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 8.dp, vertical = 8.dp)
+                    ) {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clip(RoundedCornerShape(8.dp))
+                                .border(1.dp, Ux4gColors.neutral300, RoundedCornerShape(8.dp))
+                                .background(Ux4gColors.neutral0)
+                                .padding(horizontal = 10.dp, vertical = 8.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Search,
+                                contentDescription = "Search",
+                                tint = Ux4gColors.neutral500,
+                                modifier = Modifier.size(18.dp)
+                            )
+                            Spacer(modifier = Modifier.width(8.dp))
+                            BasicTextField(
+                                value = searchQuery,
+                                onValueChange = { searchQuery = it },
+                                textStyle = defaultTypography.bM_default.copy(color = Ux4gColors.neutral900),
+                                singleLine = true,
+                                cursorBrush = SolidColor(Ux4gColors.primary),
+                                decorationBox = { innerTextField ->
+                                    if (searchQuery.isEmpty()) {
+                                        Text(
+                                            text = "Start typing..",
+                                            style = defaultTypography.bM_default.copy(color = Ux4gColors.neutral500)
+                                        )
+                                    }
+                                    innerTextField()
+                                },
+                                modifier = Modifier.fillMaxWidth()
+                            )
+                        }
+                    }
+                }
 
-                    DropdownMenuItem(
+                // Options List
+                if (filteredOptions.isEmpty()) {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(16.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            text = "No options found",
+                            style = defaultTypography.bS_default.copy(color = Ux4gColors.neutral500)
+                        )
+                    }
+                } else {
+                    filteredOptions.forEach { option ->
+                        val isSelected = selectedOptionIds.contains(option.id)
+                        val selectedBg = if (isSelected) Ux4gColors.primary50 else Color.Transparent
+                        val activeColor = if (isSelected) Ux4gColors.primary600 else Ux4gColors.neutral900
+
+                        DropdownMenuItem(
                             text = {
                                 Row(
-                                        modifier = Modifier.fillMaxWidth(),
-                                        verticalAlignment = Alignment.CenterVertically
+                                    modifier = Modifier.fillMaxWidth(),
+                                    verticalAlignment = Alignment.CenterVertically
                                 ) {
-                                    if (mode == Ux4gSelectionDropdownMode.MultiSelect) {
+                                    if (mode == Ux4gDropdownMode.Multi) {
                                         Ux4gCheckbox(
-                                            state =
-                                                if (isSelected) ToggleableState.On
-                                                else ToggleableState.Off,
-                                            onClick = {
-                                                val newIds =
-                                                    if (isSelected) {
-                                                        selectedOptionIds - option.id
-                                                    } else {
-                                                        selectedOptionIds + option.id
-                                                    }
-                                                onSelectionChange(newIds)
-                                                // Does not auto-close for multi-select
-                                            },
-                                            label = option.label,
+                                            value = isSelected,
+                                            onValueChange = { handleSelection(option.id) },
                                             size = Ux4gCheckboxSize.Medium
                                         )
-                                    } else {
-                                        if (option.leadingIcon != null) {
-                                            Ux4gIconComponent(
-                                                    icon = option.leadingIcon,
-                                                    contentDescription = null,
-                                                    modifier = Modifier.size(20.dp),
-                                                    tint =
-                                                            if (isSelected)
-                                                                    Ux4gTheme.colorScheme.primary
-                                                            else Ux4gTheme.colorScheme.onSurface
-                                            )
-                                            Spacer(modifier = Modifier.width(8.dp))
-                                        }
-
-                                        Text(
-                                                text = option.label,
-                                                style = Ux4gTheme.typography.lL_default,
-                                                color =
-                                                        if (isSelected)
-                                                                Ux4gTheme.colorScheme.primary
-                                                        else Ux4gTheme.colorScheme.onSurface,
-                                                modifier = Modifier.weight(1f)
+                                        Spacer(modifier = Modifier.width(12.dp))
+                                    } else if (option.leadingIcon != null) {
+                                        DropdownOptionLeadingIcon(
+                                            icon = option.leadingIcon,
+                                            tint = if (isSelected) activeColor else onSurface.copy(alpha = 0.6f),
+                                            modifier = Modifier.size(20.dp)
                                         )
+                                        Spacer(modifier = Modifier.width(12.dp))
+                                    }
 
-                                        if (isSelected) {
-                                            Ux4gIconComponent(
-                                                    icon = Ux4gIcons.Check,
-                                                    contentDescription = null,
-                                                    modifier = Modifier.size(20.dp),
-                                                    tint = Ux4gTheme.colorScheme.primary
-                                            )
-                                        }
+                                    Text(
+                                        text = option.label,
+                                        style = defaultTypography.bS_default.copy(
+                                            color = if (isSelected) activeColor else onSurface,
+                                            fontWeight = if (isSelected) FontWeight.SemiBold else FontWeight.Normal
+                                        ),
+                                        modifier = Modifier.weight(1f)
+                                    )
+
+                                    if (mode == Ux4gDropdownMode.Single && isSelected) {
+                                        Icon(
+                                            imageVector = Icons.Default.Check,
+                                            contentDescription = "Selected",
+                                            tint = Ux4gColors.primary,
+                                            modifier = Modifier.size(20.dp)
+                                        )
                                     }
                                 }
                             },
-                            modifier = Modifier.background(bg),
-                            onClick = {
-                                if (mode == Ux4gSelectionDropdownMode.SingleSelect) {
-                                    onSelectionChange(listOf(option.id))
-                                    expanded = false
-                                    searchQuery = ""
-                                } else {
-                                    val newIds =
-                                            if (isSelected) {
-                                                selectedOptionIds - option.id
-                                            } else {
-                                                selectedOptionIds + option.id
-                                            }
-                                    onSelectionChange(newIds)
-                                }
-                            }
-                    )
+                            modifier = Modifier.background(selectedBg),
+                            onClick = { handleSelection(option.id) }
+                        )
+                    }
                 }
             }
         }
 
+        // Description / Status Icon
         if (description != null) {
-            Row(
-                    modifier = Modifier.padding(top = 4.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(4.dp)
-            ) {
-                Ux4gIconComponent(
-                        icon = descriptionIcon,
-                        contentDescription = null,
-                        modifier = Modifier.size(16.dp),
-                        tint = descriptionColor
+            Spacer(modifier = Modifier.height(4.dp))
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                val statusIcon = when (status) {
+                    Ux4gDropdownStatus.Error -> Icons.Default.Error
+                    Ux4gDropdownStatus.Warning -> Icons.Default.Warning
+                    Ux4gDropdownStatus.Success -> Icons.Default.CheckCircle
+                    else -> Icons.Outlined.Info
+                }
+                Icon(
+                    imageVector = statusIcon,
+                    contentDescription = null,
+                    tint = descriptionColor,
+                    modifier = Modifier.size(16.dp)
                 )
+                Spacer(modifier = Modifier.width(4.dp))
                 Text(
-                        text = description,
-                        style = Ux4gTheme.typography.lS_default,
-                        color = descriptionColor
+                    text = description,
+                    style = defaultTypography.lS_default.copy(color = descriptionColor)
                 )
             }
         }
     }
 }
 
-// -----------------------------------------------------------------------------------------
-// Previews and Examples
-// -----------------------------------------------------------------------------------------
+// ═══════════════════════════════════════════════════════
+// Previews
+// ═══════════════════════════════════════════════════════
 
-@Preview(name = "Light", showBackground = true)
-@Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
+@Preview(name = "Selection Dropdown - Light", showBackground = true, backgroundColor = 0xFFFFFFFF)
+@Preview(name = "Selection Dropdown - Dark", uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true, backgroundColor = 0xFF121212)
 @Composable
 private fun Ux4gSelectionDropdownPreview() {
-    Ux4gTheme {
-        Surface(color = Ux4gTheme.colorScheme.background) {
-            Column(
-                    modifier = Modifier.fillMaxWidth().padding(24.dp),
-                    verticalArrangement = Arrangement.spacedBy(24.dp)
-            ) {
-                // Mock dropdown options
-                val mockOptions =
-                        listOf(
-                                Ux4gDropdownOption("opt_1", "Option A"),
-                                Ux4gDropdownOption("opt_2", "Selected option"),
-                                Ux4gDropdownOption(
-                                        "opt_3",
-                                        "Option C",
-                                        leadingIcon = Ux4gIcons.Person
-                                ),
-                                Ux4gDropdownOption("opt_4", "Option D")
-                        )
+    Column(
+        modifier = Modifier.padding(16.dp),
+        verticalArrangement = Arrangement.spacedBy(20.dp)
+    ) {
+        val sampleOptions = listOf(
+            Ux4gDropdownOption("1", "Option 1 (English)"),
+            Ux4gDropdownOption("2", "Option 2 (Hindi)"),
+            Ux4gDropdownOption("3", "Option 3 (Spanish)"),
+            Ux4gDropdownOption("4", "Option 4 (French)")
+        )
 
-                var singleSelected by remember { mutableStateOf(listOf("opt_3")) }
-                var singleSelectedError by remember { mutableStateOf(listOf("opt_3")) }
-                var multiSelected by remember { mutableStateOf(listOf("opt_2", "opt_3")) }
+        // Single Select
+        var singleSelected by remember { mutableStateOf(listOf("1")) }
+        Ux4gSelectionDropdown(
+            label = "Language Preference",
+            isRequired = true,
+            options = sampleOptions,
+            selectedOptionIds = singleSelected,
+            onSelectionChange = { singleSelected = it },
+            searchEnabled = true,
+            description = "Select your preferred application language"
+        )
 
-                Text("Single Select Configuration", style = Ux4gTheme.typography.hS_default)
-                Ux4gSelectionDropdown(
-                        options = mockOptions,
-                        selectedOptionIds = singleSelected,
-                        onSelectionChange = { singleSelected = it },
-                        label = "Please select (Single)",
-                        description = "Description message under field",
-                        mode = Ux4gSelectionDropdownMode.SingleSelect
-                )
+        // Multi Select
+        var multiSelected by remember { mutableStateOf(listOf("1", "2")) }
+        Ux4gSelectionDropdown(
+            label = "Target Regions",
+            mode = Ux4gDropdownMode.Multi,
+            options = sampleOptions,
+            selectedOptionIds = multiSelected,
+            onSelectionChange = { multiSelected = it },
+            searchEnabled = true,
+            description = "Choose one or more target regions"
+        )
 
-                Text("Single Select - Error variant", style = Ux4gTheme.typography.hS_default)
-                Ux4gSelectionDropdown(
-                        options = mockOptions,
-                        selectedOptionIds = singleSelectedError,
-                        onSelectionChange = { singleSelectedError = it },
-                        label = "Error Selection",
-                        description = "Error message",
-                        status = Ux4gSelectionDropdownStatus.Error,
-                        mode = Ux4gSelectionDropdownMode.SingleSelect
-                )
+        // Status Variants
+        Ux4gSelectionDropdown(
+            label = "Error State",
+            options = sampleOptions,
+            selectedOptionIds = emptyList(),
+            onSelectionChange = {},
+            status = Ux4gDropdownStatus.Error,
+            description = "This field is required"
+        )
 
-                Text("Multi Select Configuration", style = Ux4gTheme.typography.hS_default)
-                Ux4gSelectionDropdown(
-                        options = mockOptions,
-                        selectedOptionIds = multiSelected,
-                        onSelectionChange = { multiSelected = it },
-                        label = "Please select (Multi)",
-                        description = "Select multiple options",
-                        mode = Ux4gSelectionDropdownMode.MultiSelect
-                )
-            }
-        }
-    }
-}
+        Ux4gSelectionDropdown(
+            label = "Warning State",
+            options = sampleOptions,
+            selectedOptionIds = listOf("2"),
+            onSelectionChange = {},
+            status = Ux4gDropdownStatus.Warning,
+            description = "Selected region has partial service availability"
+        )
 
-@Preview(name = "Searchable", showBackground = true)
-@Composable
-private fun Ux4gSelectionDropdownSearchPreview() {
-    Ux4gTheme {
-        Surface(color = Ux4gTheme.colorScheme.background) {
-            Column(
-                    modifier = Modifier.fillMaxWidth().padding(24.dp),
-                    verticalArrangement = Arrangement.spacedBy(24.dp)
-            ) {
-                val stateOptions = listOf(
-                    Ux4gDropdownOption("ap", "Andhra Pradesh"),
-                    Ux4gDropdownOption("arp", "Arunachal Pradesh"),
-                    Ux4gDropdownOption("as", "Assam"),
-                    Ux4gDropdownOption("br", "Bihar"),
-                    Ux4gDropdownOption("cg", "Chhattisgarh"),
-                    Ux4gDropdownOption("ga", "Goa"),
-                    Ux4gDropdownOption("gj", "Gujarat"),
-                )
+        Ux4gSelectionDropdown(
+            label = "Success State",
+            options = sampleOptions,
+            selectedOptionIds = listOf("1"),
+            onSelectionChange = {},
+            status = Ux4gDropdownStatus.Success,
+            description = "Region confirmed"
+        )
 
-                var singleSelected by remember { mutableStateOf(listOf("br")) }
-                var multiSelected by remember { mutableStateOf(listOf("arp", "br")) }
-
-                Text("Searchable - Single Select", style = Ux4gTheme.typography.hS_default)
-                Ux4gSelectionDropdown(
-                    options = stateOptions,
-                    selectedOptionIds = singleSelected,
-                    onSelectionChange = { singleSelected = it },
-                    label = "Label",
-                    description = "Description",
-                    searchEnabled = true,
-                    mode = Ux4gSelectionDropdownMode.SingleSelect
-                )
-
-                Text("Searchable - Multi Select", style = Ux4gTheme.typography.hS_default)
-                Ux4gSelectionDropdown(
-                    options = stateOptions,
-                    selectedOptionIds = multiSelected,
-                    onSelectionChange = { multiSelected = it },
-                    label = "Label",
-                    description = "Description",
-                    searchEnabled = true,
-                    mode = Ux4gSelectionDropdownMode.MultiSelect
-                )
-            }
-        }
+        Ux4gSelectionDropdown(
+            label = "Disabled State",
+            options = sampleOptions,
+            selectedOptionIds = listOf("1"),
+            onSelectionChange = {},
+            status = Ux4gDropdownStatus.Disabled,
+            description = "Selection locked by administrator"
+        )
     }
 }
