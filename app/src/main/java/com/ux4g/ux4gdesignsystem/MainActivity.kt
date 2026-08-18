@@ -3673,6 +3673,125 @@ fun MainContent(
                     )
                 }
             }
+
+            // 27. File Upload Component Showcase
+            Ux4gCard(
+                modifier = Modifier.fillMaxWidth(),
+                borderColor = Ux4gColors.neutral300,
+                borderWidth = 1.dp
+            ) {
+                Text(
+                    text = "27. File Upload",
+                    style = defaultTypography.hS_strong,
+                    color = Ux4gColors.primary
+                )
+
+                // 27.1 Interactive Solid Border Upload
+                Text(
+                    text = "27.1 Interactive Upload (Solid Border & File States)",
+                    style = defaultTypography.lS_strong
+                )
+
+                var demoFiles by remember {
+                    mutableStateOf(
+                        listOf(
+                            Ux4gUploadedFile(
+                                id = "demo_1",
+                                name = "Income_Certificate_2026.pdf",
+                                fileSize = 1_450_000,
+                                status = Ux4gUploadStatus.Success
+                            ),
+                            Ux4gUploadedFile(
+                                id = "demo_2",
+                                name = "Passport_Photo_Scan.png",
+                                fileSize = 820_000,
+                                status = Ux4gUploadStatus.Uploading,
+                                progress = 0.70f
+                            ),
+                            Ux4gUploadedFile(
+                                id = "demo_3",
+                                name = "Electricity_Bill_March.pdf",
+                                fileSize = 3_200_000,
+                                status = Ux4gUploadStatus.Error,
+                                errorMessage = "Server timeout. Please try again."
+                            )
+                        )
+                    )
+                }
+
+                Ux4gFileUpload(
+                    files = demoFiles,
+                    borderStyle = Ux4gFileUploadBorderStyle.Solid,
+                    onFilesChanged = { updatedList ->
+                        demoFiles = updatedList
+                    }
+                )
+
+                Ux4gDivider()
+
+                // 27.2 Dashed Border Dropzone
+                Text(
+                    text = "27.2 Dashed Border Dropzone Style",
+                    style = defaultTypography.lS_strong
+                )
+
+                var dashedFiles by remember { mutableStateOf<List<Ux4gUploadedFile>>(emptyList()) }
+                Ux4gFileUpload(
+                    files = dashedFiles,
+                    borderStyle = Ux4gFileUploadBorderStyle.Dashed,
+                    onFilesChanged = { updatedList ->
+                        dashedFiles = updatedList
+                    }
+                )
+
+                Ux4gDivider()
+
+                // 27.3 Individual File Item Cards
+                Text(
+                    text = "27.3 File Item Cards by File Type & Status",
+                    style = defaultTypography.lS_strong
+                )
+
+                Column(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    Ux4gFileItemCard(
+                        file = Ux4gUploadedFile(
+                            id = "card_1",
+                            name = "Aadhaar_Card_Front.jpg",
+                            fileSize = 650_000,
+                            status = Ux4gUploadStatus.Success
+                        ),
+                        onRemove = {},
+                        onRetry = {}
+                    )
+
+                    Ux4gFileItemCard(
+                        file = Ux4gUploadedFile(
+                            id = "card_2",
+                            name = "Salary_Slip_February.pdf",
+                            fileSize = 2_150_000,
+                            status = Ux4gUploadStatus.Uploading,
+                            progress = 0.45f
+                        ),
+                        onRemove = {},
+                        onRetry = {}
+                    )
+
+                    Ux4gFileItemCard(
+                        file = Ux4gUploadedFile(
+                            id = "card_3",
+                            name = "Affidavit_Draft.docx",
+                            fileSize = 120_000,
+                            status = Ux4gUploadStatus.Error,
+                            errorMessage = "Invalid document format."
+                        ),
+                        onRemove = {},
+                        onRetry = {}
+                    )
+                }
+            }
         }
     }
 }
