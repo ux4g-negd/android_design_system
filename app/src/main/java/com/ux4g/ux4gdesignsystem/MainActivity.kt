@@ -5026,6 +5026,232 @@ fun MainContent(
                     )
                 }
             }
+
+            // ══════════════════════════════════════════════════════════════════
+            // 28. MODAL DIALOG COMPONENT SHOWCASE
+            // ══════════════════════════════════════════════════════════════════
+            Ux4gCard(modifier = Modifier.fillMaxWidth()) {
+                Column(
+                    modifier = Modifier.padding(16.dp),
+                    verticalArrangement = Arrangement.spacedBy(16.dp)
+                ) {
+                    Text(
+                        text = "Modal Dialog Showcase",
+                        style = Ux4gTheme.typography.hM_strong,
+                        color = Ux4gTheme.colorScheme.onSurface
+                    )
+                    Text(
+                        text = "Dialog modal matching UX4G Flutter spec with multiple header image styles, alignment, avatars, leading icons, destructive states, and footer configurations.",
+                        style = Ux4gTheme.typography.bS_default,
+                        color = Ux4gTheme.colorScheme.onSurface.copy(alpha = 0.7f)
+                    )
+
+                    var activeModalType by remember { mutableStateOf<String?>(null) }
+
+                    val gradientHeader: @Composable () -> Unit = {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .background(
+                                    Brush.linearGradient(
+                                        listOf(
+                                            Color(0xFF9C6FE0),
+                                            Color(0xFFE07BAD),
+                                            Color(0xFF7B9FE0)
+                                        )
+                                    )
+                                )
+                        )
+                    }
+
+                    // Interactive Launch Buttons
+                    Column(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        Ux4gButton(
+                            onClick = { activeModalType = "default" },
+                            modifier = Modifier.fillMaxWidth(),
+                            text = "Open Default Modal (2 buttons, Left)"
+                        )
+
+                        Ux4gButton(
+                            onClick = { activeModalType = "destructive" },
+                            modifier = Modifier.fillMaxWidth(),
+                            text = "Open Destructive Modal (Centered)",
+                            backgroundColor = Ux4gColors.red500,
+                            contentColor = Ux4gColors.white
+                        )
+
+                        Ux4gButton(
+                            onClick = { activeModalType = "minimal" },
+                            modifier = Modifier.fillMaxWidth(),
+                            text = "Open Minimal Confirm Modal",
+                            backgroundColor = Ux4gColors.neutral800,
+                            contentColor = Ux4gColors.white
+                        )
+
+                        Ux4gButton(
+                            onClick = { activeModalType = "avatar" },
+                            modifier = Modifier.fillMaxWidth(),
+                            text = "Avatar Modal (Centered + Padded)",
+                            backgroundColor = Ux4gColors.primary700,
+                            contentColor = Ux4gColors.white
+                        )
+
+                        Ux4gButton(
+                            onClick = { activeModalType = "icon" },
+                            modifier = Modifier.fillMaxWidth(),
+                            text = "Icon Modal (No image + Split)",
+                            backgroundColor = Ux4gColors.red700,
+                            contentColor = Ux4gColors.white
+                        )
+                    }
+
+                    // Static Inline Preview Card
+                    Text(
+                        text = "Static In-Page Preview (No Overlay)",
+                        style = Ux4gTheme.typography.lM_strong,
+                        color = Ux4gTheme.colorScheme.onSurface
+                    )
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clip(RoundedCornerShape(Ux4gRadius.Radius16))
+                            .background(Ux4gColors.neutral900.copy(alpha = 0.05f))
+                            .padding(16.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Ux4gModalContent(
+                            onDismiss = {},
+                            modifier = Modifier.fillMaxWidth(),
+                            headerImageContent = gradientHeader,
+                            leadingItem = Ux4gModalLeadingItem.Avatar,
+                            avatarInitials = "JD",
+                            alignment = Ux4gModalAlignment.Centered,
+                            showHeader = true,
+                            headerTitle = "Live Preview Header",
+                            showDescription = true,
+                            descriptionText = "This card renders inline using Ux4gModalContent.",
+                            showSubtitle = true,
+                            showBody = true,
+                            showFooter = true,
+                            footerButtons = Ux4gModalFooterButtons.TwoButtons,
+                            footerAlign = Ux4gModalFooterAlign.Center,
+                            isDestructive = false
+                        )
+                    }
+
+                    // Active Modal Dialogs
+                    when (activeModalType) {
+                        "default" -> {
+                            Ux4gModal(
+                                onDismiss = { activeModalType = null },
+                                headerImageContent = gradientHeader,
+                                showHeader = true,
+                                headerTitle = "Header",
+                                showSubtitle = true,
+                                showBody = true,
+                                showFooter = true,
+                                footerButtons = Ux4gModalFooterButtons.TwoButtons,
+                                footerAlign = Ux4gModalFooterAlign.Right,
+                                isDestructive = false,
+                                onPrimaryClick = { activeModalType = null },
+                                onSecondaryClick = { activeModalType = null }
+                            )
+                        }
+                        "destructive" -> {
+                            Ux4gModal(
+                                onDismiss = { activeModalType = null },
+                                headerImageContent = gradientHeader,
+                                showHeader = true,
+                                headerTitle = "Warning",
+                                showDescription = true,
+                                descriptionText = "This action cannot be undone.",
+                                alignment = Ux4gModalAlignment.Centered,
+                                showSubtitle = true,
+                                subtitleText = "Delete Item?",
+                                showBody = true,
+                                bodyText = "Are you sure you want to permanently delete this item?",
+                                showFooter = true,
+                                footerButtons = Ux4gModalFooterButtons.TwoButtons,
+                                footerAlign = Ux4gModalFooterAlign.Center,
+                                isDestructive = true,
+                                primaryButtonText = "Delete",
+                                secondaryButtonText = "Cancel",
+                                onPrimaryClick = { activeModalType = null },
+                                onSecondaryClick = { activeModalType = null }
+                            )
+                        }
+                        "minimal" -> {
+                            Ux4gModal(
+                                onDismiss = { activeModalType = null },
+                                headerImageStyle = Ux4gModalHeaderImage.None,
+                                showHeader = false,
+                                showDividers = false,
+                                showSubtitle = true,
+                                subtitleText = "Confirm Action",
+                                showBody = true,
+                                bodyText = "This will permanently remove the selected items. Continue?",
+                                showFooter = true,
+                                footerButtons = Ux4gModalFooterButtons.TwoButtons,
+                                footerAlign = Ux4gModalFooterAlign.Split,
+                                isDestructive = true,
+                                primaryButtonText = "Confirm",
+                                secondaryButtonText = "Cancel",
+                                showCloseButton = false,
+                                onPrimaryClick = { activeModalType = null },
+                                onSecondaryClick = { activeModalType = null }
+                            )
+                        }
+                        "avatar" -> {
+                            Ux4gModal(
+                                onDismiss = { activeModalType = null },
+                                headerImageContent = gradientHeader,
+                                headerImageStyle = Ux4gModalHeaderImage.Padded,
+                                leadingItem = Ux4gModalLeadingItem.Avatar,
+                                avatarInitials = "JD",
+                                alignment = Ux4gModalAlignment.Centered,
+                                showHeader = true,
+                                headerTitle = "Header",
+                                showDescription = true,
+                                descriptionText = "Write description here",
+                                showSubtitle = true,
+                                showBody = true,
+                                showFooter = true,
+                                footerButtons = Ux4gModalFooterButtons.OneButton,
+                                footerAlign = Ux4gModalFooterAlign.Center,
+                                isDestructive = true,
+                                onPrimaryClick = { activeModalType = null }
+                            )
+                        }
+                        "icon" -> {
+                            Ux4gModal(
+                                onDismiss = { activeModalType = null },
+                                headerImageStyle = Ux4gModalHeaderImage.None,
+                                leadingItem = Ux4gModalLeadingItem.Icon,
+                                leadingIcon = Ux4gIcons.info_circle,
+                                leadingIconTint = Ux4gColors.red500,
+                                alignment = Ux4gModalAlignment.LeftAligned,
+                                showHeader = true,
+                                headerTitle = "Header",
+                                showDescription = true,
+                                descriptionText = "Write description here",
+                                showSubtitle = true,
+                                showBody = true,
+                                showFooter = true,
+                                footerButtons = Ux4gModalFooterButtons.TwoButtons,
+                                footerAlign = Ux4gModalFooterAlign.Split,
+                                isDestructive = true,
+                                primaryButtonText = "Delete",
+                                secondaryButtonText = "Cancel",
+                                onPrimaryClick = { activeModalType = null },
+                                onSecondaryClick = { activeModalType = null }
+                            )
+                        }
+                    }
+                }
+            }
         }
     }
 }
