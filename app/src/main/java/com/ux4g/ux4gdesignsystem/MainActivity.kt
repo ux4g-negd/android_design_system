@@ -37,6 +37,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.ux4g.designsystemv1.components.*
@@ -5738,6 +5739,329 @@ fun MainContent(
                             onClick = { halfCircleVal = 1.0f }
                         )
                     }
+                }
+            }
+        }
+
+        // Circular Progress Showcase
+        Ux4gCard(modifier = Modifier.fillMaxWidth()) {
+            Column(
+                modifier = Modifier.padding(16.dp),
+                verticalArrangement = Arrangement.spacedBy(20.dp)
+            ) {
+                Text(
+                    text = "34. Circular Progress Indicator (UX4G 1:1 Parity)",
+                    style = Ux4gTheme.typography.tS_strong
+                )
+                Text(
+                    text = "A full-circle progress ring component matching Flutter circular_progress.dart 1:1. Features 7 standard sizes (XS to XXXL), auto-scaling stroke widths, sweep gradients, round/butt stroke caps, center text & descriptions, metadata labels, background fills, and smooth animated transitions.",
+                    style = Ux4gTheme.typography.bS_default,
+                    color = Ux4gTheme.colorScheme.onSurface.copy(alpha = 0.7f)
+                )
+
+                var circularProgressVal by remember { mutableStateOf(0.70f) }
+
+                // Showcase matching Image 1: Cloud Storage Card
+                Text(text = "1. Main Card (Matching Image 1: 75% Cloud Storage)", style = Ux4gTheme.typography.lM_strong)
+                Box(
+                    modifier = Modifier.fillMaxWidth(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Ux4gCircularProgress(
+                        value = 0.75f,
+                        size = Ux4gCircularProgressSize.XXXL,
+                        centerValueText = "75%",
+                        centerDescription = "Used",
+                        label = "Cloud Storage",
+                        description = "18 GB of 24 GB",
+                    )
+                }
+
+                // Showcase matching Image 2: Size Variants with Text & Labels
+                Text(text = "2. Size Variants & Labels (Matching Image 2)", style = Ux4gTheme.typography.lM_strong)
+                Row(
+                    modifier = Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()),
+                    horizontalArrangement = Arrangement.spacedBy(24.dp),
+                    verticalAlignment = Alignment.Bottom
+                ) {
+                    // Small (28dp)
+                    Ux4gCircularProgress(
+                        value = 0.20f,
+                        size = Ux4gCircularProgressSize.S,
+                        label = "Small"
+                    )
+                    // Medium w/ Text (36dp)
+                    Ux4gCircularProgress(
+                        value = 0.65f,
+                        size = Ux4gCircularProgressSize.M,
+                        centerValueText = "65%",
+                        label = "Medium w/ Text"
+                    )
+                    // Large w/ Label (48dp)
+                    Ux4gCircularProgress(
+                        value = 0.75f,
+                        size = Ux4gCircularProgressSize.L,
+                        label = "Large w/ Label",
+                        description = "Loading"
+                    )
+                    // Extra Large (88dp)
+                    Ux4gCircularProgress(
+                        value = 0.90f,
+                        size = Ux4gCircularProgressSize.XL,
+                        centerValueText = "90%",
+                        label = "Extra Large",
+                        description = "Almost Done"
+                    )
+                }
+
+                // Showcase matching Image 3: All 7 Predefined Sizes at 50%
+                Text(text = "3. All 7 Sizes at 50% (Matching Image 3)", style = Ux4gTheme.typography.lM_strong)
+                // Row A: XS, S, M, L, XL
+                Row(
+                    modifier = Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()),
+                    horizontalArrangement = Arrangement.spacedBy(16.dp),
+                    verticalAlignment = Alignment.Bottom
+                ) {
+                    Ux4gCircularProgress(
+                        value = 0.5f,
+                        size = Ux4gCircularProgressSize.XS,
+                        centerValueText = "50%",
+                        description = "Description"
+                    )
+                    Ux4gCircularProgress(
+                        value = 0.5f,
+                        size = Ux4gCircularProgressSize.S,
+                        centerValueText = "50%",
+                        description = "Description"
+                    )
+                    Ux4gCircularProgress(
+                        value = 0.5f,
+                        size = Ux4gCircularProgressSize.M,
+                        centerValueText = "50%",
+                        description = "Description"
+                    )
+                    Ux4gCircularProgress(
+                        value = 0.5f,
+                        size = Ux4gCircularProgressSize.L,
+                        centerValueText = "50%",
+                        description = "Description"
+                    )
+                    Ux4gCircularProgress(
+                        value = 0.5f,
+                        size = Ux4gCircularProgressSize.XL,
+                        centerValueText = "50%",
+                        description = "Description"
+                    )
+                }
+                // Row B: XXL, XXXL
+                Row(
+                    modifier = Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()),
+                    horizontalArrangement = Arrangement.spacedBy(24.dp),
+                    verticalAlignment = Alignment.Bottom
+                ) {
+                    Ux4gCircularProgress(
+                        value = 0.5f,
+                        size = Ux4gCircularProgressSize.XXL,
+                        centerValueText = "50%",
+                        description = "Description"
+                    )
+                    Ux4gCircularProgress(
+                        value = 0.5f,
+                        size = Ux4gCircularProgressSize.XXXL,
+                        centerValueText = "50%",
+                        description = "Description"
+                    )
+                }
+
+                // Showcase matching Image 4: Status Cards with "8 days left" & Footer Badges (Purple, Orange, Red, Green)
+                Text(text = "4. Status Variant Cards (Purple, Orange, Red, Green with Footer Tags)", style = Ux4gTheme.typography.lM_strong)
+                Row(
+                    modifier = Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()),
+                    horizontalArrangement = Arrangement.spacedBy(24.dp),
+                    verticalAlignment = Alignment.Top
+                ) {
+                    // Purple / Brand Variant
+                    Ux4gCircularProgress(
+                        value = 0.65f,
+                        size = Ux4gCircularProgressSize.XL,
+                        centerValueText = "8",
+                        centerDescription = "days left",
+                        label = "Label",
+                        description = "Description",
+                        footer = {
+                            Box(
+                                modifier = Modifier
+                                    .background(Ux4gColors.primary50, RoundedCornerShape(4.dp))
+                                    .padding(horizontal = 14.dp, vertical = 4.dp)
+                            ) {
+                                Text(
+                                    text = "Label",
+                                    style = Ux4gTheme.typography.lS_strong,
+                                    color = Ux4gColors.primary600
+                                )
+                            }
+                        }
+                    )
+
+                    // Orange / Warning Variant
+                    Ux4gCircularProgress(
+                        value = 0.65f,
+                        size = Ux4gCircularProgressSize.XL,
+                        progressGradientColors = listOf(Ux4gColors.orange200, Ux4gColors.orange500),
+                        centerValueText = "8",
+                        centerDescription = "days left",
+                        label = "Label",
+                        description = "Description",
+                        footer = {
+                            Box(
+                                modifier = Modifier
+                                    .background(Ux4gColors.orange50, RoundedCornerShape(4.dp))
+                                    .padding(horizontal = 14.dp, vertical = 4.dp)
+                            ) {
+                                Text(
+                                    text = "Label",
+                                    style = Ux4gTheme.typography.lS_strong,
+                                    color = Ux4gColors.orange500
+                                )
+                            }
+                        }
+                    )
+
+                    // Red / Danger Variant (with reddish description)
+                    Ux4gCircularProgress(
+                        value = 0.65f,
+                        size = Ux4gCircularProgressSize.XL,
+                        progressGradientColors = listOf(Ux4gColors.red200, Ux4gColors.red600),
+                        centerValueText = "8",
+                        centerDescription = "days left",
+                        label = "Label",
+                        description = "Description",
+                        descriptionStyle = Ux4gTheme.typography.bS_default.copy(color = Ux4gColors.red700),
+                        footer = {
+                            Box(
+                                modifier = Modifier
+                                    .background(Ux4gColors.red50, RoundedCornerShape(4.dp))
+                                    .padding(horizontal = 14.dp, vertical = 4.dp)
+                            ) {
+                                Text(
+                                    text = "Label",
+                                    style = Ux4gTheme.typography.lS_strong,
+                                    color = Ux4gColors.red500
+                                )
+                            }
+                        }
+                    )
+
+                    // Green / Success Variant
+                    Ux4gCircularProgress(
+                        value = 0.65f,
+                        size = Ux4gCircularProgressSize.XL,
+                        progressGradientColors = listOf(Ux4gColors.green200, Ux4gColors.green600),
+                        centerValueText = "8",
+                        centerDescription = "days left",
+                        label = "Label",
+                        description = "Description",
+                        footer = {
+                            Box(
+                                modifier = Modifier
+                                    .background(Ux4gColors.green50, RoundedCornerShape(4.dp))
+                                    .padding(horizontal = 14.dp, vertical = 4.dp)
+                            ) {
+                                Text(
+                                    text = "Label",
+                                    style = Ux4gTheme.typography.lS_strong,
+                                    color = Ux4gColors.green600
+                                )
+                            }
+                        }
+                    )
+                }
+
+                // 5. Custom Colors, Gradients & Background Fills
+                Text(text = "5. Custom Colors, Gradients & Round Caps", style = Ux4gTheme.typography.lM_strong)
+                Row(
+                    modifier = Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()),
+                    horizontalArrangement = Arrangement.spacedBy(20.dp),
+                    verticalAlignment = Alignment.Top
+                ) {
+                    // Solid Color
+                    Ux4gCircularProgress(
+                        value = 0.80f,
+                        size = Ux4gCircularProgressSize.XL,
+                        progressColor = Ux4gColors.green600,
+                        centerValueText = "80%",
+                        label = "Success Rate"
+                    )
+                    // Multi-color Sweep Gradient
+                    Ux4gCircularProgress(
+                        value = 0.60f,
+                        size = Ux4gCircularProgressSize.XL,
+                        progressGradientColors = listOf(Ux4gColors.orange600, Ux4gColors.yellow500),
+                        centerValueText = "60%",
+                        label = "Battery"
+                    )
+                    // Round Cap
+                    Ux4gCircularProgress(
+                        value = 0.70f,
+                        size = Ux4gCircularProgressSize.XL,
+                        strokeCap = StrokeCap.Round,
+                        progressColor = Ux4gColors.cyan600,
+                        centerValueText = "70%",
+                        label = "Round Cap"
+                    )
+                    // Dark Background Fill
+                    Ux4gCircularProgress(
+                        value = 0.50f,
+                        size = Ux4gCircularProgressSize.XL,
+                        backgroundColor = Ux4gColors.primary900,
+                        centerValueText = "50%",
+                        label = "With Fill"
+                    )
+                }
+
+                // 6. Interactive Animated Circular Progress
+                Text(text = "6. Animated Circular Progress", style = Ux4gTheme.typography.lM_strong)
+                Box(
+                    modifier = Modifier.fillMaxWidth(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Ux4gAnimatedCircularProgress(
+                        value = circularProgressVal,
+                        size = Ux4gCircularProgressSize.XXL,
+                        centerValueText = "${(circularProgressVal * 100).toInt()}%",
+                        centerDescription = "Progress",
+                        label = "Live Sync",
+                        description = "Smooth 700ms animation"
+                    )
+                }
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Ux4gButton(
+                        text = "25%",
+                        size = Ux4gButtonSize.Small,
+                        variant = Ux4gButtonVariant.Outline,
+                        onClick = { circularProgressVal = 0.25f }
+                    )
+                    Ux4gButton(
+                        text = "50%",
+                        size = Ux4gButtonSize.Small,
+                        variant = Ux4gButtonVariant.Outline,
+                        onClick = { circularProgressVal = 0.5f }
+                    )
+                    Ux4gButton(
+                        text = "75%",
+                        size = Ux4gButtonSize.Small,
+                        variant = Ux4gButtonVariant.Outline,
+                        onClick = { circularProgressVal = 0.75f }
+                    )
+                    Ux4gButton(
+                        text = "100%",
+                        size = Ux4gButtonSize.Small,
+                        variant = Ux4gButtonVariant.Primary,
+                        onClick = { circularProgressVal = 1.0f }
+                    )
                 }
             }
         }
