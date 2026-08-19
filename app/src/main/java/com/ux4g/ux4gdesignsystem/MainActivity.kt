@@ -6614,6 +6614,105 @@ fun MainContent(
                 }
             }
         }
+
+        // ==========================================
+        // Status Pipeline Showcase
+        // ==========================================
+        Ux4gCard(modifier = Modifier.fillMaxWidth()) {
+            Column(
+                modifier = Modifier.padding(16.dp),
+                verticalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+                Text(
+                    text = "Status Pipeline Component",
+                    style = Ux4gTheme.typography.tS_strong,
+                    color = Ux4gTheme.colorScheme.onSurface
+                )
+                Text(
+                    text = "A status pipeline displaying process steps connected by lines in vertical and horizontal orientations.",
+                    style = Ux4gTheme.typography.bS_default,
+                    color = Ux4gColors.neutral600
+                )
+
+                // 1. Interactive Vertical Pipeline
+                Text(text = "1. Vertical Pipeline (Interactive)", style = Ux4gTheme.typography.lM_strong)
+                var currentPipelineStep by remember { mutableStateOf(1) }
+                Ux4gStatusPipeline(
+                    orientation = Ux4gPipelineOrientation.Vertical,
+                    size = Ux4gPipelineSize.M,
+                    currentStep = currentPipelineStep,
+                    steps = listOf(
+                        Ux4gPipelineStep(label = "Application Submitted", description = "5 Apr, 10:30 AM"),
+                        Ux4gPipelineStep(label = "Document Verification", description = "In progress"),
+                        Ux4gPipelineStep(label = "Field Inspection", description = "Est. 10 Apr"),
+                        Ux4gPipelineStep(label = "Final Decision", description = "Est. 18 Apr"),
+                        Ux4gPipelineStep(label = "Certificate Issued", description = "Est. 20 Apr")
+                    )
+                )
+
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Ux4gButton(
+                        text = "Prev Step",
+                        onClick = { if (currentPipelineStep > 0) currentPipelineStep = currentPipelineStep - 1 },
+                        size = Ux4gButtonSize.Small,
+                        variant = Ux4gButtonVariant.Secondary
+                    )
+                    Ux4gButton(
+                        text = "Next Step",
+                        onClick = { if (currentPipelineStep < 5) currentPipelineStep = currentPipelineStep + 1 },
+                        size = Ux4gButtonSize.Small,
+                        variant = Ux4gButtonVariant.Primary
+                    )
+                }
+
+                // 2. Horizontal Pipeline
+                Text(text = "2. Horizontal Pipeline", style = Ux4gTheme.typography.lM_strong)
+                Ux4gStatusPipeline(
+                    orientation = Ux4gPipelineOrientation.Horizontal,
+                    size = Ux4gPipelineSize.M,
+                    currentStep = 2,
+                    steps = listOf(
+                        Ux4gPipelineStep(label = "Ordered", description = "Paid"),
+                        Ux4gPipelineStep(label = "Shipped", description = "In transit"),
+                        Ux4gPipelineStep(label = "Out for Delivery", description = "Today"),
+                        Ux4gPipelineStep(label = "Delivered", description = "Pending")
+                    )
+                )
+
+                // 3. Mixed State Pipeline (Error & Warning)
+                Text(text = "3. Error & Warning States", style = Ux4gTheme.typography.lM_strong)
+                Ux4gStatusPipeline(
+                    orientation = Ux4gPipelineOrientation.Vertical,
+                    size = Ux4gPipelineSize.M,
+                    currentStep = -1,
+                    steps = listOf(
+                        Ux4gPipelineStep(
+                            label = "KYC Uploaded",
+                            description = "Approved successfully",
+                            state = Ux4gPipelineStepState.Completed
+                        ),
+                        Ux4gPipelineStep(
+                            label = "Address Verification",
+                            description = "Warning: Incomplete address proof",
+                            state = Ux4gPipelineStepState.Warning
+                        ),
+                        Ux4gPipelineStep(
+                            label = "Bank Details",
+                            description = "Failed: Invalid IFSC Code",
+                            state = Ux4gPipelineStepState.Error
+                        ),
+                        Ux4gPipelineStep(
+                            label = "Final Activation",
+                            description = "Waiting for document resolution",
+                            state = Ux4gPipelineStepState.Upcoming
+                        )
+                    )
+                )
+            }
+        }
     }
 }
 

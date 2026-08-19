@@ -41,6 +41,11 @@ import com.ux4g.designsystemv1.components.Ux4gSwitch
 import com.ux4g.designsystemv1.components.Ux4gSwitchSize
 import com.ux4g.designsystemv1.components.Ux4gSwitchLabelPosition
 import com.ux4g.designsystemv1.components.Ux4gToggle
+import com.ux4g.designsystemv1.components.Ux4gStatusPipeline
+import com.ux4g.designsystemv1.components.Ux4gPipelineStep
+import com.ux4g.designsystemv1.components.Ux4gPipelineStepState
+import com.ux4g.designsystemv1.components.Ux4gPipelineOrientation
+import com.ux4g.designsystemv1.components.Ux4gPipelineSize
 import com.ux4g.designsystemv1.components.Ux4gPaginationIndicator
 import com.ux4g.designsystemv1.components.Ux4gPaginationVariant
 import kotlinx.coroutines.launch
@@ -348,6 +353,82 @@ fun DesignSystemShowcase(
                 )
             }
         }
+
+        // Status Pipeline Showcase
+        Text(
+            text = "Status Pipeline",
+            style = Ux4gTheme.typography.hL_default,
+            color = Ux4gTheme.colorScheme.onBackground
+        )
+
+        // 1. Vertical Pipeline
+        Text(
+            text = "Vertical Pipeline (Size M)",
+            style = Ux4gTheme.typography.lM_strong,
+            color = Ux4gTheme.colorScheme.onBackground
+        )
+        Ux4gStatusPipeline(
+            orientation = Ux4gPipelineOrientation.Vertical,
+            size = Ux4gPipelineSize.M,
+            currentStep = 1,
+            steps = listOf(
+                Ux4gPipelineStep(label = "Application Submitted", description = "5 Apr, 10:30 AM"),
+                Ux4gPipelineStep(label = "Document Verification", description = "In progress"),
+                Ux4gPipelineStep(label = "Field Inspection", description = "Est. 10 Apr"),
+                Ux4gPipelineStep(label = "Final Decision", description = "Est. 18 Apr"),
+                Ux4gPipelineStep(label = "Certificate Issued", description = "Est. 20 Apr")
+            )
+        )
+
+        // 2. Horizontal Pipeline
+        Text(
+            text = "Horizontal Pipeline (Size M)",
+            style = Ux4gTheme.typography.lM_strong,
+            color = Ux4gTheme.colorScheme.onBackground
+        )
+        Ux4gStatusPipeline(
+            orientation = Ux4gPipelineOrientation.Horizontal,
+            size = Ux4gPipelineSize.M,
+            currentStep = 2,
+            steps = listOf(
+                Ux4gPipelineStep(label = "Ordered", description = "Paid"),
+                Ux4gPipelineStep(label = "Shipped", description = "In transit"),
+                Ux4gPipelineStep(label = "Out for Delivery", description = "Today"),
+                Ux4gPipelineStep(label = "Delivered", description = "Pending")
+            )
+        )
+
+        // 3. Mixed State Pipeline (Error & Warning)
+        Text(
+            text = "Status Pipeline with Error & Warning",
+            style = Ux4gTheme.typography.lM_strong,
+            color = Ux4gTheme.colorScheme.onBackground
+        )
+        Ux4gStatusPipeline(
+            currentStep = -1,
+            steps = listOf(
+                Ux4gPipelineStep(
+                    label = "KYC Uploaded",
+                    description = "Approved",
+                    state = Ux4gPipelineStepState.Completed
+                ),
+                Ux4gPipelineStep(
+                    label = "Address Verification",
+                    description = "Warning: Incomplete doc",
+                    state = Ux4gPipelineStepState.Warning
+                ),
+                Ux4gPipelineStep(
+                    label = "Bank Details",
+                    description = "Failed: Invalid IFSC",
+                    state = Ux4gPipelineStepState.Error
+                ),
+                Ux4gPipelineStep(
+                    label = "Final Activation",
+                    description = "Pending verification",
+                    state = Ux4gPipelineStepState.Upcoming
+                )
+            )
+        )
     }
 }
 
