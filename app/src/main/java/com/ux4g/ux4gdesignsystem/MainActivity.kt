@@ -6065,6 +6065,221 @@ fun MainContent(
                 }
             }
         }
+
+        // Radio Button Showcase
+        Ux4gCard(modifier = Modifier.fillMaxWidth()) {
+            Column(
+                modifier = Modifier.padding(16.dp),
+                verticalArrangement = Arrangement.spacedBy(20.dp)
+            ) {
+                Text(
+                    text = "35. Radio Button (UX4G 1:1 Parity)",
+                    style = Ux4gTheme.typography.tS_strong
+                )
+                Text(
+                    text = "Radio button component matching Flutter radioButton.dart 1:1. Features Small (16dp), Medium (20dp), and Large (24dp) sizes, donut selected ring rendering, helper/error/warning/success description variants with icons, independent status ring colors, required asterisks, trailing icons, and disabled states.",
+                    style = Ux4gTheme.typography.bS_default,
+                    color = Ux4gTheme.colorScheme.onSurface.copy(alpha = 0.7f)
+                )
+
+                var selectedOption by remember { mutableStateOf("option1") }
+
+                // 1. Standard Sizes (Small, Medium, Large)
+                Text(text = "1. Predefined Sizes in a Radio Group", style = Ux4gTheme.typography.lM_strong)
+                Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                    Ux4gRadioButton(
+                        value = "option1",
+                        groupValue = selectedOption,
+                        onValueChange = { selectedOption = it },
+                        label = "Small (16dp)",
+                        size = Ux4gRadioButtonSize.Small,
+                        description = "Small radio with helper text",
+                        descriptionVariant = Ux4gRadioButtonDescriptionVariant.Helper
+                    )
+                    Ux4gRadioButton(
+                        value = "option2",
+                        groupValue = selectedOption,
+                        onValueChange = { selectedOption = it },
+                        label = "Medium (20dp) - Default",
+                        size = Ux4gRadioButtonSize.Medium,
+                        description = "Standard size for forms and selection lists",
+                        descriptionVariant = Ux4gRadioButtonDescriptionVariant.Helper
+                    )
+                    Ux4gRadioButton(
+                        value = "option3",
+                        groupValue = selectedOption,
+                        onValueChange = { selectedOption = it },
+                        label = "Large (24dp)",
+                        size = Ux4gRadioButtonSize.Large,
+                        description = "Large size for prominent selections",
+                        descriptionVariant = Ux4gRadioButtonDescriptionVariant.Helper
+                    )
+                }
+
+                // 2. Validation & Description Variants with Icons
+                Text(text = "2. Description & Validation Variants", style = Ux4gTheme.typography.lM_strong)
+                Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                    var validationChoice by remember { mutableStateOf("success") }
+
+                    Ux4gRadioButton(
+                        value = "helper",
+                        groupValue = validationChoice,
+                        onValueChange = { validationChoice = it },
+                        label = "Helper Variant",
+                        size = Ux4gRadioButtonSize.Medium,
+                        description = "General information / helper message",
+                        descriptionVariant = Ux4gRadioButtonDescriptionVariant.Helper
+                    )
+                    Ux4gRadioButton(
+                        value = "success",
+                        groupValue = validationChoice,
+                        onValueChange = { validationChoice = it },
+                        label = "Success Variant",
+                        size = Ux4gRadioButtonSize.Medium,
+                        description = "Selection validated successfully",
+                        descriptionVariant = Ux4gRadioButtonDescriptionVariant.Success
+                    )
+                    Ux4gRadioButton(
+                        value = "warning",
+                        groupValue = validationChoice,
+                        onValueChange = { validationChoice = it },
+                        label = "Warning Variant",
+                        size = Ux4gRadioButtonSize.Medium,
+                        description = "This selection may incur extra charges",
+                        descriptionVariant = Ux4gRadioButtonDescriptionVariant.Warning
+                    )
+                    Ux4gRadioButton(
+                        value = "error",
+                        groupValue = validationChoice,
+                        onValueChange = { validationChoice = it },
+                        label = "Error Variant",
+                        size = Ux4gRadioButtonSize.Medium,
+                        isRequired = true,
+                        description = "Please select a valid option to proceed",
+                        descriptionVariant = Ux4gRadioButtonDescriptionVariant.Error
+                    )
+                }
+
+                // 3. Ring Status Variants (Independent of selection)
+                Text(text = "3. Ring Status States (Error, Warning, Success)", style = Ux4gTheme.typography.lM_strong)
+                Row(
+                    modifier = Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()),
+                    horizontalArrangement = Arrangement.spacedBy(16.dp)
+                ) {
+                    var statusChoice by remember { mutableStateOf("err") }
+
+                    Ux4gRadioButton(
+                        value = "err",
+                        groupValue = statusChoice,
+                        onValueChange = { statusChoice = it },
+                        label = "Error Ring",
+                        status = Ux4gRadioButtonStatus.Error,
+                        size = Ux4gRadioButtonSize.Medium
+                    )
+                    Ux4gRadioButton(
+                        value = "warn",
+                        groupValue = statusChoice,
+                        onValueChange = { statusChoice = it },
+                        label = "Warning Ring",
+                        status = Ux4gRadioButtonStatus.Warning,
+                        size = Ux4gRadioButtonSize.Medium
+                    )
+                    Ux4gRadioButton(
+                        value = "succ",
+                        groupValue = statusChoice,
+                        onValueChange = { statusChoice = it },
+                        label = "Success Ring",
+                        status = Ux4gRadioButtonStatus.Success,
+                        size = Ux4gRadioButtonSize.Medium
+                    )
+                }
+
+                // 4. Required & Trailing Icons
+                Text(text = "4. Required Field (*) & Trailing Icons", style = Ux4gTheme.typography.lM_strong)
+                Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                    var iconChoice by remember { mutableStateOf("plan1") }
+
+                    Ux4gRadioButton(
+                        value = "plan1",
+                        groupValue = iconChoice,
+                        onValueChange = { iconChoice = it },
+                        label = "Premium Enterprise Plan",
+                        isRequired = true,
+                        size = Ux4gRadioButtonSize.Medium,
+                        trailingIcon = Ux4gIcons.Settings,
+                        description = "Includes 24/7 dedicated support",
+                        descriptionVariant = Ux4gRadioButtonDescriptionVariant.Helper
+                    )
+                    Ux4gRadioButton(
+                        value = "plan2",
+                        groupValue = iconChoice,
+                        onValueChange = { iconChoice = it },
+                        label = "Standard Business Plan",
+                        isRequired = true,
+                        size = Ux4gRadioButtonSize.Medium,
+                        description = "For teams up to 50 members",
+                        descriptionVariant = Ux4gRadioButtonDescriptionVariant.Helper
+                    )
+                }
+
+                // 5. Custom Brand Colors
+                Text(text = "5. Custom Brand Colors", style = Ux4gTheme.typography.lM_strong)
+                Row(
+                    modifier = Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()),
+                    horizontalArrangement = Arrangement.spacedBy(16.dp)
+                ) {
+                    var colorOption by remember { mutableStateOf("green") }
+
+                    Ux4gRadioButton(
+                        value = "green",
+                        groupValue = colorOption,
+                        onValueChange = { colorOption = it },
+                        label = "Emerald",
+                        color = Ux4gColors.green600,
+                        size = Ux4gRadioButtonSize.Medium
+                    )
+                    Ux4gRadioButton(
+                        value = "orange",
+                        groupValue = colorOption,
+                        onValueChange = { colorOption = it },
+                        label = "Amber",
+                        color = Ux4gColors.orange600,
+                        size = Ux4gRadioButtonSize.Medium
+                    )
+                    Ux4gRadioButton(
+                        value = "cyan",
+                        groupValue = colorOption,
+                        onValueChange = { colorOption = it },
+                        label = "Cyan",
+                        color = Ux4gColors.cyan600,
+                        size = Ux4gRadioButtonSize.Medium
+                    )
+                }
+
+                // 6. Disabled States
+                Text(text = "6. Disabled States", style = Ux4gTheme.typography.lM_strong)
+                Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                    Ux4gRadioButton(
+                        selected = true,
+                        onClick = {},
+                        enabled = false,
+                        label = "Disabled Selected",
+                        size = Ux4gRadioButtonSize.Medium,
+                        description = "This option is disabled and cannot be changed",
+                        descriptionVariant = Ux4gRadioButtonDescriptionVariant.Helper
+                    )
+                    Ux4gRadioButton(
+                        selected = false,
+                        onClick = {},
+                        enabled = false,
+                        label = "Disabled Unselected",
+                        size = Ux4gRadioButtonSize.Medium,
+                        description = "This option is currently unavailable",
+                        descriptionVariant = Ux4gRadioButtonDescriptionVariant.Helper
+                    )
+                }
+            }
+        }
     }
 }
 
