@@ -10,9 +10,17 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
@@ -24,15 +32,11 @@ import com.ux4g.designsystemv1.components.buttons.Ux4gTextButton
 import com.ux4g.designsystemv1.components.Ux4gToastCategory
 import com.ux4g.designsystemv1.components.Ux4gToastHost
 import com.ux4g.designsystemv1.components.Ux4gToastHostState
+import com.ux4g.designsystemv1.components.searchfield.*
 import com.ux4g.designsystemv1.foundation.Ux4gIconComponent
 import com.ux4g.designsystemv1.foundation.Ux4gIcons
 import com.ux4g.designsystemv1.foundation.Ux4gColors
 import com.ux4g.designsystemv1.theme.Ux4gTheme
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.setValue
 import com.ux4g.designsystemv1.components.Ux4gPaginationIndicator
 import com.ux4g.designsystemv1.components.Ux4gPaginationVariant
 import kotlinx.coroutines.launch
@@ -71,7 +75,8 @@ fun DesignSystemShowcase(
     Column(
         modifier = modifier
             .fillMaxSize()
-            .padding(16.dp),
+            .padding(16.dp)
+            .verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         // Typography usage
@@ -198,7 +203,7 @@ fun DesignSystemShowcase(
                 showArrows = false
             )
             
-             Ux4gPaginationIndicator(
+            Ux4gPaginationIndicator(
                 totalPageCount = 7,
                 currentPageIndex = pageIndex,
                 onPageChange = { pageIndex = it },
@@ -206,6 +211,55 @@ fun DesignSystemShowcase(
                 variant = Ux4gPaginationVariant.Capsule
             )
         }
+
+        // Search Field Showcase
+        Text(
+            text = "Search Fields",
+            style = Ux4gTheme.typography.hL_default,
+            color = Ux4gTheme.colorScheme.onBackground
+        )
+
+        var searchVal1 by remember { mutableStateOf("") }
+        var searchVal2 by remember { mutableStateOf("Android Compose") }
+        var searchVal3 by remember { mutableStateOf("Ban") }
+
+        Ux4gSearchField(
+            value = searchVal1,
+            onValueChange = { searchVal1 = it },
+            label = "Basic Search",
+            placeholder = "Search for components...",
+            showVoiceIcon = true,
+            showClearIcon = true
+        )
+
+        Ux4gSearchField(
+            value = searchVal2,
+            onValueChange = { searchVal2 = it },
+            variant = Ux4gSearchFieldVariant.SearchWithSubmit,
+            buttonStyle = Ux4gSearchFieldButtonStyle.Filled,
+            label = "Search with Submit",
+            placeholder = "Search query...",
+            onSubmitClick = { query ->
+                scope.launch {
+                    toastHostState.showToast(
+                        category = Ux4gToastCategory.Success,
+                        title = "Submitted",
+                        subtitle = "Search: $query"
+                    )
+                }
+            }
+        )
+
+        Ux4gSearchField(
+            value = searchVal3,
+            onValueChange = { searchVal3 = it },
+            variant = Ux4gSearchFieldVariant.Autocomplete,
+            filterType = Ux4gSearchFilterType.StartsWith,
+            label = "Autocomplete (StartsWith)",
+            placeholder = "Type fruit...",
+            options = listOf("Apple", "Banana", "Bandung", "Blueberry", "Cherry", "Mango"),
+            onOptionSelected = { searchVal3 = it }
+        )
     }
 }
 
@@ -214,3 +268,4 @@ fun DesignSystemShowcase(
 fun GreetingPreview() {
     Ux4gTheme { DesignSystemShowcase() }
 }
+

@@ -6280,8 +6280,210 @@ fun MainContent(
                 }
             }
         }
+
+        // Search Field Showcase
+        Ux4gCard(modifier = Modifier.fillMaxWidth()) {
+            Column(
+                modifier = Modifier.padding(16.dp),
+                verticalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+                Text(text = "Search Field", style = Ux4gTheme.typography.tS_strong)
+
+                var basicSearchValue by remember { mutableStateOf("") }
+                var submitSearchValue by remember { mutableStateOf("Android Compose") }
+                var tonalSubmitSearchValue by remember { mutableStateOf("Design System") }
+                var autocompleteValue by remember { mutableStateOf("Ban") }
+                var selectedFilterType by remember { mutableStateOf(Ux4gSearchFilterType.StartsWith) }
+
+                val suggestions = remember {
+                    listOf(
+                        "Apple",
+                        "Banana",
+                        "Bandung",
+                        "Blueberry",
+                        "Cherry",
+                        "Date",
+                        "Elderberry",
+                        "Fig",
+                        "Grape"
+                    )
+                }
+
+                // 1. Basic Search
+                Text(text = "1. Basic Search", style = Ux4gTheme.typography.lM_strong)
+                Ux4gSearchField(
+                    value = basicSearchValue,
+                    onValueChange = { basicSearchValue = it },
+                    label = "Basic Search",
+                    placeholder = "Search anything...",
+                    showVoiceIcon = true,
+                    showClearIcon = true,
+                    onVoiceClick = {
+                        scope.launch {
+                            toastHostState.showToast(
+                                category = Ux4gToastCategory.Info,
+                                title = "Voice Search",
+                                subtitle = "Listening for audio input..."
+                            )
+                        }
+                    }
+                )
+
+                // 2. Search With Submit (Filled & Tonal)
+                Text(text = "2. Search with Submit Button", style = Ux4gTheme.typography.lM_strong)
+                Ux4gSearchField(
+                    value = submitSearchValue,
+                    onValueChange = { submitSearchValue = it },
+                    variant = Ux4gSearchFieldVariant.SearchWithSubmit,
+                    buttonStyle = Ux4gSearchFieldButtonStyle.Filled,
+                    label = "Filled Submit Button",
+                    placeholder = "Search and submit...",
+                    onSubmitClick = { query ->
+                        scope.launch {
+                            toastHostState.showToast(
+                                category = Ux4gToastCategory.Success,
+                                title = "Search Submitted",
+                                subtitle = "Query: '$query'"
+                            )
+                        }
+                    }
+                )
+
+                Ux4gSearchField(
+                    value = tonalSubmitSearchValue,
+                    onValueChange = { tonalSubmitSearchValue = it },
+                    variant = Ux4gSearchFieldVariant.SearchWithSubmit,
+                    buttonStyle = Ux4gSearchFieldButtonStyle.Tonal,
+                    label = "Tonal Submit Button",
+                    placeholder = "Search with tonal button...",
+                    onSubmitClick = { query ->
+                        scope.launch {
+                            toastHostState.showToast(
+                                category = Ux4gToastCategory.Info,
+                                title = "Tonal Search",
+                                subtitle = "Query: '$query'"
+                            )
+                        }
+                    }
+                )
+
+                // 3. Autocomplete with Live Filtering
+                Text(text = "3. Autocomplete & Suggestions", style = Ux4gTheme.typography.lM_strong)
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    listOf(
+                        Ux4gSearchFilterType.Contains,
+                        Ux4gSearchFilterType.StartsWith,
+                        Ux4gSearchFilterType.StartsWithPerTerm
+                    ).forEach { filter ->
+                        Ux4gButton(
+                            onClick = { selectedFilterType = filter },
+                            variant = if (selectedFilterType == filter) Ux4gButtonVariant.Primary else Ux4gButtonVariant.Outline,
+                            size = Ux4gButtonSize.Small
+                        ) {
+                            Text(filter.name)
+                        }
+                    }
+                }
+
+                Ux4gSearchField(
+                    value = autocompleteValue,
+                    onValueChange = { autocompleteValue = it },
+                    variant = Ux4gSearchFieldVariant.Autocomplete,
+                    filterType = selectedFilterType,
+                    label = "Autocomplete Fruit Search (${selectedFilterType.name})",
+                    placeholder = "Type to search fruit...",
+                    options = suggestions,
+                    onOptionSelected = { selected ->
+                        autocompleteValue = selected
+                        scope.launch {
+                            toastHostState.showToast(
+                                category = Ux4gToastCategory.Success,
+                                title = "Option Selected",
+                                subtitle = "Selected: '$selected'"
+                            )
+                        }
+                    }
+                )
+
+                // 4. Sizes
+                Text(text = "4. Sizes", style = Ux4gTheme.typography.lM_strong)
+                var sizeText by remember { mutableStateOf("Query") }
+                Ux4gSearchField(
+                    value = sizeText,
+                    onValueChange = { sizeText = it },
+                    label = "Size XL (56dp)",
+                    size = Ux4gSearchFieldSize.XL,
+                    variant = Ux4gSearchFieldVariant.SearchWithSubmit
+                )
+                Ux4gSearchField(
+                    value = sizeText,
+                    onValueChange = { sizeText = it },
+                    label = "Size Large (48dp)",
+                    size = Ux4gSearchFieldSize.Large,
+                    variant = Ux4gSearchFieldVariant.SearchWithSubmit
+                )
+                Ux4gSearchField(
+                    value = sizeText,
+                    onValueChange = { sizeText = it },
+                    label = "Size Medium (40dp)",
+                    size = Ux4gSearchFieldSize.Medium,
+                    variant = Ux4gSearchFieldVariant.SearchWithSubmit
+                )
+                Ux4gSearchField(
+                    value = sizeText,
+                    onValueChange = { sizeText = it },
+                    label = "Size Small (32dp)",
+                    size = Ux4gSearchFieldSize.Small,
+                    variant = Ux4gSearchFieldVariant.SearchWithSubmit
+                )
+
+                // 5. Statuses & Captions
+                Text(text = "5. Statuses & Captions", style = Ux4gTheme.typography.lM_strong)
+                Ux4gSearchField(
+                    value = "Successful search",
+                    onValueChange = {},
+                    status = Ux4gSearchFieldStatus.Success,
+                    label = "Success Status",
+                    caption = "Verified query found matching results."
+                )
+                Ux4gSearchField(
+                    value = "Slow connection search",
+                    onValueChange = {},
+                    status = Ux4gSearchFieldStatus.Warning,
+                    label = "Warning Status",
+                    caption = "Network latency detected."
+                )
+                Ux4gSearchField(
+                    value = "Invalid search",
+                    onValueChange = {},
+                    status = Ux4gSearchFieldStatus.Error,
+                    label = "Error Status",
+                    caption = "Invalid search terms provided."
+                )
+
+                // 6. Loading & Disabled States
+                Text(text = "6. Loading & Disabled States", style = Ux4gTheme.typography.lM_strong)
+                Ux4gSearchField(
+                    value = "Loading results...",
+                    onValueChange = {},
+                    label = "Loading State",
+                    isLoading = true
+                )
+                Ux4gSearchField(
+                    value = "Disabled search",
+                    onValueChange = {},
+                    label = "Disabled State",
+                    caption = "Search input is disabled.",
+                    enabled = false
+                )
+            }
+        }
     }
 }
+
 
 
 

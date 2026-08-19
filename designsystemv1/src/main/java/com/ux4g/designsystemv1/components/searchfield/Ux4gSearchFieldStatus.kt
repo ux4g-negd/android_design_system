@@ -4,5 +4,9 @@ enum class Ux4gSearchFieldStatus {
     Default,
     Success,
     Warning,
-    Error
+    Error;
+
+    companion object {
+        val DefaultStatus = Default
+    }
 }
