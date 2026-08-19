@@ -57,6 +57,7 @@ import com.ux4g.designsystemv1.components.steppers.Ux4gStepItem
 import com.ux4g.designsystemv1.components.steppers.Ux4gStepper
 import com.ux4g.designsystemv1.components.tooltip.*
 import com.ux4g.designsystemv1.components.feedback.*
+import com.ux4g.designsystemv1.components.textarea.*
 import com.ux4g.designsystemv1.R
 import com.ux4g.designsystemv1.foundation.ExperimentalUx4gApi
 import com.ux4g.designsystemv1.foundation.Ux4gIconComponent
@@ -5445,6 +5446,48 @@ fun MainContent(
                         onSkip = {
                             println("NPS Skipped")
                         }
+                    )
+                }
+            }
+
+            // ══════════════════════════════════════════════════════════════════
+            // 31. TEXT AREA COMPONENT SHOWCASE
+            // ══════════════════════════════════════════════════════════════════
+            Ux4gCard(modifier = Modifier.fillMaxWidth()) {
+                Column(
+                    modifier = Modifier.padding(16.dp),
+                    verticalArrangement = Arrangement.spacedBy(16.dp)
+                ) {
+                    Text(
+                        text = "31. Text Area (UX4G 1:1 Parity)",
+                        style = Ux4gTheme.typography.tS_strong
+                    )
+                    Text(
+                        text = "Multi-line text area with exact typography tokens, custom diagonal resize grip canvas, live character counting, and status indicators.",
+                        style = Ux4gTheme.typography.bS_default,
+                        color = Ux4gTheme.colorScheme.onSurface.copy(alpha = 0.7f)
+                    )
+
+                    var sampleText1 by remember { mutableStateOf("") }
+                    var sampleText2 by remember { mutableStateOf("Valid input text") }
+
+                    Ux4gTextArea(
+                        value = sampleText1,
+                        onValueChange = { sampleText1 = it },
+                        label = "Feedback Comment",
+                        required = true,
+                        placeholder = "Tell us what you think...",
+                        caption = "Maximum 200 characters allowed.",
+                        maxLength = 200
+                    )
+
+                    Ux4gTextArea(
+                        value = sampleText2,
+                        onValueChange = { sampleText2 = it },
+                        label = "Success State",
+                        status = Ux4gTextAreaStatus.Success,
+                        caption = "Comment validated successfully.",
+                        maxLength = 100
                     )
                 }
             }

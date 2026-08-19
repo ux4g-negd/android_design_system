@@ -291,13 +291,10 @@ fun Ux4gFeedbackFormCsat(
                     Spacer(modifier = Modifier.height(8.dp))
                     Ux4gTextArea(
                         value = comment,
-                        onValueChange = {
-                            if (it.length <= maxLength) {
-                                comment = it
-                            }
-                        },
+                        onValueChange = { comment = it },
                         placeholder = commentPlaceholder,
                         minHeight = Ux4gTextAreaMinHeight.Large,
+                        maxLength = maxLength,
                         characterCountText = "${comment.length}/$maxLength",
                         modifier = Modifier.fillMaxWidth()
                     )

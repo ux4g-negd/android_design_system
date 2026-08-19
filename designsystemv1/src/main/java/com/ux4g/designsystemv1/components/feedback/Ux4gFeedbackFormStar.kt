@@ -362,13 +362,10 @@ fun Ux4gFeedbackFormStar(
                 // Comment Text Area
                 Ux4gTextArea(
                     value = comment,
-                    onValueChange = {
-                        if (it.length <= maxLength) {
-                            comment = it
-                        }
-                    },
+                    onValueChange = { comment = it },
                     placeholder = commentPlaceholder,
                     minHeight = Ux4gTextAreaMinHeight.Large,
+                    maxLength = maxLength,
                     characterCountText = "${comment.length}/$maxLength",
                     modifier = Modifier.fillMaxWidth()
                 )
