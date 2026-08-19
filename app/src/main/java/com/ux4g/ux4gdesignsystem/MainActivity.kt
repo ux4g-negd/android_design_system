@@ -5588,6 +5588,158 @@ fun MainContent(
                     }
                 }
             }
+
+            // ══════════════════════════════════════════════════════════════════
+            // 33. HALF CIRCLE (GAUGE) PROGRESS SHOWCASE
+            // ══════════════════════════════════════════════════════════════════
+            Ux4gCard(modifier = Modifier.fillMaxWidth()) {
+                Column(
+                    modifier = Modifier.padding(16.dp),
+                    verticalArrangement = Arrangement.spacedBy(20.dp)
+                ) {
+                    Text(
+                        text = "33. Half Circle (Gauge) Progress (UX4G 1:1 Parity)",
+                        style = Ux4gTheme.typography.tS_strong
+                    )
+                    Text(
+                        text = "A half-circle progress indicator (gauge / semicircle) matching Flutter half_circle_progress.dart. Features 180° clockwise sweep, automatic typography and stroke scaling, inside/outside description placement, scale endpoint labels (0% - 100%), gradient & solid color fills, and smooth animations.",
+                        style = Ux4gTheme.typography.bS_default,
+                        color = Ux4gTheme.colorScheme.onSurface.copy(alpha = 0.7f)
+                    )
+
+                    var halfCircleVal by remember { mutableStateOf(0.65f) }
+
+                    // 1. Size Variants (Without Scale)
+                    Text(text = "1. Predefined Sizes (S, M, L)", style = Ux4gTheme.typography.lM_strong)
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceAround,
+                        verticalAlignment = Alignment.Bottom
+                    ) {
+                        Ux4gHalfCircleProgress(
+                            value = 0.5f,
+                            size = Ux4gHalfCircleProgressSize.S,
+                            description = "Description"
+                        )
+                        Ux4gHalfCircleProgress(
+                            value = 0.5f,
+                            size = Ux4gHalfCircleProgressSize.M,
+                            description = "Description"
+                        )
+                        Ux4gHalfCircleProgress(
+                            value = 0.5f,
+                            size = Ux4gHalfCircleProgressSize.L,
+                            description = "Description"
+                        )
+                    }
+
+                    // 2. XL Size Variant
+                    Text(text = "2. XL Size Variant (280dp)", style = Ux4gTheme.typography.lM_strong)
+                    Box(
+                        modifier = Modifier.fillMaxWidth(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Ux4gHalfCircleProgress(
+                            value = 0.72f,
+                            size = Ux4gHalfCircleProgressSize.XL,
+                            description = "Server Capacity"
+                        )
+                    }
+
+                    // 3. With Scale Labels (0% & 100%)
+                    Text(text = "3. With Scale Labels (0% and 100%)", style = Ux4gTheme.typography.lM_strong)
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceAround,
+                        verticalAlignment = Alignment.Bottom
+                    ) {
+                        Ux4gHalfCircleProgress(
+                            value = 0.5f,
+                            size = Ux4gHalfCircleProgressSize.S,
+                            description = "Description",
+                            showScale = true
+                        )
+                        Ux4gHalfCircleProgress(
+                            value = 0.75f,
+                            size = Ux4gHalfCircleProgressSize.M,
+                            description = "Description",
+                            showScale = true
+                        )
+                        Ux4gHalfCircleProgress(
+                            value = 0.85f,
+                            size = Ux4gHalfCircleProgressSize.L,
+                            description = "Performance",
+                            showScale = true
+                        )
+                    }
+
+                    // 4. Custom Solid Color & Custom Gradient
+                    Text(text = "4. Custom Solid Color & Custom Multi-Color Gradient", style = Ux4gTheme.typography.lM_strong)
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceAround,
+                        verticalAlignment = Alignment.Bottom
+                    ) {
+                        Ux4gHalfCircleProgress(
+                            value = 0.90f,
+                            size = Ux4gHalfCircleProgressSize.M,
+                            progressColor = Ux4gColors.green600,
+                            description = "Success Rate",
+                            showScale = true
+                        )
+                        Ux4gHalfCircleProgress(
+                            value = 0.65f,
+                            size = Ux4gHalfCircleProgressSize.M,
+                            gradientColors = listOf(Ux4gColors.orange600, Ux4gColors.yellow500),
+                            description = "Battery Level",
+                            showScale = true
+                        )
+                    }
+
+                    // 5. Interactive Animated Half Circle Progress
+                    Text(text = "5. Animated Half Circle Progress", style = Ux4gTheme.typography.lM_strong)
+                    Box(
+                        modifier = Modifier.fillMaxWidth(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Ux4gAnimatedHalfCircleProgress(
+                            value = halfCircleVal,
+                            size = Ux4gHalfCircleProgressSize.L,
+                            description = "Live Monitoring",
+                            showScale = true
+                        )
+                    }
+                    Row(
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Ux4gButton(
+                            text = "25%",
+                            size = Ux4gButtonSize.Small,
+                            variant = Ux4gButtonVariant.Outline,
+                            onClick = { halfCircleVal = 0.25f }
+                        )
+                        Ux4gButton(
+                            text = "50%",
+                            size = Ux4gButtonSize.Small,
+                            variant = Ux4gButtonVariant.Outline,
+                            onClick = { halfCircleVal = 0.5f }
+                        )
+                        Ux4gButton(
+                            text = "75%",
+                            size = Ux4gButtonSize.Small,
+                            variant = Ux4gButtonVariant.Outline,
+                            onClick = { halfCircleVal = 0.75f }
+                        )
+                        Ux4gButton(
+                            text = "100%",
+                            size = Ux4gButtonSize.Small,
+                            variant = Ux4gButtonVariant.Primary,
+                            onClick = { halfCircleVal = 1.0f }
+                        )
+                    }
+                }
+            }
         }
     }
 }
