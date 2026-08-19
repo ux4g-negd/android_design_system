@@ -12,6 +12,8 @@ import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.filled.Star
+import androidx.compose.material.icons.filled.ThumbUp
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.runtime.Composable
@@ -82,10 +84,21 @@ object Ux4gIcons {
     val ic_right_arrow: Ux4gIcon = Ux4gIcon.Drawable(R.drawable.ic_right_arrow)
     val Union: Ux4gIcon = Ux4gIcon.Drawable(R.drawable.ic_union)
     val NationalEmblem: Ux4gIcon = Ux4gIcon.Drawable(R.drawable.ic_national_emblem)
+    val ic_face_0: Ux4gIcon = Ux4gIcon.Drawable(R.drawable.ic_face_0)
+    val ic_face_1: Ux4gIcon = Ux4gIcon.Drawable(R.drawable.ic_face_1)
+    val ic_face_2: Ux4gIcon = Ux4gIcon.Drawable(R.drawable.ic_face_2)
+    val ic_face_3: Ux4gIcon = Ux4gIcon.Drawable(R.drawable.ic_face_3)
+    val ic_face_4: Ux4gIcon = Ux4gIcon.Drawable(R.drawable.ic_face_4)
+    val Star: Ux4gIcon = Ux4gIcon.Vector(Icons.Filled.Star)
+    val ThumbUp: Ux4gIcon = Ux4gIcon.Vector(Icons.Filled.ThumbUp)
 
     // Aliases
-    val info: Ux4gIcon = info_circle
-    val success: Ux4gIcon = success_circle
-    val arrowLeft: Ux4gIcon = ic_left_arrow
-    val arrowRight: Ux4gIcon = ic_right_arrow
+    val info: Ux4gIcon get() = info_circle
+    val success: Ux4gIcon get() = success_circle
+    val arrowLeft: Ux4gIcon get() = ic_left_arrow
+    val arrowRight: Ux4gIcon get() = ic_right_arrow
+    @get:JvmName("getStarLower")
+    val star: Ux4gIcon get() = Star
+    @get:JvmName("getThumbUpLower")
+    val thumb_up: Ux4gIcon get() = ThumbUp
 }

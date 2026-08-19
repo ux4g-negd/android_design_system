@@ -56,6 +56,7 @@ import com.ux4g.designsystemv1.components.steppers.Ux4gCapsuleStepperLayout
 import com.ux4g.designsystemv1.components.steppers.Ux4gStepItem
 import com.ux4g.designsystemv1.components.steppers.Ux4gStepper
 import com.ux4g.designsystemv1.components.tooltip.*
+import com.ux4g.designsystemv1.components.feedback.*
 import com.ux4g.designsystemv1.R
 import com.ux4g.designsystemv1.foundation.ExperimentalUx4gApi
 import com.ux4g.designsystemv1.foundation.Ux4gIconComponent
@@ -5386,6 +5387,65 @@ fun MainContent(
                             )
                         }
                     }
+                }
+            }
+
+            // ══════════════════════════════════════════════════════════════════
+            // 30. FEEDBACK FORMS SHOWCASE (Star, CSAT, NPS)
+            // ══════════════════════════════════════════════════════════════════
+            Ux4gCard(modifier = Modifier.fillMaxWidth()) {
+                Column(
+                    modifier = Modifier.padding(16.dp),
+                    verticalArrangement = Arrangement.spacedBy(20.dp)
+                ) {
+                    Text(
+                        text = "30. Feedback Forms (Star, CSAT & NPS)",
+                        style = Ux4gTheme.typography.tS_strong
+                    )
+                    Text(
+                        text = "Interactive feedback components with exact Flutter UI parity, dynamic color thresholds, conditional text areas, chip selectors, and success confirmation views.",
+                        style = Ux4gTheme.typography.bS_default,
+                        color = Ux4gTheme.colorScheme.onSurface.copy(alpha = 0.7f)
+                    )
+
+                    // 1. Star Feedback Form
+                    Text(text = "1. Star Rating Feedback Form", style = Ux4gTheme.typography.lM_strong)
+                    Ux4gFeedbackFormStar(
+                        improvementOptions = listOf(
+                            "Content accuracy",
+                            "Visual design",
+                            "Performance",
+                            "Navigation"
+                        ),
+                        onSubmit = { rating, chips, comment ->
+                            println("Star Feedback Submitted: Rating: $rating, Chips: $chips, Comment: $comment")
+                        },
+                        onSkip = {
+                            println("Star Feedback Skipped")
+                        }
+                    )
+
+                    // 2. CSAT Face Feedback Form
+                    Text(text = "2. CSAT Face Rating Feedback Form", style = Ux4gTheme.typography.lM_strong)
+                    Ux4gFeedbackFormCsat(
+                        onSubmit = { score, comment ->
+                            println("CSAT Submitted: Score: $score, Comment: $comment")
+                        },
+                        onSkip = {
+                            println("CSAT Skipped")
+                        }
+                    )
+
+                    // 3. NPS 0-10 Feedback Form
+                    Text(text = "3. NPS Score Feedback Form (0-10)", style = Ux4gTheme.typography.lM_strong)
+                    Ux4gFeedbackFormNps(
+                        onSubmit = { score, comment ->
+                            println("NPS Submitted: Score: $score, Comment: $comment")
+                        },
+                        onSkip = {
+                            println("NPS Skipped")
+                        }
+                    )
                 }
             }
         }
