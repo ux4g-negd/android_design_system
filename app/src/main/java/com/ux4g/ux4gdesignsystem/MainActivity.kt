@@ -6481,6 +6481,139 @@ fun MainContent(
                 )
             }
         }
+
+        // ==========================================
+        // Switch / Toggle Showcase
+        // ==========================================
+        Ux4gCard(modifier = Modifier.fillMaxWidth()) {
+            Column(
+                modifier = Modifier.padding(16.dp),
+                verticalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+                Text(
+                    text = "Switch / Toggle Component",
+                    style = Ux4gTheme.typography.tS_strong,
+                    color = Ux4gTheme.colorScheme.onSurface
+                )
+                Text(
+                    text = "Custom switch controls with sizes, labels, icons, bothSides layout, and states.",
+                    style = Ux4gTheme.typography.bS_default,
+                    color = Ux4gColors.neutral600
+                )
+
+                // 1. Interactive Demo
+                Text(text = "1. Interactive Demo", style = Ux4gTheme.typography.lM_strong)
+                var demoSwitch by remember { mutableStateOf(true) }
+                Ux4gSwitch(
+                    checked = demoSwitch,
+                    onCheckedChange = {
+                        demoSwitch = it
+                        scope.launch {
+                            toastHostState.showToast(
+                                category = if (it) Ux4gToastCategory.Success else Ux4gToastCategory.Info,
+                                title = "Switch Toggled",
+                                subtitle = if (it) "Enabled" else "Disabled"
+                            )
+                        }
+                    },
+                    label = "Push Notifications",
+                    description = if (demoSwitch) "Notifications are active" else "Notifications are muted",
+                    size = Ux4gSwitchSize.M,
+                    labelPosition = Ux4gSwitchLabelPosition.Right
+                )
+
+                // 2. Sizes (S, M, L)
+                Text(text = "2. Sizes (S, M, L)", style = Ux4gTheme.typography.lM_strong)
+                var sizeS by remember { mutableStateOf(true) }
+                var sizeM by remember { mutableStateOf(true) }
+                var sizeL by remember { mutableStateOf(true) }
+
+                Ux4gSwitch(
+                    checked = sizeS,
+                    onCheckedChange = { sizeS = it },
+                    label = "Small (S) - 32x18",
+                    description = "Compact size for dense interfaces",
+                    size = Ux4gSwitchSize.S,
+                    labelPosition = Ux4gSwitchLabelPosition.Right
+                )
+
+                Ux4gSwitch(
+                    checked = sizeM,
+                    onCheckedChange = { sizeM = it },
+                    label = "Medium (M) - 40x22",
+                    description = "Standard default size switch",
+                    size = Ux4gSwitchSize.M,
+                    labelPosition = Ux4gSwitchLabelPosition.Right
+                )
+
+                Ux4gSwitch(
+                    checked = sizeL,
+                    onCheckedChange = { sizeL = it },
+                    label = "Large (L) - 48x28",
+                    description = "Prominent touch-friendly switch",
+                    size = Ux4gSwitchSize.L,
+                    labelPosition = Ux4gSwitchLabelPosition.Right
+                )
+
+                // 3. Label Positions & BothSides
+                Text(text = "3. Label Positions & BothSides Layout", style = Ux4gTheme.typography.lM_strong)
+                var posLeft by remember { mutableStateOf(true) }
+                var posBothSides by remember { mutableStateOf(true) }
+
+                Ux4gSwitch(
+                    checked = posLeft,
+                    onCheckedChange = { posLeft = it },
+                    label = "Label on Left Position",
+                    description = "Switch control placed on the right",
+                    labelPosition = Ux4gSwitchLabelPosition.Left
+                )
+
+                Ux4gSwitch(
+                    checked = posBothSides,
+                    onCheckedChange = { posBothSides = it },
+                    label = "Monthly",
+                    isRequired = true,
+                    secondaryLabel = "Annual (Save 20%)",
+                    isSecondaryRequired = false,
+                    labelPosition = Ux4gSwitchLabelPosition.BothSides
+                )
+
+                // 4. Required Asterisk & Trailing Icons
+                Text(text = "4. Required Asterisk & Trailing Icons", style = Ux4gTheme.typography.lM_strong)
+                var reqWithIcon by remember { mutableStateOf(true) }
+                Ux4gSwitch(
+                    checked = reqWithIcon,
+                    onCheckedChange = { reqWithIcon = it },
+                    label = "Analytics Tracking",
+                    isRequired = true,
+                    trailingIcon = Ux4gIcons.info_circle,
+                    description = "Help improve app experience with anonymous usage data",
+                    labelPosition = Ux4gSwitchLabelPosition.Right
+                )
+
+                // 5. Disabled States
+                Text(text = "5. Disabled States", style = Ux4gTheme.typography.lM_strong)
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(24.dp)
+                ) {
+                    Ux4gSwitch(
+                        checked = false,
+                        onCheckedChange = null,
+                        enabled = false,
+                        label = "Disabled Off",
+                        labelPosition = Ux4gSwitchLabelPosition.Right
+                    )
+                    Ux4gSwitch(
+                        checked = true,
+                        onCheckedChange = null,
+                        enabled = false,
+                        label = "Disabled On",
+                        labelPosition = Ux4gSwitchLabelPosition.Right
+                    )
+                }
+            }
+        }
     }
 }
 

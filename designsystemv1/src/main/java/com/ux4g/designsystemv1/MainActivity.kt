@@ -37,6 +37,10 @@ import com.ux4g.designsystemv1.foundation.Ux4gIconComponent
 import com.ux4g.designsystemv1.foundation.Ux4gIcons
 import com.ux4g.designsystemv1.foundation.Ux4gColors
 import com.ux4g.designsystemv1.theme.Ux4gTheme
+import com.ux4g.designsystemv1.components.Ux4gSwitch
+import com.ux4g.designsystemv1.components.Ux4gSwitchSize
+import com.ux4g.designsystemv1.components.Ux4gSwitchLabelPosition
+import com.ux4g.designsystemv1.components.Ux4gToggle
 import com.ux4g.designsystemv1.components.Ux4gPaginationIndicator
 import com.ux4g.designsystemv1.components.Ux4gPaginationVariant
 import kotlinx.coroutines.launch
@@ -260,6 +264,90 @@ fun DesignSystemShowcase(
             options = listOf("Apple", "Banana", "Bandung", "Blueberry", "Cherry", "Mango"),
             onOptionSelected = { searchVal3 = it }
         )
+
+        // Switch / Toggle Showcase
+        Text(
+            text = "Switch / Toggle",
+            style = Ux4gTheme.typography.hL_default,
+            color = Ux4gTheme.colorScheme.onBackground
+        )
+
+        var switchState1 by remember { mutableStateOf(true) }
+        var switchState2 by remember { mutableStateOf(false) }
+        var switchState3 by remember { mutableStateOf(true) }
+        var switchState4 by remember { mutableStateOf(true) }
+        var switchState5 by remember { mutableStateOf(false) }
+
+        Column(
+            modifier = Modifier.fillMaxWidth(),
+            verticalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
+            Ux4gSwitch(
+                checked = switchState1,
+                onCheckedChange = { switchState1 = it },
+                label = "Enable Notifications",
+                description = "Receive updates directly on your device",
+                size = Ux4gSwitchSize.M,
+                labelPosition = Ux4gSwitchLabelPosition.Right
+            )
+
+            Ux4gSwitch(
+                checked = switchState2,
+                onCheckedChange = { switchState2 = it },
+                label = "Compact Mode (S)",
+                description = "32x18 small size switch",
+                size = Ux4gSwitchSize.S,
+                labelPosition = Ux4gSwitchLabelPosition.Right
+            )
+
+            Ux4gSwitch(
+                checked = switchState3,
+                onCheckedChange = { switchState3 = it },
+                label = "Prominent Mode (L)",
+                description = "48x28 large size switch",
+                size = Ux4gSwitchSize.L,
+                labelPosition = Ux4gSwitchLabelPosition.Right
+            )
+
+            Ux4gSwitch(
+                checked = switchState4,
+                onCheckedChange = { switchState4 = it },
+                label = "Monthly Billing",
+                isRequired = true,
+                secondaryLabel = "Annual Billing (Save 20%)",
+                labelPosition = Ux4gSwitchLabelPosition.BothSides
+            )
+
+            Ux4gSwitch(
+                checked = switchState5,
+                onCheckedChange = { switchState5 = it },
+                label = "Required Setting with Icon",
+                isRequired = true,
+                trailingIcon = Ux4gIcons.info_circle,
+                description = "Click info icon for more details",
+                labelPosition = Ux4gSwitchLabelPosition.Left
+            )
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+                Ux4gSwitch(
+                    checked = false,
+                    onCheckedChange = null,
+                    enabled = false,
+                    label = "Disabled Off",
+                    labelPosition = Ux4gSwitchLabelPosition.Right
+                )
+                Ux4gSwitch(
+                    checked = true,
+                    onCheckedChange = null,
+                    enabled = false,
+                    label = "Disabled On",
+                    labelPosition = Ux4gSwitchLabelPosition.Right
+                )
+            }
+        }
     }
 }
 
