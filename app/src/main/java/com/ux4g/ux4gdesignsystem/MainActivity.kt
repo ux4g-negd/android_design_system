@@ -58,6 +58,7 @@ import com.ux4g.designsystemv1.components.steppers.Ux4gStepper
 import com.ux4g.designsystemv1.components.tooltip.*
 import com.ux4g.designsystemv1.components.feedback.*
 import com.ux4g.designsystemv1.components.textarea.*
+import com.ux4g.designsystemv1.components.progress.*
 import com.ux4g.designsystemv1.R
 import com.ux4g.designsystemv1.foundation.ExperimentalUx4gApi
 import com.ux4g.designsystemv1.foundation.Ux4gIconComponent
@@ -5489,6 +5490,102 @@ fun MainContent(
                         caption = "Comment validated successfully.",
                         maxLength = 100
                     )
+                }
+            }
+
+            // ══════════════════════════════════════════════════════════════════
+            // 32. LINEAR PROGRESS BAR SHOWCASE
+            // ══════════════════════════════════════════════════════════════════
+            Ux4gCard(modifier = Modifier.fillMaxWidth()) {
+                Column(
+                    modifier = Modifier.padding(16.dp),
+                    verticalArrangement = Arrangement.spacedBy(16.dp)
+                ) {
+                    Text(
+                        text = "32. Linear Progress Bar (UX4G 1:1 Parity)",
+                        style = Ux4gTheme.typography.tS_strong
+                    )
+                    Text(
+                        text = "Linear progress indicator matching Flutter linear_progress.dart & linear_progress_bar.dart with gradient fills, labels, hint text, inside/outside percentages, sharp/rounded shapes, and smooth animations.",
+                        style = Ux4gTheme.typography.bS_default,
+                        color = Ux4gTheme.colorScheme.onSurface.copy(alpha = 0.7f)
+                    )
+
+                    var animatedVal by remember { mutableStateOf(0.4f) }
+
+                    // 1. Basic Progress Bar
+                    Text(text = "1. Basic Progress Bar (Default 8dp & Gradient)", style = Ux4gTheme.typography.lM_strong)
+                    Ux4gLinearProgressBar(value = 0.4f)
+
+                    // 2. With Label, Hint & Outside Percentage
+                    Text(text = "2. With Label, Hint & Outside Percentage", style = Ux4gTheme.typography.lM_strong)
+                    Ux4gLinearProgressBar(
+                        value = 0.75f,
+                        label = "Uploading documents",
+                        hint = "3 of 4 files",
+                        showPercentage = true,
+                        labelPosition = Ux4gProgressLabelPosition.Outside
+                    )
+
+                    // 3. With Icon & Inside Percentage
+                    Text(text = "3. With Icon & Inside Percentage (18dp height)", style = Ux4gTheme.typography.lM_strong)
+                    Ux4gLinearProgressBar(
+                        value = 0.65f,
+                        icon = Ux4gIcons.info_circle,
+                        label = "Application Verification",
+                        height = 18.dp,
+                        showPercentage = true,
+                        labelPosition = Ux4gProgressLabelPosition.Inside
+                    )
+
+                    // 4. Custom Solid Color & Sharp Shape
+                    Text(text = "4. Solid Color & Sharp Shape", style = Ux4gTheme.typography.lM_strong)
+                    Ux4gLinearProgressBar(
+                        value = 0.5f,
+                        shape = Ux4gProgressShape.Sharp,
+                        height = 10.dp,
+                        color = Ux4gColors.green600,
+                        showPercentage = true
+                    )
+
+                    // 5. Interactive Animated Progress Bar
+                    Text(text = "5. Animated Linear Progress Bar", style = Ux4gTheme.typography.lM_strong)
+                    Ux4gAnimatedLinearProgressBar(
+                        value = animatedVal,
+                        label = "Dynamic Task Progress",
+                        hint = "${(animatedVal * 100).toInt()}%",
+                        showPercentage = true,
+                        labelPosition = Ux4gProgressLabelPosition.Outside
+                    )
+                    Row(
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Ux4gButton(
+                            text = "25%",
+                            size = Ux4gButtonSize.Small,
+                            variant = Ux4gButtonVariant.Outline,
+                            onClick = { animatedVal = 0.25f }
+                        )
+                        Ux4gButton(
+                            text = "50%",
+                            size = Ux4gButtonSize.Small,
+                            variant = Ux4gButtonVariant.Outline,
+                            onClick = { animatedVal = 0.5f }
+                        )
+                        Ux4gButton(
+                            text = "75%",
+                            size = Ux4gButtonSize.Small,
+                            variant = Ux4gButtonVariant.Outline,
+                            onClick = { animatedVal = 0.75f }
+                        )
+                        Ux4gButton(
+                            text = "100%",
+                            size = Ux4gButtonSize.Small,
+                            variant = Ux4gButtonVariant.Primary,
+                            onClick = { animatedVal = 1.0f }
+                        )
+                    }
                 }
             }
         }
