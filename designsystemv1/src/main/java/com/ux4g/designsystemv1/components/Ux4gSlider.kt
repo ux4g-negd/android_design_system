@@ -26,7 +26,6 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import com.ux4g.designsystemv1.components.inputfield.Ux4gInputField
 import com.ux4g.designsystemv1.components.inputfield.Ux4gInputFieldSize
@@ -51,135 +50,131 @@ enum class Ux4gSliderCaptionVariant {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Ux4gSlider(
-        value: Float,
-        onValueChange: (Float) -> Unit,
-        modifier: Modifier = Modifier,
-        valueRange: ClosedFloatingPointRange<Float> = 0f..100f,
-        steps: Int = 0, // e.g., 9 for steps of 10 in 0-100
-        size: Ux4gSliderSize = Ux4gSliderSize.Small,
-        enabled: Boolean = true,
-        label: String? = null,
-        isRequired: Boolean = false,
-        labelIcon: Ux4gIcon? = null,
-        startValueText: String? = null,
-        endValueText: String? = null,
-        caption: String? = null,
-        captionVariant: Ux4gSliderCaptionVariant = Ux4gSliderCaptionVariant.Helper,
-        showMarksAndValues: Boolean = false, // If true, renders ticks and numbers below
-        showInputFields: Boolean =
-                false, // If true, replaces start/end value texts with editable inputs
-        showValueLabels: Boolean = false, // If true, defaults to showing plain text values
-        showIndicator: Boolean = false, // If true, shows value above thumb while sliding
-        valueFormatter: (Float) -> String = { "${it.toInt()}%" },
-        interactionSource: MutableInteractionSource = remember { MutableInteractionSource() }
+    value: Float,
+    onValueChange: (Float) -> Unit,
+    modifier: Modifier = Modifier,
+    valueRange: ClosedFloatingPointRange<Float> = 0f..100f,
+    steps: Int = 0, // e.g., 9 for steps of 10 in 0-100
+    size: Ux4gSliderSize = Ux4gSliderSize.Small,
+    enabled: Boolean = true,
+    label: String? = null,
+    isRequired: Boolean = false,
+    labelIcon: Ux4gIcon? = null,
+    startValueText: String? = null,
+    endValueText: String? = null,
+    caption: String? = null,
+    captionVariant: Ux4gSliderCaptionVariant = Ux4gSliderCaptionVariant.Helper,
+    showMarksAndValues: Boolean = false, // If true, renders ticks and numbers below
+    showInputFields: Boolean = false, // If true, replaces start/end value texts with editable inputs
+    showValueLabels: Boolean = false, // If true, defaults to showing plain text values
+    showIndicator: Boolean = false, // If true, shows value above thumb while sliding
+    valueFormatter: (Float) -> String = { "${it.toInt()}%" },
+    interactionSource: MutableInteractionSource = remember { MutableInteractionSource() }
 ) {
+    val isError = captionVariant == Ux4gSliderCaptionVariant.Error
+    val onSurface = Ux4gColors.neutral900
+    val primary = Ux4gColors.primary
+    val error = Ux4gColors.red600
+
+    val activeColor = if (enabled) {
+        if (isError) error else primary
+    } else {
+        onSurface.copy(alpha = 0.38f)
+    }
+    val inactiveColor = onSurface.copy(alpha = 0.12f)
+
     Column(modifier = modifier.fillMaxWidth()) {
         // Label Block
         if (label != null ||
-                        startValueText != null ||
-                        endValueText != null ||
-                        showInputFields ||
-                        showValueLabels
+            startValueText != null ||
+            endValueText != null ||
+            showInputFields ||
+            showValueLabels
         ) {
             Column(modifier = Modifier.fillMaxWidth().padding(horizontal = size.thumbSize / 2)) {
                 if (label != null) {
                     Row(
-                            horizontalArrangement = Arrangement.spacedBy(4.dp),
-                            verticalAlignment = Alignment.CenterVertically
+                        horizontalArrangement = Arrangement.spacedBy(4.dp),
+                        verticalAlignment = Alignment.CenterVertically
                     ) {
                         Text(
-                                text = label,
-                                style = Ux4gTheme.typography.lM_default,
-                                color =
-                                        if (enabled) Ux4gTheme.colorScheme.onSurface
-                                        else Ux4gTheme.colorScheme.onSurface.copy(alpha = 0.38f)
+                            text = label,
+                            style = defaultTypography.lM_default,
+                            color = if (enabled) onSurface else onSurface.copy(alpha = 0.38f)
                         )
                         if (isRequired) {
                             Text(
-                                    text = "*",
-                                    style = Ux4gTheme.typography.lM_default,
-                                    color = Ux4gTheme.colorScheme.error
+                                text = "*",
+                                style = defaultTypography.lM_default,
+                                color = error
                             )
                         }
                         if (labelIcon != null) {
                             Ux4gIconComponent(
-                                    icon = labelIcon,
-                                    contentDescription = null,
-                                    modifier = Modifier.size(16.dp),
-                                    tint =
-                                            if (enabled) Ux4gTheme.colorScheme.onSurface
-                                            else Ux4gTheme.colorScheme.onSurface.copy(alpha = 0.38f)
+                                icon = labelIcon,
+                                contentDescription = null,
+                                modifier = Modifier.size(16.dp),
+                                tint = if (enabled) onSurface else onSurface.copy(alpha = 0.38f)
                             )
                         }
                     }
                 }
 
                 if (startValueText != null ||
-                                endValueText != null ||
-                                showInputFields ||
-                                showValueLabels
+                    endValueText != null ||
+                    showInputFields ||
+                    showValueLabels
                 ) {
                     Row(
-                            modifier = Modifier.fillMaxWidth().padding(top = 4.dp),
-                            horizontalArrangement = Arrangement.SpaceBetween,
-                            verticalAlignment = Alignment.CenterVertically
+                        modifier = Modifier.fillMaxWidth().padding(top = 4.dp),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
                     ) {
                         if (showInputFields) {
-                            var textValue by
-                                    remember(value) { mutableStateOf(value.toInt().toString()) }
+                            var textValue by remember(value) { mutableStateOf(value.toInt().toString()) }
                             val focusManager = LocalFocusManager.current
                             Ux4gInputField(
-                                    value = textValue,
-                                    onValueChange = { newText ->
-                                        if (newText.all { it.isDigit() } || newText.isEmpty()) {
-                                            textValue = newText
+                                value = textValue,
+                                onValueChange = { newText ->
+                                    if (newText.all { it.isDigit() } || newText.isEmpty()) {
+                                        textValue = newText
+                                    }
+                                },
+                                modifier = Modifier.width(60.dp),
+                                size = Ux4gInputFieldSize.Small,
+                                postfixText = "%",
+                                enabled = enabled,
+                                singleLine = true,
+                                keyboardOptions = KeyboardOptions(
+                                    keyboardType = KeyboardType.Number,
+                                    imeAction = ImeAction.Done
+                                ),
+                                keyboardActions = KeyboardActions(
+                                    onDone = {
+                                        val parsed = textValue.toFloatOrNull()
+                                        if (parsed != null) {
+                                            val coerced = parsed.coerceIn(valueRange)
+                                            textValue = coerced.toInt().toString()
+                                            onValueChange(coerced)
+                                        } else {
+                                            textValue = value.toInt().toString()
                                         }
-                                    },
-                                    modifier = Modifier.width(60.dp),
-                                    size = Ux4gInputFieldSize.Small,
-                                    postfixText = "%",
-                                    enabled = enabled,
-                                    singleLine = true,
-                                    keyboardOptions =
-                                            KeyboardOptions(
-                                                    keyboardType = KeyboardType.Number,
-                                                    imeAction = ImeAction.Done
-                                            ),
-                                    keyboardActions =
-                                            KeyboardActions(
-                                                    onDone = {
-                                                        val parsed = textValue.toFloatOrNull()
-                                                        if (parsed != null) {
-                                                            val coerced =
-                                                                    parsed.coerceIn(valueRange)
-                                                            textValue = coerced.toInt().toString()
-                                                            onValueChange(coerced)
-                                                        } else {
-                                                            textValue = value.toInt().toString()
-                                                        }
-                                                        focusManager.clearFocus()
-                                                    }
-                                            )
+                                        focusManager.clearFocus()
+                                    }
+                                )
                             )
                         } else if (showValueLabels) {
                             Text(
-                                    text = valueFormatter(value),
-                                    style = Ux4gTheme.typography.lM_strong,
-                                    color =
-                                            if (enabled) Ux4gTheme.colorScheme.onSurface
-                                            else Ux4gTheme.colorScheme.onSurface.copy(alpha = 0.38f)
+                                text = valueFormatter(value),
+                                style = defaultTypography.lM_strong,
+                                color = if (enabled) onSurface else onSurface.copy(alpha = 0.38f)
                             )
                         } else {
                             if (startValueText != null) {
                                 Text(
-                                        text = startValueText,
-                                        style = Ux4gTheme.typography.lM_strong,
-                                        color =
-                                                if (enabled) Ux4gTheme.colorScheme.onSurface
-                                                else
-                                                        Ux4gTheme.colorScheme.onSurface.copy(
-                                                                alpha = 0.38f
-                                                        )
+                                    text = startValueText,
+                                    style = defaultTypography.lM_strong,
+                                    color = if (enabled) onSurface else onSurface.copy(alpha = 0.38f)
                                 )
                             } else {
                                 Spacer(Modifier.width(1.dp))
@@ -188,11 +183,9 @@ fun Ux4gSlider(
 
                         if (endValueText != null) {
                             Text(
-                                    text = endValueText,
-                                    style = Ux4gTheme.typography.lM_strong,
-                                    color =
-                                            if (enabled) Ux4gTheme.colorScheme.onSurface
-                                            else Ux4gTheme.colorScheme.onSurface.copy(alpha = 0.38f)
+                                text = endValueText,
+                                style = defaultTypography.lM_strong,
+                                color = if (enabled) onSurface else onSurface.copy(alpha = 0.38f)
                             )
                         }
                     }
@@ -201,65 +194,65 @@ fun Ux4gSlider(
         }
 
         Slider(
-                value = value,
-                onValueChange = onValueChange,
-                modifier = Modifier.fillMaxWidth().offset(y = (-12).dp),
-                valueRange = valueRange,
-                steps = steps,
-                enabled = enabled,
-                interactionSource = interactionSource,
-                thumb = {
-                    Ux4gThumb(
-                            size = size,
-                            enabled = enabled,
-                            interactionSource = interactionSource,
-                            value = value,
-                            showIndicator = showIndicator
+            value = value,
+            onValueChange = onValueChange,
+            modifier = Modifier.fillMaxWidth().offset(y = (-12).dp),
+            valueRange = valueRange,
+            steps = steps,
+            enabled = enabled,
+            interactionSource = interactionSource,
+            thumb = {
+                Ux4gThumb(
+                    size = size,
+                    enabled = enabled,
+                    interactionSource = interactionSource,
+                    value = value,
+                    showIndicator = showIndicator
+                )
+            },
+            track = { sliderState ->
+                Canvas(Modifier.fillMaxWidth().height(size.trackHeight)) {
+                    val trackHeightPx = size.trackHeight.toPx()
+                    val widthOffset = this.size.width
+                    // Inactive
+                    drawLine(
+                        color = inactiveColor,
+                        start = Offset(0f, center.y),
+                        end = Offset(widthOffset, center.y),
+                        strokeWidth = trackHeightPx,
+                        cap = StrokeCap.Round
                     )
-                },
-                track = { sliderState ->
-                    val activeColor = if (enabled) Ux4gTheme.colorScheme.primary else Ux4gTheme.colorScheme.onSurface.copy(alpha = 0.38f)
-                    val inactiveColor = Ux4gTheme.colorScheme.onSurface.copy(alpha = 0.12f)
-                    Canvas(Modifier.fillMaxWidth().height(size.trackHeight)) {
-                        val trackHeightPx = size.trackHeight.toPx()
-                        val widthOffset = this.size.width
-                        // Inactive
-                        drawLine(
-                                color = inactiveColor,
-                                start = Offset(0f, center.y),
-                                end = Offset(widthOffset, center.y),
-                                strokeWidth = trackHeightPx,
-                                cap = StrokeCap.Round
-                        )
-                        // Active
-                        val fraction = (sliderState.value - sliderState.valueRange.start) / (sliderState.valueRange.endInclusive - sliderState.valueRange.start)
-                        drawLine(
-                                color = activeColor,
-                                start = Offset(0f, center.y),
-                                end = Offset(widthOffset * fraction, center.y),
-                                strokeWidth = trackHeightPx,
-                                cap = StrokeCap.Round
-                        )
-                    }
+                    // Active
+                    val fraction = (sliderState.value - sliderState.valueRange.start) /
+                            (sliderState.valueRange.endInclusive - sliderState.valueRange.start)
+                    drawLine(
+                        color = activeColor,
+                        start = Offset(0f, center.y),
+                        end = Offset(widthOffset * fraction, center.y),
+                        strokeWidth = trackHeightPx,
+                        cap = StrokeCap.Round
+                    )
                 }
+            }
         )
 
         if (showMarksAndValues) {
             Ux4gSliderMarksAndValues(
-                    valueRange = valueRange,
-                    activeRange = valueRange.start..value,
-                    steps = steps,
-                    enabled = enabled,
-                    thumbRadius = size.thumbSize / 2
+                valueRange = valueRange,
+                activeRange = valueRange.start..value,
+                steps = steps,
+                enabled = enabled,
+                activeColor = activeColor,
+                thumbRadius = size.thumbSize / 2
             )
         }
 
         if (caption != null) {
             Ux4gSliderCaption(
-                    caption = caption,
-                    variant = captionVariant,
-                    enabled = enabled,
-                    thumbRadius = size.thumbSize / 2
+                caption = caption,
+                variant = captionVariant,
+                enabled = enabled,
+                thumbRadius = size.thumbSize / 2
             )
         }
     }
@@ -268,208 +261,184 @@ fun Ux4gSlider(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Ux4gRangeSlider(
-        value: ClosedFloatingPointRange<Float>,
-        onValueChange: (ClosedFloatingPointRange<Float>) -> Unit,
-        modifier: Modifier = Modifier,
-        valueRange: ClosedFloatingPointRange<Float> = 0f..100f,
-        steps: Int = 0,
-        size: Ux4gSliderSize = Ux4gSliderSize.Small,
-        enabled: Boolean = true,
-        label: String? = null,
-        isRequired: Boolean = false,
-        labelIcon: Ux4gIcon? = null,
-        startValueText: String? = null,
-        endValueText: String? = null,
-        caption: String? = null,
-        captionVariant: Ux4gSliderCaptionVariant = Ux4gSliderCaptionVariant.Helper,
-        showMarksAndValues: Boolean = false,
-        showInputFields: Boolean = false,
-        showValueLabels: Boolean = false,
-        showIndicator: Boolean = false,
-        valueFormatter: (Float) -> String = { "${it.toInt()}%" }
+    value: ClosedFloatingPointRange<Float>,
+    onValueChange: (ClosedFloatingPointRange<Float>) -> Unit,
+    modifier: Modifier = Modifier,
+    valueRange: ClosedFloatingPointRange<Float> = 0f..100f,
+    steps: Int = 0,
+    size: Ux4gSliderSize = Ux4gSliderSize.Small,
+    enabled: Boolean = true,
+    label: String? = null,
+    isRequired: Boolean = false,
+    labelIcon: Ux4gIcon? = null,
+    startValueText: String? = null,
+    endValueText: String? = null,
+    caption: String? = null,
+    captionVariant: Ux4gSliderCaptionVariant = Ux4gSliderCaptionVariant.Helper,
+    showMarksAndValues: Boolean = false,
+    showInputFields: Boolean = false,
+    showValueLabels: Boolean = false,
+    showIndicator: Boolean = false,
+    valueFormatter: (Float) -> String = { "${it.toInt()}%" }
 ) {
+    val isError = captionVariant == Ux4gSliderCaptionVariant.Error
+    val onSurface = Ux4gColors.neutral900
+    val primary = Ux4gColors.primary
+    val error = Ux4gColors.red600
+
+    val activeColor = if (enabled) {
+        if (isError) error else primary
+    } else {
+        onSurface.copy(alpha = 0.38f)
+    }
+    val inactiveColor = onSurface.copy(alpha = 0.12f)
+
     Column(modifier = modifier.fillMaxWidth()) {
         if (label != null ||
-                        startValueText != null ||
-                        endValueText != null ||
-                        showInputFields ||
-                        showValueLabels
+            startValueText != null ||
+            endValueText != null ||
+            showInputFields ||
+            showValueLabels
         ) {
             Column(modifier = Modifier.fillMaxWidth().padding(horizontal = size.thumbSize / 2)) {
                 if (label != null) {
                     Row(
-                            horizontalArrangement = Arrangement.spacedBy(4.dp),
-                            verticalAlignment = Alignment.CenterVertically
+                        horizontalArrangement = Arrangement.spacedBy(4.dp),
+                        verticalAlignment = Alignment.CenterVertically
                     ) {
                         Text(
-                                text = label,
-                                style = Ux4gTheme.typography.lM_default,
-                                color =
-                                        if (enabled) Ux4gTheme.colorScheme.onSurface
-                                        else Ux4gTheme.colorScheme.onSurface.copy(alpha = 0.38f)
+                            text = label,
+                            style = defaultTypography.lM_default,
+                            color = if (enabled) onSurface else onSurface.copy(alpha = 0.38f)
                         )
                         if (isRequired) {
                             Text(
-                                    text = "*",
-                                    style = Ux4gTheme.typography.lM_default,
-                                    color = Ux4gTheme.colorScheme.error
+                                text = "*",
+                                style = defaultTypography.lM_default,
+                                color = error
                             )
                         }
                         if (labelIcon != null) {
                             Ux4gIconComponent(
-                                    icon = labelIcon,
-                                    contentDescription = null,
-                                    modifier = Modifier.size(16.dp),
-                                    tint =
-                                            if (enabled) Ux4gTheme.colorScheme.onSurface
-                                            else Ux4gTheme.colorScheme.onSurface.copy(alpha = 0.38f)
+                                icon = labelIcon,
+                                contentDescription = null,
+                                modifier = Modifier.size(16.dp),
+                                tint = if (enabled) onSurface else onSurface.copy(alpha = 0.38f)
                             )
                         }
                     }
                 }
 
                 if (startValueText != null ||
-                                endValueText != null ||
-                                showInputFields ||
-                                showValueLabels
+                    endValueText != null ||
+                    showInputFields ||
+                    showValueLabels
                 ) {
                     Row(
-                            modifier = Modifier.fillMaxWidth().padding(top = 4.dp),
-                            horizontalArrangement = Arrangement.SpaceBetween,
-                            verticalAlignment = Alignment.CenterVertically
+                        modifier = Modifier.fillMaxWidth().padding(top = 4.dp),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
                     ) {
                         if (showInputFields) {
-                            var textStart by
-                                    remember(value.start) {
-                                        mutableStateOf(value.start.toInt().toString())
-                                    }
-                            var textEnd by
-                                    remember(value.endInclusive) {
-                                        mutableStateOf(value.endInclusive.toInt().toString())
-                                    }
+                            var textStart by remember(value.start) {
+                                mutableStateOf(value.start.toInt().toString())
+                            }
+                            var textEnd by remember(value.endInclusive) {
+                                mutableStateOf(value.endInclusive.toInt().toString())
+                            }
                             val focusManager = LocalFocusManager.current
                             Ux4gInputField(
-                                    value = textStart,
-                                    onValueChange = { newText ->
-                                        if (newText.all { it.isDigit() } || newText.isEmpty())
-                                                textStart = newText
-                                    },
-                                    modifier = Modifier.width(60.dp),
-                                    size = Ux4gInputFieldSize.Small,
-                                    postfixText = "%",
-                                    enabled = enabled,
-                                    singleLine = true,
-                                    keyboardOptions =
-                                            KeyboardOptions(
-                                                    keyboardType = KeyboardType.Number,
-                                                    imeAction = ImeAction.Done
-                                            ),
-                                    keyboardActions =
-                                            KeyboardActions(
-                                                    onDone = {
-                                                        val parsed = textStart.toFloatOrNull()
-                                                        if (parsed != null) {
-                                                            val coerced =
-                                                                    parsed.coerceIn(valueRange)
-                                                            textStart = coerced.toInt().toString()
-                                                            if (coerced <= value.endInclusive) {
-                                                                onValueChange(
-                                                                        coerced..value.endInclusive
-                                                                )
-                                                            } else {
-                                                                onValueChange(
-                                                                        value.endInclusive..value.endInclusive
-                                                                )
-                                                            }
-                                                        } else {
-                                                            textStart =
-                                                                    value.start.toInt().toString()
-                                                        }
-                                                        focusManager.clearFocus()
-                                                    }
-                                            )
+                                value = textStart,
+                                onValueChange = { newText ->
+                                    if (newText.all { it.isDigit() } || newText.isEmpty())
+                                        textStart = newText
+                                },
+                                modifier = Modifier.width(60.dp),
+                                size = Ux4gInputFieldSize.Small,
+                                postfixText = "%",
+                                enabled = enabled,
+                                singleLine = true,
+                                keyboardOptions = KeyboardOptions(
+                                    keyboardType = KeyboardType.Number,
+                                    imeAction = ImeAction.Done
+                                ),
+                                keyboardActions = KeyboardActions(
+                                    onDone = {
+                                        val parsed = textStart.toFloatOrNull()
+                                        if (parsed != null) {
+                                            val coerced = parsed.coerceIn(valueRange)
+                                            textStart = coerced.toInt().toString()
+                                            if (coerced <= value.endInclusive) {
+                                                onValueChange(coerced..value.endInclusive)
+                                            } else {
+                                                onValueChange(value.endInclusive..value.endInclusive)
+                                            }
+                                        } else {
+                                            textStart = value.start.toInt().toString()
+                                        }
+                                        focusManager.clearFocus()
+                                    }
+                                )
                             )
                             Ux4gInputField(
-                                    value = textEnd,
-                                    onValueChange = { newText ->
-                                        if (newText.all { it.isDigit() } || newText.isEmpty())
-                                                textEnd = newText
-                                    },
-                                    modifier = Modifier.width(60.dp),
-                                    size = Ux4gInputFieldSize.Small,
-                                    postfixText = "%",
-                                    enabled = enabled,
-                                    singleLine = true,
-                                    keyboardOptions =
-                                            KeyboardOptions(
-                                                    keyboardType = KeyboardType.Number,
-                                                    imeAction = ImeAction.Done
-                                            ),
-                                    keyboardActions =
-                                            KeyboardActions(
-                                                    onDone = {
-                                                        val parsed = textEnd.toFloatOrNull()
-                                                        if (parsed != null) {
-                                                            val coerced =
-                                                                    parsed.coerceIn(valueRange)
-                                                            textEnd = coerced.toInt().toString()
-                                                            if (coerced >= value.start) {
-                                                                onValueChange(value.start..coerced)
-                                                            } else {
-                                                                onValueChange(
-                                                                        value.start..value.start
-                                                                )
-                                                            }
-                                                        } else {
-                                                            textEnd =
-                                                                    value.endInclusive
-                                                                            .toInt()
-                                                                            .toString()
-                                                        }
-                                                        focusManager.clearFocus()
-                                                    }
-                                            )
+                                value = textEnd,
+                                onValueChange = { newText ->
+                                    if (newText.all { it.isDigit() } || newText.isEmpty())
+                                        textEnd = newText
+                                },
+                                modifier = Modifier.width(60.dp),
+                                size = Ux4gInputFieldSize.Small,
+                                postfixText = "%",
+                                enabled = enabled,
+                                singleLine = true,
+                                keyboardOptions = KeyboardOptions(
+                                    keyboardType = KeyboardType.Number,
+                                    imeAction = ImeAction.Done
+                                ),
+                                keyboardActions = KeyboardActions(
+                                    onDone = {
+                                        val parsed = textEnd.toFloatOrNull()
+                                        if (parsed != null) {
+                                            val coerced = parsed.coerceIn(valueRange)
+                                            textEnd = coerced.toInt().toString()
+                                            if (coerced >= value.start) {
+                                                onValueChange(value.start..coerced)
+                                            } else {
+                                                onValueChange(value.start..value.start)
+                                            }
+                                        } else {
+                                            textEnd = value.endInclusive.toInt().toString()
+                                        }
+                                        focusManager.clearFocus()
+                                    }
+                                )
                             )
                         } else if (showValueLabels) {
                             Text(
-                                    text = valueFormatter(value.start),
-                                    style = Ux4gTheme.typography.lM_strong,
-                                    color =
-                                            if (enabled) Ux4gTheme.colorScheme.onSurface
-                                            else Ux4gTheme.colorScheme.onSurface.copy(alpha = 0.38f)
+                                text = valueFormatter(value.start),
+                                style = defaultTypography.lM_strong,
+                                color = if (enabled) onSurface else onSurface.copy(alpha = 0.38f)
                             )
                             Text(
-                                    text = valueFormatter(value.endInclusive),
-                                    style = Ux4gTheme.typography.lM_strong,
-                                    color =
-                                            if (enabled) Ux4gTheme.colorScheme.onSurface
-                                            else Ux4gTheme.colorScheme.onSurface.copy(alpha = 0.38f)
+                                text = valueFormatter(value.endInclusive),
+                                style = defaultTypography.lM_strong,
+                                color = if (enabled) onSurface else onSurface.copy(alpha = 0.38f)
                             )
                         } else {
                             if (startValueText != null) {
                                 Text(
-                                        text = startValueText,
-                                        style = Ux4gTheme.typography.lM_strong,
-                                        color =
-                                                if (enabled) Ux4gTheme.colorScheme.onSurface
-                                                else
-                                                        Ux4gTheme.colorScheme.onSurface.copy(
-                                                                alpha = 0.38f
-                                                        )
+                                    text = startValueText,
+                                    style = defaultTypography.lM_strong,
+                                    color = if (enabled) onSurface else onSurface.copy(alpha = 0.38f)
                                 )
                             } else {
                                 Spacer(Modifier.width(1.dp))
                             }
                             if (endValueText != null) {
                                 Text(
-                                        text = endValueText,
-                                        style = Ux4gTheme.typography.lM_strong,
-                                        color =
-                                                if (enabled) Ux4gTheme.colorScheme.onSurface
-                                                else
-                                                        Ux4gTheme.colorScheme.onSurface.copy(
-                                                                alpha = 0.38f
-                                                        )
+                                    text = endValueText,
+                                    style = defaultTypography.lM_strong,
+                                    color = if (enabled) onSurface else onSurface.copy(alpha = 0.38f)
                                 )
                             }
                         }
@@ -482,76 +451,77 @@ fun Ux4gRangeSlider(
         val endInteractionSource = remember { MutableInteractionSource() }
 
         RangeSlider(
-                value = value,
-                onValueChange = onValueChange,
-                modifier = Modifier.fillMaxWidth().offset(y = (-12).dp),
-                valueRange = valueRange,
-                steps = steps,
-                enabled = enabled,
-                startInteractionSource = startInteractionSource,
-                endInteractionSource = endInteractionSource,
-                startThumb = { _ ->
-                    Ux4gThumb(
-                            size = size,
-                            enabled = enabled,
-                            interactionSource = startInteractionSource,
-                            value = value.start,
-                            showIndicator = showIndicator
+            value = value,
+            onValueChange = onValueChange,
+            modifier = Modifier.fillMaxWidth().offset(y = (-12).dp),
+            valueRange = valueRange,
+            steps = steps,
+            enabled = enabled,
+            startInteractionSource = startInteractionSource,
+            endInteractionSource = endInteractionSource,
+            startThumb = { _ ->
+                Ux4gThumb(
+                    size = size,
+                    enabled = enabled,
+                    interactionSource = startInteractionSource,
+                    value = value.start,
+                    showIndicator = showIndicator
+                )
+            },
+            endThumb = { _ ->
+                Ux4gThumb(
+                    size = size,
+                    enabled = enabled,
+                    interactionSource = endInteractionSource,
+                    value = value.endInclusive,
+                    showIndicator = showIndicator
+                )
+            },
+            track = { sliderState ->
+                Canvas(Modifier.fillMaxWidth().height(size.trackHeight)) {
+                    val trackHeightPx = size.trackHeight.toPx()
+                    val widthOffset = this.size.width
+                    // Inactive
+                    drawLine(
+                        color = inactiveColor,
+                        start = Offset(0f, center.y),
+                        end = Offset(widthOffset, center.y),
+                        strokeWidth = trackHeightPx,
+                        cap = StrokeCap.Round
                     )
-                },
-                endThumb = { _ ->
-                    Ux4gThumb(
-                            size = size,
-                            enabled = enabled,
-                            interactionSource = endInteractionSource,
-                            value = value.endInclusive,
-                            showIndicator = showIndicator
+                    // Active
+                    val rangeStart = (sliderState.activeRangeStart - sliderState.valueRange.start) /
+                            (sliderState.valueRange.endInclusive - sliderState.valueRange.start)
+                    val rangeEnd = (sliderState.activeRangeEnd - sliderState.valueRange.start) /
+                            (sliderState.valueRange.endInclusive - sliderState.valueRange.start)
+                    drawLine(
+                        color = activeColor,
+                        start = Offset(widthOffset * rangeStart, center.y),
+                        end = Offset(widthOffset * rangeEnd, center.y),
+                        strokeWidth = trackHeightPx,
+                        cap = StrokeCap.Round
                     )
-                },
-                track = { sliderState ->
-                    val activeColor = if (enabled) Ux4gTheme.colorScheme.primary else Ux4gTheme.colorScheme.onSurface.copy(alpha = 0.38f)
-                    val inactiveColor = Ux4gTheme.colorScheme.onSurface.copy(alpha = 0.12f)
-                    Canvas(Modifier.fillMaxWidth().height(size.trackHeight)) {
-                        val trackHeightPx = size.trackHeight.toPx()
-                        val widthOffset = this.size.width
-                        // Inactive
-                        drawLine(
-                                color = inactiveColor,
-                                start = Offset(0f, center.y),
-                                end = Offset(widthOffset, center.y),
-                                strokeWidth = trackHeightPx,
-                                cap = StrokeCap.Round
-                        )
-                        // Active
-                        val rangeStart = (sliderState.activeRangeStart - sliderState.valueRange.start) / (sliderState.valueRange.endInclusive - sliderState.valueRange.start)
-                        val rangeEnd = (sliderState.activeRangeEnd - sliderState.valueRange.start) / (sliderState.valueRange.endInclusive - sliderState.valueRange.start)
-                        drawLine(
-                                color = activeColor,
-                                start = Offset(widthOffset * rangeStart, center.y),
-                                end = Offset(widthOffset * rangeEnd, center.y),
-                                strokeWidth = trackHeightPx,
-                                cap = StrokeCap.Round
-                        )
-                    }
                 }
+            }
         )
 
         if (showMarksAndValues) {
             Ux4gSliderMarksAndValues(
-                    valueRange = valueRange,
-                    activeRange = value,
-                    steps = steps,
-                    enabled = enabled,
-                    thumbRadius = size.thumbSize / 2
+                valueRange = valueRange,
+                activeRange = value,
+                steps = steps,
+                enabled = enabled,
+                activeColor = activeColor,
+                thumbRadius = size.thumbSize / 2
             )
         }
 
         if (caption != null) {
             Ux4gSliderCaption(
-                    caption = caption,
-                    variant = captionVariant,
-                    enabled = enabled,
-                    thumbRadius = size.thumbSize / 2
+                caption = caption,
+                variant = captionVariant,
+                enabled = enabled,
+                thumbRadius = size.thumbSize / 2
             )
         }
     }
@@ -559,80 +529,70 @@ fun Ux4gRangeSlider(
 
 @Composable
 private fun Ux4gThumb(
-        size: Ux4gSliderSize,
-        enabled: Boolean,
-        interactionSource: InteractionSource = remember { MutableInteractionSource() },
-        value: Float = 0f,
-        showIndicator: Boolean = false
+    size: Ux4gSliderSize,
+    enabled: Boolean,
+    interactionSource: InteractionSource = remember { MutableInteractionSource() },
+    value: Float = 0f,
+    showIndicator: Boolean = false
 ) {
     val isDragged by interactionSource.collectIsDraggedAsState()
     val isPressed by interactionSource.collectIsPressedAsState()
     val showNow = showIndicator && (isDragged || isPressed)
+    val onSurface = Ux4gColors.neutral900
+    val thumbBg = Ux4gColors.white
 
     Box(
-            contentAlignment = Alignment.Center,
-            modifier = Modifier.wrapContentSize(unbounded = true)
+        contentAlignment = Alignment.Center,
+        modifier = Modifier.wrapContentSize(unbounded = true)
     ) {
         if (showNow) {
             Ux4gTooltipBubble(
-                    text = value.toInt().toString(),
-                    placement = Ux4gTooltipPlacement.Top,
-                    modifier = Modifier.offset(y = (-36).dp)
+                text = value.toInt().toString(),
+                placement = Ux4gTooltipPlacement.Top,
+                modifier = Modifier.offset(y = (-36).dp)
             )
         }
         Box(
-                modifier =
-                        Modifier.size(size.thumbSize)
-                                .shadow(
-                                        if (enabled) 2.dp else 0.dp,
-                                        RoundedCornerShape(percent = 50)
-                                )
-                                .background(
-                                        Ux4gTheme.colorScheme.onPrimary,
-                                        RoundedCornerShape(percent = 50)
-                                )
-                                // The border matches the shadow somewhat or we can place a faint
-                                // border
-                                .border(
-                                        width = 0.5.dp,
-                                        color =
-                                                Ux4gTheme.colorScheme.onSurface.copy(
-                                                        alpha = if (enabled) 0.12f else 0.38f
-                                                ),
-                                        shape = RoundedCornerShape(percent = 50)
-                                )
+            modifier = Modifier
+                .size(size.thumbSize)
+                .shadow(
+                    if (enabled) 2.dp else 0.dp,
+                    RoundedCornerShape(percent = 50)
+                )
+                .background(
+                    thumbBg,
+                    RoundedCornerShape(percent = 50)
+                )
+                .border(
+                    width = 0.5.dp,
+                    color = onSurface.copy(
+                        alpha = if (enabled) 0.12f else 0.38f
+                    ),
+                    shape = RoundedCornerShape(percent = 50)
+                )
         )
     }
 }
 
 @Composable
-private fun sliderDefaultsColors() =
-        SliderDefaults.colors(
-                thumbColor = Ux4gTheme.colorScheme.onPrimary,
-                activeTrackColor = Ux4gTheme.colorScheme.primary,
-                inactiveTrackColor = Ux4gTheme.colorScheme.onSurface.copy(alpha = 0.12f),
-                activeTickColor = Color.Transparent, // Ticks are rendered below
-                inactiveTickColor = Color.Transparent,
-                disabledThumbColor = Ux4gTheme.colorScheme.onPrimary,
-                disabledActiveTrackColor = Ux4gTheme.colorScheme.onSurface.copy(alpha = 0.38f),
-                disabledInactiveTrackColor = Ux4gTheme.colorScheme.onSurface.copy(alpha = 0.12f),
-        )
-
-@Composable
 private fun Ux4gSliderMarksAndValues(
-        valueRange: ClosedFloatingPointRange<Float>,
-        activeRange: ClosedFloatingPointRange<Float>,
-        steps: Int,
-        enabled: Boolean,
-        thumbRadius: Dp
+    valueRange: ClosedFloatingPointRange<Float>,
+    activeRange: ClosedFloatingPointRange<Float>,
+    steps: Int,
+    enabled: Boolean,
+    activeColor: Color = Ux4gColors.primary,
+    thumbRadius: Dp
 ) {
     if (steps < 0) return
     val totalTicks = steps + 2 // Number of major marks
     val stepValue = (valueRange.endInclusive - valueRange.start) / (totalTicks - 1)
+    val onSurface = Ux4gColors.neutral900
 
     Column(
-            modifier =
-                    Modifier.fillMaxWidth().padding(horizontal = thumbRadius).offset(y = (-24).dp)
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = thumbRadius)
+            .offset(y = (-24).dp)
     ) {
         // Ticks
         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
@@ -640,20 +600,15 @@ private fun Ux4gSliderMarksAndValues(
                 val currentValue = valueRange.start + (stepValue * i)
                 val isActive = currentValue in activeRange
                 Box(
-                        modifier =
-                                Modifier.width(1.dp)
-                                        .height(4.dp)
-                                        .background(
-                                                if (!enabled)
-                                                        Ux4gTheme.colorScheme.onSurface.copy(
-                                                                alpha = 0.12f
-                                                        )
-                                                else if (isActive) Ux4gTheme.colorScheme.primary
-                                                else
-                                                        Ux4gTheme.colorScheme.onSurface.copy(
-                                                                alpha = 0.38f
-                                                        )
-                                        )
+                    modifier = Modifier
+                        .width(1.dp)
+                        .height(4.dp)
+                        .background(
+                            if (!enabled)
+                                onSurface.copy(alpha = 0.12f)
+                            else if (isActive) activeColor
+                            else onSurface.copy(alpha = 0.38f)
+                        )
                 )
             }
         }
@@ -666,23 +621,22 @@ private fun Ux4gSliderMarksAndValues(
                 val currentValue = valueRange.start + (stepValue * i)
                 val isActive = currentValue in activeRange
                 val displayValue =
-                        if (currentValue % 1f == 0f) {
-                            currentValue.toInt().toString()
-                        } else {
-                            currentValue.toString()
-                        }
+                    if (currentValue % 1f == 0f) {
+                        currentValue.toInt().toString()
+                    } else {
+                        currentValue.toString()
+                    }
 
                 Text(
-                        text = displayValue,
-                        style = Ux4gTheme.typography.lM_default,
-                        color =
-                                if (!enabled) Ux4gTheme.colorScheme.onSurface.copy(alpha = 0.38f)
-                                else if (isActive) Ux4gTheme.colorScheme.primary
-                                else Ux4gTheme.colorScheme.onSurface.copy(alpha = 0.6f),
-                        modifier = Modifier.weight(1f, fill = true),
-                        textAlign =
-                                if (i == 0) TextAlign.Start
-                                else if (i == totalTicks - 1) TextAlign.End else TextAlign.Center
+                    text = displayValue,
+                    style = defaultTypography.lM_default,
+                    color = if (!enabled) onSurface.copy(alpha = 0.38f)
+                    else if (isActive) activeColor
+                    else onSurface.copy(alpha = 0.6f),
+                    modifier = Modifier.weight(1f, fill = true),
+                    textAlign =
+                        if (i == 0) TextAlign.Start
+                        else if (i == totalTicks - 1) TextAlign.End else TextAlign.Center
                 )
             }
         }
@@ -691,44 +645,46 @@ private fun Ux4gSliderMarksAndValues(
 
 @Composable
 private fun Ux4gSliderCaption(
-        caption: String,
-        variant: Ux4gSliderCaptionVariant,
-        enabled: Boolean,
-        thumbRadius: Dp
+    caption: String,
+    variant: Ux4gSliderCaptionVariant,
+    enabled: Boolean,
+    thumbRadius: Dp
 ) {
-    val contentColor =
-            when (variant) {
-                Ux4gSliderCaptionVariant.Helper -> Ux4gTheme.colorScheme.onSurface.copy(alpha = 0.7f)
-                Ux4gSliderCaptionVariant.Error -> Ux4gTheme.colorScheme.error
-                Ux4gSliderCaptionVariant.Warning -> Ux4gColors.orange600
-                Ux4gSliderCaptionVariant.Success -> Ux4gColors.green600
-            }
+    val onSurface = Ux4gColors.neutral900
+    val contentColor = when (variant) {
+        Ux4gSliderCaptionVariant.Helper -> onSurface.copy(alpha = 0.7f)
+        Ux4gSliderCaptionVariant.Error -> Ux4gColors.red600
+        Ux4gSliderCaptionVariant.Warning -> Ux4gColors.secondary
+        Ux4gSliderCaptionVariant.Success -> Ux4gColors.green600
+    }
 
-    val icon =
-            when (variant) {
-                Ux4gSliderCaptionVariant.Helper -> null
-                Ux4gSliderCaptionVariant.Error -> Ux4gIcons.error
-                Ux4gSliderCaptionVariant.Warning -> Ux4gIcons.warning
-                Ux4gSliderCaptionVariant.Success -> Ux4gIcons.success_circle
-            }
+    val icon = when (variant) {
+        Ux4gSliderCaptionVariant.Helper -> null
+        Ux4gSliderCaptionVariant.Error -> Ux4gIcons.error
+        Ux4gSliderCaptionVariant.Warning -> Ux4gIcons.warning
+        Ux4gSliderCaptionVariant.Success -> Ux4gIcons.success_circle
+    }
 
     Row(
-            modifier = Modifier.fillMaxWidth().offset(y = (-24).dp).padding(start = thumbRadius),
-            horizontalArrangement = Arrangement.spacedBy(4.dp),
-            verticalAlignment = Alignment.CenterVertically
+        modifier = Modifier
+            .fillMaxWidth()
+            .offset(y = (-24).dp)
+            .padding(start = thumbRadius),
+        horizontalArrangement = Arrangement.spacedBy(4.dp),
+        verticalAlignment = Alignment.CenterVertically
     ) {
         if (icon != null) {
             Ux4gIconComponent(
-                    icon = icon,
-                    contentDescription = null,
-                    tint = if (enabled) contentColor else contentColor.copy(alpha = 0.38f),
-                    modifier = Modifier.size(14.dp)
+                icon = icon,
+                contentDescription = null,
+                tint = if (enabled) contentColor else contentColor.copy(alpha = 0.38f),
+                modifier = Modifier.size(14.dp)
             )
         }
         Text(
-                text = caption,
-                style = Ux4gTheme.typography.lS_default,
-                color = if (enabled) contentColor else contentColor.copy(alpha = 0.38f)
+            text = caption,
+            style = defaultTypography.lS_default,
+            color = if (enabled) contentColor else contentColor.copy(alpha = 0.38f)
         )
     }
 }
@@ -738,66 +694,66 @@ private fun Ux4gSliderCaption(
 @Composable
 private fun Ux4gSliderPreview() {
     Ux4gTheme {
-        Surface(color = Ux4gTheme.colorScheme.background) {
+        Surface(color = Ux4gColors.white) {
             Column(
-                    modifier = Modifier.fillMaxWidth().padding(16.dp),
-                    verticalArrangement = Arrangement.spacedBy(24.dp)
+                modifier = Modifier.fillMaxWidth().padding(16.dp),
+                verticalArrangement = Arrangement.spacedBy(24.dp)
             ) {
                 var value1 by remember { mutableFloatStateOf(50f) }
                 Ux4gSlider(
-                        value = value1,
-                        onValueChange = { value1 = it },
-                        label = "Single Slider",
-                        isRequired = true,
-                        labelIcon = Ux4gIcons.info_circle,
-                        startValueText = "${value1.roundToInt()}%",
-                        size = Ux4gSliderSize.Small,
-                        showMarksAndValues = true,
-                        steps = 9 // 0 to 100 with steps every 10
+                    value = value1,
+                    onValueChange = { value1 = it },
+                    label = "Single Slider",
+                    isRequired = true,
+                    labelIcon = Ux4gIcons.info_circle,
+                    startValueText = "${value1.roundToInt()}%",
+                    size = Ux4gSliderSize.Small,
+                    showMarksAndValues = true,
+                    steps = 9 // 0 to 100 with steps every 10
                 )
 
                 var value2 by remember { mutableStateOf(20f..70f) }
                 Ux4gRangeSlider(
-                        value = value2,
-                        onValueChange = { value2 = it },
-                        label = "Range Slider",
-                        isRequired = true,
-                        labelIcon = Ux4gIcons.info_circle,
-                        startValueText = "${value2.start.roundToInt()}%",
-                        endValueText = "${value2.endInclusive.roundToInt()}%",
-                        size = Ux4gSliderSize.Small,
-                        showMarksAndValues = true,
-                        steps = 9,
-                        caption = "Error message",
-                        captionVariant = Ux4gSliderCaptionVariant.Error
+                    value = value2,
+                    onValueChange = { value2 = it },
+                    label = "Range Slider",
+                    isRequired = true,
+                    labelIcon = Ux4gIcons.info_circle,
+                    startValueText = "${value2.start.roundToInt()}%",
+                    endValueText = "${value2.endInclusive.roundToInt()}%",
+                    size = Ux4gSliderSize.Small,
+                    showMarksAndValues = true,
+                    steps = 9,
+                    caption = "Error message",
+                    captionVariant = Ux4gSliderCaptionVariant.Error
                 )
 
                 var value3 by remember { mutableStateOf(20f..70f) }
                 Ux4gRangeSlider(
-                        value = value3,
-                        onValueChange = { value3 = it },
-                        label = "Medium Range",
-                        isRequired = true,
-                        labelIcon = Ux4gIcons.info_circle,
-                        startValueText = "${value3.start.roundToInt()}%",
-                        endValueText = "${value3.endInclusive.roundToInt()}%",
-                        size = Ux4gSliderSize.Medium,
-                        showMarksAndValues = true,
-                        steps = 9,
-                        enabled = true,
-                        caption = "Helper text",
-                        captionVariant = Ux4gSliderCaptionVariant.Helper
+                    value = value3,
+                    onValueChange = { value3 = it },
+                    label = "Medium Range",
+                    isRequired = true,
+                    labelIcon = Ux4gIcons.info_circle,
+                    startValueText = "${value3.start.roundToInt()}%",
+                    endValueText = "${value3.endInclusive.roundToInt()}%",
+                    size = Ux4gSliderSize.Medium,
+                    showMarksAndValues = true,
+                    steps = 9,
+                    enabled = true,
+                    caption = "Helper text",
+                    captionVariant = Ux4gSliderCaptionVariant.Helper
                 )
 
                 var value4 by remember { mutableFloatStateOf(30f) }
                 Ux4gSlider(
-                        value = value4,
-                        onValueChange = { value4 = it },
-                        label = "Slider with Indicator and Input",
-                        showIndicator = true,
-                        showInputFields = true,
-                        showMarksAndValues = true,
-                        steps = 9
+                    value = value4,
+                    onValueChange = { value4 = it },
+                    label = "Slider with Indicator and Input",
+                    showIndicator = true,
+                    showInputFields = true,
+                    showMarksAndValues = true,
+                    steps = 9
                 )
             }
         }
