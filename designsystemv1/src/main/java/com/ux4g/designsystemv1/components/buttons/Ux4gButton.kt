@@ -210,7 +210,6 @@ fun Ux4gButton(
                 interactionSource = interactionSource
         ) {
                 Row(
-                        modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.Center,
                         verticalAlignment = Alignment.CenterVertically
                 ) {
@@ -240,8 +239,7 @@ fun Ux4gButton(
                                                 color = LocalContentColor.current
                                         ),
                                         maxLines = 1,
-                                        overflow = TextOverflow.Ellipsis,
-                                        modifier = Modifier.weight(1f, fill = false)
+                                        overflow = TextOverflow.Ellipsis
                                 )
                         } else if (content != null) {
                                 CompositionLocalProvider(

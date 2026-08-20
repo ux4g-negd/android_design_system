@@ -89,6 +89,7 @@ object Ux4gIcons {
     val ic_face_2: Ux4gIcon = Ux4gIcon.Drawable(R.drawable.ic_face_2)
     val ic_face_3: Ux4gIcon = Ux4gIcon.Drawable(R.drawable.ic_face_3)
     val ic_face_4: Ux4gIcon = Ux4gIcon.Drawable(R.drawable.ic_face_4)
+    val fileUpload: Ux4gIcon = Ux4gIcon.Drawable(R.drawable.ic_file_upload)
     val Star: Ux4gIcon = Ux4gIcon.Vector(Icons.Filled.Star)
     val ThumbUp: Ux4gIcon = Ux4gIcon.Vector(Icons.Filled.ThumbUp)
 
@@ -97,6 +98,7 @@ object Ux4gIcons {
     val success: Ux4gIcon get() = success_circle
     val arrowLeft: Ux4gIcon get() = ic_left_arrow
     val arrowRight: Ux4gIcon get() = ic_right_arrow
+    val upload: Ux4gIcon get() = fileUpload
     @get:JvmName("getStarLower")
     val star: Ux4gIcon get() = Star
     @get:JvmName("getThumbUpLower")

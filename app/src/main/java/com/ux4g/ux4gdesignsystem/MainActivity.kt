@@ -38,6 +38,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.ux4g.designsystemv1.components.*
@@ -7149,6 +7150,428 @@ fun MainContent(
                         }
                     }
                 )
+            }
+        }
+
+        // ==========================================
+        // Result List & Result Row Showcase
+        // ==========================================
+        Ux4gCard(modifier = Modifier.fillMaxWidth()) {
+            Column(
+                modifier = Modifier.padding(16.dp),
+                verticalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+                Text(
+                    text = "Result List & Result Row Component",
+                    style = Ux4gTheme.typography.tS_strong,
+                    color = Ux4gTheme.colorScheme.onSurface
+                )
+                Text(
+                    text = "Configurable expandable list items for search results, application tracking, status tags, pill metadata, custom actions, and multi-column detail grids.",
+                    style = Ux4gTheme.typography.bS_default,
+                    color = Ux4gColors.neutral600
+                )
+
+                // ─── 1. Visual Showcase (4 Core Variants) ───────────────────
+                Text(
+                    text = "1. Visual Showcase (Core Variants)",
+                    style = defaultTypography.lM_strong,
+                    color = Ux4gColors.neutral800
+                )
+
+                // Variant 1: Approved Result Row with Details
+                Ux4gCard(
+                    modifier = Modifier.fillMaxWidth(),
+                    cornerRadius = 12.dp,
+                    borderColor = Ux4gColors.neutral900.copy(alpha = 0.12f),
+                    borderWidth = 1.dp
+                ) {
+                    Ux4gResultList(
+                        title = "Application #2024-001",
+                        statusTag = "Approved",
+                        tagColorScheme = Ux4gTagColor.Success,
+                        actionButtonText = "View Details",
+                        onActionPressed = {
+                            scope.launch {
+                                toastHostState.showToast(
+                                    category = Ux4gToastCategory.Success,
+                                    title = "Viewing Details",
+                                    subtitle = "Application #2024-001"
+                                )
+                            }
+                        },
+                        details = listOf(
+                            Ux4gResultDetail(label = "Applicant", value = "Ravi Kumar"),
+                            Ux4gResultDetail(label = "Date", value = "12 May 2025"),
+                            Ux4gResultDetail(label = "Sanctioned Amount", value = "₹1,20,000", isBold = true)
+                        ),
+                        showBottomDivider = false
+                    )
+                }
+
+                // Variant 2: Card Style with Metadata Pills (Under Review)
+                Ux4gCard(
+                    modifier = Modifier.fillMaxWidth(),
+                    cornerRadius = 12.dp,
+                    borderColor = Ux4gColors.neutral900.copy(alpha = 0.12f),
+                    borderWidth = 1.dp
+                ) {
+                    Ux4gResultRow(
+                        title = "Income Certificate Application",
+                        metadataSegments = listOf(
+                            Ux4gPillSegment(
+                                text = "8 days left",
+                                leading = {
+                                    Box(
+                                        modifier = Modifier
+                                            .size(6.dp)
+                                            .clip(CircleShape)
+                                            .background(Color(0xFFFA8C16))
+                                    )
+                                }
+                            ),
+                            Ux4gPillSegment(
+                                text = "Under Review",
+                                textColor = Color(0xFFFA8C16)
+                            )
+                        ),
+                        actionButtonText = "Track Status",
+                        onActionPressed = {
+                            scope.launch {
+                                toastHostState.showToast(
+                                    category = Ux4gToastCategory.Info,
+                                    title = "Tracking Application",
+                                    subtitle = "Income Certificate Application"
+                                )
+                            }
+                        },
+                        details = listOf(
+                            Ux4gResultDetail(label = "Reference Number", value = "INC-2026-MH-04127"),
+                            Ux4gResultDetail(label = "Last Updated Date", value = "10 Apr 2026"),
+                            Ux4gResultDetail(label = "Assigned Officer", value = "Rahul Sharma"),
+                            Ux4gResultDetail(label = "Department", value = "Revenue Department")
+                        ),
+                        showBottomDivider = false
+                    )
+                }
+
+                // Variant 3: Action Required with Icon Button (Upload Docs)
+                Ux4gCard(
+                    modifier = Modifier.fillMaxWidth(),
+                    cornerRadius = 12.dp,
+                    borderColor = Ux4gColors.neutral900.copy(alpha = 0.12f),
+                    borderWidth = 1.dp
+                ) {
+                    Ux4gResultList(
+                        title = "Driving License Renewal",
+                        statusTag = "Action Required",
+                        tagColorScheme = Ux4gTagColor.Warning,
+                        actionButtonText = "Upload Docs",
+                        actionButtonIcon = Ux4gIcons.upload,
+                        onActionPressed = {
+                            scope.launch {
+                                toastHostState.showToast(
+                                    category = Ux4gToastCategory.Warning,
+                                    title = "Upload Docs",
+                                    subtitle = "Opening document upload dialog..."
+                                )
+                            }
+                        },
+                        details = listOf(
+                            Ux4gResultDetail(label = "Applicant", value = "Sunita Sharma"),
+                            Ux4gResultDetail(label = "Application ID", value = "DL-99201-DL"),
+                            Ux4gResultDetail(label = "Pending Stage", value = "Biometrics Verification")
+                        ),
+                        showBottomDivider = false
+                    )
+                }
+
+                // Variant 4: Rejected State with Custom Expanded Grievance Child
+                Ux4gCard(
+                    modifier = Modifier.fillMaxWidth(),
+                    cornerRadius = 12.dp,
+                    borderColor = Ux4gColors.neutral900.copy(alpha = 0.12f),
+                    borderWidth = 1.dp
+                ) {
+                    Ux4gResultRow(
+                        title = "Ration Card Transfer Request",
+                        statusTag = "Rejected",
+                        tagColorScheme = Ux4gTagColor.Error,
+                        actionButtonText = "Re-apply",
+                        onActionPressed = {
+                            scope.launch {
+                                toastHostState.showToast(
+                                    category = Ux4gToastCategory.Error,
+                                    title = "Re-apply Initiated",
+                                    subtitle = "Starting new Ration Card Transfer request..."
+                                )
+                            }
+                        },
+                        details = listOf(
+                            Ux4gResultDetail(label = "Rejection Reason", value = "Address Proof Mismatch", isBold = true),
+                            Ux4gResultDetail(label = "Applied Date", value = "05 Feb 2026")
+                        ),
+                        expandedChild = {
+                            Column(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(top = 4.dp),
+                                verticalArrangement = Arrangement.spacedBy(4.dp)
+                            ) {
+                                Text(
+                                    text = "Need Help?",
+                                    style = defaultTypography.bS_default.copy(
+                                        color = Color(0xFF9E3A3A)
+                                    )
+                                )
+                                Row(
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    modifier = Modifier.clickable {
+                                        scope.launch {
+                                            toastHostState.showToast(
+                                                category = Ux4gToastCategory.Info,
+                                                title = "Grievance Portal",
+                                                subtitle = "Register grievance portal opened."
+                                            )
+                                        }
+                                    }
+                                ) {
+                                    Text(
+                                        text = "Register grievance",
+                                        style = defaultTypography.bM_strong.copy(
+                                            fontWeight = FontWeight.SemiBold,
+                                            color = Ux4gColors.primary
+                                        )
+                                    )
+                                    Spacer(modifier = Modifier.width(4.dp))
+                                    Ux4gIconComponent(
+                                        icon = Ux4gIcons.arrowRight,
+                                        contentDescription = null,
+                                        tint = Ux4gColors.primary,
+                                        modifier = Modifier.size(16.dp)
+                                    )
+                                }
+                            }
+                        },
+                        showBottomDivider = false
+                    )
+                }
+
+                // ─── 2. Certificate Download Story ──────────────────────────
+                Text(
+                    text = "2. Certificate Download (Verified Trailing Icon)",
+                    style = defaultTypography.lM_strong,
+                    color = Ux4gColors.neutral800
+                )
+                Ux4gCard(
+                    modifier = Modifier.fillMaxWidth(),
+                    cornerRadius = 12.dp,
+                    borderColor = Ux4gColors.neutral900.copy(alpha = 0.12f),
+                    borderWidth = 1.dp
+                ) {
+                    Ux4gResultRow(
+                        title = "Income Certificate",
+                        titleTrailing = {
+                            Ux4gIconComponent(
+                                icon = Ux4gIcons.success_circle,
+                                contentDescription = "Verified",
+                                tint = Ux4gColors.green600,
+                                modifier = Modifier.size(18.dp)
+                            )
+                        },
+                        actionButtonText = "Download",
+                        actionButtonIcon = Ux4gIcons.upload,
+                        onActionPressed = {
+                            scope.launch {
+                                toastHostState.showToast(
+                                    category = Ux4gToastCategory.Success,
+                                    title = "Downloading Certificate",
+                                    subtitle = "Income Certificate #INC-2026-MH-04127"
+                                )
+                            }
+                        },
+                        details = listOf(
+                            Ux4gResultDetail(label = "Issued", value = "05 Apr 2026"),
+                            Ux4gResultDetail(label = "Valid till", value = "05 Apr 2027"),
+                            Ux4gResultDetail(label = "Reference Number", value = "INC-2026-MH-04127"),
+                            Ux4gResultDetail(label = "Last Updated Date", value = "10 Apr 2026"),
+                            Ux4gResultDetail(label = "Submitted Date", value = "1 Apr 2026"),
+                            Ux4gResultDetail(label = "Assigned Officer", value = "Rahul Sharma"),
+                            Ux4gResultDetail(label = "Department", value = "Revenue Department"),
+                            Ux4gResultDetail(label = "Documents", value = "ID Proof, Address Proof")
+                        ),
+                        showBottomDivider = false
+                    )
+                }
+
+                // ─── 3. Service Apply Story ─────────────────────────────────
+                Text(
+                    text = "3. Service Apply (Custom Inline Fee & Duration)",
+                    style = defaultTypography.lM_strong,
+                    color = Ux4gColors.neutral800
+                )
+                Ux4gCard(
+                    modifier = Modifier.fillMaxWidth(),
+                    cornerRadius = 12.dp,
+                    borderColor = Ux4gColors.neutral900.copy(alpha = 0.12f),
+                    borderWidth = 1.dp
+                ) {
+                    Ux4gResultRow(
+                        title = "Domicile Certificate",
+                        statusTag = "Paid",
+                        tagColorScheme = Ux4gTagColor.Neutral,
+                        customMetadata = {
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                            ) {
+                                Text(
+                                    text = "₹ 120/-",
+                                    style = defaultTypography.bS_strong.copy(
+                                        fontWeight = FontWeight.SemiBold,
+                                        color = Ux4gColors.neutral800
+                                    )
+                                )
+                                Box(
+                                    modifier = Modifier
+                                        .size(4.dp)
+                                        .clip(CircleShape)
+                                        .background(Ux4gColors.neutral900.copy(alpha = 0.38f))
+                                )
+                                Text(
+                                    text = "20 mins",
+                                    style = defaultTypography.bS_default.copy(
+                                        color = Ux4gColors.neutral900.copy(alpha = 0.6f)
+                                    )
+                                )
+                            }
+                        },
+                        actionButtonText = "Apply",
+                        onActionPressed = {
+                            scope.launch {
+                                toastHostState.showToast(
+                                    category = Ux4gToastCategory.Info,
+                                    title = "Service Application",
+                                    subtitle = "Starting application for Domicile Certificate..."
+                                )
+                            }
+                        },
+                        details = listOf(
+                            Ux4gResultDetail(label = "Reference Number", value = "DOM-2026-DL-88319"),
+                            Ux4gResultDetail(label = "Processing Time", value = "7 Working Days"),
+                            Ux4gResultDetail(label = "Fee Paid", value = "₹ 120 (Online)", isBold = true),
+                            Ux4gResultDetail(label = "Required Docs", value = "Aadhaar, Electricity Bill")
+                        ),
+                        showBottomDivider = false
+                    )
+                }
+
+                // ─── 4. SLA Escalated Story ─────────────────────────────────
+                Text(
+                    text = "4. SLA Escalated (Action Alert Icon & Overdue Pill)",
+                    style = defaultTypography.lM_strong,
+                    color = Ux4gColors.neutral800
+                )
+                Ux4gCard(
+                    modifier = Modifier.fillMaxWidth(),
+                    cornerRadius = 12.dp,
+                    borderColor = Ux4gColors.neutral900.copy(alpha = 0.12f),
+                    borderWidth = 1.dp
+                ) {
+                    Ux4gResultRow(
+                        title = "Electricity Connection Grievance",
+                        statusTag = "Escalated",
+                        tagColorScheme = Ux4gTagColor.Brand,
+                        actionLeading = {
+                            Ux4gIconComponent(
+                                icon = Ux4gIcons.warning,
+                                contentDescription = "Escalated",
+                                tint = Color(0xFFDC2626),
+                                modifier = Modifier.size(16.dp)
+                            )
+                        },
+                        actionButtonText = "Track",
+                        onActionPressed = {
+                            scope.launch {
+                                toastHostState.showToast(
+                                    category = Ux4gToastCategory.Warning,
+                                    title = "Escalated Ticket",
+                                    subtitle = "Ticket #GRV-2026-04127 is escalated to higher authority."
+                                )
+                            }
+                        },
+                        details = listOf(
+                            Ux4gResultDetail(label = "Reference Number", value = "GRV-2026-04127"),
+                            Ux4gResultDetail(
+                                label = "SLA Status",
+                                value = "",
+                                customValueWidget = {
+                                    Ux4gUnifiedPillTag(
+                                        segments = listOf(
+                                            Ux4gPillSegment(
+                                                text = "3 days overdue",
+                                                bold = true,
+                                                textColor = Color(0xFFDC2626),
+                                                leading = {
+                                                    Box(
+                                                        modifier = Modifier
+                                                            .size(6.dp)
+                                                            .clip(CircleShape)
+                                                            .background(Color(0xFFDC2626))
+                                                    )
+                                                }
+                                            )
+                                        ),
+                                        size = Ux4gTagSize.M
+                                    )
+                                }
+                            ),
+                            Ux4gResultDetail(label = "Submitted Date", value = "1 Apr 2026"),
+                            Ux4gResultDetail(label = "Assigned Officer", value = "Rahul Sharma")
+                        ),
+                        showBottomDivider = false
+                    )
+                }
+
+                // ─── 5. List Style (Dividers) ───────────────────────────────
+                Text(
+                    text = "5. List Style (Continuous Items with Dividers)",
+                    style = defaultTypography.lM_strong,
+                    color = Ux4gColors.neutral800
+                )
+                Ux4gCard(
+                    modifier = Modifier.fillMaxWidth(),
+                    cornerRadius = 12.dp,
+                    borderColor = Ux4gColors.neutral900.copy(alpha = 0.12f),
+                    borderWidth = 1.dp
+                ) {
+                    Column(modifier = Modifier.fillMaxWidth()) {
+                        Ux4gResultRow(
+                            title = "Senior Citizen Pension Scheme",
+                            statusTag = "Active",
+                            tagColorScheme = Ux4gTagColor.Success,
+                            actionButtonText = "Manage",
+                            onActionPressed = {},
+                            details = listOf(
+                                Ux4gResultDetail(label = "Beneficiary", value = "Mohan Lal"),
+                                Ux4gResultDetail(label = "Monthly Pension", value = "₹ 2,500 / month", isBold = true)
+                            ),
+                            showBottomDivider = true
+                        )
+                        Ux4gResultRow(
+                            title = "Disability Allowance Scheme",
+                            statusTag = "Renewal Due",
+                            tagColorScheme = Ux4gTagColor.Warning,
+                            actionButtonText = "Renew",
+                            onActionPressed = {},
+                            details = listOf(
+                                Ux4gResultDetail(label = "Beneficiary", value = "Kiran Devi"),
+                                Ux4gResultDetail(label = "Renewal Deadline", value = "30 Apr 2026", valueColor = Ux4gColors.orange600)
+                            ),
+                            showBottomDivider = false
+                        )
+                    }
+                }
             }
         }
     }
