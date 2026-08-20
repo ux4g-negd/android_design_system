@@ -18,13 +18,11 @@ import androidx.compose.ui.draw.clip
 import java.time.LocalDate
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
-import androidx.compose.material.icons.outlined.Info
-import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
+import androidx.compose.material.icons.outlined.*
+import androidx.compose.material3.*
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.sp
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -54,6 +52,7 @@ import com.ux4g.designsystemv1.components.inputfield.*
 import com.ux4g.designsystemv1.components.searchfield.*
 import com.ux4g.designsystemv1.components.steppers.*
 import com.ux4g.designsystemv1.components.timeslot.*
+import com.ux4g.designsystemv1.components.biometric.*
 import com.ux4g.designsystemv1.components.tooltip.*
 import com.ux4g.designsystemv1.components.feedback.*
 import com.ux4g.designsystemv1.components.textarea.*
@@ -73,29 +72,111 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            Ux4GDesignSystemTheme() {
+            Ux4GDesignSystemTheme {
                 val toastHostState = remember { Ux4gToastHostState() }
                 var toastAtTop by remember { mutableStateOf(true) }
+                var isFullscreenBiometricOpen by remember { mutableStateOf(false) }
+                val scope = rememberCoroutineScope()
 
-                Scaffold(
-                    modifier = Modifier.fillMaxSize(),
-                    containerColor = Ux4gTheme.colorScheme.background
-                ) { innerPadding ->
-                    Box(modifier = Modifier.fillMaxSize()) {
-                        MainContent(
-                            modifier = Modifier.padding(innerPadding),
-                            toastHostState = toastHostState,
-                            onToggleToastPosition = { toastAtTop = !toastAtTop },
-                            isToastAtTop = toastAtTop
+                if (isFullscreenBiometricOpen) {
+                    // Fullscreen screen containing ONLY the Biometric Verification component with full width & height
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .background(Color.Black)
+                    ) {
+                        Ux4gBiometricVerificationFlow(
+                            onVerify = { bytes ->
+                                // Custom Dummy UIDAI verification endpoint simulation
+                                kotlinx.coroutines.delay(2200L)
+                                BiometricVerificationResult(
+                                    success = true,
+                                    userId = "GOV-UID-9842",
+                                    maskedName = "Aarav Sharma",
+                                    maskedPhone = "XXXX-XXXX-8921",
+                                    message = "Aadhaar e-KYC Biometric Matched Successfully",
+                                    confidenceScore = 0.98
+                                )
+                            },
+                            enableBlinkCheck = true,
+                            enableLightingCheck = true,
+                            enableLiveness = true,
+                            maxAttempts = 3,
+                            onSuccess = { result ->
+                                scope.launch {
+                                    toastHostState.showToast(
+                                        category = Ux4gToastCategory.Success,
+                                        title = "Biometric Verified",
+                                        subtitle = "Welcome, ${result.maskedName ?: "Authorized User"}"
+                                    )
+                                }
+                                isFullscreenBiometricOpen = false
+                            },
+                            onFailure = { reason, msg ->
+                                scope.launch {
+                                    toastHostState.showToast(
+                                        category = Ux4gToastCategory.Error,
+                                        title = "Biometric Verification Failed",
+                                        subtitle = msg ?: reason.name
+                                    )
+                                }
+                            },
+                            onDismiss = {
+                                isFullscreenBiometricOpen = false
+                            },
+                            onAlternateVerify = {
+                                scope.launch {
+                                    toastHostState.showToast(
+                                        category = Ux4gToastCategory.Info,
+                                        title = "OTP Fallback",
+                                        subtitle = "Switched to OTP verification"
+                                    )
+                                }
+                                isFullscreenBiometricOpen = false
+                            }
                         )
 
-                        Ux4gToastHost(
-                            hostState = toastHostState,
+                        // Floating Close button in top-right
+                        IconButton(
+                            onClick = { isFullscreenBiometricOpen = false },
                             modifier = Modifier
-                                .align(if (toastAtTop) Alignment.TopCenter else Alignment.BottomCenter)
-                                .then(if (toastAtTop) Modifier.statusBarsPadding() else Modifier.navigationBarsPadding()),
-                            isBottom = !toastAtTop
-                        )
+                                .statusBarsPadding()
+                                .align(Alignment.TopEnd)
+                                .padding(16.dp)
+                                .size(44.dp)
+                                .clip(CircleShape)
+                                .background(Color.Black.copy(alpha = 0.6f))
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Close,
+                                contentDescription = "Close",
+                                tint = Color.White,
+                                modifier = Modifier.size(24.dp)
+                            )
+                        }
+                    }
+                } else {
+                    Scaffold(
+                        modifier = Modifier.fillMaxSize(),
+                        containerColor = Ux4gTheme.colorScheme.background
+                    ) { innerPadding ->
+                        Box(modifier = Modifier.fillMaxSize()) {
+                            MainContent(
+                                modifier = Modifier.padding(innerPadding),
+                                toastHostState = toastHostState,
+                                onToggleToastPosition = { toastAtTop = !toastAtTop },
+                                isToastAtTop = toastAtTop,
+                                onLaunchFullScreenBiometric = { isFullscreenBiometricOpen = true }
+                            )
+
+                            Ux4gToastHost(
+                                hostState = toastHostState,
+                                modifier = Modifier
+                                    .align(if (toastAtTop) Alignment.TopCenter else Alignment.BottomCenter)
+                                    .then(if (toastAtTop) Modifier.statusBarsPadding() else Modifier.navigationBarsPadding()),
+                                isBottom = !toastAtTop
+                            )
+                        }
                     }
                 }
             }
@@ -109,7 +190,8 @@ fun MainContent(
     modifier: Modifier = Modifier,
     toastHostState: Ux4gToastHostState,
     onToggleToastPosition: () -> Unit,
-    isToastAtTop: Boolean
+    isToastAtTop: Boolean,
+    onLaunchFullScreenBiometric: () -> Unit = {}
 ) {
     val scope = rememberCoroutineScope()
     var selectedRadio by remember { mutableStateOf(1) }
@@ -7570,6 +7652,490 @@ fun MainContent(
                             ),
                             showBottomDivider = false
                         )
+                    }
+                }
+
+                // =========================================================================
+                // Biometric Verification Showcase (Matching Flutter Widgetbook 1:1)
+                // =========================================================================
+                Text(
+                    text = "Biometric Verification",
+                    style = defaultTypography.hL_default,
+                    color = Ux4gColors.neutral800
+                )
+
+                // ─── 0. Fullscreen Biometric Verification Hero Launcher ──────────────
+                Text(
+                    text = "1. Fullscreen Biometric Verification (Full Width & Height Screen)",
+                    style = defaultTypography.lM_strong,
+                    color = Ux4gColors.neutral800
+                )
+
+                Ux4gCard(
+                    modifier = Modifier.fillMaxWidth(),
+                    cornerRadius = 16.dp,
+                    borderColor = Color(0xFF6A4EFF).copy(alpha = 0.3f),
+                    borderWidth = 1.5.dp
+                ) {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(24.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Box(
+                            modifier = Modifier
+                                .size(72.dp)
+                                .clip(CircleShape)
+                                .background(Color(0xFF6A4EFF).copy(alpha = 0.12f)),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Icon(
+                                imageVector = androidx.compose.material.icons.Icons.Outlined.FaceRetouchingNatural,
+                                contentDescription = null,
+                                tint = Color(0xFF6A4EFF),
+                                modifier = Modifier.size(36.dp)
+                            )
+                        }
+
+                        Spacer(modifier = Modifier.height(16.dp))
+
+                        Text(
+                            text = "Full-Screen Biometric Verification",
+                            style = TextStyle(
+                                fontSize = 18.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = Color(0xFF0F172A)
+                            ),
+                            textAlign = TextAlign.Center
+                        )
+
+                        Spacer(modifier = Modifier.height(8.dp))
+
+                        Text(
+                            text = "Opens the biometric verification flow in a dedicated full-screen view (100% width and height) with live CameraX viewfinder, Google ML Kit face alignment, eye-blink verification, and UIDAI verification.",
+                            style = TextStyle(fontSize = 13.sp, color = Color(0xFF64748B)),
+                            textAlign = TextAlign.Center
+                        )
+
+                        Spacer(modifier = Modifier.height(20.dp))
+
+                        Button(
+                            onClick = { onLaunchFullScreenBiometric() },
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(48.dp),
+                            shape = RoundedCornerShape(12.dp),
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = Color(0xFF6A4EFF),
+                                contentColor = Color.White
+                            )
+                        ) {
+                            Icon(
+                                imageVector = androidx.compose.material.icons.Icons.Default.Fullscreen,
+                                contentDescription = null,
+                                modifier = Modifier.size(20.dp)
+                            )
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Text(
+                                text = "Launch Full-Screen Biometric Flow",
+                                style = TextStyle(fontWeight = FontWeight.SemiBold, fontSize = 15.sp)
+                            )
+                        }
+                    }
+                }
+
+                // ─── 1. Interactive Flow with Custom Dummy Backend API (Google ML Kit) ─────
+                Text(
+                    text = "2. Inline Verification Flow Simulator with Custom Dummy API",
+                    style = defaultTypography.lM_strong,
+                    color = Ux4gColors.neutral800
+                )
+
+                var isFlowLaunched by remember { mutableStateOf(false) }
+                var isSimulateSuccess by remember { mutableStateOf(true) }
+                var flowResultMessage by remember { mutableStateOf<String?>(null) }
+
+                // Custom Dummy Backend API function (demonstrating production integration without MockVerificationService)
+                suspend fun dummyUidaiVerificationApi(imageBytes: ByteArray, shouldSucceed: Boolean): BiometricVerificationResult {
+                    // Simulate network latency to UIDAI verification gateway
+                    kotlinx.coroutines.delay(2200L)
+
+                    return if (shouldSucceed) {
+                        BiometricVerificationResult(
+                            success = true,
+                            userId = "GOV-UID-9842",
+                            maskedName = "Aarav Sharma",
+                            maskedPhone = "XXXX-XXXX-8921",
+                            message = "Aadhaar e-KYC Biometric Matched Successfully",
+                            confidenceScore = 0.98
+                        )
+                    } else {
+                        BiometricVerificationResult(
+                            success = false,
+                            message = "Face does not match Aadhaar biometric records",
+                            errorCode = "UIDAI_BIOMETRIC_MISMATCH",
+                            confidenceScore = 0.31
+                        )
+                    }
+                }
+
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(560.dp)
+                        .clip(RoundedCornerShape(24.dp))
+                        .border(1.5.dp, Color(0xFFD1D5DB), RoundedCornerShape(24.dp))
+                        .background(Color(0xFFF8F9FC)),
+                    contentAlignment = Alignment.Center
+                ) {
+                    if (isFlowLaunched) {
+                        Ux4gBiometricVerificationFlow(
+                            onVerify = { bytes ->
+                                // Calling our custom dummy backend API directly (NO MockVerificationService)
+                                dummyUidaiVerificationApi(bytes, isSimulateSuccess)
+                            },
+                            enableBlinkCheck = true,
+                            enableLightingCheck = true,
+                            enableLiveness = true,
+                            maxAttempts = 3,
+                            onSuccess = { result ->
+                                isFlowLaunched = false
+                                flowResultMessage = "✓ Verified: ${result.maskedName ?: "Success"}"
+                                scope.launch {
+                                    toastHostState.showToast(
+                                        category = Ux4gToastCategory.Success,
+                                        title = "Biometric Verified",
+                                        subtitle = "Name: ${result.maskedName ?: "Authorized User"}"
+                                    )
+                                }
+                            },
+                            onFailure = { reason, msg ->
+                                isFlowLaunched = false
+                                flowResultMessage = "✗ Failed: ${reason.name}"
+                                scope.launch {
+                                    toastHostState.showToast(
+                                        category = Ux4gToastCategory.Error,
+                                        title = "Biometric Failed",
+                                        subtitle = msg ?: reason.name
+                                    )
+                                }
+                            },
+                            onDismiss = {
+                                isFlowLaunched = false
+                            },
+                            onAlternateVerify = {
+                                isFlowLaunched = false
+                                flowResultMessage = "→ Redirected to OTP flow"
+                                scope.launch {
+                                    toastHostState.showToast(
+                                        category = Ux4gToastCategory.Info,
+                                        title = "OTP Fallback",
+                                        subtitle = "Switched to OTP verification"
+                                    )
+                                }
+                            }
+                        )
+                    } else {
+                        Column(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(24.dp),
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.Center
+                        ) {
+                            Box(
+                                modifier = Modifier
+                                    .size(72.dp)
+                                    .clip(CircleShape)
+                                    .background(Color(0xFF6A4EFF).copy(alpha = 0.12f)),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Icon(
+                                    imageVector = androidx.compose.material.icons.Icons.Outlined.FaceRetouchingNatural,
+                                    contentDescription = null,
+                                    tint = Color(0xFF6A4EFF),
+                                    modifier = Modifier.size(36.dp)
+                                )
+                            }
+
+                            Spacer(modifier = Modifier.height(20.dp))
+
+                            Text(
+                                text = "Biometric Verification",
+                                style = TextStyle(
+                                    fontSize = 18.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    color = Color(0xFF0F172A)
+                                ),
+                                textAlign = TextAlign.Center
+                            )
+
+                            Spacer(modifier = Modifier.height(8.dp))
+
+                            Text(
+                                text = if (isSimulateSuccess)
+                                    "Mock mode: simulates a successful verification flow"
+                                else
+                                    "Mock mode: simulates a failed verification flow",
+                                style = TextStyle(fontSize = 13.sp, color = Color(0xFF64748B)),
+                                textAlign = TextAlign.Center
+                            )
+
+                            Spacer(modifier = Modifier.height(16.dp))
+
+                            // Mode Switcher
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                            ) {
+                                FilterChip(
+                                    selected = isSimulateSuccess,
+                                    onClick = { isSimulateSuccess = true },
+                                    label = { Text("Success Mode") }
+                                )
+                                FilterChip(
+                                    selected = !isSimulateSuccess,
+                                    onClick = { isSimulateSuccess = false },
+                                    label = { Text("Failure Mode") }
+                                )
+                            }
+
+                            if (flowResultMessage != null) {
+                                Spacer(modifier = Modifier.height(16.dp))
+                                val isSuccess = flowResultMessage!!.startsWith("✓")
+                                val isOtp = flowResultMessage!!.startsWith("→")
+                                val chipBg = if (isSuccess) Color(0xFFDCFCE7) else if (isOtp) Color(0xFFE0F2FE) else Color(0xFFFFE4E6)
+                                val chipTextColor = if (isSuccess) Color(0xFF166534) else if (isOtp) Color(0xFF075985) else Color(0xFF991B1B)
+
+                                Box(
+                                    modifier = Modifier
+                                        .clip(RoundedCornerShape(8.dp))
+                                        .background(chipBg)
+                                        .padding(horizontal = 14.dp, vertical = 10.dp)
+                                ) {
+                                    Text(
+                                        text = flowResultMessage!!,
+                                        style = TextStyle(
+                                            fontSize = 13.sp,
+                                            fontWeight = FontWeight.SemiBold,
+                                            color = chipTextColor
+                                        ),
+                                        textAlign = TextAlign.Center
+                                    )
+                                }
+                            }
+
+                            Spacer(modifier = Modifier.height(24.dp))
+
+                            Button(
+                                onClick = {
+                                    flowResultMessage = null
+                                    isFlowLaunched = true
+                                },
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(48.dp),
+                                shape = RoundedCornerShape(12.dp),
+                                colors = ButtonDefaults.buttonColors(
+                                    containerColor = Color(0xFF6A4EFF),
+                                    contentColor = Color.White
+                                )
+                            ) {
+                                Text(
+                                    text = "Launch Flow",
+                                    style = TextStyle(fontWeight = FontWeight.SemiBold, fontSize = 15.sp)
+                                )
+                            }
+                        }
+                    }
+                }
+
+                // ─── 2. Standalone Identity Consent Screen ───────────────────
+                Text(
+                    text = "2. Standalone Identity Consent Screen",
+                    style = defaultTypography.lM_strong,
+                    color = Ux4gColors.neutral800
+                )
+
+                Ux4gCard(
+                    modifier = Modifier.fillMaxWidth(),
+                    cornerRadius = 16.dp,
+                    borderColor = Ux4gColors.neutral900.copy(alpha = 0.12f),
+                    borderWidth = 1.dp
+                ) {
+                    Ux4gIdentityConsentScreen(
+                        onAllow = {
+                            scope.launch {
+                                toastHostState.showToast(
+                                    category = Ux4gToastCategory.Info,
+                                    title = "Consent Allowed",
+                                    subtitle = "Proceeding to camera device checks"
+                                )
+                            }
+                        },
+                        onDecline = {
+                            scope.launch {
+                                toastHostState.showToast(
+                                    category = Ux4gToastCategory.Warning,
+                                    title = "Consent Declined",
+                                    subtitle = "Switching to OTP verification fallback"
+                                )
+                            }
+                        },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(380.dp)
+                    )
+                }
+
+                // ─── 3. Standalone Device Check Screen ───────────────────────
+                Text(
+                    text = "3. Standalone Device Readiness Check Screen",
+                    style = defaultTypography.lM_strong,
+                    color = Ux4gColors.neutral800
+                )
+
+                val standaloneDeviceController = remember {
+                    BiometricController(
+                        onVerify = { dummyUidaiVerificationApi(it, true) }
+                    )
+                }
+
+                Ux4gCard(
+                    modifier = Modifier.fillMaxWidth(),
+                    cornerRadius = 16.dp,
+                    borderColor = Ux4gColors.neutral900.copy(alpha = 0.12f),
+                    borderWidth = 1.dp
+                ) {
+                    Ux4gDeviceCheckScreen(
+                        controller = standaloneDeviceController,
+                        onProceed = {
+                            scope.launch {
+                                toastHostState.showToast(
+                                    category = Ux4gToastCategory.Success,
+                                    title = "All Systems Ready",
+                                    subtitle = "Camera capture triggered"
+                                )
+                            }
+                        },
+                        compact = true,
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                }
+
+                // ─── 4. Custom Themed Biometric Flow ─────────────────────────
+                Text(
+                    text = "4. Custom Themed Verification Flow",
+                    style = defaultTypography.lM_strong,
+                    color = Ux4gColors.neutral800
+                )
+
+                var isCustomThemeLaunched by remember { mutableStateOf(false) }
+
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(560.dp)
+                        .clip(RoundedCornerShape(24.dp))
+                        .border(1.5.dp, Color(0xFF0057FF).copy(alpha = 0.4f), RoundedCornerShape(24.dp))
+                        .background(Color(0xFFF0F4FF)),
+                    contentAlignment = Alignment.Center
+                ) {
+                    if (isCustomThemeLaunched) {
+                        Ux4gBiometricVerificationFlow(
+                            onVerify = { bytes ->
+                                dummyUidaiVerificationApi(bytes, true)
+                            },
+                            theme = BiometricThemeData(
+                                colors = BiometricColors(
+                                    primary = Color(0xFF0057FF),
+                                    success = Color(0xFF00C48C),
+                                    ovalActive = Color(0xFF00C48C),
+                                    ovalBlink = Color(0xFF0057FF)
+                                ),
+                                cardRadius = 20.dp,
+                                buttonRadius = 8.dp
+                            ),
+                            onSuccess = { result ->
+                                isCustomThemeLaunched = false
+                                scope.launch {
+                                    toastHostState.showToast(
+                                        category = Ux4gToastCategory.Success,
+                                        title = "Custom Theme Verified",
+                                        subtitle = "Welcome, ${result.maskedName}"
+                                    )
+                                }
+                            },
+                            onFailure = { reason, _ ->
+                                isCustomThemeLaunched = false
+                            },
+                            onDismiss = {
+                                isCustomThemeLaunched = false
+                            }
+                        )
+                    } else {
+                        Column(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(24.dp),
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.Center
+                        ) {
+                            Box(
+                                modifier = Modifier
+                                    .size(72.dp)
+                                    .clip(CircleShape)
+                                    .background(Color(0xFF0057FF).copy(alpha = 0.12f)),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Icon(
+                                    imageVector = androidx.compose.material.icons.Icons.Outlined.Shield,
+                                    contentDescription = null,
+                                    tint = Color(0xFF0057FF),
+                                    modifier = Modifier.size(36.dp)
+                                )
+                            }
+
+                            Spacer(modifier = Modifier.height(16.dp))
+
+                            Text(
+                                text = "Custom Themed Flow",
+                                style = TextStyle(
+                                    fontSize = 18.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    color = Color(0xFF0F172A)
+                                ),
+                                textAlign = TextAlign.Center
+                            )
+
+                            Spacer(modifier = Modifier.height(8.dp))
+
+                            Text(
+                                text = "Uses customized blue/teal theme colors, custom 20dp card radius, and 8dp button radius.",
+                                style = TextStyle(fontSize = 13.sp, color = Color(0xFF64748B)),
+                                textAlign = TextAlign.Center
+                            )
+
+                            Spacer(modifier = Modifier.height(24.dp))
+
+                            Button(
+                                onClick = { isCustomThemeLaunched = true },
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(48.dp),
+                                shape = RoundedCornerShape(8.dp),
+                                colors = ButtonDefaults.buttonColors(
+                                    containerColor = Color(0xFF0057FF),
+                                    contentColor = Color.White
+                                )
+                            ) {
+                                Text(
+                                    text = "Launch Custom Themed Flow",
+                                    style = TextStyle(fontWeight = FontWeight.SemiBold, fontSize = 15.sp)
+                                )
+                            }
+                        }
                     }
                 }
             }
