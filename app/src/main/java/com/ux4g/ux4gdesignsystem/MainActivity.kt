@@ -52,6 +52,7 @@ import com.ux4g.designsystemv1.components.dropdowns.*
 import com.ux4g.designsystemv1.components.inputfield.*
 import com.ux4g.designsystemv1.components.searchfield.*
 import com.ux4g.designsystemv1.components.steppers.*
+import com.ux4g.designsystemv1.components.timeslot.*
 import com.ux4g.designsystemv1.components.tooltip.*
 import com.ux4g.designsystemv1.components.feedback.*
 import com.ux4g.designsystemv1.components.textarea.*
@@ -7034,6 +7035,119 @@ fun MainContent(
                     onPrevious = { if (currentStep > 1) currentStep-- },
                     onNext = { if (currentStep < totalSteps) currentStep++ },
                     layout = Ux4gCompactStepperLayout.Split
+                )
+            }
+        }
+
+        // ==========================================
+        // Timeslot & Slot Grid Showcase
+        // ==========================================
+        Ux4gCard(modifier = Modifier.fillMaxWidth()) {
+            Column(
+                modifier = Modifier.padding(16.dp),
+                verticalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+                Text(
+                    text = "Timeslot & Slot Grid Component",
+                    style = Ux4gTheme.typography.tS_strong,
+                    color = Ux4gTheme.colorScheme.onSurface
+                )
+                Text(
+                    text = "Interactive calendar slot grid supporting public holidays, weekly-off rules, no-slot states, and modal time slot picker sheet in both Compact (Grid) and Expanded (List) view modes.",
+                    style = Ux4gTheme.typography.bS_default,
+                    color = Ux4gColors.neutral600
+                )
+
+                // 1. Variant A: Compact View Mode (2-Column Grid Sheet)
+                Text(
+                    text = "Variant A: Compact View Mode (2-Column Grid Sheet)",
+                    style = Ux4gTheme.typography.lS_strong,
+                    color = Ux4gTheme.colorScheme.onSurface
+                )
+
+                val compactTimeslotData = remember {
+                    Ux4gTimeslotData(
+                        year = 2026,
+                        month = 4,
+                        selectedDate = LocalDate.of(2026, 4, 23),
+                        today = LocalDate.of(2026, 4, 15),
+                        weeklyOffWeekdays = listOf(6, 7),
+                        dates = listOf(
+                            SlotDateEntry(LocalDate.of(2026, 4, 9), SlotDateStatus.PublicHoliday),
+                            SlotDateEntry(LocalDate.of(2026, 4, 21), SlotDateStatus.NoSlots),
+                            SlotDateEntry(LocalDate.of(2026, 4, 5), SlotDateStatus.WeeklyOff)
+                        ),
+                        viewMode = SlotPickerViewMode.Compact
+                    )
+                }
+
+                Ux4gTimeslot(
+                    data = compactTimeslotData,
+                    timeSlotProvider = { date ->
+                        listOf(
+                            SlotTimeEntry("09:00 AM - 10:00 AM", 8, SlotTimeStatus.Available),
+                            SlotTimeEntry("10:00 AM - 11:00 AM", 2, SlotTimeStatus.Limited),
+                            SlotTimeEntry("11:00 AM - 12:00 PM", 0, SlotTimeStatus.NoSlots),
+                            SlotTimeEntry("02:00 PM - 03:00 PM", 5, SlotTimeStatus.Available),
+                            SlotTimeEntry("03:00 PM - 04:00 PM", 1, SlotTimeStatus.Limited),
+                            SlotTimeEntry("04:00 PM - 05:00 PM", 6, SlotTimeStatus.Available)
+                        )
+                    },
+                    onSlotConfirmed = { date, slot ->
+                        scope.launch {
+                            toastHostState.showToast(
+                                category = Ux4gToastCategory.Success,
+                                title = "Compact Slot Confirmed",
+                                subtitle = "$date at ${slot.time} (${slot.slotCount} slots left)"
+                            )
+                        }
+                    }
+                )
+
+                // 2. Variant B: Expanded View Mode (1-Column Vertical List Sheet)
+                Text(
+                    text = "Variant B: Expanded View Mode (1-Column Vertical List Sheet)",
+                    style = Ux4gTheme.typography.lS_strong,
+                    color = Ux4gTheme.colorScheme.onSurface
+                )
+
+                val expandedTimeslotData = remember {
+                    Ux4gTimeslotData(
+                        year = 2026,
+                        month = 4,
+                        selectedDate = LocalDate.of(2026, 4, 18),
+                        today = LocalDate.of(2026, 4, 15),
+                        weeklyOffWeekdays = listOf(6, 7),
+                        dates = listOf(
+                            SlotDateEntry(LocalDate.of(2026, 4, 9), SlotDateStatus.PublicHoliday),
+                            SlotDateEntry(LocalDate.of(2026, 4, 21), SlotDateStatus.NoSlots),
+                            SlotDateEntry(LocalDate.of(2026, 4, 5), SlotDateStatus.WeeklyOff)
+                        ),
+                        viewMode = SlotPickerViewMode.Expanded
+                    )
+                }
+
+                Ux4gTimeslot(
+                    data = expandedTimeslotData,
+                    timeSlotProvider = { date ->
+                        listOf(
+                            SlotTimeEntry("09:00 AM - 10:00 AM", 8, SlotTimeStatus.Available),
+                            SlotTimeEntry("10:00 AM - 11:00 AM", 2, SlotTimeStatus.Limited),
+                            SlotTimeEntry("11:00 AM - 12:00 PM", 0, SlotTimeStatus.NoSlots),
+                            SlotTimeEntry("02:00 PM - 03:00 PM", 5, SlotTimeStatus.Available),
+                            SlotTimeEntry("03:00 PM - 04:00 PM", 1, SlotTimeStatus.Limited),
+                            SlotTimeEntry("04:00 PM - 05:00 PM", 6, SlotTimeStatus.Available)
+                        )
+                    },
+                    onSlotConfirmed = { date, slot ->
+                        scope.launch {
+                            toastHostState.showToast(
+                                category = Ux4gToastCategory.Success,
+                                title = "Expanded Slot Confirmed",
+                                subtitle = "$date at ${slot.time} (${slot.slotCount} slots left)"
+                            )
+                        }
+                    }
                 )
             }
         }

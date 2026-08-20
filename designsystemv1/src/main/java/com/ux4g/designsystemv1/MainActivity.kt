@@ -51,6 +51,8 @@ import com.ux4g.designsystemv1.components.Ux4gTimeOfDay
 import com.ux4g.designsystemv1.components.Ux4gPaginationIndicator
 import com.ux4g.designsystemv1.components.Ux4gPaginationVariant
 import com.ux4g.designsystemv1.components.steppers.*
+import com.ux4g.designsystemv1.components.timeslot.*
+import java.time.LocalDate
 import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
@@ -574,6 +576,101 @@ fun DesignSystemShowcase(
             onPrevious = { if (stepperCurrentStep > 1) stepperCurrentStep-- },
             onNext = { if (stepperCurrentStep < 4) stepperCurrentStep++ },
             layout = Ux4gCompactStepperLayout.Split
+        )
+
+        // Timeslot / Slot Grid Showcase
+        Text(
+            text = "Timeslot & Slot Grid",
+            style = Ux4gTheme.typography.hL_default,
+            color = Ux4gTheme.colorScheme.onBackground
+        )
+
+        // 1. Compact View Mode (2-Column Grid Sheet)
+        Text(
+            text = "Timeslot (Compact 2-Column Grid Mode)",
+            style = Ux4gTheme.typography.lM_strong,
+            color = Ux4gTheme.colorScheme.onBackground
+        )
+        val compactTimeslotData = remember {
+            Ux4gTimeslotData(
+                year = 2026,
+                month = 4,
+                selectedDate = LocalDate.of(2026, 4, 23),
+                today = LocalDate.of(2026, 4, 15),
+                weeklyOffWeekdays = listOf(6, 7),
+                dates = listOf(
+                    SlotDateEntry(LocalDate.of(2026, 4, 9), SlotDateStatus.PublicHoliday),
+                    SlotDateEntry(LocalDate.of(2026, 4, 21), SlotDateStatus.NoSlots),
+                    SlotDateEntry(LocalDate.of(2026, 4, 5), SlotDateStatus.WeeklyOff)
+                ),
+                viewMode = SlotPickerViewMode.Compact
+            )
+        }
+        Ux4gTimeslot(
+            data = compactTimeslotData,
+            timeSlotProvider = { date ->
+                listOf(
+                    SlotTimeEntry("09:00 AM - 10:00 AM", 8, SlotTimeStatus.Available),
+                    SlotTimeEntry("10:00 AM - 11:00 AM", 2, SlotTimeStatus.Limited),
+                    SlotTimeEntry("11:00 AM - 12:00 PM", 0, SlotTimeStatus.NoSlots),
+                    SlotTimeEntry("02:00 PM - 03:00 PM", 5, SlotTimeStatus.Available),
+                    SlotTimeEntry("03:00 PM - 04:00 PM", 1, SlotTimeStatus.Limited),
+                    SlotTimeEntry("04:00 PM - 05:00 PM", 6, SlotTimeStatus.Available)
+                )
+            },
+            onSlotConfirmed = { date, slot ->
+                scope.launch {
+                    toastHostState.showToast(
+                        category = Ux4gToastCategory.Success,
+                        title = "Slot Confirmed",
+                        subtitle = "${date} at ${slot.time}"
+                    )
+                }
+            }
+        )
+
+        // 2. Expanded View Mode (1-Column List Sheet)
+        Text(
+            text = "Timeslot (Expanded 1-Column List Mode)",
+            style = Ux4gTheme.typography.lM_strong,
+            color = Ux4gTheme.colorScheme.onBackground
+        )
+        val expandedTimeslotData = remember {
+            Ux4gTimeslotData(
+                year = 2026,
+                month = 4,
+                selectedDate = LocalDate.of(2026, 4, 18),
+                today = LocalDate.of(2026, 4, 15),
+                weeklyOffWeekdays = listOf(6, 7),
+                dates = listOf(
+                    SlotDateEntry(LocalDate.of(2026, 4, 9), SlotDateStatus.PublicHoliday),
+                    SlotDateEntry(LocalDate.of(2026, 4, 21), SlotDateStatus.NoSlots),
+                    SlotDateEntry(LocalDate.of(2026, 4, 5), SlotDateStatus.WeeklyOff)
+                ),
+                viewMode = SlotPickerViewMode.Expanded
+            )
+        }
+        Ux4gTimeslot(
+            data = expandedTimeslotData,
+            timeSlotProvider = { date ->
+                listOf(
+                    SlotTimeEntry("09:00 AM - 10:00 AM", 8, SlotTimeStatus.Available),
+                    SlotTimeEntry("10:00 AM - 11:00 AM", 2, SlotTimeStatus.Limited),
+                    SlotTimeEntry("11:00 AM - 12:00 PM", 0, SlotTimeStatus.NoSlots),
+                    SlotTimeEntry("02:00 PM - 03:00 PM", 5, SlotTimeStatus.Available),
+                    SlotTimeEntry("03:00 PM - 04:00 PM", 1, SlotTimeStatus.Limited),
+                    SlotTimeEntry("04:00 PM - 05:00 PM", 6, SlotTimeStatus.Available)
+                )
+            },
+            onSlotConfirmed = { date, slot ->
+                scope.launch {
+                    toastHostState.showToast(
+                        category = Ux4gToastCategory.Success,
+                        title = "Slot Confirmed",
+                        subtitle = "${date} at ${slot.time}"
+                    )
+                }
+            }
         )
     }
 }
