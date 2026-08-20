@@ -51,11 +51,7 @@ import com.ux4g.designsystemv1.components.buttons.Ux4gIconButtonStyle
 import com.ux4g.designsystemv1.components.dropdowns.*
 import com.ux4g.designsystemv1.components.inputfield.*
 import com.ux4g.designsystemv1.components.searchfield.*
-import com.ux4g.designsystemv1.components.steppers.StepperOrientation
-import com.ux4g.designsystemv1.components.steppers.Ux4gCapsuleStepper
-import com.ux4g.designsystemv1.components.steppers.Ux4gCapsuleStepperLayout
-import com.ux4g.designsystemv1.components.steppers.Ux4gStepItem
-import com.ux4g.designsystemv1.components.steppers.Ux4gStepper
+import com.ux4g.designsystemv1.components.steppers.*
 import com.ux4g.designsystemv1.components.tooltip.*
 import com.ux4g.designsystemv1.components.feedback.*
 import com.ux4g.designsystemv1.components.textarea.*
@@ -6780,6 +6776,264 @@ fun MainContent(
                     enabled = false,
                     label = "Disabled Time Field",
                     description = "Cannot be modified"
+                )
+            }
+        }
+
+        // ==========================================
+        // Stepper & Compact Stepper Showcase
+        // ==========================================
+        Ux4gCard(modifier = Modifier.fillMaxWidth()) {
+            Column(
+                modifier = Modifier.padding(16.dp),
+                verticalArrangement = Arrangement.spacedBy(20.dp)
+            ) {
+                Text(
+                    text = "Stepper & Compact Stepper Components",
+                    style = Ux4gTheme.typography.tS_strong,
+                    color = Ux4gTheme.colorScheme.onSurface
+                )
+                Text(
+                    text = "Interactive progress steppers in Horizontal (Center & Bottom line placement), Vertical, and Compact/Capsule 5-layout variants.",
+                    style = Ux4gTheme.typography.bS_default,
+                    color = Ux4gColors.neutral600
+                )
+
+                var currentStep by remember { mutableStateOf(2) }
+                val totalSteps = 4
+
+                val stepItems = listOf(
+                    Ux4gStepItem(
+                        title = "Account Details",
+                        description = "Create login credentials",
+                        statusLabel = "Completed"
+                    ),
+                    Ux4gStepItem(
+                        title = "Personal Info",
+                        description = "Enter full name & email",
+                        statusLabel = "In progress"
+                    ),
+                    Ux4gStepItem(
+                        title = "Verification",
+                        description = "Verify mobile OTP",
+                        statusLabel = "Pending"
+                    ),
+                    Ux4gStepItem(
+                        title = "Payment",
+                        description = "Select plan & pay",
+                        statusLabel = "Pending"
+                    )
+                )
+
+                // Interactive Controls
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = "Current Step: $currentStep of $totalSteps",
+                        style = Ux4gTheme.typography.lM_strong,
+                        color = Ux4gColors.primary
+                    )
+                    Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                        Ux4gButton(
+                            text = "Previous",
+                            variant = Ux4gButtonVariant.Outline,
+                            size = Ux4gButtonSize.Small,
+                            enabled = currentStep > 1,
+                            onClick = { if (currentStep > 1) currentStep-- }
+                        )
+                        Ux4gButton(
+                            text = "Next",
+                            variant = Ux4gButtonVariant.Primary,
+                            size = Ux4gButtonSize.Small,
+                            enabled = currentStep < totalSteps,
+                            onClick = { if (currentStep < totalSteps) currentStep++ }
+                        )
+                    }
+                }
+
+                // 1. Horizontal Stepper - Center Line Placement (Solid)
+                Text(
+                    text = "1. Horizontal Stepper (Center Line - Solid)",
+                    style = Ux4gTheme.typography.lS_strong,
+                    color = Ux4gTheme.colorScheme.onSurface
+                )
+                Ux4gStepper(
+                    totalSteps = totalSteps,
+                    currentStep = currentStep,
+                    steps = stepItems,
+                    lineStyle = StepperLineStyle.Solid,
+                    linePlacement = StepperLinePlacement.Center
+                )
+
+                // 2. Horizontal Stepper - Center Line Placement (Dashed)
+                Text(
+                    text = "2. Horizontal Stepper (Center Line - Dashed)",
+                    style = Ux4gTheme.typography.lS_strong,
+                    color = Ux4gTheme.colorScheme.onSurface
+                )
+                Ux4gStepper(
+                    totalSteps = totalSteps,
+                    currentStep = currentStep,
+                    steps = stepItems,
+                    lineStyle = StepperLineStyle.Dashed,
+                    linePlacement = StepperLinePlacement.Center
+                )
+
+                // 3. Horizontal Stepper - Bottom Line Placement with Active Step Background
+                Text(
+                    text = "3. Horizontal Stepper (Bottom Line & Active Highlight)",
+                    style = Ux4gTheme.typography.lS_strong,
+                    color = Ux4gTheme.colorScheme.onSurface
+                )
+                Ux4gStepper(
+                    totalSteps = totalSteps,
+                    currentStep = currentStep,
+                    steps = stepItems,
+                    linePlacement = StepperLinePlacement.Bottom,
+                    activeStepBackground = true
+                )
+
+                // 4. Horizontal Stepper with Edge Label Alignment
+                Text(
+                    text = "4. Horizontal Stepper (Edge Label Alignment)",
+                    style = Ux4gTheme.typography.lS_strong,
+                    color = Ux4gTheme.colorScheme.onSurface
+                )
+                Ux4gStepper(
+                    totalSteps = totalSteps,
+                    currentStep = currentStep,
+                    steps = stepItems,
+                    edgeLabelAlignment = true
+                )
+
+                // 5. Vertical Stepper (With error & status handling)
+                val verticalSteps = listOf(
+                    Ux4gStepItem(
+                        title = "Document Upload",
+                        description = "Uploaded Passport & Address proof",
+                        statusLabel = "Completed"
+                    ),
+                    Ux4gStepItem(
+                        title = "Identity Verification",
+                        description = "Facial match verification in progress",
+                        statusLabel = "In progress"
+                    ),
+                    Ux4gStepItem(
+                        title = "Bank Account Linking",
+                        description = "Invalid IFSC Code provided",
+                        statusLabel = "Error",
+                        isError = true
+                    ),
+                    Ux4gStepItem(
+                        title = "Final Account Activation",
+                        description = "Receive welcome kit and credentials",
+                        statusLabel = "Upcoming"
+                    )
+                )
+
+                Text(
+                    text = "5. Vertical Stepper (With States & Description Alignment)",
+                    style = Ux4gTheme.typography.lS_strong,
+                    color = Ux4gTheme.colorScheme.onSurface
+                )
+                Ux4gStepper(
+                    totalSteps = verticalSteps.size,
+                    currentStep = currentStep,
+                    orientation = StepperOrientation.Vertical,
+                    steps = verticalSteps,
+                    alignIconWithDescription = true
+                )
+
+                // 6. Compact / Capsule Steppers (5 Layout Variants)
+                Text(
+                    text = "6. Compact / Capsule Stepper (5 Layout Variants)",
+                    style = Ux4gTheme.typography.tS_strong,
+                    color = Ux4gTheme.colorScheme.onSurface
+                )
+
+                val activeStepItem = stepItems.getOrNull(currentStep - 1)
+
+                // Variant A: Linear Layout
+                Text(
+                    text = "Variant A: Linear Layout",
+                    style = Ux4gTheme.typography.lS_strong,
+                    color = Ux4gTheme.colorScheme.onSurface
+                )
+                Ux4gCompactStepper(
+                    totalSteps = totalSteps,
+                    currentStep = currentStep,
+                    stepLabel = activeStepItem?.title ?: "Step $currentStep",
+                    description = activeStepItem?.description,
+                    onPrevious = { if (currentStep > 1) currentStep-- },
+                    onNext = { if (currentStep < totalSteps) currentStep++ },
+                    layout = Ux4gCompactStepperLayout.Linear
+                )
+
+                // Variant B: Right-Aligned Layout
+                Text(
+                    text = "Variant B: Right-Aligned Layout",
+                    style = Ux4gTheme.typography.lS_strong,
+                    color = Ux4gTheme.colorScheme.onSurface
+                )
+                Ux4gCompactStepper(
+                    totalSteps = totalSteps,
+                    currentStep = currentStep,
+                    stepLabel = activeStepItem?.title ?: "Step $currentStep",
+                    description = activeStepItem?.description,
+                    onPrevious = { if (currentStep > 1) currentStep-- },
+                    onNext = { if (currentStep < totalSteps) currentStep++ },
+                    layout = Ux4gCompactStepperLayout.RightAligned
+                )
+
+                // Variant C: Centered Layout
+                Text(
+                    text = "Variant C: Centered Layout",
+                    style = Ux4gTheme.typography.lS_strong,
+                    color = Ux4gTheme.colorScheme.onSurface
+                )
+                Ux4gCompactStepper(
+                    totalSteps = totalSteps,
+                    currentStep = currentStep,
+                    stepLabel = activeStepItem?.title ?: "Step $currentStep",
+                    description = activeStepItem?.description,
+                    onPrevious = { if (currentStep > 1) currentStep-- },
+                    onNext = { if (currentStep < totalSteps) currentStep++ },
+                    layout = Ux4gCompactStepperLayout.Centered
+                )
+
+                // Variant D: Centered-Between Layout
+                Text(
+                    text = "Variant D: Centered-Between Layout",
+                    style = Ux4gTheme.typography.lS_strong,
+                    color = Ux4gTheme.colorScheme.onSurface
+                )
+                Ux4gCompactStepper(
+                    totalSteps = totalSteps,
+                    currentStep = currentStep,
+                    stepLabel = activeStepItem?.title ?: "Step $currentStep",
+                    description = activeStepItem?.description,
+                    onPrevious = { if (currentStep > 1) currentStep-- },
+                    onNext = { if (currentStep < totalSteps) currentStep++ },
+                    layout = Ux4gCompactStepperLayout.CenteredBetween
+                )
+
+                // Variant E: Split Layout
+                Text(
+                    text = "Variant E: Split Layout",
+                    style = Ux4gTheme.typography.lS_strong,
+                    color = Ux4gTheme.colorScheme.onSurface
+                )
+                Ux4gCompactStepper(
+                    totalSteps = totalSteps,
+                    currentStep = currentStep,
+                    stepLabel = activeStepItem?.title ?: "Step $currentStep",
+                    description = activeStepItem?.description,
+                    onPrevious = { if (currentStep > 1) currentStep-- },
+                    onNext = { if (currentStep < totalSteps) currentStep++ },
+                    layout = Ux4gCompactStepperLayout.Split
                 )
             }
         }

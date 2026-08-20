@@ -50,6 +50,7 @@ import com.ux4g.designsystemv1.components.Ux4gTimePicker
 import com.ux4g.designsystemv1.components.Ux4gTimeOfDay
 import com.ux4g.designsystemv1.components.Ux4gPaginationIndicator
 import com.ux4g.designsystemv1.components.Ux4gPaginationVariant
+import com.ux4g.designsystemv1.components.steppers.*
 import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
@@ -471,6 +472,109 @@ fun DesignSystemShowcase(
                 placeholder = "Pick reminder time"
             )
         }
+
+        // Stepper Showcase
+        Text(
+            text = "Steppers",
+            style = Ux4gTheme.typography.hL_default,
+            color = Ux4gTheme.colorScheme.onBackground
+        )
+
+        var stepperCurrentStep by remember { mutableIntStateOf(2) }
+        val stepperItems = listOf(
+            Ux4gStepItem(title = "Account", description = "Create login"),
+            Ux4gStepItem(title = "Personal Info", description = "Enter details"),
+            Ux4gStepItem(title = "Verification", description = "Verify OTP"),
+            Ux4gStepItem(title = "Payment", description = "Select plan")
+        )
+
+        // 1. Horizontal Stepper
+        Text(
+            text = "Horizontal Stepper (Center Line Placement)",
+            style = Ux4gTheme.typography.lM_strong,
+            color = Ux4gTheme.colorScheme.onBackground
+        )
+        Ux4gStepper(
+            totalSteps = 4,
+            currentStep = stepperCurrentStep,
+            steps = stepperItems,
+            lineStyle = StepperLineStyle.Solid
+        )
+
+        // 2. Horizontal Stepper (Bottom Line with Active Step Background)
+        Text(
+            text = "Horizontal Stepper (Bottom Line & Active Background)",
+            style = Ux4gTheme.typography.lM_strong,
+            color = Ux4gTheme.colorScheme.onBackground
+        )
+        Ux4gStepper(
+            totalSteps = 4,
+            currentStep = stepperCurrentStep,
+            steps = stepperItems,
+            linePlacement = StepperLinePlacement.Bottom,
+            activeStepBackground = true
+        )
+
+        // 3. Compact Steppers (All Layouts)
+        Text(
+            text = "Compact Stepper (Linear Layout)",
+            style = Ux4gTheme.typography.lM_strong,
+            color = Ux4gTheme.colorScheme.onBackground
+        )
+        Ux4gCompactStepper(
+            totalSteps = 4,
+            currentStep = stepperCurrentStep,
+            stepLabel = stepperItems.getOrNull(stepperCurrentStep - 1)?.title ?: "Step $stepperCurrentStep",
+            description = stepperItems.getOrNull(stepperCurrentStep - 1)?.description,
+            onPrevious = { if (stepperCurrentStep > 1) stepperCurrentStep-- },
+            onNext = { if (stepperCurrentStep < 4) stepperCurrentStep++ },
+            layout = Ux4gCompactStepperLayout.Linear
+        )
+
+        Text(
+            text = "Compact Stepper (Right-Aligned Layout)",
+            style = Ux4gTheme.typography.lM_strong,
+            color = Ux4gTheme.colorScheme.onBackground
+        )
+        Ux4gCompactStepper(
+            totalSteps = 4,
+            currentStep = stepperCurrentStep,
+            stepLabel = stepperItems.getOrNull(stepperCurrentStep - 1)?.title ?: "Step $stepperCurrentStep",
+            description = stepperItems.getOrNull(stepperCurrentStep - 1)?.description,
+            onPrevious = { if (stepperCurrentStep > 1) stepperCurrentStep-- },
+            onNext = { if (stepperCurrentStep < 4) stepperCurrentStep++ },
+            layout = Ux4gCompactStepperLayout.RightAligned
+        )
+
+        Text(
+            text = "Compact Stepper (Centered Layout)",
+            style = Ux4gTheme.typography.lM_strong,
+            color = Ux4gTheme.colorScheme.onBackground
+        )
+        Ux4gCompactStepper(
+            totalSteps = 4,
+            currentStep = stepperCurrentStep,
+            stepLabel = stepperItems.getOrNull(stepperCurrentStep - 1)?.title ?: "Step $stepperCurrentStep",
+            description = stepperItems.getOrNull(stepperCurrentStep - 1)?.description,
+            onPrevious = { if (stepperCurrentStep > 1) stepperCurrentStep-- },
+            onNext = { if (stepperCurrentStep < 4) stepperCurrentStep++ },
+            layout = Ux4gCompactStepperLayout.Centered
+        )
+
+        Text(
+            text = "Compact Stepper (Split Layout)",
+            style = Ux4gTheme.typography.lM_strong,
+            color = Ux4gTheme.colorScheme.onBackground
+        )
+        Ux4gCompactStepper(
+            totalSteps = 4,
+            currentStep = stepperCurrentStep,
+            stepLabel = stepperItems.getOrNull(stepperCurrentStep - 1)?.title ?: "Step $stepperCurrentStep",
+            description = stepperItems.getOrNull(stepperCurrentStep - 1)?.description,
+            onPrevious = { if (stepperCurrentStep > 1) stepperCurrentStep-- },
+            onNext = { if (stepperCurrentStep < 4) stepperCurrentStep++ },
+            layout = Ux4gCompactStepperLayout.Split
+        )
     }
 }
 
