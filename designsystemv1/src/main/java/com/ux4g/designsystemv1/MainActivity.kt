@@ -46,6 +46,8 @@ import com.ux4g.designsystemv1.components.Ux4gPipelineStep
 import com.ux4g.designsystemv1.components.Ux4gPipelineStepState
 import com.ux4g.designsystemv1.components.Ux4gPipelineOrientation
 import com.ux4g.designsystemv1.components.Ux4gPipelineSize
+import com.ux4g.designsystemv1.components.Ux4gTimePicker
+import com.ux4g.designsystemv1.components.Ux4gTimeOfDay
 import com.ux4g.designsystemv1.components.Ux4gPaginationIndicator
 import com.ux4g.designsystemv1.components.Ux4gPaginationVariant
 import kotlinx.coroutines.launch
@@ -429,6 +431,46 @@ fun DesignSystemShowcase(
                 )
             )
         )
+
+        // Time Picker Showcase
+        Text(
+            text = "Time Picker",
+            style = Ux4gTheme.typography.hL_default,
+            color = Ux4gTheme.colorScheme.onBackground
+        )
+
+        var timePickerVal1 by remember { mutableStateOf<Ux4gTimeOfDay?>(Ux4gTimeOfDay(10, 30)) }
+        var timePickerVal2 by remember { mutableStateOf<Ux4gTimeOfDay?>(null) }
+
+        Column(
+            modifier = Modifier.fillMaxWidth(),
+            verticalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
+            Ux4gTimePicker(
+                selectedTime = timePickerVal1,
+                onTimeSelected = {
+                    timePickerVal1 = it
+                    scope.launch {
+                        toastHostState.showToast(
+                            category = Ux4gToastCategory.Success,
+                            title = "Time Selected",
+                            subtitle = it.format()
+                        )
+                    }
+                },
+                label = "Meeting Start Time",
+                description = "Choose a time in 12-hour format with AM/PM",
+                isRequired = true
+            )
+
+            Ux4gTimePicker(
+                selectedTime = timePickerVal2,
+                onTimeSelected = { timePickerVal2 = it },
+                label = "Reminder Interval (15-min intervals)",
+                minuteInterval = 15,
+                placeholder = "Pick reminder time"
+            )
+        }
     }
 }
 

@@ -6713,6 +6713,76 @@ fun MainContent(
                 )
             }
         }
+
+        // ==========================================
+        // Time Picker Showcase
+        // ==========================================
+        Ux4gCard(modifier = Modifier.fillMaxWidth()) {
+            Column(
+                modifier = Modifier.padding(16.dp),
+                verticalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+                Text(
+                    text = "Time Picker Component",
+                    style = Ux4gTheme.typography.tS_strong,
+                    color = Ux4gTheme.colorScheme.onSurface
+                )
+                Text(
+                    text = "A custom Time Picker supporting 12-hour AM/PM format, smooth scroll wheels, minute intervals, and custom triggers.",
+                    style = Ux4gTheme.typography.bS_default,
+                    color = Ux4gColors.neutral600
+                )
+
+                val coroutineScope = rememberCoroutineScope()
+                var appTime1 by remember { mutableStateOf<Ux4gTimeOfDay?>(Ux4gTimeOfDay(9, 30)) }
+                var appTime2 by remember { mutableStateOf<Ux4gTimeOfDay?>(null) }
+
+                // 1. Standard Time Picker
+                Ux4gTimePicker(
+                    selectedTime = appTime1,
+                    onTimeSelected = {
+                        appTime1 = it
+                        coroutineScope.launch {
+                            toastHostState.showToast(
+                                category = Ux4gToastCategory.Success,
+                                title = "Selected Time",
+                                subtitle = it.format()
+                            )
+                        }
+                    },
+                    label = "Meeting Start Time",
+                    description = "Interactive 12-hour AM/PM picker",
+                    isRequired = true
+                )
+
+                // 2. Minute Interval (15-min) Time Picker
+                Ux4gTimePicker(
+                    selectedTime = appTime2,
+                    onTimeSelected = {
+                        appTime2 = it
+                        coroutineScope.launch {
+                            toastHostState.showToast(
+                                category = Ux4gToastCategory.Info,
+                                title = "Reminder Time Set",
+                                subtitle = it.format()
+                            )
+                        }
+                    },
+                    label = "Slot Booking (15-min Intervals)",
+                    minuteInterval = 15,
+                    placeholder = "Select slot time"
+                )
+
+                // 3. Disabled State
+                Ux4gTimePicker(
+                    selectedTime = Ux4gTimeOfDay(14, 0),
+                    onTimeSelected = {},
+                    enabled = false,
+                    label = "Disabled Time Field",
+                    description = "Cannot be modified"
+                )
+            }
+        }
     }
 }
 
