@@ -1,0 +1,34 @@
+---
+title: Toast Notifications
+description: Floating notification banners with action buttons, timers, and queue management
+---
+
+# Toast (`Ux4gToast`)
+
+Import from `com.ux4g.designsystemv1.components.*`.
+
+---
+
+<h2><MIcon name="code" /> Basic Usage</h2>
+
+```kotlin
+import com.ux4g.designsystemv1.components.Ux4gToastHost
+import com.ux4g.designsystemv1.components.Ux4gToastHostState
+import com.ux4g.designsystemv1.components.Ux4gToastCategory
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import kotlinx.coroutines.launch
+
+val toastHostState = remember { Ux4gToastHostState() }
+val scope = rememberCoroutineScope()
+
+// Display Toast Alert
+scope.launch {
+    toastHostState.showToast(
+        message = "Application #10928 saved as draft.",
+        category = Ux4gToastCategory.Success,
+        actionLabel = "UNDO",
+        onAction = { /* Handle undo */ }
+    )
+}
+```

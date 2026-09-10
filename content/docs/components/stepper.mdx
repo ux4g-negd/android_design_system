@@ -1,0 +1,40 @@
+---
+title: Stepper
+description: Horizontal multi-step form progression and compact capsule step indicators
+---
+
+# Stepper (`Ux4gStepper`)
+
+Import from `com.ux4g.designsystemv1.components.steppers.*`.
+
+---
+
+<h2><MIcon name="code" /> 1. Standard Horizontal Stepper (`Ux4gStepper`)</h2>
+
+```kotlin
+import com.ux4g.designsystemv1.components.steppers.Ux4gStepper
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.remember
+
+var currentStep by remember { mutableIntStateOf(2) }
+val steps = listOf("Personal Info", "Upload Docs", "Verification", "Payment")
+
+Ux4gStepper(
+    steps = steps,
+    currentStep = currentStep,
+    onStepClick = { stepIndex -> currentStep = stepIndex }
+)
+```
+
+---
+
+<h2><MIcon name="code" /> 2. Capsule Stepper (`Ux4gCapsuleStepper`)</h2>
+
+```kotlin
+import com.ux4g.designsystemv1.components.steppers.Ux4gCapsuleStepper
+
+Ux4gCapsuleStepper(
+    totalSteps = 5,
+    currentStep = 3
+)
+```

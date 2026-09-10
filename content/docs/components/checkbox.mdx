@@ -1,0 +1,27 @@
+---
+title: Checkbox
+description: Tri-state checkboxes with terms consent, error validation, and custom label descriptions
+---
+
+# Checkbox (`Ux4gCheckbox`)
+
+Import from `com.ux4g.designsystemv1.components.Ux4gCheckbox`.
+
+---
+
+<h2><MIcon name="code" /> Basic Usage</h2>
+
+```kotlin
+import com.ux4g.designsystemv1.components.Ux4gCheckbox
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+
+var agreed by remember { mutableStateOf(false) }
+
+Ux4gCheckbox(
+    checked = agreed,
+    onCheckedChange = { agreed = it },
+    label = "I hereby declare that all information provided is true to the best of my knowledge.",
+    isRequired = true
+)
+```

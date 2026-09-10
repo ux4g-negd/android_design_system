@@ -1,0 +1,34 @@
+---
+title: Modal & Dialog
+description: Confirmation dialogs, full-screen takeovers, and alert modals with sticky actions
+---
+
+# Modal (`Ux4gModal`)
+
+Import from `com.ux4g.designsystemv1.components.Ux4gModal`.
+
+---
+
+<h2><MIcon name="code" /> Basic Usage</h2>
+
+```kotlin
+import com.ux4g.designsystemv1.components.Ux4gModal
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+
+var showDialog by remember { mutableStateOf(false) }
+
+if (showDialog) {
+    Ux4gModal(
+        title = "Discard Draft Application?",
+        description = "All unsaved changes will be permanently lost. Are you sure you want to proceed?",
+        confirmButtonText = "Discard",
+        dismissButtonText = "Keep Editing",
+        onConfirm = {
+            showDialog = false
+            // Handle discard
+        },
+        onDismiss = { showDialog = false }
+    )
+}
+```

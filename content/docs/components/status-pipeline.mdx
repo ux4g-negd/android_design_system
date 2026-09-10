@@ -1,0 +1,28 @@
+---
+title: Status Pipeline
+description: Horizontal & vertical workflow pipeline showing completed, active, and pending steps
+---
+
+# Status Pipeline (`Ux4gStatusPipeline`)
+
+Import from `com.ux4g.designsystemv1.components.Ux4gStatusPipeline`.
+
+---
+
+<h2><MIcon name="code" /> Basic Usage</h2>
+
+```kotlin
+import com.ux4g.designsystemv1.components.Ux4gStatusPipeline
+import com.ux4g.designsystemv1.components.PipelineStep
+
+val steps = listOf(
+    PipelineStep(title = "Draft", isCompleted = true),
+    PipelineStep(title = "Payment", isCompleted = true),
+    PipelineStep(title = "Verification", isActive = true),
+    PipelineStep(title = "Approval", isPending = true)
+)
+
+Ux4gStatusPipeline(
+    steps = steps
+)
+```

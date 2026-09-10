@@ -1,0 +1,46 @@
+---
+title: OTP Input
+description: Secure 4-digit and 6-digit OTP / PIN input boxes with auto-focus and resend timers
+---
+
+# OTP Input (`Ux4gOtpInput`)
+
+`Ux4gOtpInput` renders segmented PIN entry boxes for SMS verification, mobile login, and Aadhaar authentication.
+
+Import from `com.ux4g.designsystemv1.components.Ux4gOtpInput`.
+
+---
+
+<h2><MIcon name="code" /> Basic Usage</h2>
+
+```kotlin
+import com.ux4g.designsystemv1.components.Ux4gOtpInput
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+
+var otpCode by remember { mutableStateOf("") }
+
+Ux4gOtpInput(
+    otpLength = 6,
+    value = otpCode,
+    onOtpChange = { code, isComplete ->
+        otpCode = code
+        if (isComplete) {
+            // Automatically verify OTP
+        }
+    },
+    isError = false
+)
+```
+
+---
+
+<h2><MIcon name="settings" /> Parameters</h2>
+
+| Parameter | Type | Default | Description |
+| :--- | :--- | :--- | :--- |
+| `otpLength` | `Int` | `6` | Number of digit boxes (typically 4 or 6) |
+| `value` | `String` | **Required** | Current OTP string |
+| `onOtpChange` | `(String, Boolean) -> Unit` | **Required** | Callback with new string and completion flag |
+| `isError` | `Boolean` | `false` | Displays error border & shake feedback |
+| `isMasked` | `Boolean` | `false` | Masks digits with bullets for high-security PINs |

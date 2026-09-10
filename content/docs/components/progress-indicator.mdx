@@ -1,0 +1,48 @@
+---
+title: Progress Indicators
+description: Circular progress indicators, half-circle meter gauges, and linear progress bars
+---
+
+# Progress Indicators
+
+Import from `com.ux4g.designsystemv1.components.progress.*`.
+
+---
+
+<h2><MIcon name="code" /> 1. Linear Progress Bar (`Ux4gLinearProgressBar`)</h2>
+
+```kotlin
+import com.ux4g.designsystemv1.components.progress.Ux4gLinearProgressBar
+
+Ux4gLinearProgressBar(
+    progress = 0.75f, // 75% complete
+    showLabel = true
+)
+```
+
+---
+
+<h2><MIcon name="code" /> 2. Circular Progress Indicator (`Ux4gCircularProgress`)</h2>
+
+```kotlin
+import com.ux4g.designsystemv1.components.progress.Ux4gCircularProgress
+
+Ux4gCircularProgress(
+    progress = 0.60f,
+    size = 64.dp,
+    showPercentage = true
+)
+```
+
+---
+
+<h2><MIcon name="code" /> 3. Half Circle Meter Gauge (`Ux4gHalfCircleProgress`)</h2>
+
+```kotlin
+import com.ux4g.designsystemv1.components.progress.Ux4gHalfCircleProgress
+
+Ux4gHalfCircleProgress(
+    progress = 0.85f,
+    label = "Profile 85% Complete"
+)
+```

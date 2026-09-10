@@ -1,0 +1,29 @@
+---
+title: Date Picker
+description: Single date selection, Date of Birth picker, and calendar modal dialogs in Jetpack Compose
+---
+
+# Date Picker (`Ux4gDatePicker`)
+
+Import from `com.ux4g.designsystemv1.components.Ux4gDatePicker`.
+
+---
+
+<h2><MIcon name="code" /> Basic Usage</h2>
+
+```kotlin
+import com.ux4g.designsystemv1.components.Ux4gDatePicker
+import java.time.LocalDate
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+
+var selectedDate by remember { mutableStateOf<LocalDate?>(null) }
+
+Ux4gDatePicker(
+    selectedDate = selectedDate,
+    onDateSelected = { selectedDate = it },
+    label = "Date of Birth",
+    isRequired = true,
+    maxDate = LocalDate.now()
+)
+```

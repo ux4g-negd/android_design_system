@@ -1,0 +1,11 @@
+{
+  "title": "Token",
+  "icon": "Layers",
+  "pages": [
+    "colors",
+    "typography",
+    "dimensions",
+    "shadows",
+    "theme"
+  ]
+}

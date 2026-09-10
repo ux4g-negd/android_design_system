@@ -1,0 +1,31 @@
+---
+title: Search Field
+description: Search input with clear trigger, voice input icon, filter types, and live dropdown integration
+---
+
+# Search Field (`Ux4gSearchField`)
+
+Import from `com.ux4g.designsystemv1.components.searchfield.*`.
+
+---
+
+<h2><MIcon name="code" /> Basic Usage</h2>
+
+```kotlin
+import com.ux4g.designsystemv1.components.searchfield.Ux4gSearchField
+import com.ux4g.designsystemv1.components.searchfield.Ux4gSearchFieldVariant
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+
+var searchQuery by remember { mutableStateOf("") }
+
+Ux4gSearchField(
+    query = searchQuery,
+    onQueryChange = { searchQuery = it },
+    onSearch = { query -> /* Execute search */ },
+    placeholder = "Search citizen schemes, certificates, departments...",
+    variant = Ux4gSearchFieldVariant.Outlined,
+    showVoiceIcon = true,
+    onVoiceClick = { /* Start speech-to-text */ }
+)
+```

@@ -1,0 +1,13 @@
+{
+  "title": "Typography",
+  "icon": "Type",
+  "pages": [
+    "index",
+    "header",
+    "display",
+    "body",
+    "label",
+    "title",
+    "how-to-use"
+  ]
+}

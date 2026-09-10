@@ -1,0 +1,32 @@
+---
+title: Text Area
+description: Multi-line text input with character limit counters, auto-resizing, and error states
+---
+
+# Text Area (`Ux4gTextArea`)
+
+`Ux4gTextArea` provides an expansive multiline editor for user feedback, grievances, and document remarks.
+
+Import from `com.ux4g.designsystemv1.components.textarea.Ux4gTextArea`.
+
+---
+
+<h2><MIcon name="code" /> Basic Usage</h2>
+
+```kotlin
+import com.ux4g.designsystemv1.components.textarea.Ux4gTextArea
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+
+var complaintText by remember { mutableStateOf("") }
+
+Ux4gTextArea(
+    value = complaintText,
+    onValueChange = { complaintText = it },
+    label = "Grievance Description",
+    placeholder = "Describe your issue with as much detail as possible...",
+    maxCharacters = 500,
+    minLines = 4,
+    isRequired = true
+)
+```

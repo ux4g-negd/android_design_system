@@ -1,0 +1,9 @@
+{
+  "title": "Patterns",
+  "icon": "LayoutTemplate",
+  "pages": [
+    "identity-and-access",
+    "application-submission",
+    "service-discovery"
+  ]
+}

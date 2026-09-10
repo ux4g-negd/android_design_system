@@ -1,0 +1,44 @@
+---
+title: Body
+description: Standard body typography tokens for paragraphs, descriptions, and list content
+---
+
+# Body Tokens
+
+`Ux4gTheme.typography.b*`
+
+Body tokens are engineered for reading comfort across extended multi-lingual text passages, form helper messages, and detailed citizen service guidelines.
+
+---
+
+<TypographyGrid
+  items={[
+    { tokenName: 'bXS_default', label: 'Body XS (Default)', fontSize: 11, lineHeight: 14, fontWeight: '500 (Medium)' },
+    { tokenName: 'bXS_strong', label: 'Body XS (Strong)', fontSize: 11, lineHeight: 14, fontWeight: '700 (Bold)' },
+    { tokenName: 'bS_default', label: 'Body S (Default)', fontSize: 12, lineHeight: 16, fontWeight: '500 (Medium)' },
+    { tokenName: 'bS_strong', label: 'Body S (Strong)', fontSize: 12, lineHeight: 16, fontWeight: '700 (Bold)' },
+    { tokenName: 'bM_default', label: 'Body M (Default)', fontSize: 14, lineHeight: 18, fontWeight: '500 (Medium)' },
+    { tokenName: 'bM_strong', label: 'Body M (Strong)', fontSize: 14, lineHeight: 18, fontWeight: '700 (Bold)' },
+    { tokenName: 'bL_default', label: 'Body L (Default)', fontSize: 16, lineHeight: 20, fontWeight: '500 (Medium)' },
+    { tokenName: 'bL_strong', label: 'Body L (Strong)', fontSize: 16, lineHeight: 20, fontWeight: '700 (Bold)' },
+  ]}
+/>
+
+---
+
+## Jetpack Compose Usage
+
+```kotlin title="Body Usage"
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import com.ux4g.designsystemv1.theme.Ux4gTheme
+
+@Composable
+fun ApplicationDescription() {
+    Text(
+        text = "Please ensure all scanned identity documents are uploaded in PDF or JPG format before submitting your online application.",
+        style = Ux4gTheme.typography.bM_default,
+        color = Ux4gTheme.colorScheme.onBackground
+    )
+}
+```

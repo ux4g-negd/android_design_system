@@ -1,0 +1,44 @@
+---
+title: Display
+description: High-impact display typography tokens for hero numbers, banners, and splash screens
+---
+
+# Display Tokens
+
+`Ux4gTheme.typography.d*`
+
+Display tokens provide high-impact, prominent typography styles designed for hero landing banners, celebratory result screens, and dashboard metrics.
+
+---
+
+<TypographyGrid
+  items={[
+    { tokenName: 'dXS_default', label: 'Display XS (Default)', fontSize: 36, lineHeight: 44, fontWeight: '600 (SemiBold)' },
+    { tokenName: 'dXS_strong', label: 'Display XS (Strong)', fontSize: 36, lineHeight: 44, fontWeight: '700 (Bold)' },
+    { tokenName: 'dS_default', label: 'Display S (Default)', fontSize: 40, lineHeight: 52, fontWeight: '600 (SemiBold)' },
+    { tokenName: 'dS_strong', label: 'Display S (Strong)', fontSize: 40, lineHeight: 52, fontWeight: '700 (Bold)' },
+    { tokenName: 'dM_default', label: 'Display M (Default)', fontSize: 52, lineHeight: 72, fontWeight: '600 (SemiBold)' },
+    { tokenName: 'dM_strong', label: 'Display M (Strong)', fontSize: 52, lineHeight: 72, fontWeight: '700 (Bold)' },
+    { tokenName: 'dL_default', label: 'Display L (Default)', fontSize: 60, lineHeight: 80, fontWeight: '600 (SemiBold)' },
+    { tokenName: 'dL_strong', label: 'Display L (Strong)', fontSize: 60, lineHeight: 80, fontWeight: '700 (Bold)' },
+  ]}
+/>
+
+---
+
+## Jetpack Compose Usage
+
+```kotlin title="Display Usage"
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import com.ux4g.designsystemv1.theme.Ux4gTheme
+
+@Composable
+fun HeroMetrics() {
+    Text(
+        text = "99.8%",
+        style = Ux4gTheme.typography.dL_strong,
+        color = Ux4gTheme.colorScheme.primary
+    )
+}
+```

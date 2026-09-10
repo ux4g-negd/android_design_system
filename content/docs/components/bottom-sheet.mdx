@@ -1,0 +1,31 @@
+---
+title: Bottom Sheet
+description: Draggable and modal bottom sheets for action menus, filters, and sub-tasks
+---
+
+# Bottom Sheet (`Ux4gBottomSheet`)
+
+Import from `com.ux4g.designsystemv1.components.Ux4gBottomSheet`.
+
+---
+
+<h2><MIcon name="code" /> Basic Usage</h2>
+
+```kotlin
+import com.ux4g.designsystemv1.components.Ux4gBottomSheet
+import androidx.compose.material3.Text
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+
+var isSheetOpen by remember { mutableStateOf(false) }
+
+if (isSheetOpen) {
+    Ux4gBottomSheet(
+        onDismissRequest = { isSheetOpen = false },
+        title = "Filter Applications"
+    ) {
+        // Filter options content
+        Text("Select Status, Department, or Submission Year")
+    }
+}
+```

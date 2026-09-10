@@ -1,0 +1,37 @@
+---
+title: Radio Button
+description: Single-choice selection controls and card-style radio groups in Jetpack Compose
+---
+
+# Radio Button (`Ux4gRadioButton`)
+
+Import from `com.ux4g.designsystemv1.components.Ux4gRadioButton`.
+
+---
+
+<h2><MIcon name="code" /> Basic Usage</h2>
+
+```kotlin
+import com.ux4g.designsystemv1.components.Ux4gRadioButton
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.foundation.layout.Column
+
+var selectedOption by remember { mutableStateOf("online") }
+
+Column {
+    Ux4gRadioButton(
+        selected = selectedOption == "online",
+        onClick = { selectedOption = "online" },
+        label = "Online Verification via Aadhaar OTP",
+        supportingText = "Instant approval within 2 minutes"
+    )
+
+    Ux4gRadioButton(
+        selected = selectedOption == "offline",
+        onClick = { selectedOption = "offline" },
+        label = "Physical Verification at Citizen Centre",
+        supportingText = "Visit nearest Seva Kendra with original documents"
+    )
+}
+```

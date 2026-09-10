@@ -1,0 +1,28 @@
+---
+title: Empty State
+description: Standard empty screens for no results, no applications, and network disconnects
+---
+
+# Empty State (`Ux4gEmptyState`)
+
+Import from `com.ux4g.designsystemv1.components.Ux4gEmptyState`.
+
+---
+
+<h2><MIcon name="code" /> Basic Usage</h2>
+
+```kotlin
+import com.ux4g.designsystemv1.components.Ux4gEmptyState
+import com.ux4g.designsystemv1.components.buttons.Ux4gButton
+
+Ux4gEmptyState(
+    title = "No Applications Found",
+    description = "You haven't submitted any service requests yet. Start a new application to track its progress.",
+    action = {
+        Ux4gButton(
+            text = "Apply for New Service",
+            onClick = { /* Navigate to catalogue */ }
+        )
+    }
+)
+```

@@ -1,0 +1,29 @@
+---
+title: Slider
+description: Continuous and discrete range selectors with value labels and steps
+---
+
+# Slider (`Ux4gSlider`)
+
+Import from `com.ux4g.designsystemv1.components.Ux4gSlider`.
+
+---
+
+<h2><MIcon name="code" /> Basic Usage</h2>
+
+```kotlin
+import com.ux4g.designsystemv1.components.Ux4gSlider
+import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.remember
+
+var loanAmount by remember { mutableFloatStateOf(50000f) }
+
+Ux4gSlider(
+    value = loanAmount,
+    onValueChange = { loanAmount = it },
+    valueRange = 10000f..500000f,
+    steps = 49,
+    label = "Requested Loan Amount",
+    valueFormatter = { "₹${it.toInt()}" }
+)
+```

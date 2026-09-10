@@ -1,0 +1,126 @@
+---
+title: Input Field
+description: Standard Text Input, Aadhaar Input Field, and PAN Card Input Field with built-in validation
+---
+
+# Input Field Components
+
+UX4G provides versatile text input fields with built-in validation, leading/trailing icons, error messages, and specialized government document formatters.
+
+Import from `com.ux4g.designsystemv1.components.inputfield.*`.
+
+---
+
+<h2><MIcon name="smartphone" /> Interactive Preview</h2>
+
+<ComponentPreview
+  title="Aadhaar & Text Input Showcase"
+  code={`// 1. Standard Input Field
+Ux4gInputField(
+    value = fullName,
+    onValueChange = { fullName = it },
+    label = "Full Name",
+    placeholder = "Enter as per official ID",
+    isRequired = true
+)
+
+// 2. Aadhaar Formatted Field with Verhoeff validation
+Ux4gAadhaarInputField(
+    value = aadhaarNumber,
+    onValueChange = { aadhaarNumber = it },
+    label = "Aadhaar Number",
+    isRequired = true,
+    allowMaskToggle = true
+)`}
+>
+  <div className="w-full max-w-sm flex flex-col gap-4">
+    <div className="flex flex-col gap-1 text-left">
+      <label className="text-xs font-semibold text-foreground">
+        Full Name <span className="text-red-500">*</span>
+      </label>
+      <input
+        type="text"
+        placeholder="Enter as per official ID"
+        defaultValue="Aarav Sharma"
+        className="w-full px-3.5 py-2.5 rounded-xl border border-border bg-background text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+      />
+    </div>
+
+    <div className="flex flex-col gap-1 text-left">
+      <label className="text-xs font-semibold text-foreground">
+        Aadhaar Number <span className="text-red-500">*</span>
+      </label>
+      <div className="relative">
+        <input
+          type="text"
+          placeholder="XXXX XXXX 8921"
+          defaultValue="4829 1928 8921"
+          className="w-full px-3.5 py-2.5 rounded-xl border border-border bg-background text-foreground text-sm font-mono tracking-wider focus:outline-none focus:ring-2 focus:ring-indigo-500"
+        />
+        <span className="absolute right-3 top-2.5 text-xs text-emerald-600 font-bold">✓ Valid</span>
+      </div>
+    </div>
+  </div>
+</ComponentPreview>
+
+---
+
+<h2><MIcon name="code" /> 1. Standard Input Field (`Ux4gInputField`)</h2>
+
+```kotlin title="Compose Example"
+import com.ux4g.designsystemv1.components.inputfield.Ux4gInputField
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+
+var name by remember { mutableStateOf("") }
+
+Ux4gInputField(
+    value = name,
+    onValueChange = { name = it },
+    label = "Full Name",
+    placeholder = "Enter your name as per Aadhaar",
+    isRequired = true,
+    helperText = "Must match official government records"
+)
+```
+
+---
+
+<h2><MIcon name="flag" /> 2. Aadhaar Input Field (<code>Ux4gAadhaarInputField</code>)</h2>
+
+Specialized 12-digit formatter that automatically formats input into `XXXX XXXX XXXX` chunks with official Verhoeff algorithm verification and mask toggling.
+
+```kotlin title="Aadhaar Example"
+import com.ux4g.designsystemv1.components.inputfield.Ux4gAadhaarInputField
+
+var aadhaar by remember { mutableStateOf("") }
+var isValid by remember { mutableStateOf(false) }
+
+Ux4gAadhaarInputField(
+    value = aadhaar,
+    onValueChange = { aadhaar = it },
+    onValidationChange = { isValid = it },
+    label = "Aadhaar Number",
+    isRequired = true,
+    allowMaskToggle = true
+)
+```
+
+---
+
+<h2><MIcon name="badge" /> 3. PAN Card Input Field (<code>Ux4gPanInputField</code>)</h2>
+
+Auto-capitalizing 10-character alphanumeric PAN field with strict `AAAAA9999A` pattern validation.
+
+```kotlin title="PAN Example"
+import com.ux4g.designsystemv1.components.inputfield.Ux4gPanInputField
+
+var pan by remember { mutableStateOf("") }
+
+Ux4gPanInputField(
+    value = pan,
+    onValueChange = { pan = it },
+    label = "PAN Card Number",
+    isRequired = true
+)
+```

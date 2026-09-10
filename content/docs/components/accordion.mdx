@@ -1,0 +1,24 @@
+---
+title: Accordion
+description: Expandable disclosure panels and grouped FAQ lists in Jetpack Compose
+---
+
+# Accordion (`Ux4gAccordion`)
+
+Import from `com.ux4g.designsystemv1.components.Ux4gAccordion`.
+
+---
+
+<h2><MIcon name="code" /> Basic Usage</h2>
+
+```kotlin
+import com.ux4g.designsystemv1.components.Ux4gAccordion
+import androidx.compose.material3.Text
+
+Ux4gAccordion(
+    title = "What documents are required for Income Certificate?",
+    subtitle = "Click to view mandatory verification proofs"
+) {
+    Text("1. Aadhaar Card of the applicant\n2. Salary slips for last 3 months or ITR\n3. Proof of residence (Electricity bill / Ration card)")
+}
+```

@@ -1,0 +1,34 @@
+---
+title: Time Slot Booking Grid
+description: Appointment booking slot grid (Available, Selected, Booked, Inactive) for citizen seva kendras
+---
+
+# Time Slot Booking Grid (`Ux4gTimeslot`)
+
+Import from `com.ux4g.designsystemv1.components.timeslot.*`.
+
+---
+
+<h2><MIcon name="code" /> Basic Usage</h2>
+
+```kotlin
+import com.ux4g.designsystemv1.components.timeslot.Ux4gTimeslot
+import com.ux4g.designsystemv1.components.timeslot.SlotItem
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+
+var selectedSlotId by remember { mutableStateOf<String?>(null) }
+
+val slots = listOf(
+    SlotItem(id = "1", timeLabel = "09:30 AM", isAvailable = true),
+    SlotItem(id = "2", timeLabel = "10:00 AM", isAvailable = true),
+    SlotItem(id = "3", timeLabel = "10:30 AM", isBooked = true),
+    SlotItem(id = "4", timeLabel = "11:00 AM", isAvailable = true)
+)
+
+Ux4gTimeslot(
+    slots = slots,
+    selectedSlotId = selectedSlotId,
+    onSlotSelected = { slotId -> selectedSlotId = slotId }
+)
+```

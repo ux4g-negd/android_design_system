@@ -1,0 +1,26 @@
+---
+title: Pagination
+description: Numbered page navigation, previous/next triggers, and dotted page indicators
+---
+
+# Pagination (`Ux4gPaginationIndicator`)
+
+Import from `com.ux4g.designsystemv1.components.Ux4gPaginationIndicator`.
+
+---
+
+<h2><MIcon name="code" /> Basic Usage</h2>
+
+```kotlin
+import com.ux4g.designsystemv1.components.Ux4gPaginationIndicator
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.remember
+
+var currentPage by remember { mutableIntStateOf(1) }
+
+Ux4gPaginationIndicator(
+    totalPages = 12,
+    currentPage = currentPage,
+    onPageSelected = { page -> currentPage = page }
+)
+```

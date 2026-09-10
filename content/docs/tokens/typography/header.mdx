@@ -1,0 +1,50 @@
+---
+title: Header
+description: Header typography tokens for screen titles, headings, and section dividers
+---
+
+# Header Tokens
+
+`Ux4gTheme.typography.h*`
+
+Header tokens are designed for primary headings, view titles, card group headers, and prominent modal dialogs in Android applications.
+
+---
+
+<TypographyGrid
+  items={[
+    { tokenName: 'hXXS_default', label: 'Header XXS (Default)', fontSize: 14, lineHeight: 16, fontWeight: '600 (SemiBold)' },
+    { tokenName: 'hXXS_strong', label: 'Header XXS (Strong)', fontSize: 14, lineHeight: 16, fontWeight: '700 (Bold)' },
+    { tokenName: 'hXS_default', label: 'Header XS (Default)', fontSize: 16, lineHeight: 20, fontWeight: '600 (SemiBold)' },
+    { tokenName: 'hXS_strong', label: 'Header XS (Strong)', fontSize: 16, lineHeight: 20, fontWeight: '700 (Bold)' },
+    { tokenName: 'hS_default', label: 'Header S (Default)', fontSize: 20, lineHeight: 24, fontWeight: '600 (SemiBold)' },
+    { tokenName: 'hS_strong', label: 'Header S (Strong)', fontSize: 20, lineHeight: 24, fontWeight: '700 (Bold)' },
+    { tokenName: 'hM_default', label: 'Header M (Default)', fontSize: 24, lineHeight: 28, fontWeight: '600 (SemiBold)' },
+    { tokenName: 'hM_strong', label: 'Header M (Strong)', fontSize: 24, lineHeight: 28, fontWeight: '700 (Bold)' },
+    { tokenName: 'hL_default', label: 'Header L (Default)', fontSize: 28, lineHeight: 32, fontWeight: '600 (SemiBold)' },
+    { tokenName: 'hL_strong', label: 'Header L (Strong)', fontSize: 28, lineHeight: 32, fontWeight: '700 (Bold)' },
+    { tokenName: 'hXL_default', label: 'Header XL (Default)', fontSize: 32, lineHeight: 36, fontWeight: '600 (SemiBold)' },
+    { tokenName: 'hXL_strong', label: 'Header XL (Strong)', fontSize: 32, lineHeight: 36, fontWeight: '700 (Bold)' },
+    { tokenName: 'hXXL_default', label: 'Header XXL (Default)', fontSize: 40, lineHeight: 44, fontWeight: '600 (SemiBold)' },
+    { tokenName: 'hXXL_strong', label: 'Header XXL (Strong)', fontSize: 40, lineHeight: 44, fontWeight: '700 (Bold)' },
+  ]}
+/>
+
+---
+
+## Jetpack Compose Usage
+
+```kotlin title="Header Usage"
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import com.ux4g.designsystemv1.theme.Ux4gTheme
+
+@Composable
+fun SectionHeader() {
+    Text(
+        text = "Citizen Verification Details",
+        style = Ux4gTheme.typography.hL_strong,
+        color = Ux4gTheme.colorScheme.onBackground
+    )
+}
+```

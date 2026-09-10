@@ -1,0 +1,37 @@
+---
+title: Chips & ChipGroup
+description: Choice chips, filter chips, input tags, and wrapping ChipGroup layout in Jetpack Compose
+---
+
+# Chips (`Ux4gChips`)
+
+Chips allow users to filter content, select choices, or enter structured metadata.
+
+Import from `com.ux4g.designsystemv1.components.Ux4gChips`.
+
+---
+
+<h2><MIcon name="code" /> Chip Types</h2>
+
+1. **Choice Chip**: Single selection from multiple mutual choices.
+2. **Filter Chip**: Multi-select filters with checkmark indication.
+3. **Input Chip**: Removable tag with trailing close icon.
+
+```kotlin
+import com.ux4g.designsystemv1.components.Ux4gChoiceChip
+import com.ux4g.designsystemv1.components.Ux4gFilterChip
+import com.ux4g.designsystemv1.components.Ux4gInputChip
+
+// Choice Chip
+Ux4gChoiceChip(
+    text = "Income Certificate",
+    selected = true,
+    onClick = { /* toggle */ }
+)
+
+// Input Chip with Dismiss
+Ux4gInputChip(
+    text = "Aadhaar Linked",
+    onDismiss = { /* remove tag */ }
+)
+```

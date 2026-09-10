@@ -1,0 +1,44 @@
+---
+title: Label
+description: Compact label typography tokens for form inputs, buttons, chips, tags, and tabs
+---
+
+# Label Tokens
+
+`Ux4gTheme.typography.l*`
+
+Label tokens provide structured compact typography for interactive UI controls including buttons, chip selections, input form labels, and status badges.
+
+---
+
+<TypographyGrid
+  items={[
+    { tokenName: 'lS_default', label: 'Label S (Default)', fontSize: 11, lineHeight: 14, fontWeight: '500 (Medium)' },
+    { tokenName: 'lS_strong', label: 'Label S (Strong)', fontSize: 11, lineHeight: 14, fontWeight: '700 (Bold)' },
+    { tokenName: 'lM_default', label: 'Label M (Default)', fontSize: 12, lineHeight: 16, fontWeight: '500 (Medium)' },
+    { tokenName: 'lM_strong', label: 'Label M (Strong)', fontSize: 12, lineHeight: 16, fontWeight: '700 (Bold)' },
+    { tokenName: 'lL_default', label: 'Label L (Default)', fontSize: 14, lineHeight: 18, fontWeight: '500 (Medium)' },
+    { tokenName: 'lL_strong', label: 'Label L (Strong)', fontSize: 14, lineHeight: 18, fontWeight: '700 (Bold)' },
+    { tokenName: 'lXL_default', label: 'Label XL (Default)', fontSize: 16, lineHeight: 20, fontWeight: '500 (Medium)' },
+    { tokenName: 'lXL_strong', label: 'Label XL (Strong)', fontSize: 16, lineHeight: 20, fontWeight: '700 (Bold)' },
+  ]}
+/>
+
+---
+
+## Jetpack Compose Usage
+
+```kotlin title="Label Usage"
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import com.ux4g.designsystemv1.theme.Ux4gTheme
+
+@Composable
+fun FieldLabel() {
+    Text(
+        text = "Aadhaar / Mobile Number",
+        style = Ux4gTheme.typography.lL_strong,
+        color = Ux4gTheme.colorScheme.onSurface
+    )
+}
+```

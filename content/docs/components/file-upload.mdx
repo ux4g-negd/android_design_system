@@ -1,0 +1,24 @@
+---
+title: File Upload
+description: Document scanner and upload UI with file size validation, progress bars, and previews
+---
+
+# File Upload (`Ux4gFileUpload`)
+
+Import from `com.ux4g.designsystemv1.components.Ux4gFileUpload`.
+
+---
+
+<h2><MIcon name="code" /> Basic Usage</h2>
+
+```kotlin
+import com.ux4g.designsystemv1.components.Ux4gFileUpload
+
+Ux4gFileUpload(
+    label = "Upload Income Proof (PDF or JPG)",
+    helperText = "Maximum file size: 5 MB",
+    allowedExtensions = listOf("pdf", "jpg", "png"),
+    onFileSelected = { uri -> /* upload file */ },
+    isRequired = true
+)
+```

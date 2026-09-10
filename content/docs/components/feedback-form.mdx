@@ -1,0 +1,57 @@
+---
+title: Citizen Feedback (Star, CSAT, NPS)
+description: Citizen satisfaction survey components for government service completion
+---
+
+# Citizen Feedback Components
+
+Import from `com.ux4g.designsystemv1.components.feedback.*`.
+
+---
+
+<h2><MIcon name="code" /> 1. Star Rating Form (`Ux4gFeedbackFormStar`)</h2>
+
+```kotlin
+import com.ux4g.designsystemv1.components.feedback.Ux4gFeedbackFormStar
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.remember
+
+var starRating by remember { mutableIntStateOf(5) }
+
+Ux4gFeedbackFormStar(
+    title = "Rate your service experience",
+    rating = starRating,
+    onRatingChange = { starRating = it },
+    onSubmit = { rating, remarks -> /* Submit */ }
+)
+```
+
+---
+
+<h2><MIcon name="code" /> 2. CSAT Emoji Rating (`Ux4gFeedbackFormCsat`)</h2>
+
+Emoji-based 1 to 5 Customer Satisfaction score:
+
+```kotlin
+import com.ux4g.designsystemv1.components.feedback.Ux4gFeedbackFormCsat
+
+Ux4gFeedbackFormCsat(
+    title = "How satisfied are you with this portal?",
+    onScoreChange = { score -> /* 1 = Very Dissatisfied, 5 = Very Satisfied */ }
+)
+```
+
+---
+
+<h2><MIcon name="code" /> 3. NPS Form (`Ux4gFeedbackFormNps`)</h2>
+
+0-10 Net Promoter Score survey with Promoter / Passive / Detractor categorization:
+
+```kotlin
+import com.ux4g.designsystemv1.components.feedback.Ux4gFeedbackFormNps
+
+Ux4gFeedbackFormNps(
+    title = "How likely are you to recommend DigiLocker to friends?",
+    onSubmit = { npsScore, comment -> /* Send feedback */ }
+)
+```

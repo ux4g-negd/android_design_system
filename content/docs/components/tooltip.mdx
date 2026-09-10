@@ -1,0 +1,28 @@
+---
+title: Tooltip
+description: Micro-copy hint popovers on long-press or tap with accessible role descriptions
+---
+
+# Tooltip (`Ux4gTooltip`)
+
+Import from `com.ux4g.designsystemv1.components.tooltip.Ux4gTooltip`.
+
+---
+
+<h2><MIcon name="code" /> Basic Usage</h2>
+
+```kotlin
+import com.ux4g.designsystemv1.components.tooltip.Ux4gTooltip
+import androidx.compose.material3.Icon
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Info
+
+Ux4gTooltip(
+    tooltipText = "Your 12-digit Unique Identification Number"
+) {
+    Icon(
+        imageVector = Icons.Outlined.Info,
+        contentDescription = "More info"
+    )
+}
+```

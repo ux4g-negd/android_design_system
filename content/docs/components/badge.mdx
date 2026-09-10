@@ -1,0 +1,75 @@
+---
+title: Badge
+description: Status indicators, numerical count badges, and icon overlay badges in Jetpack Compose
+---
+
+# Badge (`Ux4gBadge`)
+
+Badges highlight new information, status alerts, or numerical counters (e.g. `9+`, `99+`) on avatars, buttons, or standalone cards.
+
+Import from `com.ux4g.designsystemv1.components.Ux4gBadge`.
+
+---
+
+<h2><MIcon name="smartphone" /> Interactive Preview</h2>
+
+<ComponentPreview
+  title="Ux4gBadge Showcase"
+  code={`// Semantic Badges
+Ux4gBadge(text = "Approved", variant = Ux4gBadgeVariant.Success)
+Ux4gBadge(text = "Under Review", variant = Ux4gBadgeVariant.Warning)
+Ux4gBadge(text = "Rejected", variant = Ux4gBadgeVariant.Error)
+Ux4gBadge(text = "Information", variant = Ux4gBadgeVariant.Info)
+
+// Numeric Count Badge
+Ux4gBadge(count = 120, limit = Ux4gBadgeLimit.DoubleDigit) // 99+`}
+>
+  <div className="flex flex-wrap items-center justify-center gap-3">
+    <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-800">
+      Approved
+    </span>
+    <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-amber-100 text-amber-800 dark:bg-amber-950/60 dark:text-amber-300 border border-amber-300 dark:border-amber-800">
+      Under Review
+    </span>
+    <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-red-100 text-red-800 dark:bg-red-950/60 dark:text-red-300 border border-red-300 dark:border-red-800">
+      Rejected
+    </span>
+    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-indigo-600 text-white">
+      99+
+    </span>
+  </div>
+</ComponentPreview>
+
+---
+
+<h2><MIcon name="code" /> Kotlin Usage</h2>
+
+```kotlin title="Compose Example"
+import com.ux4g.designsystemv1.components.Ux4gBadge
+import com.ux4g.designsystemv1.components.Ux4gBadgeLimit
+import com.ux4g.designsystemv1.components.Ux4gBadgeVariant
+
+// 1. Standalone Status Badge
+Ux4gBadge(
+    text = "Under Review",
+    variant = Ux4gBadgeVariant.Warning
+)
+
+// 2. Numeric Count Badge with limit
+Ux4gBadge(
+    count = 120,
+    limit = Ux4gBadgeLimit.DoubleDigit // Displays "99+"
+)
+```
+
+---
+
+<h2><MIcon name="settings" /> Parameters</h2>
+
+| Parameter | Type | Default | Description |
+| :--- | :--- | :--- | :--- |
+| `text` | `String?` | `null` | Label text for text badges |
+| `count` | `Int?` | `null` | Integer counter for numeric badges |
+| `limit` | `Ux4gBadgeLimit` | `DoubleDigit` | Caps display count (`SingleDigit` -> `9+`, `DoubleDigit` -> `99+`) |
+| `variant` | `Ux4gBadgeVariant` | `Primary` | Semantic style (`Primary`, `Success`, `Warning`, `Error`, `Info`, `Neutral`) |
+| `isDot` | `Boolean` | `false` | When true, renders a compact indicator dot |

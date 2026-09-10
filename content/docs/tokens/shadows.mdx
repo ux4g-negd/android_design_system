@@ -1,0 +1,70 @@
+---
+title: Elevation & Shadows
+description: Elevation levels and drop shadow tokens for Android Jetpack Compose
+---
+
+# Elevation & Shadows
+
+UX4G Shadows create consistent depth hierarchies, layering, and surface separation across mobile screens in Android Jetpack Compose.
+
+All shadow tokens are defined in `com.ux4g.designsystemv1.foundation.Ux4gShadow` using platform-neutral `Ux4gBoxShadow` values.
+
+---
+
+## 1. Shadow Levels (`Ux4gShadow`)
+
+<TokenGrid
+  tokens={[
+    { name: 'shadow0 (Flat)', value: '0.dp', composeRef: 'Ux4gShadow.shadow0', type: 'shadow', numericVal: 0, description: 'Flat surfaces, inline items' },
+    { name: 'shadow1 (Subtle)', value: '2.dp', composeRef: 'Ux4gShadow.shadow1', type: 'shadow', numericVal: 1, description: 'Cards, chips, input fields' },
+    { name: 'shadow2 (Floating)', value: '4.dp', composeRef: 'Ux4gShadow.shadow2', type: 'shadow', numericVal: 2, description: 'Hovered cards, FABs' },
+    { name: 'shadow3 (Prominent)', value: '8.dp', composeRef: 'Ux4gShadow.shadow3', type: 'shadow', numericVal: 3, description: 'Sticky headers, bottom nav' },
+    { name: 'shadow4 (Highest)', value: '16.dp', composeRef: 'Ux4gShadow.shadow4', type: 'shadow', numericVal: 4, description: 'Dialogs, bottom sheets, toast alerts' },
+  ]}
+/>
+
+---
+
+## 2. Shadow Token Details
+
+| Level Token | Alias | Box Shadows (Light Mode) | Box Shadows (Dark Mode) | Typical Component Usage |
+| :--- | :--- | :--- | :--- | :--- |
+| `shadow0` | `flat` | None | None | Dividers, flat table rows |
+| `shadow1` | `subtle` | `(0, 1dp, 2dp, 4% alpha)` x2 | `(0, 1dp, 2dp, 20% alpha)` | Standard cards, search bar, list items |
+| `shadow2` | `floating` | `(0, 1dp, 2dp)` + `(0, 4dp, 8dp)` | `(0, 1dp, 2dp)` + `(0, 4dp, 8dp)` | Floating Action Button (FAB), active card |
+| `shadow3` | `prominent`| `(0, 4dp, 8dp)` + `(0, 0dp, 16dp)` | `(0, 4dp, 8dp)` + `(0, 0dp, 16dp)` | App headers, bottom navigation |
+| `shadow4` | `highest` | `(0, 8dp, 16dp)` + `(0, 16dp, 32dp)` | `(0, 8dp, 16dp)` + `(0, 16dp, 32dp)` | Modal dialogs, bottom sheets, toast host |
+
+---
+
+## 3. Kotlin Jetpack Compose Usage
+
+```kotlin title="Compose Usage"
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.unit.dp
+import com.ux4g.designsystemv1.foundation.Ux4gColors
+import com.ux4g.designsystemv1.foundation.Ux4gRadius
+import com.ux4g.designsystemv1.foundation.Ux4gShadow
+
+// Standard elevation shadow
+Box(
+    modifier = Modifier
+        .shadow(
+            elevation = 4.dp, // Level 2 Medium
+            shape = RoundedCornerShape(Ux4gRadius.Radius12),
+            clip = true
+        )
+        .background(Ux4gColors.white)
+        .padding(16.dp)
+) {
+    // Card content
+}
+
+// Programmatic helper by level
+val shadows = Ux4gShadow.get(level = 2, isDark = false)
+```

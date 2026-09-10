@@ -1,0 +1,28 @@
+---
+title: Time Picker
+description: 12-hour AM/PM and 24-hour time selectors with configurable minute intervals
+---
+
+# Time Picker (`Ux4gTimePicker`)
+
+Import from `com.ux4g.designsystemv1.components.Ux4gTimePicker`.
+
+---
+
+<h2><MIcon name="code" /> Basic Usage</h2>
+
+```kotlin
+import com.ux4g.designsystemv1.components.Ux4gTimePicker
+import java.time.LocalTime
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+
+var appointmentTime by remember { mutableStateOf<LocalTime?>(null) }
+
+Ux4gTimePicker(
+    selectedTime = appointmentTime,
+    onTimeSelected = { appointmentTime = it },
+    label = "Preferred Slot Time",
+    is24Hour = false
+)
+```

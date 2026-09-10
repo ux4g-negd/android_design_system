@@ -1,0 +1,209 @@
+@import 'tailwindcss';
+@import 'fumadocs-ui/css/neutral.css';
+@import 'fumadocs-ui/css/preset.css';
+
+@theme {
+  --color-fd-background: #FFFFFF;
+  --color-fd-card: #FFFFFF;
+}
+
+/* ── Flutter Widgetbook Indigo Theme Override ─────────────────────────── */
+:root {
+  --color-fd-background: #FFFFFF;
+  --color-fd-card: #FFFFFF;
+
+  /* Primary: Indigo 600 (#4F46E5) */
+  --fd-primary: 79 70 229;
+  --fd-primary-foreground: 255 255 255;
+
+  /* Background & Surface */
+  --fd-background: 255 255 255;       /* #FFFFFF */
+  --fd-card: 255 255 255;
+  --fd-border: 226 232 240;           /* #E2E8F0 */
+
+  /* Accent / Muted */
+  --fd-muted: 241 245 249;            /* #F1F5F9 */
+  --fd-muted-foreground: 100 116 139; /* #64748B */
+  --fd-accent: 243 240 255;           /* #F3F0FF */
+  --fd-accent-foreground: 109 40 217; /* #6D28D9 */
+}
+
+body,
+#nd-docs-layout,
+.fd-layout-docs,
+#nd-page,
+main#nd-page,
+main,
+article,
+.fd-docs-page,
+[data-fd-layout] {
+  background-color: #FFFFFF !important;
+}
+
+.dark {
+  --color-fd-background: #0F172A;
+  --color-fd-card: #1E293B;
+
+  --fd-primary: 99 102 241;           /* Indigo 500 #6366F1 */
+  --fd-primary-foreground: 255 255 255;
+
+  --fd-background: 15 23 42;          /* #0F172A */
+  --fd-card: 30 41 59;                /* #1E293B */
+  --fd-border: 51 65 85;              /* #334155 */
+
+  --fd-muted: 30 41 59;               /* #1E293B */
+  --fd-muted-foreground: 148 163 184; /* #94A3B8 */
+  --fd-accent: 30 27 75;              /* #1E1B4B */
+  --fd-accent-foreground: 165 180 252;/* #A5B4FC */
+}
+
+.dark body,
+.dark #nd-docs-layout,
+.dark .fd-layout-docs,
+.dark #nd-page,
+.dark main#nd-page,
+.dark main,
+.dark article,
+.dark .fd-docs-page,
+.dark [data-fd-layout] {
+  background-color: #0F172A !important;
+}
+
+html {
+  scrollbar-gutter: stable;
+}
+
+html > body[data-scroll-locked] {
+  margin-right: 0px !important;
+  --removed-body-scroll-bar-size: 0px !important;
+}
+
+/* ── Flutter Welcome Page Background Gradient ────────────────────────── */
+.flutter-welcome-bg {
+  background: linear-gradient(145deg, #FFFFFF 0%, #FFFFFF 52%, #E4E1F3 82%, #DAD5F0 100%);
+  background-attachment: fixed;
+}
+
+.dark .flutter-welcome-bg {
+  background: linear-gradient(145deg, #0F172A 0%, #0F172A 52%, #1E1B4B 82%, #312E81 100%);
+  background-attachment: fixed;
+}
+
+/* ── Flutter Widgetbook Indigo Theme Override ─────────────────────────── */
+:root {
+  --fd-page-width: 100%;
+  --fd-container-width: 100%;
+  --fd-layout-width: 100%;
+  --fd-page-full-width: 100%;
+}
+
+/* ── Full Bleed Edge-to-Edge Container Reset ─────────────────────────── */
+#nd-docs-layout,
+.fd-layout-docs,
+[data-fd-layout],
+#nd-page,
+main#nd-page,
+article,
+.fd-docs-page,
+div:has(> .flutter-welcome-bg) {
+  max-width: 100% !important;
+  width: 100% !important;
+}
+
+#nd-docs-layout:has(.flutter-welcome-bg),
+#nd-docs-layout:has(.flutter-welcome-bg) > div,
+#nd-page:has(.flutter-welcome-bg),
+main:has(.flutter-welcome-bg),
+article:has(.flutter-welcome-bg),
+.fd-docs-page:has(.flutter-welcome-bg) {
+  padding: 0 !important;
+  margin: 0 !important;
+  border: none !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+}
+
+#nd-page:has(.flutter-welcome-bg) ~ footer,
+#nd-page:has(.flutter-welcome-bg) + footer,
+#nd-page:has(.flutter-welcome-bg) footer,
+#nd-page:has(.flutter-welcome-bg) nav[aria-label="Pagination"] {
+  display: none !important;
+}
+
+/* ── Flutter Widgetbook Left Sidebar Styling ──────────────────────────── */
+aside[data-fd-sidebar],
+#nd-sidebar,
+.fd-sidebar {
+  background-color: #FFFFFF !important;
+  border-right: 1px solid #EEF2F6 !important;
+}
+
+.dark aside[data-fd-sidebar],
+.dark #nd-sidebar,
+.dark .fd-sidebar {
+  background-color: #0F172A !important;
+  border-right: 1px solid rgba(255, 255, 255, 0.08) !important;
+}
+
+/* Pill Search Input */
+button[data-search-full],
+button[data-search] {
+  background-color: #EEF0F6 !important;
+  border-radius: 9999px !important;
+  border: 1px solid transparent !important;
+  padding-left: 14px !important;
+  padding-right: 14px !important;
+  transition: all 0.15s ease-in-out;
+}
+
+.dark button[data-search-full],
+.dark button[data-search] {
+  background-color: #1E293B !important;
+  border-color: rgba(255, 255, 255, 0.05) !important;
+}
+
+button[data-search-full]:hover,
+button[data-search]:hover {
+  background-color: #E2E8F0 !important;
+}
+
+.dark button[data-search-full]:hover,
+.dark button[data-search]:hover {
+  background-color: #334155 !important;
+}
+
+button[data-search-full] kbd,
+button[data-search] kbd {
+  display: none !important;
+}
+
+/* Sidebar Navigation Items */
+aside[data-fd-sidebar] a,
+#nd-sidebar a,
+.fd-sidebar a,
+aside[data-fd-sidebar] button,
+#nd-sidebar button {
+  border-radius: 8px !important;
+  font-size: 13.5px !important;
+  transition: all 0.15s ease;
+}
+
+aside[data-fd-sidebar] a[data-active="true"],
+#nd-sidebar a[data-active="true"],
+.fd-sidebar a[data-active="true"] {
+  background-color: #DCE7FE !important;
+  color: #1E3A8A !important;
+  font-weight: 600 !important;
+}
+
+.dark aside[data-fd-sidebar] a[data-active="true"],
+.dark #nd-sidebar a[data-active="true"],
+.dark .fd-sidebar a[data-active="true"] {
+  background-color: rgba(79, 70, 229, 0.25) !important;
+  color: #C7D2FE !important;
+  font-weight: 600 !important;
+}
+
+
+
+

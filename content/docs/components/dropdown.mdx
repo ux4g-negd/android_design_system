@@ -1,0 +1,44 @@
+---
+title: Dropdown & Select
+description: Single selection, searchable dropdowns, and multi-select lists in Jetpack Compose
+---
+
+# Dropdown Components
+
+Import from `com.ux4g.designsystemv1.components.dropdowns.*`.
+
+---
+
+<h2><MIcon name="code" /> 1. Selection Dropdown (`Ux4gSelectionDropdown`)</h2>
+
+```kotlin
+import com.ux4g.designsystemv1.components.dropdowns.Ux4gSelectionDropdown
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+
+val statesList = listOf("Andhra Pradesh", "Delhi", "Karnataka", "Maharashtra", "Tamil Nadu", "Uttar Pradesh")
+var selectedState by remember { mutableStateOf("") }
+
+Ux4gSelectionDropdown(
+    label = "Select State / UT",
+    items = statesList,
+    selectedItem = selectedState,
+    onItemSelected = { selectedState = it },
+    isSearchable = true,
+    isRequired = true
+)
+```
+
+---
+
+<h2><MIcon name="code" /> 2. Action Dropdown (`Ux4gActionDropdown`)</h2>
+
+```kotlin
+import com.ux4g.designsystemv1.components.dropdowns.Ux4gActionDropdown
+
+Ux4gActionDropdown(
+    triggerText = "Actions",
+    menuItems = listOf("Download PDF", "Print Acknowledgement", "Cancel Request"),
+    onActionClick = { action -> /* handle action */ }
+)
+```

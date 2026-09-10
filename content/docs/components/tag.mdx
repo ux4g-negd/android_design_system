@@ -1,0 +1,24 @@
+---
+title: Tag
+description: Pill and square tags with close triggers, leading icons, and theme color tokens
+---
+
+# Tag (`Ux4gTag`)
+
+Import from `com.ux4g.designsystemv1.components.Ux4gTag`.
+
+---
+
+<h2><MIcon name="code" /> Basic Usage</h2>
+
+```kotlin
+import com.ux4g.designsystemv1.components.Ux4gTag
+import com.ux4g.designsystemv1.components.Ux4gTagVariant
+
+// Dismissible Tag
+Ux4gTag(
+    text = "Ration Card Holder",
+    onClose = { /* remove tag */ },
+    variant = Ux4gTagVariant.Primary
+)
+```

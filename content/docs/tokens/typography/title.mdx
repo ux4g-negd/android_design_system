@@ -1,0 +1,42 @@
+---
+title: Title
+description: Title typography tokens for medium-emphasis content cards, list headers, and navigation bars
+---
+
+# Title Tokens
+
+`Ux4gTheme.typography.t*`
+
+Title tokens are medium-emphasis typography styles used in list item headlines, card headers, and top navigation bar titles.
+
+---
+
+<TypographyGrid
+  items={[
+    { tokenName: 'tS_default', label: 'Title S (Default)', fontSize: 14, lineHeight: 20, fontWeight: '400 (Regular)' },
+    { tokenName: 'tS_strong', label: 'Title S (Strong)', fontSize: 14, lineHeight: 20, fontWeight: '600 (SemiBold)' },
+    { tokenName: 'tM_default', label: 'Title M (Default)', fontSize: 16, lineHeight: 24, fontWeight: '400 (Regular)' },
+    { tokenName: 'tM_strong', label: 'Title M (Strong)', fontSize: 16, lineHeight: 24, fontWeight: '600 (SemiBold)' },
+    { tokenName: 'tL_default', label: 'Title L (Default)', fontSize: 18, lineHeight: 24, fontWeight: '400 (Regular)' },
+    { tokenName: 'tL_strong', label: 'Title L (Strong)', fontSize: 18, lineHeight: 24, fontWeight: '600 (SemiBold)' },
+  ]}
+/>
+
+---
+
+## Jetpack Compose Usage
+
+```kotlin title="Title Usage"
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import com.ux4g.designsystemv1.theme.Ux4gTheme
+
+@Composable
+fun CardHeadline() {
+    Text(
+        text = "Certificate Application Status",
+        style = Ux4gTheme.typography.tL_strong,
+        color = Ux4gTheme.colorScheme.onSurface
+    )
+}
+```

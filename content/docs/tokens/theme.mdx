@@ -1,0 +1,83 @@
+---
+title: Ux4gTheme
+description: The core theme provider for colors, typography, and shapes in Jetpack Compose
+---
+
+# Ux4gTheme Provider
+
+`Ux4gTheme` is the central theme composable for the UX4G Android Design System. It injects `Ux4gThemeColors`, `Ux4gTypography`, and `LocalUx4gColors` throughout your Android Jetpack Compose tree.
+
+All theme foundations are exported from `com.ux4g.designsystemv1.theme.Ux4gTheme` and `com.ux4g.designsystemv1.foundation.*`.
+
+---
+
+## 1. Theme Configuration
+
+```kotlin title="ui/theme/Theme.kt"
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.runtime.Composable
+import com.ux4g.designsystemv1.theme.Ux4gTheme
+
+@Composable
+fun AppTheme(
+    darkTheme: Boolean = isSystemInDarkTheme(),
+    content: @Composable () -> Unit
+) {
+    Ux4gTheme(
+        darkTheme = darkTheme
+    ) {
+        content()
+    }
+}
+```
+
+---
+
+## 2. Accessing Theme Values
+
+You can access the active theme values anywhere in your composable tree using `Ux4gTheme`:
+
+```kotlin title="Screen.kt"
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import com.ux4g.designsystemv1.theme.Ux4gTheme
+import com.ux4g.designsystemv1.foundation.Ux4gSpace
+
+@Composable
+fun WelcomeScreen() {
+    val colors = Ux4gTheme.colorScheme
+    val typo = Ux4gTheme.typography
+
+    Column(
+        modifier = Modifier
+            .background(colors.background)
+            .padding(Ux4gSpace.Space16)
+    ) {
+        Text(
+            text = "Welcome to UX4G Android",
+            style = typo.hL_strong,
+            color = colors.onBackground
+        )
+        Text(
+            text = "Citizen Service Delivery Platform",
+            style = typo.bM_default,
+            color = colors.primary
+        )
+    }
+}
+```
+
+---
+
+## 3. Light & Dark Mode Dynamic Switching
+
+`Ux4gTheme` automatically provides contrast-optimized palettes for light and dark environments:
+
+| Mode | `colors.primary` | `colors.background` | `colors.surface` | `colors.onBackground` |
+| :--- | :--- | :--- | :--- | :--- |
+| **Light** | `#4A2BC2` (`primary600`) | `#FAFAFA` (`neutral50`) | `#FFFFFF` (`white`) | `#171717` (`neutral900`) |
+| **Dark** | `#A391FF` (`primary300`) | `#171717` (`neutral900`) | `#0A0A0A` (`neutral950`) | `#FAFAFA` (`neutral50`) |

@@ -1,0 +1,31 @@
+---
+title: Carousel
+description: Touch-friendly swipeable banner with auto-scroll and indicator dots
+---
+
+# Carousel (`Ux4gCarousel`)
+
+Import from `com.ux4g.designsystemv1.components.Ux4gCarousel`.
+
+---
+
+<h2><MIcon name="code" /> Basic Usage</h2>
+
+```kotlin
+import com.ux4g.designsystemv1.components.Ux4gCarousel
+import com.ux4g.designsystemv1.components.Ux4gCard
+
+val bannerItems = listOf("New Scheme Announced", "Direct Benefit Transfer Update", "Aadhaar Seva Camp")
+
+Ux4gCarousel(
+    itemCount = bannerItems.size,
+    autoScrollDurationMs = 4000
+) { pageIndex ->
+    Ux4gCard(
+        title = bannerItems[pageIndex],
+        subtitle = "Tap to learn more details"
+    ) {
+        // Banner content
+    }
+}
+```

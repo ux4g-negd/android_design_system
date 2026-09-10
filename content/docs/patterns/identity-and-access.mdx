@@ -1,0 +1,71 @@
+---
+title: Identity & Access Patterns
+description: Citizen login, Aadhaar KYC gate, OTP verification, and session timeout dialog flows
+---
+
+# Identity & Access Patterns
+
+Identity verification is the critical gateway for citizen mobile services in India. UX4G standardizes these authentication patterns.
+
+---
+
+<h2><MIcon name="lock" /> 1. Aadhaar Authentication Gate</h2>
+
+Combines `Ux4gAadhaarInputField`, `Ux4gOtpInput`, and terms consent in a unified Jetpack Compose screen:
+
+```kotlin
+@Composable
+fun AadhaarAuthGateScreen(
+    onAuthenticated: (token: String) -> Unit
+) {
+    var aadhaarNumber by remember { mutableStateOf("") }
+    var otpCode by remember { mutableStateOf("") }
+    var step by remember { mutableStateOf(1) }
+    var consentChecked by remember { mutableStateOf(false) }
+
+    Column(
+        modifier = Modifier.padding(Ux4gSpace.space4),
+        verticalArrangement = Arrangement.spacedBy(Ux4gSpace.space4)
+    ) {
+        if (step == 1) {
+            Text("Enter your 12-digit Aadhaar Number", style = Ux4gTheme.typography.h3)
+            
+            Ux4gAadhaarInputField(
+                value = aadhaarNumber,
+                onValueChange = { aadhaarNumber = it },
+                label = "Aadhaar Number",
+                isRequired = true
+            )
+
+            Ux4gCheckbox(
+                checked = consentChecked,
+                onCheckedChange = { consentChecked = it },
+                label = "I give consent to fetch my demographic details for authentication."
+            )
+
+            Ux4gButton(
+                text = "Generate OTP",
+                onClick = { step = 2 },
+                enabled = aadhaarNumber.length == 14 && consentChecked
+            )
+        } else {
+            Text("Enter OTP sent to your linked mobile", style = Ux4gTheme.typography.h3)
+            
+            Ux4gOtpInput(
+                otpLength = 6,
+                value = otpCode,
+                onOtpChange = { code, isDone ->
+                    otpCode = code
+                    if (isDone) onAuthenticated(code)
+                }
+            )
+        }
+    }
+}
+```
+
+---
+
+<h2><MIcon name="timer" /> 2. Session Time-out Dialog</h2>
+
+Warns citizens before session expiry to prevent data loss on shared or public devices.

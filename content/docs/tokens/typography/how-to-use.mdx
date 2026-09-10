@@ -1,0 +1,89 @@
+---
+title: How to use
+description: Complete guide on using and customizing UX4G typography in Android Jetpack Compose
+---
+
+# Using UX4G Typography
+
+All typography scales in UX4G are structured under `Ux4gTypography` and accessible via `Ux4gTheme.typography`.
+
+Every scale has both `default` (standard weight) and `strong` (bold/semibold weight) variations.
+
+---
+
+## 1. Scale Overview & Prefixes
+
+| Category | Token Prefix | Compose Access | Typical Usage |
+| :--- | :--- | :--- | :--- |
+| **Header** | `h*` | `Ux4gTheme.typography.h*` | Main view headings, section dividers |
+| **Display** | `d*` | `Ux4gTheme.typography.d*` | Large numbers, celebratory hero screens |
+| **Body** | `b*` | `Ux4gTheme.typography.b*` | Multi-paragraph text, article content |
+| **Label** | `l*` | `Ux4gTheme.typography.l*` | Inputs, buttons, chips, tags, badge labels |
+| **Title** | `t*` | `Ux4gTheme.typography.t*` | Card headlines, list titles, app bar titles |
+
+---
+
+## 2. Basic Compose Code Example
+
+```kotlin title="TypographyUsage.kt"
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
+import com.ux4g.designsystemv1.theme.Ux4gTheme
+
+@Composable
+fun CitizenPortalScreen() {
+    Column(modifier = Modifier.padding(16.dp)) {
+        // Display Hero
+        Text(
+            text = "Welcome",
+            style = Ux4gTheme.typography.dXS_strong,
+            color = Ux4gTheme.colorScheme.primary
+        )
+
+        // Header
+        Text(
+            text = "Apply for New Driving License",
+            style = Ux4gTheme.typography.hL_strong,
+            color = Ux4gTheme.colorScheme.onBackground
+        )
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        // Body Paragraph
+        Text(
+            text = "Ensure you have your Aadhaar card and existing learner permit number handy before continuing.",
+            style = Ux4gTheme.typography.bM_default,
+            color = Ux4gTheme.colorScheme.onSurface
+        )
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        // Form Label
+        Text(
+            text = "Learner Permit Number *",
+            style = Ux4gTheme.typography.lL_strong,
+            color = Ux4gTheme.colorScheme.onSurface
+        )
+    }
+}
+```
+
+---
+
+## 3. Font Family Integration
+
+UX4G Android includes `NotoSansFontFamily` which supports all official Indian languages and scripts:
+
+```kotlin title="CustomFont.kt"
+import androidx.compose.ui.text.font.FontFamily
+import com.ux4g.designsystemv1.foundation.NotoSansFontFamily
+
+// Bundled multilingual font family
+val fontFamily = NotoSansFontFamily
+```

@@ -1,0 +1,42 @@
+---
+title: Avatar
+description: User profile representations, status indicators, and grouped avatar stacks in Jetpack Compose
+---
+
+# Avatar (`Ux4gAvatar`)
+
+Avatars represent citizen profiles, administrative officers, or organizations with photo, initials, or fallback icons.
+
+Import from `com.ux4g.designsystemv1.components.avatar_component.*`.
+
+---
+
+<h2><MIcon name="code" /> Components</h2>
+
+1. **`Ux4gAvatar`**: Standard circular avatar with image URL, initials, or fallback icon.
+2. **`Ux4gAvatarGroup`**: Stack of overlapping avatars with overflow counter (`+3`).
+3. **`Ux4gProfileAvatar`**: Avatar with verified government badge overlay.
+4. **`Ux4gStatusAvatar`**: Avatar with online/offline/busy status indicator dot.
+
+---
+
+<h2><MIcon name="code" /> Basic Usage</h2>
+
+```kotlin
+import com.ux4g.designsystemv1.components.avatar_component.Ux4gAvatar
+import com.ux4g.designsystemv1.components.avatar_component.Ux4gAvatarSize
+import com.ux4g.designsystemv1.components.avatar_component.Ux4gProfileAvatar
+
+// Standard Initials Avatar
+Ux4gAvatar(
+    name = "Ramesh Kumar",
+    size = Ux4gAvatarSize.Large
+)
+
+// Verified Citizen Profile Avatar
+Ux4gProfileAvatar(
+    imageUrl = "https://example.com/photo.jpg",
+    name = "Asha Sharma",
+    isVerified = true
+)
+```

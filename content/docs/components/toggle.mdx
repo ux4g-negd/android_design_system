@@ -1,0 +1,29 @@
+---
+title: Toggle / Switch
+description: On/Off toggles and binary state selectors with accessible labels
+---
+
+# Toggle / Switch (`Ux4gToggle`)
+
+Import from `com.ux4g.designsystemv1.components.Ux4gToggle` and `Ux4gSwitch`.
+
+---
+
+<h2><MIcon name="code" /> Basic Usage</h2>
+
+```kotlin
+import com.ux4g.designsystemv1.components.Ux4gToggle
+import com.ux4g.designsystemv1.components.Ux4gSwitchSize
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+
+var smsAlerts by remember { mutableStateOf(true) }
+
+Ux4gToggle(
+    checked = smsAlerts,
+    onCheckedChange = { smsAlerts = it },
+    label = "Enable SMS Notifications",
+    supportingText = "Receive instant status updates on your registered mobile number",
+    size = Ux4gSwitchSize.Medium
+)
+```

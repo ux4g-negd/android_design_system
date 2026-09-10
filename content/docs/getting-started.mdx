@@ -1,0 +1,134 @@
+---
+title: Quick Start Guide
+description: How to setup and configure UX4G Android Design System in your Android Studio project
+icon: Sparkle
+---
+
+# Getting Started with UX4G Android
+
+This guide will walk you through setting up and consuming the **UX4G Android Design System** in any Jetpack Compose Android application.
+
+---
+
+<StepCard step={1} title="Prerequisites" description="Ensure your development environment meets these requirements" iconName="Settings">
+  <PrerequisitesGrid />
+</StepCard>
+
+<StepCard step={2} title="Add Repository" description="Ensure mavenCentral() is in your repository list" iconName="Box">
+
+```kotlin title="settings.gradle.kts"
+dependencyResolutionManagement {
+    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+    repositories {
+        google()
+        mavenCentral()
+    }
+}
+```
+
+</StepCard>
+
+<StepCard step={3} title="Add Library Dependency" description="Add the UX4G Compose library to your module" iconName="Layers">
+
+```kotlin title="app/build.gradle.kts"
+plugins {
+    alias(libs.plugins.android.application)
+    alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.kotlin.compose)
+}
+
+android {
+    namespace = "com.example.yourapp"
+    compileSdk = 35
+
+    defaultConfig {
+        applicationId = "com.example.yourapp"
+        minSdk = 26
+        targetSdk = 35
+        versionCode = 1
+        versionName = "1.0"
+    }
+
+    buildFeatures {
+        compose = true
+    }
+}
+
+dependencies {
+    // UX4G Android Design System (Production Artifact)
+    implementation("io.github.ux4g-negd:designsystemv1:1.0.5")
+    
+    // Core Android & Compose libraries
+    implementation("androidx.core:core-ktx:1.15.0")
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.8.7")
+    implementation("androidx.activity:activity-compose:1.9.3")
+    implementation(platform("androidx.compose:compose-bom:2024.09.00"))
+    implementation("androidx.compose.ui:ui")
+    implementation("androidx.compose.ui:ui-graphics")
+    implementation("androidx.compose.ui:ui-tooling-preview")
+    implementation("androidx.compose.material3:material3")
+}
+```
+
+</StepCard>
+
+<StepCard step={4} title="Applying the Theme" description="Wrap your app content with Ux4gTheme for design system tokens" iconName="Palette">
+
+```kotlin title="ui/theme/AppTheme.kt"
+import androidx.compose.runtime.Composable
+import com.ux4g.designsystemv1.theme.Ux4gTheme
+
+@Composable
+fun MyApp(content: @Composable () -> Unit) {
+    Ux4gTheme(
+        darkTheme = false // or isSystemInDarkTheme()
+    ) {
+        content()
+    }
+}
+```
+
+<InfoCallout>
+  **Ux4gTheme** applies the full design system — color scheme, typography scales, spacing tokens, and shape scales to your entire app hierarchy.
+</InfoCallout>
+
+</StepCard>
+
+<StepCard step={5} title="Toast Notification Host Setup" description="Enable Ux4gToast notifications across screens" iconName="Bell">
+
+```kotlin title="MainActivity.kt"
+import androidx.compose.material3.Scaffold
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import com.ux4g.designsystemv1.components.Ux4gToastHost
+import com.ux4g.designsystemv1.components.Ux4gToastHostState
+import com.ux4g.designsystemv1.components.Ux4gToastCategory
+import kotlinx.coroutines.launch
+
+@Composable
+fun MainScreen() {
+    val toastHostState = remember { Ux4gToastHostState() }
+    val scope = rememberCoroutineScope()
+
+    Scaffold(
+        topBar = {
+            Ux4gToastHost(hostState = toastHostState)
+        }
+    ) { padding ->
+        Ux4gButton(
+            text = "Show Success Toast",
+            onClick = {
+                scope.launch {
+                    toastHostState.showToast(
+                        message = "Application submitted successfully!",
+                        category = Ux4gToastCategory.Success
+                    )
+                }
+            },
+            modifier = Modifier.padding(padding)
+        )
+    }
+}
+```
+
+</StepCard>

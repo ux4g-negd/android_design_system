@@ -1,0 +1,47 @@
+---
+title: Journey Timeline
+description: Multi-stage citizen application tracking timeline with timestamps and actor badges
+---
+
+# Journey Timeline (`Ux4gJourneyTimeline`)
+
+Import from `com.ux4g.designsystemv1.components.Ux4gJourneyTimeline`.
+
+---
+
+<h2><MIcon name="code" /> Basic Usage</h2>
+
+```kotlin
+import com.ux4g.designsystemv1.components.Ux4gJourneyTimeline
+import com.ux4g.designsystemv1.components.TimelineStage
+
+val timelineStages = listOf(
+    TimelineStage(
+        title = "Application Submitted",
+        subtitle = "Citizen submitted form online",
+        timestamp = "10 Sep 2026, 10:30 AM",
+        isCompleted = true
+    ),
+    TimelineStage(
+        title = "Document Scrutiny",
+        subtitle = "Officer verified income certificate",
+        timestamp = "11 Sep 2026, 03:15 PM",
+        isCompleted = true
+    ),
+    TimelineStage(
+        title = "Field Verification",
+        subtitle = "Assigned to Revenue Inspector",
+        timestamp = "In Progress",
+        isActive = true
+    ),
+    TimelineStage(
+        title = "Certificate Dispatch",
+        subtitle = "Pending field approval",
+        isPending = true
+    )
+)
+
+Ux4gJourneyTimeline(
+    stages = timelineStages
+)
+```

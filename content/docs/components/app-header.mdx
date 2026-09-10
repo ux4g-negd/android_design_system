@@ -1,0 +1,27 @@
+---
+title: App Header
+description: Top navigation app bar with National Emblem, back navigation, search, and action buttons
+---
+
+# App Header (`Ux4gAppHeader`)
+
+Import from `com.ux4g.designsystemv1.components.Ux4gAppHeader`.
+
+---
+
+<h2><MIcon name="code" /> Basic Usage</h2>
+
+```kotlin
+import com.ux4g.designsystemv1.components.Ux4gAppHeader
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Notifications
+
+Ux4gAppHeader(
+    title = "DigiLocker Services",
+    subtitle = "Ministry of Electronics & IT",
+    showBackButton = true,
+    onBackClick = { /* Pop back stack */ },
+    actionIcon = Icons.Filled.Notifications,
+    onActionClick = { /* Open notifications */ }
+)
+```

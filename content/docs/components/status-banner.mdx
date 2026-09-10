@@ -1,0 +1,25 @@
+---
+title: Status Banner
+description: Draft status alert, notice banners, and action-required announcements
+---
+
+# Status Banner (`Ux4gStatusBanner`)
+
+Import from `com.ux4g.designsystemv1.components.Ux4gStatusBanner`.
+
+---
+
+<h2><MIcon name="code" /> Basic Usage</h2>
+
+```kotlin
+import com.ux4g.designsystemv1.components.Ux4gStatusBanner
+import com.ux4g.designsystemv1.components.Ux4gBannerVariant
+
+Ux4gStatusBanner(
+    title = "Draft Saved Automatically",
+    description = "Your form draft will be preserved for 30 days.",
+    variant = Ux4gBannerVariant.Info,
+    actionLabel = "Resume Later",
+    onAction = { /* save and exit */ }
+)
+```

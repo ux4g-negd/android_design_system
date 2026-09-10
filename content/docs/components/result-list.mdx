@@ -1,0 +1,34 @@
+---
+title: Result List
+description: Standardized citizen service search results with reference ID badges, status labels, and actions
+---
+
+# Result List (`Ux4gResultList`)
+
+Import from `com.ux4g.designsystemv1.components.Ux4gResultList` and `Ux4gResultRow`.
+
+---
+
+<h2><MIcon name="code" /> Basic Usage</h2>
+
+```kotlin
+import com.ux4g.designsystemv1.components.Ux4gResultList
+import com.ux4g.designsystemv1.components.Ux4gResultRow
+import com.ux4g.designsystemv1.components.Ux4gBadge
+import com.ux4g.designsystemv1.components.Ux4gBadgeVariant
+
+Ux4gResultList {
+    Ux4gResultRow(
+        title = "Birth Certificate Application",
+        subtitle = "Applicant: Aarav Sharma • Ref #92837",
+        badge = { Ux4gBadge(text = "Approved", variant = Ux4gBadgeVariant.Success) },
+        onClick = { /* View certificate */ }
+    )
+    Ux4gResultRow(
+        title = "Income Certificate Verification",
+        subtitle = "Applicant: Sunita Verma • Ref #92838",
+        badge = { Ux4gBadge(text = "Pending", variant = Ux4gBadgeVariant.Warning) },
+        onClick = { /* View status */ }
+    )
+}
+```

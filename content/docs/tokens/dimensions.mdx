@@ -1,0 +1,97 @@
+---
+title: Dimensions & Spacing
+description: Spacing scales, corner radius, and border width tokens for Android Jetpack Compose
+---
+
+# Dimensions & Spacing Tokens
+
+The UX4G Dimension System provides strict mathematical scaling tokens for spacing, corner radius, and border widths to maintain consistent visual rhythm across Android applications.
+
+All tokens are defined in `com.ux4g.designsystemv1.foundation.Ux4gSpace`, `com.ux4g.designsystemv1.foundation.Ux4gRadius`, and `com.ux4g.designsystemv1.foundation.Ux4gBorderWidth`.
+
+---
+
+## 1. Spacing Scale (`Ux4gSpace`)
+
+<TokenGrid
+  tokens={[
+    { name: 'SpaceNone', value: '0.dp', composeRef: 'Ux4gSpace.SpaceNone', type: 'space', numericVal: 0, description: 'Reset spacing' },
+    { name: 'Space2', value: '2.dp', composeRef: 'Ux4gSpace.Space2', type: 'space', numericVal: 2, description: 'Micro inline gaps' },
+    { name: 'Space4', value: '4.dp', composeRef: 'Ux4gSpace.Space4', type: 'space', numericVal: 4, description: 'Icon gaps, badge padding' },
+    { name: 'Space6', value: '6.dp', composeRef: 'Ux4gSpace.Space6', type: 'space', numericVal: 6, description: 'Tag & chip padding' },
+    { name: 'Space8', value: '8.dp', composeRef: 'Ux4gSpace.Space8', type: 'space', numericVal: 8, description: 'Button compact padding' },
+    { name: 'Space12', value: '12.dp', composeRef: 'Ux4gSpace.Space12', type: 'space', numericVal: 12, description: 'Input internal padding' },
+    { name: 'Space16', value: '16.dp', composeRef: 'Ux4gSpace.Space16', type: 'space', numericVal: 16, description: 'Standard screen margin' },
+    { name: 'Space20', value: '20.dp', composeRef: 'Ux4gSpace.Space20', type: 'space', numericVal: 20, description: 'Card content separation' },
+    { name: 'Space24', value: '24.dp', composeRef: 'Ux4gSpace.Space24', type: 'space', numericVal: 24, description: 'Dialog & sheet gutter' },
+    { name: 'Space32', value: '32.dp', composeRef: 'Ux4gSpace.Space32', type: 'space', numericVal: 32, description: 'Header section separation' },
+    { name: 'Space40', value: '40.dp', composeRef: 'Ux4gSpace.Space40', type: 'space', numericVal: 40, description: 'Large section gap' },
+    { name: 'Space48', value: '48.dp', composeRef: 'Ux4gSpace.Space48', type: 'space', numericVal: 48, description: 'Hero section spacing' },
+    { name: 'Space56', value: '56.dp', composeRef: 'Ux4gSpace.Space56', type: 'space', numericVal: 56, description: 'Top bar offset' },
+    { name: 'Space64', value: '64.dp', composeRef: 'Ux4gSpace.Space64', type: 'space', numericVal: 64, description: 'Landing page margins' },
+    { name: 'Space80', value: '80.dp', composeRef: 'Ux4gSpace.Space80', type: 'space', numericVal: 80, description: 'Bottom dock margin' },
+  ]}
+/>
+
+---
+
+## 2. Corner Radius Scale (`Ux4gRadius`)
+
+<TokenGrid
+  tokens={[
+    { name: 'RadiusNone', value: '0.dp', composeRef: 'Ux4gRadius.RadiusNone', type: 'radius', numericVal: 0, description: 'Sharp corners' },
+    { name: 'Radius2', value: '2.dp', composeRef: 'Ux4gRadius.Radius2', type: 'radius', numericVal: 2, description: 'Subtle rounded tabs' },
+    { name: 'Radius4', value: '4.dp', composeRef: 'Ux4gRadius.Radius4', type: 'radius', numericVal: 4, description: 'Micro badges & tags' },
+    { name: 'Radius8', value: '8.dp', composeRef: 'Ux4gRadius.Radius8', type: 'radius', numericVal: 8, description: 'Input fields & standard cards' },
+    { name: 'Radius12', value: '12.dp', composeRef: 'Ux4gRadius.Radius12', type: 'radius', numericVal: 12, description: 'Buttons & interactive cards' },
+    { name: 'Radius16', value: '16.dp', composeRef: 'Ux4gRadius.Radius16', type: 'radius', numericVal: 16, description: 'Modals & large feature cards' },
+    { name: 'Radius24', value: '24.dp', composeRef: 'Ux4gRadius.Radius24', type: 'radius', numericVal: 24, description: 'Bottom sheets & hero cards' },
+    { name: 'Radius999', value: '999.dp', composeRef: 'Ux4gRadius.Radius999', type: 'radius', numericVal: 999, description: 'Full circular pills & avatars' },
+  ]}
+/>
+
+---
+
+## 3. Border Width Scale (`Ux4gBorderWidth`)
+
+<TokenGrid
+  tokens={[
+    { name: 'None', value: '0.dp', composeRef: 'Ux4gBorderWidth.None', type: 'border', numericVal: 0, description: 'Borderless / Elevation-only' },
+    { name: 'Thin', value: '1.dp', composeRef: 'Ux4gBorderWidth.Thin', type: 'border', numericVal: 1, description: 'Standard input borders & dividers' },
+    { name: 'Thick', value: '2.dp', composeRef: 'Ux4gBorderWidth.Thick', type: 'border', numericVal: 2, description: 'Active focus states & high emphasis' },
+    { name: 'Thicker', value: '3.dp', composeRef: 'Ux4gBorderWidth.Thicker', type: 'border', numericVal: 3, description: 'Selection indicators' },
+    { name: 'Thickest', value: '4.dp', composeRef: 'Ux4gBorderWidth.Thickest', type: 'border', numericVal: 4, description: 'Callout accents' },
+  ]}
+/>
+
+---
+
+## 4. Kotlin Jetpack Compose Usage
+
+```kotlin title="Compose Usage"
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import com.ux4g.designsystemv1.foundation.Ux4gBorderWidth
+import com.ux4g.designsystemv1.foundation.Ux4gColors
+import com.ux4g.designsystemv1.foundation.Ux4gRadius
+import com.ux4g.designsystemv1.foundation.Ux4gSpace
+
+Box(
+    modifier = Modifier
+        .padding(Ux4gSpace.Space16)
+        .clip(RoundedCornerShape(Ux4gRadius.Radius12))
+        .border(
+            width = Ux4gBorderWidth.Thin,
+            color = Ux4gColors.neutral300,
+            shape = RoundedCornerShape(Ux4gRadius.Radius12)
+        )
+        .background(Ux4gColors.white)
+) {
+    // Card content
+}
+```

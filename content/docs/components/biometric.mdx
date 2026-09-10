@@ -1,0 +1,37 @@
+---
+title: Biometric Verification Flow
+description: Face alignment overlay, camera capture screen, and biometric identity consent module
+---
+
+# Biometric Verification Flow
+
+The UX4G Biometric module provides an accessible camera capture and face detection verification interface for Aadhaar FaceRD, KYC liveliness verification, and government officer biometric checks.
+
+Import from `com.ux4g.designsystemv1.components.biometric.*`.
+
+---
+
+<h2><MIcon name="code" /> Components</h2>
+
+- **`BiometricVerificationFlow`**: Multi-stage state machine controlling consent, camera feed, and result screen.
+- **`FaceAlignmentOverlay`**: Oval cutout with guidance cues ("Blink once", "Move closer", "Hold still").
+- **`IdentityConsentScreen`**: Consent modal informing citizen how biometric data is handled.
+
+---
+
+<h2><MIcon name="code" /> Basic Usage</h2>
+
+```kotlin
+import com.ux4g.designsystemv1.components.biometric.BiometricVerificationFlow
+import com.ux4g.designsystemv1.components.biometric.BiometricState
+
+BiometricVerificationFlow(
+    onVerificationSuccess = { verificationToken ->
+        // Handle successful face match
+    },
+    onVerificationFailure = { error ->
+        // Handle failure or retry
+    },
+    onCancel = { /* User exited flow */ }
+)
+```
