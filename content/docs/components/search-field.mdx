@@ -1,13 +1,20 @@
 ---
 title: Search Field
-description: Universal search bar with search button, voice search trigger, clear cross, and filter dropdown integration
+description: Search bar with instant autocomplete suggestions, voice search trigger, submit action button, and validation states
 ---
 
 # Search Field (`Ux4gSearchField`)
 
-Universal search bar with search button, voice search trigger, clear cross, and filter dropdown integration.
+The UX4G Search Field component provides an intuitive search bar for discovering government welfare schemes, tracking application statuses, navigating civil service portals, and filtering dense data listings.
 
-Import from `com.ux4g.designsystemv1.components.searchfield.Ux4gSearchField`.
+### Key Capabilities
+
+- **Instant Autocomplete & Dropdown Suggestions**: Real-time suggestion popup with customizable matching algorithms (`Contains`, `StartsWith`, `StartsWithPerTerm`) and highlighting (`"Searching for '...'"`).
+- **Search Variants**: Standard input field (`BasicSearch`), search bar with integrated CTA button (`SearchWithSubmit`), and predictive search (`Autocomplete`).
+- **Interactive Controls**: Built-in voice search trigger (`showVoiceIcon`), dynamic one-tap clear button (`showClearIcon`), and inline progress loader (`isLoading`).
+- **Validation & Size Support**: Contextual statuses (`Default`, `Success`, `Warning`, `Error`) with captions and 4 size tiers (`Small`, `Medium`, `Large`, `XL`).
+
+Import from `com.ux4g.designsystemv1.components.searchfield.*`.
 
 ---
 
@@ -16,18 +23,22 @@ Import from `com.ux4g.designsystemv1.components.searchfield.Ux4gSearchField`.
 <ComponentPreview
   title="Ux4gSearchField"
   category="Jetpack Compose"
-  code={`Ux4gSearchField(
-    query = searchQuery,
-    onQueryChange = { searchQuery = it },
-    placeholder = "Search schemes, certificates, or services...",
-    onSearch = { query -> /* Fetch search API */ },
-    onVoiceClick = { /* Launch voice recognition */ }
+  code={`var searchQuery by remember { mutableStateOf("") }
+
+Ux4gSearchField(
+    value = searchQuery,
+    onValueChange = { searchQuery = it },
+    placeholder = "Search...",
+    showVoiceIcon = true,
+    showClearIcon = true,
+    onVoiceClick = { /* Launch voice recognition */ },
+    onClearClick = { searchQuery = "" }
 )`}
 >
   <div className="flex flex-col items-center justify-center py-2">
     <img
       src="/images/components/search-field_preview.png"
-      alt="UX4G Search Field Preview"
+      alt="UX4G Default Search Field Preview"
       className="max-w-full rounded-xl border border-border/60 shadow-sm"
     />
   </div>
@@ -37,20 +48,82 @@ Import from `com.ux4g.designsystemv1.components.searchfield.Ux4gSearchField`.
 
 <h2><MIcon name="code" /> Kotlin Usage</h2>
 
-```kotlin title="Compose Example"
+### 1. Basic Search with Voice and Clear Handlers
+
+```kotlin title="CitizenPortalSearch.kt"
+import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import com.ux4g.designsystemv1.components.searchfield.Ux4gSearchField
 import com.ux4g.designsystemv1.components.searchfield.Ux4gSearchFieldSize
 
 @Composable
-fun SearchDemo() {
-    var query by remember { mutableStateOf("") }
+fun CitizenPortalSearchSection() {
+    var searchQuery by remember { mutableStateOf("") }
+
+    Column(
+        modifier = Modifier.padding(16.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        Ux4gSearchField(
+            value = searchQuery,
+            onValueChange = { searchQuery = it },
+            label = "Universal Search",
+            placeholder = "Search schemes, certificates, or grievance status...",
+            size = Ux4gSearchFieldSize.Medium,
+            showVoiceIcon = true,
+            showClearIcon = true,
+            onVoiceClick = {
+                // Launch Android SpeechRecognizer Intent
+            },
+            onClearClick = {
+                searchQuery = ""
+            }
+        )
+    }
+}
+```
+
+### 2. Autocomplete Scheme Search with Submit Button
+
+```kotlin title="SchemeAutocompleteSearch.kt"
+import androidx.compose.foundation.layout.*
+import androidx.compose.runtime.*
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
+import com.ux4g.designsystemv1.components.searchfield.*
+
+@Composable
+fun SchemeSearchWithSuggestions(
+    onSchemeSelected: (String) -> Unit
+) {
+    var searchQuery by remember { mutableStateOf("") }
+    val schemeList = remember {
+        listOf(
+            "Pradhan Mantri Awas Yojana (PMAY)",
+            "Pradhan Mantri Jan Dhan Yojana (PMJDY)",
+            "Ayushman Bharat - PMJAY",
+            "Kisan Samman Nidhi (PM-KISAN)",
+            "National Social Assistance Programme"
+        )
+    }
 
     Ux4gSearchField(
-        query = query,
-        onQueryChange = { query = it },
-        onSearch = { performSearch(it) },
-        placeholder = "Search government services..."
+        value = searchQuery,
+        onValueChange = { searchQuery = it },
+        variant = Ux4gSearchFieldVariant.Autocomplete,
+        filterType = Ux4gSearchFilterType.Contains,
+        label = "Government Welfare Schemes",
+        placeholder = "Type scheme name...",
+        options = schemeList,
+        onOptionSelected = { selectedScheme ->
+            searchQuery = selectedScheme
+            onSchemeSelected(selectedScheme)
+        },
+        onSubmitClick = { query ->
+            onSchemeSelected(query)
+        }
     )
 }
 ```
@@ -59,15 +132,73 @@ fun SearchDemo() {
 
 <h2><MIcon name="settings" /> Parameters</h2>
 
+### `Ux4gSearchField` Props
+
 | Prop | Type | Description | Default |
 | :--- | :--- | :--- | :--- |
-| `query` <span className="text-red-500 font-bold">*</span> | `String` | Current search query string. | `—` |
-| `onQueryChange` <span className="text-red-500 font-bold">*</span> | `(String) -> Unit` | Callback invoked as citizen types into search bar. | `—` |
-| `onSearch` | `((String) -> Unit)?` | Fires when citizen presses Search action button or keyboard enter. | `null` |
-| `placeholder` | `String` | Placeholder text when field is empty. | `"Search..."` |
-| `size` | `Ux4gSearchFieldSize` | Size: `Small`, `Medium`, `Large`. | `Ux4gSearchFieldSize.Medium` |
-| `onVoiceClick` | `(() -> Unit)?` | Optional voice microphone trigger callback. | `null` |
-| `onClearClick` | `(() -> Unit)?` | Callback when clear cross icon is pressed. | `null` |
-| `enabled` | `Boolean` | Interactive enabled state. | `true` |
-| `modifier` | `Modifier` | Compose layout modifier. | `Modifier` |
+| `value` <span className="text-red-500 font-bold">*</span> | `String` | Current input text query. | `—` |
+| `onValueChange` <span className="text-red-500 font-bold">*</span> | `(String) -> Unit` | Callback invoked as text changes in the search field. | `—` |
+| `modifier` | `Modifier` | Compose modifier applied to the outer layout container. | `Modifier` |
+| `filterType` | `Ux4gSearchFilterType` | Matching algorithm (`Contains`, `StartsWith`, `StartsWithPerTerm`). | `Ux4gSearchFilterType.Contains` |
+| `variant` | `Ux4gSearchFieldVariant` | Visual variant (`BasicSearch`, `SearchWithSubmit`, `Autocomplete`). | `Ux4gSearchFieldVariant.BasicSearch` |
+| `size` | `Ux4gSearchFieldSize` | Predefined height size (`Small`, `Medium`, `Large`, `XL`). | `Ux4gSearchFieldSize.Medium` |
+| `status` | `Ux4gSearchFieldStatus` | Visual validation status (`Default`, `Success`, `Warning`, `Error`). | `Ux4gSearchFieldStatus.Default` |
+| `buttonStyle` | `Ux4gSearchFieldButtonStyle` | Submit button visual style (`Filled`, `Tonal`). | `Ux4gSearchFieldButtonStyle.Filled` |
+| `label` | `String?` | Primary label text displayed above the search bar. | `null` |
+| `placeholder` | `String?` | Placeholder text shown when input is empty. | `null` |
+| `caption` | `String?` | Helper or error caption text displayed below the field. | `null` |
+| `options` | `List<String>` | List of selectable suggestion items for autocomplete popup. | `emptyList()` |
+| `showVoiceIcon` | `Boolean` | Whether to display the trailing voice microphone icon. | `true` |
+| `showClearIcon` | `Boolean` | Whether to display the clear `X` icon when text is entered. | `true` |
+| `isLoading` | `Boolean` | Shows an inline spinner indicator while queries are loading. | `false` |
+| `onVoiceClick` | `(() -> Unit)?` | Callback triggered when the voice search microphone icon is clicked. | `null` |
+| `onClearClick` | `(() -> Unit)?` | Callback triggered when the clear `X` icon is clicked. | `null` |
+| `onSubmitClick` | `((String) -> Unit)?` | Callback fired when the submit button is clicked or Enter is pressed. | `null` |
+| `onOptionSelected` | `((String) -> Unit)?` | Callback triggered when a user taps a dropdown suggestion item. | `null` |
+| `enabled` | `Boolean` | Controls interactive touch state and disabled visual appearance. | `true` |
+| `readOnly` | `Boolean` | Prevents keyboard edits while retaining copy/selection interaction. | `false` |
+| `placeholderStyle` | `TextStyle?` | Custom typography style override for placeholder text. | `null` |
+| `dropdownMinHeight` | `Dp` | Minimum height for the autocomplete suggestions popup. | `0.dp` |
+| `dropdownMaxHeight` | `Dp` | Maximum constraint height for the autocomplete suggestions popup. | `350.dp` |
 
+---
+
+### `Ux4gSearchFieldVariant` Reference
+
+| Variant | Description |
+| :--- | :--- |
+| `BasicSearch` | Standard single-row search field with trailing voice and clear icons. |
+| `SearchWithSubmit` | Search field attached to a right-aligned dedicated search submit button. |
+| `Autocomplete` | Search field that triggers a floating popup with filtered suggestion options. |
+
+---
+
+### `Ux4gSearchFieldSize` Reference
+
+| Size | Height (`Dp`) | Typical Usage |
+| :--- | :--- | :--- |
+| `Small` | `32.dp` | Compact table filters, toolbar search, and high-density headers |
+| `Medium` | `40.dp` | Standard application form and search bars |
+| `Large` | `48.dp` | Primary screen search bars and mobile top headers |
+| `XL` | `56.dp` | Prominent home landing page hero search inputs |
+
+---
+
+### `Ux4gSearchFilterType` Reference
+
+| Filter Type | Matching Behavior |
+| :--- | :--- |
+| `Contains` | Matches any option containing the search substring anywhere in the label. |
+| `StartsWith` | Matches options starting with the search query from the first character. |
+| `StartsWithPerTerm` | Tokenizes query words and matches options where each term matches word starts. |
+
+---
+
+### `Ux4gSearchFieldStatus` Reference
+
+| Status | Border / Text Color | Context |
+| :--- | :--- | :--- |
+| `Default` | `Ux4gColors.neutral300` / `primary` | Normal idle or focused search field |
+| `Success` | `Ux4gColors.green600` | Successfully verified search parameter |
+| `Warning` | `Ux4gColors.secondary600` | Cautionary or limited results query |
+| `Error` | `Ux4gTheme.colorScheme.error` | Invalid query format or failed search parameter |
