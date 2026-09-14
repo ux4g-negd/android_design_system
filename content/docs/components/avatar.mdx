@@ -1,39 +1,181 @@
 ---
 title: Avatar
-description: User profile picture, initials fallback, active status indicator, and grouped stacked avatars
+description: Comprehensive Avatar suite featuring Basic Avatar, Profile Avatar with badges/actions, Avatar Group, and Status Avatar
 ---
 
-# Avatar (`Ux4gAvatar`)
+# Avatar Suite (`avatar_component`)
 
-User profile picture, initials fallback, active status indicator, and grouped stacked avatars.
+The UX4G Avatar suite provides 4 modular composable components for citizen profiles, verification badges, status indicators, and collaborative team stacks:
+1. **Basic Avatar (`Ux4gAvatar`)**: Standard profile picture, initials, or icon fallback.
+2. **Profile Avatar (`Ux4gProfileAvatar`)**: Base avatar with bottom-right verification badges or interactive action buttons.
+3. **Avatar Group (`Ux4gAvatarGroup`)**: Stacked overlapping or spaced avatar group with automatic `+N` overflow limit counters.
+4. **Status Avatar (`Ux4gStatusAvatar`)**: Online, offline, busy, and warning presence indicators.
 
-Import from `com.ux4g.designsystemv1.components.avatar_component.Ux4gAvatar`.
+Import from `com.ux4g.designsystemv1.components.avatar_component.*`.
 
 ---
 
-<h2><MIcon name="smartphone" /> Interactive Preview</h2>
+<h2><MIcon name="smartphone" /> Interactive Previews</h2>
+
+### 1. Basic Avatar (`Ux4gAvatar`)
 
 <ComponentPreview
-  title="Ux4gAvatar"
+  title="Ux4gAvatar (Initials, Image & Icons)"
   category="Jetpack Compose"
-  code={`// Profile Avatar with Initials
+  code={`// 1. Initials Avatar
 Ux4gAvatar(
-    name = "Aarav Sharma",
-    size = Ux4gAvatarSize.Large,
-    status = Ux4gAvatarStatus.Online
+    initials = "AS",
+    size = Ux4gAvatarSize.L
 )
 
-// Avatar with Image URL
+// 2. Remote Image Avatar
 Ux4gAvatar(
-    imageUrl = "https://example.com/avatar.jpg",
-    name = "Priya Patel",
-    size = Ux4gAvatarSize.Medium
+    imageUrl = "https://example.com/profile.jpg",
+    initials = "PK",
+    size = Ux4gAvatarSize.L
+)
+
+// 3. Fallback Icon Avatar
+Ux4gAvatar(
+    size = Ux4gAvatarSize.L,
+    icon = Ux4gIcons.Person
 )`}
 >
   <div className="flex flex-col items-center justify-center py-2">
     <img
       src="/images/components/avatar_preview.png"
-      alt="UX4G Avatar Preview"
+      alt="UX4G Basic Avatar Preview"
+      className="max-w-full rounded-xl border border-border/60 shadow-sm"
+    />
+  </div>
+</ComponentPreview>
+
+---
+
+### 2. Profile Avatar (`Ux4gProfileAvatar`)
+
+<ComponentPreview
+  title="Ux4gProfileAvatar (Badges & Actions)"
+  category="Jetpack Compose"
+  code={`// 1. Verified Profile Badge
+Ux4gProfileAvatar(
+    initials = "AS",
+    size = Ux4gAvatarSize.L,
+    variant = Ux4gProfileAvatarVariant.Badge.Verified
+)
+
+// 2. Star Official Badge
+Ux4gProfileAvatar(
+    initials = "RK",
+    size = Ux4gAvatarSize.L,
+    variant = Ux4gProfileAvatarVariant.Badge.Star
+)
+
+// 3. Edit Action Indicator
+Ux4gProfileAvatar(
+    initials = "MS",
+    size = Ux4gAvatarSize.L,
+    variant = Ux4gProfileAvatarVariant.Action.Edit,
+    onVariantClick = { /* Open image crop picker */ }
+)
+
+// 4. Camera Action Indicator
+Ux4gProfileAvatar(
+    initials = "JD",
+    size = Ux4gAvatarSize.L,
+    variant = Ux4gProfileAvatarVariant.Action.Camera,
+    onVariantClick = { /* Launch camera */ }
+)`}
+>
+  <div className="flex flex-col items-center justify-center py-2">
+    <img
+      src="/images/components/avatar_profile_preview.png"
+      alt="UX4G Profile Avatar Preview"
+      className="max-w-full rounded-xl border border-border/60 shadow-sm"
+    />
+  </div>
+</ComponentPreview>
+
+---
+
+### 3. Avatar Group (`Ux4gAvatarGroup`)
+
+<ComponentPreview
+  title="Ux4gAvatarGroup (Overlapping Stacks & Limits)"
+  category="Jetpack Compose"
+  code={`val teamMembers = listOf(
+    Ux4gAvatarGroupItem(initials = "JD"),
+    Ux4gAvatarGroupItem(initials = "AS"),
+    Ux4gAvatarGroupItem(initials = "MK"),
+    Ux4gAvatarGroupItem(initials = "RJ"),
+    Ux4gAvatarGroupItem(initials = "LS"),
+    Ux4gAvatarGroupItem(initials = "EM")
+)
+
+// 1. Collapsed Stack with Limit (Shows 3 avatars + "+3" pill)
+Ux4gAvatarGroup(
+    items = teamMembers,
+    size = Ux4gAvatarSize.M,
+    maxLimit = 4,
+    collapsed = true,
+    onRemainingClick = { /* Show all 6 members sheet */ }
+)
+
+// 2. Spaced / Expanded Group
+Ux4gAvatarGroup(
+    items = teamMembers.take(4),
+    size = Ux4gAvatarSize.M,
+    collapsed = false
+)`}
+>
+  <div className="flex flex-col items-center justify-center py-2">
+    <img
+      src="/images/components/avatar_group_preview.png"
+      alt="UX4G Avatar Group Preview"
+      className="max-w-full rounded-xl border border-border/60 shadow-sm"
+    />
+  </div>
+</ComponentPreview>
+
+---
+
+### 4. Status Avatar (`Ux4gStatusAvatar`)
+
+<ComponentPreview
+  title="Ux4gStatusAvatar (Online, Busy, Warning, Offline)"
+  category="Jetpack Compose"
+  code={`// 1. Online Presence
+Ux4gStatusAvatar(
+    initials = "MS",
+    size = Ux4gAvatarSize.L,
+    variant = Ux4gStatusAvatarVariant.Online
+)
+
+// 2. Busy Presence
+Ux4gStatusAvatar(
+    initials = "AK",
+    size = Ux4gAvatarSize.L,
+    variant = Ux4gStatusAvatarVariant.Busy
+)
+
+// 3. Warning Presence
+Ux4gStatusAvatar(
+    initials = "PK",
+    size = Ux4gAvatarSize.L,
+    variant = Ux4gStatusAvatarVariant.Warning
+)
+
+// 4. Offline Presence
+Ux4gStatusAvatar(
+    initials = "RJ",
+    size = Ux4gAvatarSize.L,
+    variant = Ux4gStatusAvatarVariant.Offline
+)`}
+>
+  <div className="flex flex-col items-center justify-center py-2">
+    <img
+      src="/images/components/avatar_status_preview.png"
+      alt="UX4G Status Avatar Preview"
       className="max-w-full rounded-xl border border-border/60 shadow-sm"
     />
   </div>
@@ -43,21 +185,57 @@ Ux4gAvatar(
 
 <h2><MIcon name="code" /> Kotlin Usage</h2>
 
-```kotlin title="Compose Example"
+```kotlin title="Avatar Showcase Example"
+import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import com.ux4g.designsystemv1.components.avatar_component.Ux4gAvatar
-import com.ux4g.designsystemv1.components.avatar_component.Ux4gAvatarSize
-import com.ux4g.designsystemv1.components.avatar_component.Ux4gAvatarStatus
+import com.ux4g.designsystemv1.components.avatar_component.Ux4gProfileAvatar
+import com.ux4g.designsystemv1.components.avatar_component.Ux4gProfileAvatarVariant
 import com.ux4g.designsystemv1.components.avatar_component.Ux4gAvatarGroup
+import com.ux4g.designsystemv1.components.avatar_component.Ux4gAvatarGroupItem
+import com.ux4g.designsystemv1.components.avatar_component.Ux4gStatusAvatar
+import com.ux4g.designsystemv1.components.avatar_component.Ux4gStatusAvatarVariant
+import com.ux4g.designsystemv1.components.avatar_component.Ux4gAvatarSize
 
 @Composable
-fun AvatarExample() {
-    Ux4gAvatar(
-        name = "Rajesh Kumar",
-        size = Ux4gAvatarSize.Large,
-        status = Ux4gAvatarStatus.Online,
-        onClick = { /* Open citizen profile */ }
-    )
+fun AvatarShowcaseScreen() {
+    Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(24.dp)) {
+        // 1. Basic Avatar
+        Ux4gAvatar(
+            initials = "AS",
+            size = Ux4gAvatarSize.L
+        )
+
+        // 2. Profile Avatar with Verified Badge
+        Ux4gProfileAvatar(
+            initials = "MS",
+            size = Ux4gAvatarSize.L,
+            variant = Ux4gProfileAvatarVariant.Badge.Verified
+        )
+
+        // 3. Avatar Group with Limit
+        Ux4gAvatarGroup(
+            items = listOf(
+                Ux4gAvatarGroupItem(initials = "JD"),
+                Ux4gAvatarGroupItem(initials = "AS"),
+                Ux4gAvatarGroupItem(initials = "MK"),
+                Ux4gAvatarGroupItem(initials = "RJ"),
+                Ux4gAvatarGroupItem(initials = "LS")
+            ),
+            size = Ux4gAvatarSize.M,
+            maxLimit = 4,
+            collapsed = true
+        )
+
+        // 4. Status Avatar
+        Ux4gStatusAvatar(
+            initials = "RK",
+            size = Ux4gAvatarSize.L,
+            variant = Ux4gStatusAvatarVariant.Online
+        )
+    }
 }
 ```
 
@@ -65,52 +243,116 @@ fun AvatarExample() {
 
 <h2><MIcon name="settings" /> Parameters</h2>
 
-### `Ux4gAvatar` Props
+### 1. `Ux4gAvatar` Props
 
 | Prop | Type | Description | Default |
 | :--- | :--- | :--- | :--- |
-| `name` <span className="text-red-500 font-bold">*</span> | `String` | Citizen/User name used for computing initials & accessibility content description. | `—` |
-| `imageUrl` | `String?` | Optional remote image URL. | `null` |
-| `size` | `Ux4gAvatarSize` | Avatar dimension: `ExtraSmall`, `Small`, `Medium`, `Large`, `ExtraLarge`. | `Medium` |
-| `status` | `Ux4gAvatarStatus?` | Presence status dot badge: `Online`, `Offline`, `Away`, `Busy`. | `null` |
-| `shape` | `Shape` | Shape applied to the avatar boundary (Circle or Rounded Corner). | `CircleShape` |
-| `onClick` | `(() -> Unit)?` | Optional click listener callback when avatar is tapped. | `null` |
-| `modifier` | `Modifier` | Compose layout modifier. | `Modifier` |
-
+| `modifier` | `Modifier` | Compose layout modifier applied to avatar container. | `Modifier` |
+| `size` | `Ux4gAvatarSize` | Dimension token: `XS`, `S`, `M`, `L`, `XL`, `XXL`, `XXXL`. | `Ux4gAvatarSize.M` |
+| `shape` | `Shape` | Clip boundary shape (defaults to circle). | `CircleShape` |
+| `imageUrl` | `Any?` | Remote image URL, drawable resource ID, or file model. | `null` |
+| `initials` | `String?` | 1-2 character initials displayed when image is absent. | `null` |
+| `icon` | `Ux4gIcon?` | Fallback vector icon when neither image nor initials are provided. | `Ux4gIcons.Person` |
+| `containerColor` | `Color?` | Custom background fill color override. | `null` |
+| `contentColor` | `Color?` | Color applied to initials typography text. | `null` |
+| `iconColor` | `Color?` | Tint color applied to fallback icon. | `null` |
 
 ---
 
-### `Ux4gAvatarGroup` Props
+### 2. `Ux4gProfileAvatar` Props
 
 | Prop | Type | Description | Default |
 | :--- | :--- | :--- | :--- |
-| `avatars` <span className="text-red-500 font-bold">*</span> | `List<Ux4gAvatarData>` | List of user avatar models to render in an overlapping horizontal stack. | `—` |
-| `maxVisible` | `Int` | Maximum number of avatar circles to display before showing `+N` count pill. | `4` |
-| `size` | `Ux4gAvatarSize` | Uniform dimension size for all avatars in group. | `Ux4gAvatarSize.Medium` |
 | `modifier` | `Modifier` | Compose layout modifier. | `Modifier` |
-
-
----
-
-### `Ux4gAvatarSize` Enum
-
-| Value | Dimension | Text Style |
-| :--- | :--- | :--- |
-| `ExtraSmall` | `24.dp` | `10.sp` bold initials |
-| `Small` | `32.dp` | `12.sp` bold initials |
-| `Medium` | `40.dp` | `14.sp` bold initials |
-| `Large` | `48.dp` | `16.sp` bold initials |
-| `ExtraLarge` | `64.dp` | `20.sp` bold initials |
-
+| `size` | `Ux4gAvatarSize` | Base avatar dimension token. | `Ux4gAvatarSize.M` |
+| `imageUrl` | `Any?` | Remote image URL or model. | `null` |
+| `initials` | `String?` | Initials text fallback. | `null` |
+| `avatarIcon` | `Ux4gIcon?` | Icon fallback. | `Ux4gIcons.Person` |
+| `variant` | `Ux4gProfileAvatarVariant?` | Overlay badge or interactive action placed at bottom-right. | `null` |
+| `badgeSize` | `Dp?` | Optional custom size override for bottom-right indicator. | `null` |
+| `onVariantClick` | `(() -> Unit)?` | Click listener invoked when citizen taps the variant indicator. | `null` |
 
 ---
 
-### `Ux4gAvatarStatus` Enum
+### `Ux4gProfileAvatarVariant` Sealed Class
 
-| Value | Color | Description |
+| Variant Type | Class / Object | Description |
 | :--- | :--- | :--- |
-| `Online` | Green (`#22C55E`) | User currently active / signed in |
-| `Offline` | Neutral Gray (`#9CA3AF`) | User offline |
-| `Away` | Amber (`#F59E0B`) | User temporarily away |
-| `Busy` | Red (`#EF4444`) | User busy / in verification session |
+| **Badge** | `Ux4gProfileAvatarVariant.Badge.Verified` | Blue checkmark shield badge for authenticated citizens. |
+| **Badge** | `Ux4gProfileAvatarVariant.Badge.Star` | Gold star badge for VIP / officer status. |
+| **Badge** | `Ux4gProfileAvatarVariant.Badge.Admin` | Official shield badge for administration officers. |
+| **Badge** | `Ux4gProfileAvatarVariant.Badge.Custom(iconRes)` | Custom drawable badge icon resource. |
+| **Action** | `Ux4gProfileAvatarVariant.Action.Edit` | Edit pencil button for profile avatar changes. |
+| **Action** | `Ux4gProfileAvatarVariant.Action.Camera` | Photo camera button for taking new profile pictures. |
+| **Action** | `Ux4gProfileAvatarVariant.Action.Remove` | Red trash / remove action indicator. |
+| **Action** | `Ux4gProfileAvatarVariant.Action.Custom(icon, ...)` | Custom action button with specific icon and colors. |
+
+---
+
+### 3. `Ux4gAvatarGroup` Props
+
+| Prop | Type | Description | Default |
+| :--- | :--- | :--- | :--- |
+| `items` <span className="text-red-500 font-bold">*</span> | `List<Ux4gAvatarGroupItem>` | Ordered list of avatar models to render in the group stack. | — |
+| `modifier` | `Modifier` | Compose layout modifier applied to the group container. | `Modifier` |
+| `size` | `Ux4gAvatarSize` | Uniform dimension size for all avatars in group. | `Ux4gAvatarSize.M` |
+| `maxLimit` | `Int?` | Maximum visible avatars before rendering `+N` remaining counter pill. | `null` |
+| `collapsed` | `Boolean` | When true, avatars overlap with border cutout rings. When false, avatars are spaced. | `true` |
+| `borderColor` | `Color?` | Ring cutout stroke color in collapsed mode (defaults to surface). | `null` |
+| `borderWidth` | `Dp` | Cutout stroke border thickness. | `2.dp` |
+| `onRemainingClick` | `(() -> Unit)?` | Click handler callback when citizen taps the `+N` count pill. | `null` |
+
+---
+
+### `Ux4gAvatarGroupItem` Data Class
+
+| Prop | Type | Description | Default |
+| :--- | :--- | :--- | :--- |
+| `imageUrl` | `Any?` | Remote image URL or model for the item. | `null` |
+| `initials` | `String?` | Initials fallback text for the item. | `null` |
+| `icon` | `Ux4gIcon?` | Icon fallback for the item. | `Ux4gIcons.Person` |
+| `onClick` | `(() -> Unit)?` | Individual click callback when this specific avatar is tapped. | `null` |
+
+---
+
+### 4. `Ux4gStatusAvatar` Props
+
+| Prop | Type | Description | Default |
+| :--- | :--- | :--- | :--- |
+| `modifier` | `Modifier` | Compose layout modifier. | `Modifier` |
+| `size` | `Ux4gAvatarSize` | Base avatar dimension token. | `Ux4gAvatarSize.M` |
+| `imageUrl` | `Any?` | Remote image URL or model. | `null` |
+| `initials` | `String?` | Initials text fallback. | `null` |
+| `avatarIcon` | `Ux4gIcon?` | Icon fallback. | `Ux4gIcons.Person` |
+| `variant` | `Ux4gStatusAvatarVariant` | Presence status dot indicator placed at bottom-right. | `Ux4gStatusAvatarVariant.Online` |
+| `statusSize` | `Dp?` | Custom dimension size for the status presence dot. | `null` |
+
+---
+
+### `Ux4gStatusAvatarVariant` Sealed Class
+
+| Variant | Color Token | Description |
+| :--- | :--- | :--- |
+| `Online` | Green (`#22C55E`) | User is currently active and online. |
+| `Offline` | Neutral Gray (`#111827` @ 50%) | User is offline or disconnected. |
+| `Busy` | Red (`#DC2626`) | User is engaged in an active authentication or session. |
+| `Warning` | Orange (`#F97316`) | Temporary connection issue or pending verification. |
+| `Success` | Green (`#22C55E`) | Verified presence state. |
+| `Error` | Red (`#DC2626`) | Verification failed or error state. |
+| `Custom` | User-defined `Color` | Custom presence color token. |
+
+---
+
+### `Ux4gAvatarSize` Tokens
+
+| Token | Outer Diameter | Initials Typography | Icon Size | Indicator Size |
+| :--- | :--- | :--- | :--- | :--- |
+| `XS` | `24.dp` | `10.sp` Medium | `14.dp` | `12.dp` |
+| `S` | `32.dp` | `14.sp` Medium | `16.dp` | `14.dp` |
+| `M` | `40.dp` | `16.sp` Medium | `20.dp` | `16.dp` |
+| `L` | `48.dp` | `20.sp` Medium | `24.dp` | `18.dp` |
+| `XL` | `64.dp` | `24.sp` Medium | `32.dp` | `24.dp` |
+| `XXL` | `80.dp` | `32.sp` Medium | `40.dp` | `30.dp` |
+| `XXXL` | `120.dp` | `48.sp` Medium | `60.dp` | `42.dp` |
+
 

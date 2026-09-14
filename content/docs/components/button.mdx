@@ -1,39 +1,234 @@
 ---
 title: Button
-description: Interactive standard Button and IconButton with solid, secondary, outline, destructive variants and loading states
+description: Interactive standard Button suite featuring Fill (Primary/Secondary), Outline, Tonal, Text, and Icon Buttons with loading states and sizes
 ---
 
-# Button (`Ux4gButton`)
+# Button Suite (`Ux4gButton`)
 
-Interactive standard Button and IconButton with solid, secondary, outline, destructive variants and loading states.
+The UX4G Button suite provides modular composable buttons tailored for citizen self-service workflows, transaction confirmations, and utility actions:
+1. **Fill Button (`Ux4gButton`)**: High-emphasis solid action buttons with `Primary` brand purple and `Secondary` styles.
+2. **Outline Button (`Ux4gOutlineButton`)**: Medium-emphasis bordered buttons for secondary or cancel actions.
+3. **Tonal Button (`Ux4gButton` with `Tonal`)**: Low-to-medium emphasis soft-tinted background button.
+4. **Text Button (`Ux4gTextButton`)**: Clean ghost button without container or border, ideal for inline actions and links.
+5. **Icon Button (`Ux4gIconButton`)**: Circular and rounded icon buttons in `Filled`, `Outline`, `Text`, and `Tonal` styles.
 
-Import from `com.ux4g.designsystemv1.components.buttons.Ux4gButton`.
+Import from `com.ux4g.designsystemv1.components.buttons.*`.
 
 ---
 
-<h2><MIcon name="smartphone" /> Interactive Preview</h2>
+<h2><MIcon name="smartphone" /> Interactive Previews</h2>
+
+### 1. Fill Button (Primary & Secondary)
 
 <ComponentPreview
-  title="Ux4gButton"
+  title="Ux4gButton - Fill (Primary & Secondary)"
   category="Jetpack Compose"
-  code={`// Primary Action Button
+  code={`// 1. Primary Action Button
 Ux4gButton(
     text = "Submit Application",
-    onClick = { /* submit */ },
-    variant = Ux4gButtonVariant.Primary
+    onClick = { /* Handle submit */ },
+    variant = Ux4gButtonVariant.Primary,
+    size = Ux4gButtonSize.Medium
 )
 
-// Destructive Outline Button
+// 2. Secondary Action Button
 Ux4gButton(
-    text = "Delete Draft",
-    onClick = { /* delete */ },
-    variant = Ux4gButtonVariant.Destructive
+    text = "Save as Draft",
+    onClick = { /* Handle draft */ },
+    variant = Ux4gButtonVariant.Secondary,
+    size = Ux4gButtonSize.Medium
+)
+
+// 3. Loading State
+Ux4gButton(
+    text = "Processing...",
+    onClick = {},
+    isLoading = true
+)
+
+// 4. Disabled State
+Ux4gButton(
+    text = "Proceed",
+    onClick = {},
+    enabled = false
 )`}
 >
   <div className="flex flex-col items-center justify-center py-2">
     <img
-      src="/images/components/button_preview.png"
-      alt="UX4G Button Preview"
+      src="/images/components/button_primary.png"
+      alt="UX4G Fill Button Preview"
+      className="max-w-full rounded-xl border border-border/60 shadow-sm"
+    />
+  </div>
+</ComponentPreview>
+
+---
+
+### 2. Outline Button (`Ux4gOutlineButton`)
+
+<ComponentPreview
+  title="Ux4gOutlineButton (Bordered Actions)"
+  category="Jetpack Compose"
+  code={`// 1. Standard Outline Button
+Ux4gOutlineButton(
+    text = "Cancel Transaction",
+    onClick = { /* Handle cancel */ },
+    size = Ux4gButtonSize.Medium
+)
+
+// 2. Outline Button via Ux4gButton Variant
+Ux4gButton(
+    text = "Back to Home",
+    onClick = { /* Navigate back */ },
+    variant = Ux4gButtonVariant.Outline,
+    size = Ux4gButtonSize.Large
+)
+
+// 3. Disabled Outline
+Ux4gOutlineButton(
+    text = "Cannot Proceed",
+    onClick = {},
+    enabled = false
+)`}
+>
+  <div className="flex flex-col items-center justify-center py-2">
+    <img
+      src="/images/components/button_outline_preview.png"
+      alt="UX4G Outline Button Preview"
+      className="max-w-full rounded-xl border border-border/60 shadow-sm"
+    />
+  </div>
+</ComponentPreview>
+
+---
+
+### 3. Tonal Button (`Ux4gButtonVariant.Tonal`)
+
+<ComponentPreview
+  title="Ux4gButton - Tonal (Soft Tinted Fill)"
+  category="Jetpack Compose"
+  code={`// 1. Tonal Action Button
+Ux4gButton(
+    text = "Explore Services",
+    onClick = { /* Navigate to directory */ },
+    variant = Ux4gButtonVariant.Tonal,
+    size = Ux4gButtonSize.Medium
+)
+
+// 2. Tonal with Leading Icon
+Ux4gButton(
+    text = "Download Certificate",
+    onClick = { /* Download PDF */ },
+    variant = Ux4gButtonVariant.Tonal,
+    leadingIcon = {
+        Image(
+            painter = painterResource(id = R.drawable.ic_download),
+            contentDescription = "Download"
+        )
+    }
+)`}
+>
+  <div className="flex flex-col items-center justify-center py-2">
+    <img
+      src="/images/components/button_tonal_preview.png"
+      alt="UX4G Tonal Button Preview"
+      className="max-w-full rounded-xl border border-border/60 shadow-sm"
+    />
+  </div>
+</ComponentPreview>
+
+---
+
+### 4. Text / Ghost Button (`Ux4gTextButton`)
+
+<ComponentPreview
+  title="Ux4gTextButton (Clean Ghost Style)"
+  category="Jetpack Compose"
+  code={`// 1. Standard Text Button
+Ux4gTextButton(
+    text = "Skip for Now",
+    onClick = { /* Handle skip */ },
+    size = Ux4gButtonSize.Medium
+)
+
+// 2. Text Button via Ux4gButton Variant
+Ux4gButton(
+    text = "View Privacy Policy",
+    onClick = { /* Open web view */ },
+    variant = Ux4gButtonVariant.Text
+)
+
+// 3. Text Button with Trailing Arrow Icon
+Ux4gTextButton(
+    text = "Learn More",
+    onClick = { /* Expand info */ },
+    trailingIcon = {
+        Image(
+            painter = painterResource(id = R.drawable.ic_arrow_forward),
+            contentDescription = null
+        )
+    }
+)`}
+>
+  <div className="flex flex-col items-center justify-center py-2">
+    <img
+      src="/images/components/button_text_preview.png"
+      alt="UX4G Text Button Preview"
+      className="max-w-full rounded-xl border border-border/60 shadow-sm"
+    />
+  </div>
+</ComponentPreview>
+
+---
+
+### 5. Icon Button (`Ux4gIconButton`)
+
+<ComponentPreview
+  title="Ux4gIconButton (Styles & Shapes)"
+  category="Jetpack Compose"
+  code={`// 1. Filled Round Icon Button
+Ux4gIconButton(
+    onClick = { /* Add item */ },
+    type = Ux4gIconButtonStyle.Filled,
+    shape = Ux4gIconButtonShape.Round,
+    size = Ux4gIconButtonSize.L
+) {
+    Text("+", style = Ux4gTheme.typography.hS_strong)
+}
+
+// 2. Outline Rounded Icon Button
+Ux4gIconButton(
+    onClick = { /* Filter */ },
+    type = Ux4gIconButtonStyle.Outline,
+    shape = Ux4gIconButtonShape.Rounded,
+    size = Ux4gIconButtonSize.M
+) {
+    Text("⚙", style = Ux4gTheme.typography.hS_strong)
+}
+
+// 3. Tonal Icon Button
+Ux4gIconButton(
+    onClick = { /* Share */ },
+    type = Ux4gIconButtonStyle.Tonal,
+    shape = Ux4gIconButtonShape.Round,
+    size = Ux4gIconButtonSize.XL
+) {
+    Text("↗", style = Ux4gTheme.typography.hM_strong)
+}
+
+// 4. Ghost / Text Icon Button
+Ux4gIconButton(
+    onClick = { /* Close */ },
+    type = Ux4gIconButtonStyle.Text,
+    size = Ux4gIconButtonSize.M
+) {
+    Text("✕", style = Ux4gTheme.typography.hS_strong)
+}`}
+>
+  <div className="flex flex-col items-center justify-center py-2">
+    <img
+      src="/images/components/button_icon_preview.png"
+      alt="UX4G Icon Button Preview"
       className="max-w-full rounded-xl border border-border/60 shadow-sm"
     />
   </div>
@@ -43,20 +238,99 @@ Ux4gButton(
 
 <h2><MIcon name="code" /> Kotlin Usage</h2>
 
-```kotlin title="Compose Example"
+```kotlin title="Button Showcase Example"
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.*
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.unit.dp
 import com.ux4g.designsystemv1.components.buttons.Ux4gButton
-import com.ux4g.designsystemv1.components.buttons.Ux4gButtonVariant
 import com.ux4g.designsystemv1.components.buttons.Ux4gButtonSize
+import com.ux4g.designsystemv1.components.buttons.Ux4gButtonVariant
+import com.ux4g.designsystemv1.components.buttons.Ux4gIconButton
+import com.ux4g.designsystemv1.components.buttons.Ux4gIconButtonShape
+import com.ux4g.designsystemv1.components.buttons.Ux4gIconButtonSize
+import com.ux4g.designsystemv1.components.buttons.Ux4gIconButtonStyle
+import com.ux4g.designsystemv1.components.buttons.Ux4gOutlineButton
+import com.ux4g.designsystemv1.components.buttons.Ux4gTextButton
+import com.ux4g.designsystemv1.theme.Ux4gTheme
 
 @Composable
-fun ButtonDemo() {
-    Ux4gButton(
-        text = "Proceed to Aadhaar Auth",
-        onClick = { /* handle action */ },
-        variant = Ux4gButtonVariant.Primary,
-        size = Ux4gButtonSize.Large
-    )
+fun ButtonVariantsShowcase() {
+    Column(
+        modifier = Modifier.padding(16.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
+        // 1. Fill Button (Primary)
+        Ux4gButton(
+            text = "Proceed to Authentication",
+            onClick = { /* handle click */ },
+            variant = Ux4gButtonVariant.Primary,
+            size = Ux4gButtonSize.Large
+        )
+
+        // 2. Fill Button (Secondary)
+        Ux4gButton(
+            text = "Save as Draft",
+            onClick = { /* handle click */ },
+            variant = Ux4gButtonVariant.Secondary,
+            size = Ux4gButtonSize.Medium
+        )
+
+        // 3. Outline Button
+        Ux4gOutlineButton(
+            text = "Cancel Application",
+            onClick = { /* handle click */ },
+            size = Ux4gButtonSize.Medium
+        )
+
+        // 4. Tonal Button
+        Ux4gButton(
+            text = "Explore Services",
+            onClick = { /* handle click */ },
+            variant = Ux4gButtonVariant.Tonal,
+            size = Ux4gButtonSize.Medium
+        )
+
+        // 5. Text Button
+        Ux4gTextButton(
+            text = "Skip for Now",
+            onClick = { /* handle click */ },
+            size = Ux4gButtonSize.Small
+        )
+
+        // 6. Icon Buttons in a Row
+        Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+            Ux4gIconButton(
+                onClick = {},
+                type = Ux4gIconButtonStyle.Filled,
+                shape = Ux4gIconButtonShape.Round,
+                size = Ux4gIconButtonSize.L
+            ) { Text("+", style = Ux4gTheme.typography.hS_strong) }
+
+            Ux4gIconButton(
+                onClick = {},
+                type = Ux4gIconButtonStyle.Outline,
+                shape = Ux4gIconButtonShape.Rounded,
+                size = Ux4gIconButtonSize.L
+            ) { Text("⚙", style = Ux4gTheme.typography.hS_strong) }
+
+            Ux4gIconButton(
+                onClick = {},
+                type = Ux4gIconButtonStyle.Tonal,
+                shape = Ux4gIconButtonShape.Round,
+                size = Ux4gIconButtonSize.L
+            ) { Text("↗", style = Ux4gTheme.typography.hS_strong) }
+
+            Ux4gIconButton(
+                onClick = {},
+                type = Ux4gIconButtonStyle.Text,
+                size = Ux4gIconButtonSize.L
+            ) { Text("✕", style = Ux4gTheme.typography.hS_strong) }
+        }
+    }
 }
 ```
 
@@ -64,45 +338,144 @@ fun ButtonDemo() {
 
 <h2><MIcon name="settings" /> Parameters</h2>
 
-### `Ux4gButton` Props
+### 1. `Ux4gButton` Props
 
 | Prop | Type | Description | Default |
 | :--- | :--- | :--- | :--- |
-| `text` <span className="text-red-500 font-bold">*</span> | `String` | Label text displayed inside the button. | `—` |
-| `onClick` <span className="text-red-500 font-bold">*</span> | `() -> Unit` | Callback invoked when button is clicked. | `—` |
-| `modifier` | `Modifier` | Compose layout modifier. | `Modifier` |
-| `variant` | `Ux4gButtonVariant` | Visual style: `Primary`, `Secondary`, `Outline`, `Destructive`, `Ghost`. | `Ux4gButtonVariant.Primary` |
-| `size` | `Ux4gButtonSize` | Button dimensions: `Small`, `Medium`, `Large`. | `Ux4gButtonSize.Medium` |
+| `onClick` <span className="text-red-500 font-bold">*</span> | `() -> Unit` | Callback invoked when the button is clicked. | — |
+| `modifier` | `Modifier` | Compose layout modifier applied to the button container. | `Modifier` |
+| `text` | `String?` | Label text displayed inside the button (required if content is not provided). | `null` |
+| `variant` | `Ux4gButtonVariant` | Visual variant: `Primary`, `Secondary`, `Outline`, `Text`, `Tonal`. | `Ux4gButtonVariant.Primary` |
+| `size` | `Ux4gButtonSize` | Height & padding preset: `XS`, `Small`, `Medium`, `Large`, `XL`. | `Ux4gButtonSize.Medium` |
 | `enabled` | `Boolean` | Whether button responds to user touch interactions. | `true` |
 | `isLoading` | `Boolean` | Replaces label with progress spinner and disables interactions. | `false` |
-| `leadingIcon` | `(@Composable () -> Unit)?` | Optional composable icon before the text. | `null` |
-| `trailingIcon` | `(@Composable () -> Unit)?` | Optional composable icon after the text. | `null` |
-
+| `backgroundColor` | `Color?` | Custom background fill color override (`null` uses variant default). | `null` |
+| `contentColor` | `Color?` | Custom text and icon tint color override. | `null` |
+| `disabledBackgroundColor` | `Color?` | Custom background fill when disabled. | `null` |
+| `disabledContentColor` | `Color?` | Custom text / icon color when disabled. | `null` |
+| `borderColor` | `Color?` | Custom border stroke color (`null` uses variant default). | `null` |
+| `borderWidth` | `Dp?` | Custom border thickness (`null` uses variant default). | `null` |
+| `borderRadius` | `Dp` | Corner rounding radius for button shape. | `8.dp` (`Ux4gRadius.Radius8`) |
+| `elevation` | `Dp` | Button shadow elevation on surface. | `0.dp` |
+| `contentPadding` | `PaddingValues` | Inner padding surrounding button contents. | `PaddingValues(size.horizontalPadding, size.verticalPadding)` |
+| `leadingIcon` | `(@Composable () -> Unit)?` | Optional composable icon displayed before the label text. | `null` |
+| `trailingIcon` | `(@Composable () -> Unit)?` | Optional composable icon displayed after the label text. | `null` |
+| `iconSize` | `Dp` | Dimensions (width & height) of leading and trailing icons. | `18.dp` |
+| `textStyle` | `TextStyle?` | Custom typography style override (`null` uses size default). | `null` |
+| `interactionSource` | `MutableInteractionSource` | Tracks interaction state changes (press, focus, hover). | `remember { MutableInteractionSource() }` |
+| `content` | `(@Composable RowScope.() -> Unit)?` | Custom composable slot replacing standard text / icon layout. | `null` |
 
 ---
 
-### `Ux4gIconButton` Props
+### 2. `Ux4gOutlineButton` Props
 
 | Prop | Type | Description | Default |
 | :--- | :--- | :--- | :--- |
-| `icon` <span className="text-red-500 font-bold">*</span> | `Ux4gIcon` | Vector icon displayed inside circular button. | `—` |
-| `onClick` <span className="text-red-500 font-bold">*</span> | `() -> Unit` | Click callback handler. | `—` |
+| `onClick` <span className="text-red-500 font-bold">*</span> | `() -> Unit` | Callback invoked when the button is clicked. | — |
 | `modifier` | `Modifier` | Compose layout modifier. | `Modifier` |
-| `size` | `Ux4gIconButtonSize` | Button size: `Small`, `Medium`, `Large`. | `Ux4gIconButtonSize.Medium` |
-| `style` | `Ux4gIconButtonStyle` | Visual style: `Filled`, `Outlined`, `Ghost`. | `Ux4gIconButtonStyle.Filled` |
-| `enabled` | `Boolean` | Interactive enabled state. | `true` |
-| `contentDescription` | `String?` | Accessibility text description. | `null` |
+| `text` | `String?` | Label text displayed inside the button. | `null` |
+| `size` | `Ux4gButtonSize` | Height & padding preset: `XS`, `Small`, `Medium`, `Large`, `XL`. | `Ux4gButtonSize.Medium` |
+| `enabled` | `Boolean` | Interactive touch state. | `true` |
+| `isLoading` | `Boolean` | Replaces label with spinner and disables button. | `false` |
+| `color` | `Color?` | Primary tint applied to text, border, and icons. | `null` (uses theme primary) |
+| `borderWidth` | `Dp?` | Border thickness override. | `null` (`Ux4gBorderWidth.Thin`) |
+| `borderRadius` | `Dp` | Corner rounding radius. | `8.dp` (`Ux4gRadius.Radius8`) |
+| `contentPadding` | `PaddingValues` | Inner content padding. | `PaddingValues(size.horizontalPadding, size.verticalPadding)` |
+| `leadingIcon` | `(@Composable () -> Unit)?` | Composable icon before text. | `null` |
+| `trailingIcon` | `(@Composable () -> Unit)?` | Composable icon after text. | `null` |
+| `iconSize` | `Dp` | Leading/trailing icon size. | `18.dp` |
+| `textStyle` | `TextStyle?` | Custom typography style override. | `null` |
+| `interactionSource` | `MutableInteractionSource` | Interaction state tracker. | `remember { MutableInteractionSource() }` |
+| `content` | `(@Composable RowScope.() -> Unit)?` | Custom composable slot. | `null` |
 
+---
+
+### 3. `Ux4gTextButton` Props
+
+| Prop | Type | Description | Default |
+| :--- | :--- | :--- | :--- |
+| `onClick` <span className="text-red-500 font-bold">*</span> | `() -> Unit` | Callback invoked when the text button is clicked. | — |
+| `modifier` | `Modifier` | Compose layout modifier. | `Modifier` |
+| `text` | `String?` | Label text displayed inside the ghost button. | `null` |
+| `size` | `Ux4gButtonSize` | Size dimensions preset. | `Ux4gButtonSize.Medium` |
+| `enabled` | `Boolean` | Interactive touch state. | `true` |
+| `isLoading` | `Boolean` | Shows loading spinner in place of text. | `false` |
+| `contentColor` | `Color?` | Custom text and icon tint color. | `null` (uses theme primary) |
+| `borderRadius` | `Dp` | Ripple click boundary radius. | `8.dp` (`Ux4gRadius.Radius8`) |
+| `contentPadding` | `PaddingValues` | Inner padding. | `PaddingValues(size.horizontalPadding, size.verticalPadding)` |
+| `leadingIcon` | `(@Composable () -> Unit)?` | Composable icon before text. | `null` |
+| `trailingIcon` | `(@Composable () -> Unit)?` | Composable icon after text. | `null` |
+| `iconSize` | `Dp` | Leading/trailing icon size. | `18.dp` |
+| `textStyle` | `TextStyle?` | Custom typography style override. | `null` |
+| `interactionSource` | `MutableInteractionSource` | Interaction state tracker. | `remember { MutableInteractionSource() }` |
+| `content` | `(@Composable RowScope.() -> Unit)?` | Custom composable slot. | `null` |
+
+---
+
+### 4. `Ux4gIconButton` Props
+
+| Prop | Type | Description | Default |
+| :--- | :--- | :--- | :--- |
+| `onClick` <span className="text-red-500 font-bold">*</span> | `() -> Unit` | Click callback handler. | — |
+| `icon` <span className="text-red-500 font-bold">*</span> | `@Composable () -> Unit` | Composable icon content rendered inside button. | — |
+| `modifier` | `Modifier` | Compose layout modifier. | `Modifier` |
+| `size` | `Ux4gIconButtonSize` | Size preset: `XS` (24dp), `S` (32dp), `M` (40dp), `L` (48dp), `XL` (56dp). | `Ux4gIconButtonSize.XL` |
+| `shape` | `Ux4gIconButtonShape` | Container shape: `Round` (Circle) or `Rounded` (8dp corner radius). | `Ux4gIconButtonShape.Round` |
+| `type` | `Ux4gIconButtonStyle` | Visual styling: `Filled`, `Outline`, `Text`, `Tonal`. | `Ux4gIconButtonStyle.Filled` |
+| `enabled` | `Boolean` | Interactive enabled touch state. | `true` |
+| `isLoading` | `Boolean` | Replaces icon with circular progress spinner. | `false` |
+| `containerColor` | `Color?` | Custom container fill background color override. | `null` |
+| `contentColor` | `Color?` | Custom icon tint color override. | `null` |
+| `disabledContainerColor` | `Color?` | Custom background fill color when disabled. | `null` |
+| `disabledContentColor` | `Color?` | Custom icon tint color when disabled. | `null` |
+| `borderColor` | `Color?` | Custom border stroke color override. | `null` |
+| `interactionSource` | `MutableInteractionSource` | Interaction state tracker. | `remember { MutableInteractionSource() }` |
 
 ---
 
 ### `Ux4gButtonVariant` Enum
 
-| Variant | Tone & Border | Recommended Context |
-| :--- | :--- | :--- |
-| `Primary` | Solid Brand Purple (`#4A2BC2`), White text | Primary high-priority action per screen (Submit, Proceed, Pay) |
-| `Secondary` | Amber / Neutral fill, Dark text | Alternative secondary actions (Save Draft, View Details) |
-| `Outline` | Transparent fill with subtle border | Low-emphasis complementary actions (Cancel, Back) |
-| `Destructive` | Red error accent fill | Irreversible actions (Delete, Reject, Discard) |
-| `Ghost` | Flat transparent background | Inline text buttons and table action links |
+| Variant | Tone & Fill | Border | Text / Icon Color | Recommended Context |
+| :--- | :--- | :--- | :--- | :--- |
+| `Primary` | Solid Brand Purple (`#4A2BC2`) | None | White (`#FFFFFF`) | Primary high-priority action per screen (Submit, Proceed, Pay) |
+| `Secondary` | Solid Secondary Amber / Gold | None | Dark / On-Secondary | Secondary alternative actions (Save Draft, Next Step) |
+| `Outline` | Transparent | `1.dp` Brand Purple | Brand Purple | Low-emphasis complementary actions (Cancel, Back, Reset) |
+| `Text` | Transparent | None | Brand Purple | Ghost actions, inline links, dialog footer dismissals |
+| `Tonal` | Soft Tinted (`primary50`) | None | Brand Purple | Low-to-medium emphasis utility actions (Filters, Explore) |
 
+---
+
+### `Ux4gButtonSize` Enum
+
+| Token | Height | Horizontal Padding | Vertical Padding | Typography Style |
+| :--- | :--- | :--- | :--- | :--- |
+| `XS` | `24.dp` | `12.dp` | `4.dp` | `12.sp` SemiBold |
+| `Small` | `32.dp` | `16.dp` | `7.dp` | Label Large (`14.sp`) |
+| `Medium` | `40.dp` | `20.dp` | `10.dp` | Label XL (`15.sp`) |
+| `Large` | `48.dp` | `24.dp` | `14.dp` | Label XL (`15.sp`) |
+| `XL` | `56.dp` | `28.dp` | `16.dp` | `16.sp` SemiBold |
+
+---
+
+### `Ux4gIconButtonSize` Enum
+
+| Token | Container Size | Icon Scale Size |
+| :--- | :--- | :--- |
+| `XS` | `24.dp` | `12.dp` |
+| `S` | `32.dp` | `16.dp` |
+| `M` | `40.dp` | `20.dp` |
+| `L` | `48.dp` | `24.dp` |
+| `XL` | `56.dp` | `28.dp` |
+
+---
+
+### `Ux4gIconButtonStyle` & `Ux4gIconButtonShape`
+
+| Enum Class | Value | Description |
+| :--- | :--- | :--- |
+| **`Ux4gIconButtonStyle`** | `Filled` | Solid primary container with contrasting icon. |
+| **`Ux4gIconButtonStyle`** | `Outline` | Transparent background with `1.dp` primary border stroke. |
+| **`Ux4gIconButtonStyle`** | `Text` | Ghost button without container fill or border. |
+| **`Ux4gIconButtonStyle`** | `Tonal` | Soft tinted `primary50` background container. |
+| **`Ux4gIconButtonShape`** | `Round` | Perfect circular clipping (`CircleShape`). |
+| **`Ux4gIconButtonShape`** | `Rounded` | Rounded rectangular clipping with `8.dp` corner radius. |
