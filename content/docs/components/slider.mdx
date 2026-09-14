@@ -1,33 +1,79 @@
 ---
 title: Slider
-description: Continuous and discrete range sliders for loan amounts, tenure months, and value thresholds
+description: Continuous and discrete single sliders and dual-thumb range sliders with tick marks, captions, and interactive value tooltips
 ---
 
-# Slider (`Ux4gSlider`)
+# Slider (`Ux4gSlider` / `Ux4gRangeSlider`)
 
-Continuous and discrete range sliders for loan amounts, tenure months, and value thresholds.
+The UX4G Slider component enables users to select continuous or discrete values along a track. It is ideal for selecting loan amounts, subsidy tenures, citizen age criteria, income ranges, and value thresholds.
 
-Import from `com.ux4g.designsystemv1.components.Ux4gSlider`.
+### Key Capabilities
+
+- **Single & Range Sliders**: `Ux4gSlider` for single-value selection and `Ux4gRangeSlider` for dual-thumb closed range selection (`ClosedFloatingPointRange<Float>`).
+- **Tick Marks & Numerical Values**: Automatic graduation ticks and value labels with `showMarksAndValues = true` and configurable step intervals (`steps`).
+- **Interactive Tooltip Indicator**: Floating tooltip bubble (`showIndicator = true`) displaying live values directly above the sliding thumb.
+- **Labels & Validation Captions**: Form field labels with required asterisk (`*`), info icons (`labelIcon`), start/end labels, and status captions (`Helper`, `Error`, `Warning`, `Success`).
+- **Size Options**: `Small` (16dp thumb, 4dp track) and `Medium` (20dp thumb, 6dp track).
+
+Import from `com.ux4g.designsystemv1.components.*`.
 
 ---
 
-<h2><MIcon name="smartphone" /> Interactive Preview</h2>
+<h2><MIcon name="smartphone" /> Interactive Previews</h2>
+
+### 1. Continuous Slider (`Ux4gSlider`)
+
+Single-thumb slider with graduation tick marks, numeric scale labels, and continuous position tracking.
 
 <ComponentPreview
   title="Ux4gSlider"
   category="Jetpack Compose"
-  code={`Ux4gSlider(
-    value = loanAmount,
-    onValueChange = { loanAmount = it },
-    valueRange = 10000f..500000f,
-    steps = 49,
-    label = "Loan Amount: ₹${loanAmount.toInt()}"
+  code={`var sliderValue by remember { mutableFloatStateOf(50f) }
+
+Ux4gSlider(
+    value = sliderValue,
+    onValueChange = { sliderValue = it },
+    valueRange = 0f..100f,
+    steps = 9,
+    size = Ux4gSliderSize.Small,
+    showMarksAndValues = true
 )`}
 >
   <div className="flex flex-col items-center justify-center py-2">
     <img
       src="/images/components/slider_preview.png"
-      alt="UX4G Slider Preview"
+      alt="UX4G Single Slider Preview"
+      className="max-w-full rounded-xl border border-border/60 shadow-sm"
+    />
+  </div>
+</ComponentPreview>
+
+---
+
+### 2. Dual-Thumb Range Slider (`Ux4gRangeSlider`)
+
+Dual-thumb range slider for selecting a continuous interval between minimum and maximum boundary bounds.
+
+<ComponentPreview
+  title="Ux4gRangeSlider"
+  category="Jetpack Compose"
+  code={`var rangeValue by remember { mutableStateOf(20f..90f) }
+
+Ux4gRangeSlider(
+    value = rangeValue,
+    onValueChange = { rangeValue = it },
+    valueRange = 0f..100f,
+    steps = 9,
+    size = Ux4gSliderSize.Small,
+    startValueText = "20%",
+    endValueText = "90%",
+    showMarksAndValues = true
+)`}
+>
+  <div className="flex flex-col items-center justify-center py-2">
+    <img
+      src="/images/components/slider-range_preview.png"
+      alt="UX4G Range Slider Preview"
       className="max-w-full rounded-xl border border-border/60 shadow-sm"
     />
   </div>
@@ -37,19 +83,74 @@ Import from `com.ux4g.designsystemv1.components.Ux4gSlider`.
 
 <h2><MIcon name="code" /> Kotlin Usage</h2>
 
-```kotlin title="Compose Example"
+### 1. Loan Amount Selection with Live Value Summary
+
+```kotlin title="LoanCalculatorSlider.kt"
+import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import com.ux4g.designsystemv1.components.Ux4gSlider
+import com.ux4g.designsystemv1.components.Ux4gSliderCaptionVariant
+import com.ux4g.designsystemv1.components.Ux4gSliderSize
+import com.ux4g.designsystemv1.foundation.Ux4gIcons
 
 @Composable
-fun LoanSliderExample() {
-    var value by remember { mutableStateOf(50000f) }
+fun LoanAmountCalculator() {
+    var amount by remember { mutableFloatStateOf(50000f) }
 
-    Ux4gSlider(
-        value = value,
-        onValueChange = { value = it },
-        valueRange = 10000f..200000f,
-        label = "Requested Amount"
+    Column(
+        modifier = Modifier.padding(16.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        Ux4gSlider(
+            value = amount,
+            onValueChange = { amount = it },
+            valueRange = 10000f..500000f,
+            steps = 48,
+            size = Ux4gSliderSize.Medium,
+            label = "Sanctioned Loan Amount",
+            isRequired = true,
+            labelIcon = Ux4gIcons.info_circle,
+            startValueText = "₹ 10,000",
+            endValueText = "₹ 5,00,000",
+            showIndicator = true,
+            showMarksAndValues = false,
+            caption = "Repayment tenure: 12 to 60 Months",
+            captionVariant = Ux4gSliderCaptionVariant.Helper
+        )
+    }
+}
+```
+
+### 2. Dual-Thumb Range Slider (Eligibility Age Criteria)
+
+```kotlin title="AgeRangeFilter.kt"
+import androidx.compose.foundation.layout.*
+import androidx.compose.runtime.*
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
+import com.ux4g.designsystemv1.components.Ux4gRangeSlider
+import com.ux4g.designsystemv1.components.Ux4gSliderCaptionVariant
+import com.ux4g.designsystemv1.components.Ux4gSliderSize
+
+@Composable
+fun AgeEligibilityRangeFilter() {
+    var ageRange by remember { mutableStateOf(21f..60f) }
+
+    Ux4gRangeSlider(
+        value = ageRange,
+        onValueChange = { ageRange = it },
+        valueRange = 18f..80f,
+        steps = 30,
+        size = Ux4gSliderSize.Medium,
+        label = "Applicant Age Range",
+        startValueText = "Min: 18 yrs",
+        endValueText = "Max: 80 yrs",
+        showIndicator = true,
+        showMarksAndValues = true,
+        caption = "Eligible age bracket for state pension scheme",
+        captionVariant = Ux4gSliderCaptionVariant.Success
     )
 }
 ```
@@ -58,15 +159,73 @@ fun LoanSliderExample() {
 
 <h2><MIcon name="settings" /> Parameters</h2>
 
+### `Ux4gSlider` Props
+
 | Prop | Type | Description | Default |
 | :--- | :--- | :--- | :--- |
-| `value` <span className="text-red-500 font-bold">*</span> | `Float` | Current slider float value. | `—` |
-| `onValueChange` <span className="text-red-500 font-bold">*</span> | `(Float) -> Unit` | Callback invoked when slider thumb is dragged. | `—` |
-| `modifier` | `Modifier` | Compose layout modifier. | `Modifier` |
-| `valueRange` | `ClosedFloatingPointRange<Float>` | Permitted minimum and maximum bounds. | `0f..1f` |
-| `steps` | `Int` | Number of discrete snap notches between bounds. | `0` |
-| `label` | `String?` | Value summary label above track. | `null` |
-| `enabled` | `Boolean` | Interactive enabled state. | `true` |
-| `thumbColor` | `Color?` | Drag handle thumb color. | `null` |
-| `activeTrackColor` | `Color?` | Progressed track highlight color. | `null` |
+| `value` <span className="text-red-500 font-bold">*</span> | `Float` | Current slider position value. | `—` |
+| `onValueChange` <span className="text-red-500 font-bold">*</span> | `(Float) -> Unit` | Callback triggered when the slider value changes. | `—` |
+| `modifier` | `Modifier` | Compose modifier applied to the outer layout container. | `Modifier` |
+| `valueRange` | `ClosedFloatingPointRange<Float>` | Minimum and maximum values allowed on the track. | `0f..100f` |
+| `steps` | `Int` | Number of discrete snap points between bounds. | `0` |
+| `size` | `Ux4gSliderSize` | Slider thumb and track dimensions (`Small`, `Medium`). | `Ux4gSliderSize.Small` |
+| `enabled` | `Boolean` | Controls interactive touch dragging and disabled opacity. | `true` |
+| `label` | `String?` | Title text displayed above the track. | `null` |
+| `isRequired` | `Boolean` | Displays a red asterisk (`*`) next to the label when `true`. | `false` |
+| `labelIcon` | `Ux4gIcon?` | Optional icon rendered next to the label. | `null` |
+| `startValueText` | `String?` | Left boundary label text displayed above the track. | `null` |
+| `endValueText` | `String?` | Right boundary label text displayed above the track. | `null` |
+| `caption` | `String?` | Descriptive helper or validation message below the track. | `null` |
+| `captionVariant` | `Ux4gSliderCaptionVariant` | Severity variant for caption text and status icons. | `Ux4gSliderCaptionVariant.Helper` |
+| `showMarksAndValues` | `Boolean` | Whether to draw graduation tick marks and numbers below the track. | `false` |
+| `showInputFields` | `Boolean` | Renders editable numeric input fields for direct value entry. | `false` |
+| `showValueLabels` | `Boolean` | Displays formatted text value summaries above track. | `false` |
+| `showIndicator` | `Boolean` | Renders a floating tooltip bubble above the thumb while sliding. | `false` |
+| `valueFormatter` | `(Float) -> String` | Custom formatting function for numeric label text. | `{ "${it.toInt()}%" }` |
+| `interactionSource` | `MutableInteractionSource` | Interaction stream for press and drag state tracking. | `remember { MutableInteractionSource() }` |
 
+---
+
+### `Ux4gRangeSlider` Props
+
+| Prop | Type | Description | Default |
+| :--- | :--- | :--- | :--- |
+| `value` <span className="text-red-500 font-bold">*</span> | `ClosedFloatingPointRange<Float>` | Current selected start and end range interval. | `—` |
+| `onValueChange` <span className="text-red-500 font-bold">*</span> | `(ClosedFloatingPointRange<Float>) -> Unit` | Callback invoked when either thumb is moved. | `—` |
+| `modifier` | `Modifier` | Compose modifier applied to the outer layout container. | `Modifier` |
+| `valueRange` | `ClosedFloatingPointRange<Float>` | Total permitted minimum and maximum bounds. | `0f..100f` |
+| `steps` | `Int` | Number of discrete snap notches between bounds. | `0` |
+| `size` | `Ux4gSliderSize` | Thumb and track dimensions (`Small`, `Medium`). | `Ux4gSliderSize.Small` |
+| `enabled` | `Boolean` | Controls interactive touch dragging and disabled opacity. | `true` |
+| `label` | `String?` | Title text displayed above the track. | `null` |
+| `isRequired` | `Boolean` | Displays a red asterisk (`*`) next to the label when `true`. | `false` |
+| `labelIcon` | `Ux4gIcon?` | Optional icon rendered next to the label. | `null` |
+| `startValueText` | `String?` | Left boundary label text. | `null` |
+| `endValueText` | `String?` | Right boundary label text. | `null` |
+| `caption` | `String?` | Descriptive helper or validation message. | `null` |
+| `captionVariant` | `Ux4gSliderCaptionVariant` | Severity variant for caption text and status icons. | `Ux4gSliderCaptionVariant.Helper` |
+| `showMarksAndValues` | `Boolean` | Renders graduation tick marks and numbers below the track. | `false` |
+| `showInputFields` | `Boolean` | Renders dual editable input boxes for start and end bounds. | `false` |
+| `showValueLabels` | `Boolean` | Displays formatted text values above the track. | `false` |
+| `showIndicator` | `Boolean` | Renders floating tooltip bubbles above thumbs while dragging. | `false` |
+| `valueFormatter` | `(Float) -> String` | Custom formatting function for numeric label text. | `{ "${it.toInt()}%" }` |
+
+---
+
+### `Ux4gSliderSize` Reference
+
+| Size | Thumb Diameter (`Dp`) | Track Height (`Dp`) | Typical Usage |
+| :--- | :--- | :--- | :--- |
+| `Small` | `16.dp` | `4.dp` | Compact form cards, dense filter modals, and toolbars |
+| `Medium` | `20.dp` | `6.dp` | Standard mobile forms, calculators, and prominent settings |
+
+---
+
+### `Ux4gSliderCaptionVariant` Reference
+
+| Variant | Icon | Text Color | Context |
+| :--- | :--- | :--- | :--- |
+| `Helper` | None | `onSurface (70% alpha)` | Informational instructions and step summaries |
+| `Error` | `Ux4gIcons.error` | `Ux4gColors.red600` | Value out-of-bounds or mandatory threshold violation |
+| `Warning` | `Ux4gIcons.warning` | `Ux4gColors.secondary` | Soft limit threshold or conditional requirement |
+| `Success` | `Ux4gIcons.success_circle` | `Ux4gColors.green600` | Optimal value confirmation |

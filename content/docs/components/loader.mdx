@@ -1,11 +1,18 @@
 ---
 title: Loader & Spinner
-description: Animated circular spinner and linear indeterminate progress bar for API loading states
+description: Circular animated gradient sweep spinners and customizable loading indicators for asynchronous operations and API requests
 ---
 
 # Loader & Spinner (`Ux4gLoader`)
 
-Animated circular spinner and linear indeterminate progress bar for API loading states.
+The UX4G Loader component displays an animated sweep-gradient circular spinner for asynchronous API operations, page transitions, button loading states, and data fetch indicators.
+
+### Key Capabilities
+
+- **Smooth Sweep Gradient Animation**: Infinite 360-degree rotation (`rotationDuration`) with smooth gradient trail fading and rounded leading cap.
+- **Arc Percentage Control**: Configurable visible circle sweep (`percentage`), supporting full rings (100%), split arcs (75%/50%), or minimal ticks (25%/10%).
+- **Dimension & Stroke Sizing**: Fluid sizing (`size: Dp`) and stroke thickness (`strokeWidth: Dp`) adaptable to buttons, inline fields, or full-screen overlays.
+- **Theme Awareness**: Compatible with `Ux4gColors.primary`, custom accent tints, and dark mode backgrounds.
 
 Import from `com.ux4g.designsystemv1.components.Ux4gLoader`.
 
@@ -16,17 +23,19 @@ Import from `com.ux4g.designsystemv1.components.Ux4gLoader`.
 <ComponentPreview
   title="Ux4gLoader"
   category="Jetpack Compose"
-  code={`// Circular Spinner
-Ux4gLoader(
-    size = Ux4gLoaderSize.Medium,
-    color = Ux4gColors.primary
+  code={`Ux4gLoader(
+    size = 40.dp,
+    color = Ux4gTheme.colorScheme.primary,
+    percentage = 100f,
+    strokeWidth = 4.dp,
+    rotationDuration = 1200
 )`}
 >
   <div className="flex flex-col items-center justify-center py-2">
     <img
-      src="/images/components/loader_preview.png"
-      alt="UX4G Loader & Spinner Preview"
-      className="max-w-full rounded-xl border border-border/60 shadow-sm"
+      src="/images/components/spinner_preview.png"
+      alt="UX4G Circular Spinner Loader Preview"
+      className="max-w-[200px] rounded-xl border border-border/60 shadow-sm"
     />
   </div>
 </ComponentPreview>
@@ -35,14 +44,77 @@ Ux4gLoader(
 
 <h2><MIcon name="code" /> Kotlin Usage</h2>
 
-```kotlin title="Compose Example"
+### 1. Button & Inline Loading Indicator
+
+```kotlin title="ButtonWithSpinner.kt"
+import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import com.ux4g.designsystemv1.components.Ux4gLoader
-import com.ux4g.designsystemv1.components.Ux4gLoaderSize
+import com.ux4g.designsystemv1.components.buttons.Ux4gButton
+import com.ux4g.designsystemv1.foundation.Ux4gColors
 
 @Composable
-fun LoaderExample() {
-    Ux4gLoader(size = Ux4gLoaderSize.Medium)
+fun SubmitActionWithLoader(
+    isLoading: Boolean,
+    onSubmit: () -> Unit
+) {
+    Ux4gButton(
+        onClick = onSubmit,
+        enabled = !isLoading
+    ) {
+        if (isLoading) {
+            Ux4gLoader(
+                size = 18.dp,
+                color = Ux4gColors.white,
+                strokeWidth = 2.dp,
+                percentage = 80f
+            )
+            Spacer(modifier = Modifier.width(8.dp))
+        }
+        androidx.compose.material3.Text(if (isLoading) "Processing..." else "Submit Application")
+    }
+}
+```
+
+### 2. Full-Screen Data Fetch State
+
+```kotlin title="FullScreenLoader.kt"
+import androidx.compose.foundation.layout.*
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
+import com.ux4g.designsystemv1.components.Ux4gLoader
+import com.ux4g.designsystemv1.foundation.Ux4gColors
+import com.ux4g.designsystemv1.foundation.defaultTypography
+
+@Composable
+fun FullPageLoadingState(message: String = "Fetching citizen records...") {
+    Box(
+        modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center
+    ) {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
+            Ux4gLoader(
+                size = 48.dp,
+                color = Ux4gColors.primary,
+                strokeWidth = 4.dp,
+                percentage = 100f
+            )
+            Text(
+                text = message,
+                style = defaultTypography.bM_strong,
+                color = Ux4gColors.neutral700
+            )
+        }
+    }
 }
 ```
 
@@ -50,10 +122,13 @@ fun LoaderExample() {
 
 <h2><MIcon name="settings" /> Parameters</h2>
 
+### `Ux4gLoader` Props
+
 | Prop | Type | Description | Default |
 | :--- | :--- | :--- | :--- |
-| `modifier` | `Modifier` | Compose layout modifier. | `Modifier` |
-| `size` | `Ux4gLoaderSize` | Spinner dimensions: `Small` (16dp), `Medium` (24dp), `Large` (40dp). | `Ux4gLoaderSize.Medium` |
-| `color` | `Color` | Spinner stroke color. | `Ux4gTheme.colorScheme.primary` |
-| `strokeWidth` | `Dp?` | Optional custom stroke thickness. | `null` |
-
+| `modifier` | `Modifier` | Compose modifier applied to the outer canvas layout. | `Modifier` |
+| `size` | `Dp` | Outer diameter of the circular loader spinner. | `40.dp` |
+| `color` | `Color` | Base accent color for the sweep gradient arc and leading cap. | `Ux4gTheme.colorScheme.primary` |
+| `percentage` | `Float` | Visible sweep percentage of the circle (between `0f` and `100f`). | `100f` |
+| `strokeWidth` | `Dp` | Thickness of the drawn loader circular ring. | `4.dp` |
+| `rotationDuration` | `Int` | Duration in milliseconds for one full 360° rotation cycle. | `1200` |
