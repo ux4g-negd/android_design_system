@@ -1,0 +1,128 @@
+---
+title: Aadhaar Input
+description: Specialized 12-digit Indian Aadhaar number input with auto-formatting chunks and real-time Verhoeff checksum algorithm validation
+---
+
+# Aadhaar Input (`Ux4gAadhaarInputField`)
+
+The `Ux4gAadhaarInputField` is a specialized citizen identity input component designed specifically for 12-digit Indian Aadhaar numbers.
+
+It features:
+- **Auto-Formatting**: Automatically chunks raw numeric entry into `XXXX XXXX XXXX` (space inserted after every 4 digits).
+- **Numeric-Only Filtering**: Rejects any non-digit input automatically.
+- **Verhoeff Checksum Algorithm**: Validates the 12th checksum digit in real-time according to official UIDAI specifications.
+- **Dynamic Status Updates**: Automatically transitions to `Ux4gInputFieldStatus.Success` ("Valid Aadhaar number") or `Ux4gInputFieldStatus.Error` ("Please enter a valid Aadhaar number") upon entering 12 digits.
+
+Import from `com.ux4g.designsystemv1.components.inputfield.Ux4gAadhaarInputField`.
+
+---
+
+<h2><MIcon name="smartphone" /> Interactive Previews</h2>
+
+### 1. Aadhaar Input States
+
+Demonstration of empty, valid (Verhoeff checksum passed), and invalid Aadhaar numbers.
+
+<ComponentPreview
+  title="Ux4gAadhaarInputField"
+  category="Jetpack Compose"
+  code={`var aadhaarNumber by remember { mutableStateOf("") }
+
+Ux4gAadhaarInputField(
+    value = aadhaarNumber,
+    onValueChange = { aadhaarNumber = it },
+    label = "Aadhaar Number",
+    placeholder = "XXXX XXXX XXXX",
+    caption = "Enter your 12-digit Aadhaar number"
+)`}
+>
+  <div className="flex flex-col items-center justify-center py-2">
+    <img
+      src="/images/components/aadhaar-input_preview.png"
+      alt="UX4G Aadhaar Input Field Preview"
+      className="max-w-full rounded-xl border border-border/60 shadow-sm"
+    />
+  </div>
+</ComponentPreview>
+
+---
+
+<h2><MIcon name="code" /> Kotlin Usage</h2>
+
+```kotlin title="Aadhaar Verification Example"
+import androidx.compose.foundation.layout.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Badge
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.runtime.*
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
+import com.ux4g.designsystemv1.components.inputfield.Ux4gAadhaarInputField
+import com.ux4g.designsystemv1.components.inputfield.Ux4gInputFieldSize
+
+@Composable
+fun AadhaarVerificationScreen() {
+    var aadhaarInput by remember { mutableStateOf("") }
+
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
+        Ux4gAadhaarInputField(
+            value = aadhaarInput,
+            onValueChange = { formatted -> 
+                aadhaarInput = formatted 
+            },
+            label = "Aadhaar Card Number",
+            required = true,
+            size = Ux4gInputFieldSize.Medium,
+            leadingIcon = Icons.Default.Badge,
+            trailingIcon = if (aadhaarInput.isNotEmpty()) Icons.Default.Close else null,
+            onTrailingIconPressed = { aadhaarInput = "" }
+        )
+    }
+}
+```
+
+---
+
+<h2><MIcon name="settings" /> Parameters</h2>
+
+### `Ux4gAadhaarInputField` Props
+
+| Prop | Type | Description | Default |
+| :--- | :--- | :--- | :--- |
+| `value` <span className="text-red-500 font-bold">*</span> | `String` | Raw or formatted 12-digit Aadhaar string. | — |
+| `onValueChange` <span className="text-red-500 font-bold">*</span> | `(String) -> Unit` | Callback providing the formatted `XXXX XXXX XXXX` string. | — |
+| `modifier` | `Modifier` | Compose layout modifier applied to the outer container. | `Modifier` |
+| `size` | `Ux4gInputFieldSize` | Height variant: `Small` (32dp), `Medium` (40dp), `Large` (48dp), `XL` (56dp). | `Ux4gInputFieldSize.Medium` |
+| `status` | `Ux4gInputFieldStatus` | Status state override. Automatically resolves to `Success` or `Error` upon 12 digits. | `Ux4gInputFieldStatus.Default` |
+| `label` | `String?` | Header title label. | `"Aadhaar Number"` |
+| `required` | `Boolean` | Displays required red asterisk when true. | `false` |
+| `placeholder` | `String?` | Placeholder displayed when field is empty. | `"XXXX XXXX XXXX"` |
+| `caption` | `String?` | Helper or error caption text below input. | `"Enter your 12-digit Aadhaar number"` |
+| `leadingIcon` | `Any?` | Icon placed at start (`ImageVector`, `Ux4gIcon`, or drawable resource Int). | `null` |
+| `trailingIcon` | `Any?` | Icon placed at end (e.g. clear input icon). | `null` |
+| `onTrailingIconPressed` | `(() -> Unit)?` | Click handler for trailing icon. | `null` |
+| `enabled` | `Boolean` | Interactive state. | `true` |
+| `readOnly` | `Boolean` | When true, value cannot be edited. | `false` |
+| `style` | `TextStyle?` | Custom text style override for typed text. | `null` |
+| `labelStyle` | `TextStyle?` | Custom text style override for label. | `null` |
+| `placeholderStyle` | `TextStyle?` | Custom text style override for placeholder. | `null` |
+| `captionStyle` | `TextStyle?` | Custom text style override for caption. | `null` |
+
+---
+
+<h2><MIcon name="check_circle" /> Verhoeff Validation Utility</h2>
+
+`Ux4gAadhaarInputField` exposes standalone helper utilities for programmatic formatting and checksum validation:
+
+```kotlin
+// Validate Aadhaar number programmatically
+val isValid = Ux4gAadhaarInputField.validateAadhaar("999941057058") // Returns true
+
+// Format raw 12 digits to grouped string
+val formatted = Ux4gAadhaarInputField.formatAadhaar("999941057058") // Returns "9999 4105 7058"
+```

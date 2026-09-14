@@ -19,6 +19,8 @@
     "feedback-form",
     "file-upload",
     "input-field",
+    "aadhaar-input",
+    "pan-input",
     "otp-input",
     "journey-timeline",
     "link",

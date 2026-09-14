@@ -1,0 +1,129 @@
+---
+title: PAN Card Input
+description: Specialized 10-character Indian PAN number input with uppercase auto-formatting and Income Tax regex validation
+---
+
+# PAN Card Input (`Ux4gPanInputField`)
+
+The `Ux4gPanInputField` is a specialized citizen identity input component designed specifically for 10-character Indian Permanent Account Numbers (PAN cards).
+
+It features:
+- **Auto-Uppercase Conversion**: Automatically transforms entered alphanumeric characters to uppercase format (`ABCDE1234F`).
+- **Alphanumeric Filter**: Disallows spaces and special characters.
+- **Income Tax PAN Regex Validation**: Validates the official pattern: 5 letters + 4 digits + 1 letter (`^[A-Z]{5}[0-9]{4}[A-Z]{1}$`).
+- **Dynamic Status Updates**: Automatically transitions to `Ux4gInputFieldStatus.Success` ("Valid PAN number") or `Ux4gInputFieldStatus.Error` ("Please enter a valid PAN number") upon reaching 10 characters.
+
+Import from `com.ux4g.designsystemv1.components.inputfield.Ux4gPanInputField`.
+
+---
+
+<h2><MIcon name="smartphone" /> Interactive Previews</h2>
+
+### 1. PAN Card Input States
+
+Demonstration of empty, valid PAN (e.g. `ABCDE1234F`), and invalid PAN entries.
+
+<ComponentPreview
+  title="Ux4gPanInputField"
+  category="Jetpack Compose"
+  code={`var panNumber by remember { mutableStateOf("") }
+
+Ux4gPanInputField(
+    value = panNumber,
+    onValueChange = { panNumber = it },
+    label = "PAN Card Number",
+    placeholder = "ABCDE1234F",
+    caption = "Enter your 10-character PAN number"
+)`}
+>
+  <div className="flex flex-col items-center justify-center py-2">
+    <img
+      src="/images/components/pancard-input_preview.png"
+      alt="UX4G PAN Card Input Field Preview"
+      className="max-w-full rounded-xl border border-border/60 shadow-sm"
+    />
+  </div>
+</ComponentPreview>
+
+---
+
+<h2><MIcon name="code" /> Kotlin Usage</h2>
+
+```kotlin title="PAN Verification Example"
+import androidx.compose.foundation.layout.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.CreditCard
+import androidx.compose.runtime.*
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
+import com.ux4g.designsystemv1.components.inputfield.Ux4gInputFieldSize
+import com.ux4g.designsystemv1.components.inputfield.Ux4gPanInputField
+
+@Composable
+fun PanVerificationScreen() {
+    var panInput by remember { mutableStateOf("") }
+
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
+        Ux4gPanInputField(
+            value = panInput,
+            onValueChange = { cleanPan -> 
+                panInput = cleanPan 
+            },
+            label = "Permanent Account Number",
+            required = true,
+            size = Ux4gInputFieldSize.Medium,
+            leadingIcon = Icons.Default.CreditCard,
+            trailingIcon = if (panInput.isNotEmpty()) Icons.Default.Close else null,
+            onTrailingIconPressed = { panInput = "" }
+        )
+    }
+}
+```
+
+---
+
+<h2><MIcon name="settings" /> Parameters</h2>
+
+### `Ux4gPanInputField` Props
+
+| Prop | Type | Description | Default |
+| :--- | :--- | :--- | :--- |
+| `value` <span className="text-red-500 font-bold">*</span> | `String` | 10-character alphanumeric PAN string. | — |
+| `onValueChange` <span className="text-red-500 font-bold">*</span> | `(String) -> Unit` | Callback providing uppercase 10-character sanitized input. | — |
+| `modifier` | `Modifier` | Compose layout modifier applied to outer container. | `Modifier` |
+| `size` | `Ux4gInputFieldSize` | Height variant: `Small` (32dp), `Medium` (40dp), `Large` (48dp), `XL` (56dp). | `Ux4gInputFieldSize.Medium` |
+| `status` | `Ux4gInputFieldStatus` | Status state override. Automatically resolves to `Success` or `Error` upon 10 characters. | `Ux4gInputFieldStatus.Default` |
+| `label` | `String?` | Header title label. | `"PAN Card Number"` |
+| `required` | `Boolean` | Displays required red asterisk when true. | `false` |
+| `placeholder` | `String?` | Placeholder displayed when field is empty. | `"ABCDE1234F"` |
+| `caption` | `String?` | Helper or error caption text below input. | `"Enter your 10-character PAN number"` |
+| `leadingIcon` | `Any?` | Icon placed at start (`ImageVector`, `Ux4gIcon`, or drawable resource Int). | `null` |
+| `trailingIcon` | `Any?` | Icon placed at end (e.g. clear input icon). | `null` |
+| `onTrailingIconPressed` | `(() -> Unit)?` | Click handler for trailing icon. | `null` |
+| `enabled` | `Boolean` | Interactive state. | `true` |
+| `readOnly` | `Boolean` | When true, value cannot be edited. | `false` |
+| `style` | `TextStyle?` | Custom text style override for typed text. | `null` |
+| `labelStyle` | `TextStyle?` | Custom text style override for label. | `null` |
+| `placeholderStyle` | `TextStyle?` | Custom text style override for placeholder. | `null` |
+| `captionStyle` | `TextStyle?` | Custom text style override for caption. | `null` |
+
+---
+
+<h2><MIcon name="check_circle" /> PAN Regex Validation Utility</h2>
+
+`Ux4gPanInputField` provides programmatic verification:
+
+```kotlin
+// Validate PAN string programmatically
+val isValid = Ux4gPanInputField.validatePan("ABCDE1234F") // Returns true
+val isInvalid = Ux4gPanInputField.validatePan("12345ABCDE") // Returns false
+
+// Format raw input into uppercase 10-char limit
+val formatted = Ux4gPanInputField.formatPan("abcde1234f") // Returns "ABCDE1234F"
+```
