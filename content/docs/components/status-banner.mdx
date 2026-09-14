@@ -1,34 +1,157 @@
 ---
-title: Status Banner
-description: Prominent announcement alert bar for draft state, KYC pending, or system maintenance alerts
+title: Draft Status
+description: Real-time draft auto-save banners, expiration countdown alerts, and application resume cards for multi-step government forms
 ---
 
-# Status Banner (`Ux4gStatusBanner`)
+# Draft Status (`Ux4gStatusBanner`)
 
-Prominent announcement alert bar for draft state, KYC pending, or system maintenance alerts.
+The UX4G Draft Status and Status Banner components communicate live draft state, auto-save synchronization progress, and expiration countdown warnings during multi-step citizen application flows.
 
-Import from `com.ux4g.designsystemv1.components.Ux4gStatusBanner`.
+### Key Capabilities
+
+- **Auto-Save Feedback**: Real-time feedback transitions across saving (`SavingLight` with loader), saved confirmation (`SuccessLight` with check icon), and idle states.
+- **Expiration Alerts**: Timed warning banners for draft expiry (`WarningLight` with date pill, `WarningSolid` for imminent 24-hour urgency, and `ErrorLight` for expired drafts with recovery actions).
+- **Application Draft Cards**: High-density expandable draft cards featuring stage step tags, timestamps, and quick action CTAs ("Resume", "Discard").
+- **Banner Host Overlay**: Built-in animated floating banner host (`Ux4gBannerHost`) with auto-dismiss timers.
+
+Import from `com.ux4g.designsystemv1.components.*`.
 
 ---
 
-<h2><MIcon name="smartphone" /> Interactive Preview</h2>
+<h2><MIcon name="smartphone" /> Interactive Previews</h2>
+
+### 1. Application Draft Progress Card
+
+Displays an active draft application with step progress badge, last saved timestamp, and expandable details.
 
 <ComponentPreview
-  title="Ux4gStatusBanner"
+  title="Ux4gStatusBanner (Draft Application)"
   category="Jetpack Compose"
   code={`Ux4gStatusBanner(
-    title = "Application in Draft State",
-    message = "Your scholarship application is saved as a draft. Please submit before 30 Sep.",
-    variant = Ux4gBannerVariant.Warning,
-    actionLabel = "Resume Form",
-    onActionClick = { /* continue application */ }
+    variant = Ux4gBannerVariant.WarningLight,
+    title = "Income Certificate Application",
+    badge = {
+        Ux4gTag(
+            text = "Step 3 of 5 Document Upload",
+            colorScheme = Ux4gTagColor.Warning,
+            style = Ux4gTagStyle.Tonal
+        )
+    },
+    subtitle = "Last saved: 10 Apr 2026",
+    trailingIcon = {
+        Icon(
+            imageVector = Icons.Default.KeyboardArrowDown,
+            contentDescription = "Expand Details",
+            modifier = Modifier.size(24.dp)
+        )
+    }
 )`}
 >
-  <div className="flex flex-col items-center justify-center py-2">
+  <div className="flex flex-col items-center justify-center py-2 w-full max-w-xl mx-auto">
     <img
-      src="/images/components/status-banner_preview.png"
-      alt="UX4G Status Banner Preview"
-      className="max-w-full rounded-xl border border-border/60 shadow-sm"
+      src="/images/components/draft-status-card_preview.png"
+      alt="UX4G Draft Status Application Card Preview"
+      className="w-full rounded-xl border border-border/60 shadow-sm"
+    />
+  </div>
+</ComponentPreview>
+
+---
+
+### 2. Auto-Save & Expiration Urgency Banners
+
+Showcases critical urgency alert banners (`WarningSolid`), live saving loaders (`SavingLight`), and success save confirmations (`SuccessLight`).
+
+<ComponentPreview
+  title="Ux4gStatusBanner (Urgency & Auto-Save)"
+  category="Jetpack Compose"
+  code={`// 1. Imminent Expiration Urgency (Solid Warning)
+Ux4gStatusBanner(
+    variant = Ux4gBannerVariant.WarningSolid,
+    title = "Your draft expires tomorrow. Submit today",
+    margin = PaddingValues(0.dp)
+)
+
+// 2. Live Auto-Saving with Spinner
+Ux4gStatusBanner(
+    variant = Ux4gBannerVariant.WarningLight,
+    title = "Saving",
+    trailingIcon = {
+        Ux4gLoader(size = 18.dp, strokeWidth = 2.dp, color = Ux4gColors.primary)
+    },
+    margin = PaddingValues(0.dp)
+)
+
+// 3. Draft Saved Confirmation
+Ux4gStatusBanner(
+    variant = Ux4gBannerVariant.SuccessLight,
+    title = "Draft saved successfully at 3:14 PM",
+    leadingIcon = {
+        Icon(Icons.Default.CheckCircle, contentDescription = null, tint = Ux4gColors.green600)
+    },
+    margin = PaddingValues(0.dp)
+)`}
+>
+  <div className="flex flex-col items-center justify-center py-2 w-full max-w-xl mx-auto">
+    <img
+      src="/images/components/draft-status-urgency_preview.png"
+      alt="UX4G Draft Status Urgency and Auto-Save Preview"
+      className="w-full rounded-xl border border-border/60 shadow-sm"
+    />
+  </div>
+</ComponentPreview>
+
+---
+
+### 3. Expiration Warnings & Action Recovery Banners
+
+Illustrates countdown deadline warnings with date tags (`WarningLight`), expired draft notices with recovery actions (`ErrorLight`), and compact success tags.
+
+<ComponentPreview
+  title="Ux4gStatusBanner (Expiration & Actions)"
+  category="Jetpack Compose"
+  code={`// 1. Countdown Warning with Date Tag
+Ux4gStatusBanner(
+    variant = Ux4gBannerVariant.WarningLight,
+    title = "Your draft expires in 5 days",
+    badge = {
+        Ux4gTag(text = "16 Apr", colorScheme = Ux4gTagColor.Warning, style = Ux4gTagStyle.Tonal)
+    },
+    margin = PaddingValues(0.dp)
+)
+
+// 2. Expired Draft with Action CTA
+Ux4gStatusBanner(
+    variant = Ux4gBannerVariant.ErrorLight,
+    title = "Draft expired on 9 April 2026",
+    leadingIcon = {
+        Icon(Icons.Default.Error, contentDescription = null, tint = Ux4gColors.red600)
+    },
+    trailingIcon = {
+        Text(
+            text = "Action",
+            style = defaultTypography.bM_strong.copy(color = Ux4gColors.red800),
+            modifier = Modifier.clickable { /* Reopen draft */ }
+        )
+    },
+    margin = PaddingValues(0.dp)
+)
+
+// 3. Compact Save Confirmation
+Ux4gStatusBanner(
+    variant = Ux4gBannerVariant.SuccessLight,
+    title = "Saved 3:14 PM",
+    leadingIcon = {
+        Icon(Icons.Default.CheckCircle, contentDescription = null, tint = Ux4gColors.green600)
+    },
+    margin = PaddingValues(0.dp)
+)`}
+>
+  <div className="flex flex-col items-center justify-center py-2 w-full max-w-xl mx-auto">
+    <img
+      src="/images/components/draft-status-expiration_preview.png"
+      alt="UX4G Draft Status Expiration and Action Banners Preview"
+      className="w-full rounded-xl border border-border/60 shadow-sm"
     />
   </div>
 </ComponentPreview>
@@ -37,18 +160,79 @@ Import from `com.ux4g.designsystemv1.components.Ux4gStatusBanner`.
 
 <h2><MIcon name="code" /> Kotlin Usage</h2>
 
-```kotlin title="Compose Example"
-import androidx.compose.runtime.Composable
-import com.ux4g.designsystemv1.components.Ux4gStatusBanner
-import com.ux4g.designsystemv1.components.Ux4gBannerVariant
+### 1. Form Auto-Save State Controller
+
+```kotlin title="FormAutoSaveBanner.kt"
+import androidx.compose.foundation.layout.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.CheckCircle
+import androidx.compose.material3.Icon
+import androidx.compose.runtime.*
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
+import com.ux4g.designsystemv1.components.*
+import com.ux4g.designsystemv1.foundation.Ux4gColors
+
+enum class AutoSaveStatus {
+    Idle,
+    Saving,
+    Saved,
+    Error
+}
 
 @Composable
-fun BannerDemo() {
-    Ux4gStatusBanner(
-        title = "Aadhaar e-KYC Pending",
-        message = "Complete your biometrics to activate DBT payment disbursements.",
-        variant = Ux4gBannerVariant.Warning
-    )
+fun AutoSaveIndicator(status: AutoSaveStatus, lastSavedTime: String) {
+    when (status) {
+        AutoSaveStatus.Saving -> {
+            Ux4gStatusBanner(
+                variant = Ux4gBannerVariant.WarningLight,
+                title = "Saving draft...",
+                trailingIcon = {
+                    Ux4gLoader(size = 16.dp, strokeWidth = 2.dp, color = Ux4gColors.primary)
+                }
+            )
+        }
+        AutoSaveStatus.Saved -> {
+            Ux4gStatusBanner(
+                variant = Ux4gBannerVariant.SuccessLight,
+                title = "Draft saved successfully at $lastSavedTime",
+                leadingIcon = {
+                    Icon(Icons.Default.CheckCircle, contentDescription = null, tint = Ux4gColors.green600)
+                }
+            )
+        }
+        AutoSaveStatus.Error -> {
+            Ux4gStatusBanner(
+                variant = Ux4gBannerVariant.ErrorLight,
+                title = "Failed to save draft. Check connection.",
+                onDismiss = { /* retry or dismiss */ }
+            )
+        }
+        AutoSaveStatus.Idle -> { /* hidden */ }
+    }
+}
+```
+
+### 2. Imminent Expiration Warning with Floating Banner Host
+
+```kotlin title="DraftExpirationAlert.kt"
+import androidx.compose.runtime.*
+import com.ux4g.designsystemv1.components.*
+
+@Composable
+fun ApplicationScreenWithDraftAlert(bannerHostState: Ux4gBannerHostState) {
+    LaunchedEffect(Unit) {
+        bannerHostState.show(
+            Ux4gBannerData(
+                variant = Ux4gBannerVariant.WarningSolid,
+                title = "Your draft expires tomorrow. Submit today",
+                subtitle = "Incomplete forms are automatically purged after 15 days of inactivity.",
+                autoDismiss = false
+            )
+        )
+    }
+
+    Ux4gBannerHost(hostState = bannerHostState)
 }
 ```
 
@@ -60,23 +244,37 @@ fun BannerDemo() {
 
 | Prop | Type | Description | Default |
 | :--- | :--- | :--- | :--- |
-| `title` <span className="text-red-500 font-bold">*</span> | `String` | Banner headline message. | `—` |
-| `message` <span className="text-red-500 font-bold">*</span> | `String` | Detailed explanation text. | `—` |
-| `modifier` | `Modifier` | Compose layout modifier. | `Modifier` |
-| `variant` | `Ux4gBannerVariant` | Status tone: `Info`, `Success`, `Warning`, `Error`. | `Ux4gBannerVariant.Info` |
-| `actionLabel` | `String?` | Optional call-to-action button label. | `null` |
-| `onActionClick` | `(() -> Unit)?` | Callback when action is clicked. | `null` |
-| `onDismiss` | `(() -> Unit)?` | Callback when close cross is tapped. | `null` |
-
+| `variant` <span className="text-red-500 font-bold">*</span> | `Ux4gBannerVariant` | Visual style variant (`WarningLight`, `WarningSolid`, `ErrorLight`, `SuccessLight`, etc.). | `—` |
+| `title` <span className="text-red-500 font-bold">*</span> | `String` | Primary header headline text. | `—` |
+| `modifier` | `Modifier` | Compose modifier applied to the outer layout. | `Modifier` |
+| `subtitle` | `String?` | Optional explanatory body text below the title. | `null` |
+| `subtitleWidget` | `(@Composable () -> Unit)?` | Custom composable override for the subtitle area. | `null` |
+| `titleStyle` | `TextStyle?` | Custom typography style override for the title text. | `null` |
+| `subtitleStyle` | `TextStyle?` | Custom typography style override for the subtitle text. | `null` |
+| `badge` | `(@Composable () -> Unit)?` | Optional tag / badge composable placed inline next to the title. | `null` |
+| `leadingIcon` | `(@Composable () -> Unit)?` | Optional leading status icon composable. | `null` |
+| `trailingIcon` | `(@Composable () -> Unit)?` | Optional trailing graphic or action text composable. | `null` |
+| `actions` | `(@Composable () -> Unit)?` | Action buttons / CTAs rendered inside the banner. | `null` |
+| `onDismiss` | `(() -> Unit)?` | Callback triggered when the default close icon is clicked. | `null` |
+| `backgroundColor` | `Color?` | Custom background color override. | `null` |
+| `borderColor` | `Color?` | Custom border stroke color override. | `null` |
+| `actionsAlignment` | `Arrangement.Horizontal` | Layout alignment for action buttons. | `Arrangement.Start` |
+| `width` | `Dp?` | Explicit width constraint. | `null` |
+| `height` | `Dp?` | Explicit height constraint (minimum height is 48.dp). | `null` |
+| `margin` | `PaddingValues` | Outer margin around the banner container. | `PaddingValues(horizontal = 16.dp, vertical = 8.dp)` |
+| `padding` | `PaddingValues` | Inner padding inside the banner card. | `PaddingValues(horizontal = 16.dp, vertical = 12.dp)` |
 
 ---
 
-### `Ux4gBannerVariant` Enum
+### `Ux4gBannerVariant` Reference
 
-| Variant | Tone Color | Use Case |
-| :--- | :--- | :--- |
-| `Info` | Blue (`#3B82F6`) | General informational guidance and system notices |
-| `Success` | Green (`#22C55E`) | Positive confirmations and verified milestone alerts |
-| `Warning` | Amber (`#F59E0B`) | Action required, expiring deadlines, and pending draft states |
-| `Error` | Red (`#EF4444`) | Rejection notices, critical system errors, and authentication failures |
-
+| Variant | Background Color | Text / Icon Color | Context |
+| :--- | :--- | :--- | :--- |
+| `WarningLight` | Light Amber (`12% orange600`) | `neutral900` / `orange600` | Expiration countdowns, soft prerequisites |
+| `WarningSolid` | Solid Orange (`orange600`) | White (`neutral0`) | Imminent deadline alerts, urgent 24h warnings |
+| `ErrorLight` | Light Red (`12% red600`) | `neutral900` / `red600` | Expired drafts, failed auto-save |
+| `SuccessLight` | Light Green (`12% green600`) | `neutral900` / `green600` | Successful draft saved confirmations |
+| `SavingLight` | Light Primary (`12% primary`) | `neutral900` / `primary` | Live background synchronization |
+| `InfoLight` | Light Blue (`12% blue600`) | `neutral900` / `blue600` | General guidelines and information |
+| `NeutralLight` | Translucent Gray (`5% neutral900`) | `neutral900` | Non-urgent system notes and cookie notices |
+| `PrimaryLight` | Light Primary (`12% primary`) | `neutral900` / `primary` | Feature updates and account confirmations |

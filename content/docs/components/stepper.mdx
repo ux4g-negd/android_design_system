@@ -1,34 +1,208 @@
 ---
 title: Stepper
-description: Multi-step form wizard navigation header and capsule stepper for multi-page citizen workflows
+description: Multi-step form wizard navigation headers, vertical workflow progression, and compact capsule steppers for structured citizen workflows
 ---
 
-# Stepper (`Ux4gStepper`)
+# Stepper (`Ux4gStepper` / `Ux4gCompactStepper`)
 
-Multi-step form wizard navigation header and capsule stepper for multi-page citizen workflows.
+The UX4G Stepper component guides citizens through multi-step forms, verification procedures, and onboarding sequences. It provides structured progress feedback through standard full-width steppers and mobile-optimized compact capsule layouts.
 
-Import from `com.ux4g.designsystemv1.components.steppers.Ux4gStepper`.
+### Key Capabilities
+
+- **Standard Stepper Layouts**: Supports `Horizontal` (center-line or bottom-line track) and `Vertical` orientations with customizable line styles (`Solid`, `Dashed`).
+- **Compact Capsule Steppers**: Space-efficient mobile stepper (`Ux4gCompactStepper`) featuring pill indicators with 5 layout arrangements (`Linear`, `RightAligned`, `Centered`, `CenteredBetween`, `Split`).
+- **Detailed Step Metadata**: Supports individual step titles, subtitles, status tags (e.g., "Completed", "In progress"), and error states (`Ux4gStepItem`).
+- **Interactive Navigation**: Integrated previous/next arrow button controls with automatic boundary disabling.
+
+Import from `com.ux4g.designsystemv1.components.steppers.*`.
 
 ---
 
-<h2><MIcon name="smartphone" /> Interactive Preview</h2>
+<h2><MIcon name="smartphone" /> Interactive Previews</h2>
+
+### 1. Horizontal Stepper (Center Line)
+
+Standard horizontal progress stepper with centered connector lines linking numbered and checkmark indicator circles.
 
 <ComponentPreview
-  title="Ux4gStepper"
+  title="Ux4gStepper (Horizontal)"
   category="Jetpack Compose"
-  code={`val steps = listOf("Personal Details", "Address Proof", "Income Details", "Bank Account")
+  code={`val steps = listOf(
+    Ux4gStepItem(title = "Label", description = "Write description here", statusLabel = "Completed"),
+    Ux4gStepItem(title = "Label", description = "Write description here", statusLabel = "In progress"),
+    Ux4gStepItem(title = "Label", description = "Write description here", statusLabel = "Label"),
+    Ux4gStepItem(title = "Label", description = "Write description here", statusLabel = "Label")
+)
 
 Ux4gStepper(
+    totalSteps = 4,
+    currentStep = 2,
     steps = steps,
-    currentStep = currentStepIndex,
-    onStepClick = { index -> currentStepIndex = index }
+    orientation = StepperOrientation.Horizontal,
+    linePlacement = StepperLinePlacement.Center
 )`}
 >
   <div className="flex flex-col items-center justify-center py-2">
     <img
       src="/images/components/stepper_preview.png"
-      alt="UX4G Stepper Preview"
+      alt="UX4G Horizontal Stepper Preview"
       className="max-w-full rounded-xl border border-border/60 shadow-sm"
+    />
+  </div>
+</ComponentPreview>
+
+---
+
+### 2. Horizontal Stepper (Bottom Line)
+
+Horizontal stepper variant where the continuous progress indicator line runs beneath the step labels and descriptions.
+
+<ComponentPreview
+  title="Ux4gStepper (Bottom Line)"
+  category="Jetpack Compose"
+  code={`val steps = listOf(
+    Ux4gStepItem(title = "Label", description = "Write description here", statusLabel = "Completed"),
+    Ux4gStepItem(title = "Label", description = "Write description here", statusLabel = "In progress"),
+    Ux4gStepItem(title = "Label", description = "Write description here", statusLabel = "Label"),
+    Ux4gStepItem(title = "Label", description = "Write description here", statusLabel = "Label")
+)
+
+Ux4gStepper(
+    totalSteps = 4,
+    currentStep = 2,
+    steps = steps,
+    orientation = StepperOrientation.Horizontal,
+    linePlacement = StepperLinePlacement.Bottom
+)`}
+>
+  <div className="flex flex-col items-center justify-center py-2">
+    <img
+      src="/images/components/stepper_horizontal_bottomline_preview.png"
+      alt="UX4G Horizontal Stepper with Bottom Line Preview"
+      className="max-w-full rounded-xl border border-border/60 shadow-sm"
+    />
+  </div>
+</ComponentPreview>
+
+---
+
+### 3. Vertical Stepper
+
+Vertical layout ideal for side navigation rails, long multi-section citizen applications, and mobile forms.
+
+<ComponentPreview
+  title="Ux4gStepper (Vertical)"
+  category="Jetpack Compose"
+  code={`val steps = listOf(
+    Ux4gStepItem(title = "Label", description = "Write description here", statusLabel = "Completed"),
+    Ux4gStepItem(title = "Label", description = "Write description here", statusLabel = "In progress"),
+    Ux4gStepItem(title = "Label", description = "Write description here", statusLabel = "Label"),
+    Ux4gStepItem(title = "Label", description = "Write description here", statusLabel = "Label")
+)
+
+Ux4gStepper(
+    totalSteps = 4,
+    currentStep = 2,
+    steps = steps,
+    orientation = StepperOrientation.Vertical,
+    stepSpacing = 24.dp
+)`}
+>
+  <div className="flex flex-col items-center justify-center py-2">
+    <img
+      src="/images/components/stepper_vertical_preview.png"
+      alt="UX4G Vertical Stepper Preview"
+      className="max-w-[220px] rounded-xl border border-border/60 shadow-sm"
+    />
+  </div>
+</ComponentPreview>
+
+---
+
+### 4. Compact Stepper (Linear)
+
+Compact capsule stepper with previous/next navigation buttons flanking the top pill row, and left-aligned step counter and descriptions.
+
+<ComponentPreview
+  title="Ux4gCompactStepper (Linear)"
+  category="Jetpack Compose"
+  code={`var currentStep by remember { mutableIntStateOf(1) }
+
+Ux4gCompactStepper(
+    totalSteps = 12,
+    currentStep = currentStep,
+    stepLabel = "Step label",
+    description = "Description",
+    layout = Ux4gCompactStepperLayout.Linear,
+    onNext = { if (currentStep < 12) currentStep++ },
+    onPrevious = { if (currentStep > 1) currentStep-- }
+)`}
+>
+  <div className="flex flex-col items-center justify-center py-2">
+    <img
+      src="/images/components/stepper_compact_linear_preview.png"
+      alt="UX4G Compact Stepper Linear Preview"
+      className="max-w-[360px] rounded-xl border border-border/60 shadow-sm"
+    />
+  </div>
+</ComponentPreview>
+
+---
+
+### 5. Compact Stepper (Right Aligned)
+
+Compact capsule stepper variant where the step title and description are aligned to the right, balanced against the step count on the left.
+
+<ComponentPreview
+  title="Ux4gCompactStepper (Right Aligned)"
+  category="Jetpack Compose"
+  code={`var currentStep by remember { mutableIntStateOf(1) }
+
+Ux4gCompactStepper(
+    totalSteps = 12,
+    currentStep = currentStep,
+    stepLabel = "Step label",
+    description = "Description",
+    layout = Ux4gCompactStepperLayout.RightAligned,
+    onNext = { if (currentStep < 12) currentStep++ },
+    onPrevious = { if (currentStep > 1) currentStep-- }
+)`}
+>
+  <div className="flex flex-col items-center justify-center py-2">
+    <img
+      src="/images/components/stepper-compact-rightaligned_preview.png"
+      alt="UX4G Compact Stepper Right Aligned Preview"
+      className="max-w-[360px] rounded-xl border border-border/60 shadow-sm"
+    />
+  </div>
+</ComponentPreview>
+
+---
+
+### 6. Compact Stepper (Centered Split)
+
+Centered compact stepper with top progress capsules, middle step count, and centered title/description flanked by circular navigation buttons.
+
+<ComponentPreview
+  title="Ux4gCompactStepper (Centered)"
+  category="Jetpack Compose"
+  code={`var currentStep by remember { mutableIntStateOf(1) }
+
+Ux4gCompactStepper(
+    totalSteps = 12,
+    currentStep = currentStep,
+    stepLabel = "Step label",
+    description = "Description",
+    layout = Ux4gCompactStepperLayout.Centered,
+    onNext = { if (currentStep < 12) currentStep++ },
+    onPrevious = { if (currentStep > 1) currentStep-- }
+)`}
+>
+  <div className="flex flex-col items-center justify-center py-2">
+    <img
+      src="/images/components/stepper-compact-center_preview.png"
+      alt="UX4G Compact Stepper Centered Preview"
+      className="max-w-[360px] rounded-xl border border-border/60 shadow-sm"
     />
   </div>
 </ComponentPreview>
@@ -37,18 +211,84 @@ Ux4gStepper(
 
 <h2><MIcon name="code" /> Kotlin Usage</h2>
 
-```kotlin title="Compose Example"
+### 1. Multi-Step Citizen Application Wizard
+
+```kotlin title="CitizenFormWizard.kt"
+import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.*
-import com.ux4g.designsystemv1.components.steppers.Ux4gStepper
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
+import com.ux4g.designsystemv1.components.steppers.*
 
 @Composable
-fun FormWizardExample() {
-    var step by remember { mutableStateOf(0) }
+fun CitizenRegistrationWizard(currentStepIndex: Int) {
+    val steps = remember {
+        listOf(
+            Ux4gStepItem(
+                title = "Applicant Details",
+                description = "Name, DOB, & Gender",
+                statusLabel = "Completed"
+            ),
+            Ux4gStepItem(
+                title = "Address & Domicile",
+                description = "Permanent Address Verification",
+                statusLabel = "In progress"
+            ),
+            Ux4gStepItem(
+                title = "Income & Caste",
+                description = "Certificates Upload",
+                statusLabel = "Pending"
+            ),
+            Ux4gStepItem(
+                title = "Review & Submit",
+                description = "Final e-Sign Verification",
+                statusLabel = "Pending"
+            )
+        )
+    }
 
     Ux4gStepper(
-        steps = listOf("Identity", "Documents", "Review"),
+        totalSteps = 4,
+        currentStep = currentStepIndex,
+        steps = steps,
+        orientation = StepperOrientation.Horizontal,
+        linePlacement = StepperLinePlacement.Center,
+        modifier = Modifier.fillMaxWidth().padding(16.dp)
+    )
+}
+```
+
+### 2. Mobile Compact Capsule Stepper
+
+```kotlin title="MobileOnboardingStepper.kt"
+import androidx.compose.foundation.layout.padding
+import androidx.compose.runtime.*
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
+import com.ux4g.designsystemv1.components.steppers.*
+
+@Composable
+fun MobileOnboardingFlow() {
+    var step by remember { mutableIntStateOf(1) }
+
+    val stepLabels = listOf(
+        "Mobile Verification" to "Enter 6-digit OTP",
+        "PAN Verification" to "Enter 10-digit PAN",
+        "Bank Account" to "IFSC and Account No",
+        "Set MPIN" to "Choose 4-digit Security PIN"
+    )
+
+    val currentInfo = stepLabels.getOrElse(step - 1) { "Complete" to "" }
+
+    Ux4gCompactStepper(
+        totalSteps = stepLabels.size,
         currentStep = step,
-        onStepClick = { step = it }
+        stepLabel = currentInfo.first,
+        description = currentInfo.second,
+        layout = Ux4gCompactStepperLayout.Linear,
+        onNext = { if (step < stepLabels.size) step++ },
+        onPrevious = { if (step > 1) step-- },
+        modifier = Modifier.padding(16.dp)
     )
 }
 ```
@@ -61,19 +301,73 @@ fun FormWizardExample() {
 
 | Prop | Type | Description | Default |
 | :--- | :--- | :--- | :--- |
-| `steps` <span className="text-red-500 font-bold">*</span> | `List<String>` | List of step title labels in the wizard. | `—` |
-| `currentStep` <span className="text-red-500 font-bold">*</span> | `Int` | Active 0-indexed step number. | `—` |
-| `onStepClick` | `((Int) -> Unit)?` | Optional step jump callback handler. | `null` |
-| `modifier` | `Modifier` | Compose layout modifier. | `Modifier` |
-
+| `totalSteps` <span className="text-red-500 font-bold">*</span> | `Int` | Total number of steps in the sequence. | `—` |
+| `currentStep` <span className="text-red-500 font-bold">*</span> | `Int` | Active step index (1-indexed). | `—` |
+| `modifier` | `Modifier` | Compose modifier applied to the outer layout. | `Modifier` |
+| `orientation` | `StepperOrientation` | Stepper orientation (`Horizontal` or `Vertical`). | `StepperOrientation.Horizontal` |
+| `lineStyle` | `StepperLineStyle` | Visual connecting line style (`Solid` or `Dashed`). | `StepperLineStyle.Solid` |
+| `linePlacement` | `StepperLinePlacement` | Connecting line position (`Center` or `Bottom`). | `StepperLinePlacement.Center` |
+| `steps` | `List<Ux4gStepItem>` | List of step models providing titles, descriptions, and statuses. | `emptyList()` |
+| `stepSize` | `Dp` | Diameter of the circular step icon indicator. | `32.dp` |
+| `showLabels` | `Boolean` | Whether step titles, descriptions, and statuses are displayed. | `true` |
+| `edgeLabelAlignment` | `Boolean` | In horizontal layout, aligns first step to start and last step to end. | `false` |
+| `activeStepBackground` | `Boolean` | In bottom-line layout, highlights active step column with light tint. | `false` |
+| `stepSpacing` | `Dp` | Spacing between steps in vertical orientation. | `24.dp` |
+| `alignIconWithDescription` | `Boolean` | Offsets top step icon to align with multi-line descriptions in vertical mode. | `false` |
+| `colors` | `Ux4gStepperColors` | Color palette configuration for circles, lines, and text. | `Ux4gStepperDefaults.colors()` |
 
 ---
 
-### `Ux4gCapsuleStepper` Props
+### `Ux4gStepItem` Model Props
+
+| Prop | Type | Description | Default |
+| :--- | :--- | :--- | :--- |
+| `title` <span className="text-red-500 font-bold">*</span> | `String` | Main label title for the step. | `—` |
+| `description` | `String?` | Optional explanatory subtitle text. | `null` |
+| `statusLabel` | `String?` | Optional status text override (e.g., `"Completed"`, `"In progress"`). | `null` |
+| `isError` | `Boolean` | Whether this step is rendered in an error state. | `false` |
+| `titleStyle` | `TextStyle?` | Custom typography override for the step title. | `null` |
+| `descriptionStyle` | `TextStyle?` | Custom typography override for the step description. | `null` |
+| `statusStyle` | `TextStyle?` | Custom typography override for the status label. | `null` |
+
+---
+
+### `Ux4gCompactStepper` Props
 
 | Prop | Type | Description | Default |
 | :--- | :--- | :--- | :--- |
 | `totalSteps` <span className="text-red-500 font-bold">*</span> | `Int` | Total number of steps in the sequence. | `—` |
-| `currentStep` <span className="text-red-500 font-bold">*</span> | `Int` | Active step index. | `—` |
-| `modifier` | `Modifier` | Compose layout modifier. | `Modifier` |
+| `currentStep` <span className="text-red-500 font-bold">*</span> | `Int` | Active step index (1-indexed). | `—` |
+| `stepLabel` <span className="text-red-500 font-bold">*</span> | `String` | Primary title label for the active step. | `—` |
+| `modifier` | `Modifier` | Compose modifier applied to the container. | `Modifier` |
+| `description` | `String?` | Optional description for the active step. | `null` |
+| `onNext` | `() -> Unit` | Callback invoked when the user taps Next. | `{}` |
+| `onPrevious` | `() -> Unit` | Callback invoked when the user taps Previous. | `{}` |
+| `layout` | `Ux4gCompactStepperLayout` | Layout arrangement (`Linear`, `RightAligned`, `Centered`, `CenteredBetween`, `Split`). | `Ux4gCompactStepperLayout.Linear` |
+| `labelAlignment` | `Alignment.Horizontal` | Text alignment for labels in linear layout. | `Alignment.Start` |
+| `activeColor` | `Color?` | Custom color override for the active capsule pill. | `null` |
+| `inactiveColor` | `Color?` | Custom color override for inactive capsule pills. | `null` |
+| `colors` | `Ux4gCompactStepperColors` | Color palette configuration. | `Ux4gCompactStepperDefaults.colors()` |
 
+---
+
+### `StepperOrientation` & `StepperLinePlacement` Reference
+
+| Orientation / Placement | Description |
+| :--- | :--- |
+| `StepperOrientation.Horizontal` | Standard horizontal layout across desktop headers and top wizard bars. |
+| `StepperOrientation.Vertical` | Vertical timeline column layout with connecting lines running downward. |
+| `StepperLinePlacement.Center` | Connecting line passes through the center of the step circle icons. |
+| `StepperLinePlacement.Bottom` | Connecting line runs horizontally along the bottom baseline beneath labels. |
+
+---
+
+### `Ux4gCompactStepperLayout` Reference
+
+| Layout Variant | Description |
+| :--- | :--- |
+| `Linear` | Navigation buttons flank the top capsule row, with title/desc on bottom-left. |
+| `RightAligned` | Top row holds capsules and buttons; bottom-left holds step count, bottom-right holds title/desc. |
+| `Centered` | Top row holds capsules; middle row holds buttons and step count; bottom holds centered title/desc. |
+| `CenteredBetween` | Top row holds capsules; middle holds step count; bottom row flanks title with left/right buttons. |
+| `Split` | Top row holds capsules; bottom-left holds title/desc, bottom-right holds step count & buttons. |
