@@ -1,38 +1,241 @@
 ---
 title: Chips
-description: Filter, choice, and input chips for categorical selection, scheme tagging, and quick actions
+description: Interactive Choice Chip, Filter Chip, Input Chip with dismiss button, InputChipField with text/dropdown suggestions, and ChipGroup layouts
 ---
 
-# Chips (`Ux4gChip`)
+# Chips Suite (`Ux4gChips`)
 
-Filter, choice, and input chips for categorical selection, scheme tagging, and quick actions.
+The UX4G Chips suite provides compact interactive elements for selection, filtering, dynamic tag inputs, and categorical tagging:
+1. **Choice Chip (`Ux4gChoiceChip`)**: Single or multiple select chips with solid primary active fill, icons, and custom colors.
+2. **Filter Chip (`Ux4gFilterChip`)**: Subtle filter toggles with soft 8% primary tint and primary text on selection.
+3. **Input Chip (`Ux4gInputChip`)**: Removable tag chips with leading avatar/icon and a trailing dismiss (`✕`) button in `XS`, `S`, `M` sizes.
+4. **Input Chip Field (`Ux4gInputChipField`)**: Comprehensive text or dropdown input container allowing citizens to add and manage dynamic chips.
+5. **Chip Group (`Ux4gChipGroup`)**: Layout container supporting horizontal scroll or wrapping multi-line flow layouts.
 
-Import from `com.ux4g.designsystemv1.components.Ux4gChip`.
+Import from `com.ux4g.designsystemv1.components.*`.
 
 ---
 
-<h2><MIcon name="smartphone" /> Interactive Preview</h2>
+<h2><MIcon name="smartphone" /> Interactive Previews</h2>
+
+### 1. Choice Chip (`Ux4gChoiceChip`)
 
 <ComponentPreview
-  title="Ux4gChip"
+  title="Ux4gChoiceChip (Solid Fill on Selection)"
   category="Jetpack Compose"
-  code={`// Filter Chip
-Ux4gFilterChip(
+  code={`// 1. Selected Choice Chip with Leading Check Icon
+var isSelected by remember { mutableStateOf(true) }
+Ux4gChoiceChip(
+    text = "Selected",
     selected = isSelected,
     onClick = { isSelected = !isSelected },
-    label = "Agriculture & Farming"
+    leadingContent = {
+        Icon(
+            imageVector = Icons.Default.Check,
+            contentDescription = null,
+            modifier = Modifier.size(16.dp),
+            tint = Ux4gColors.neutral50
+        )
+    }
 )
 
-// Action Chip
-Ux4gActionChip(
-    label = "Download Certificate",
-    onClick = { /* download action */ }
+// 2. Unselected Choice Chip
+Ux4gChoiceChip(
+    text = "Unselected",
+    selected = false,
+    onClick = { /* toggle */ }
+)
+
+// 3. Small Choice Chip with Trailing Star Icon
+Ux4gChoiceChip(
+    text = "Small",
+    selected = true,
+    size = Ux4gChoiceChipSize.S,
+    onClick = { /* toggle */ },
+    trailingContent = {
+        Icon(
+            imageVector = Icons.Default.Star,
+            contentDescription = null,
+            modifier = Modifier.size(12.dp),
+            tint = Ux4gColors.neutral50
+        )
+    }
 )`}
 >
   <div className="flex flex-col items-center justify-center py-2">
     <img
-      src="/images/components/chips_preview.png"
-      alt="UX4G Chips Preview"
+      src="/images/components/chips_choice_preview.png"
+      alt="UX4G Choice Chip Preview"
+      className="max-w-full rounded-xl border border-border/60 shadow-sm"
+    />
+  </div>
+</ComponentPreview>
+
+---
+
+### 2. Filter Chip (`Ux4gFilterChip`)
+
+<ComponentPreview
+  title="Ux4gFilterChip (Soft Tinted Filter Toggle)"
+  category="Jetpack Compose"
+  code={`// 1. Selected Filter Chip (Primary 8% Tint)
+var filterSelected by remember { mutableStateOf(true) }
+Ux4gFilterChip(
+    text = "Selected",
+    selected = filterSelected,
+    onClick = { filterSelected = !filterSelected }
+)
+
+// 2. Unselected Filter Chip
+Ux4gFilterChip(
+    text = "Unselected",
+    selected = false,
+    onClick = { /* toggle filter */ }
+)
+
+// 3. Small Size Filter Chip
+Ux4gFilterChip(
+    text = "Small Filter",
+    selected = true,
+    size = Ux4gFilterChipSize.S,
+    onClick = { /* toggle */ }
+)`}
+>
+  <div className="flex flex-col items-center justify-center py-2">
+    <img
+      src="/images/components/chips_filter_preview.png"
+      alt="UX4G Filter Chip Preview"
+      className="max-w-full rounded-xl border border-border/60 shadow-sm"
+    />
+  </div>
+</ComponentPreview>
+
+---
+
+### 3. Input Chip (`Ux4gInputChip`)
+
+<ComponentPreview
+  title="Ux4gInputChip (Dismissible Tag Chips)"
+  category="Jetpack Compose"
+  code={`// 1. Medium Input Chip with Leading Person Icon
+Ux4gInputChip(
+    text = "Medium",
+    size = Ux4gInputChipSize.M,
+    onDismiss = { /* remove chip */ },
+    leadingContent = {
+        Icon(
+            imageVector = Icons.Default.Person,
+            contentDescription = null,
+            modifier = Modifier.size(16.dp),
+            tint = Ux4gColors.neutral700
+        )
+    }
+)
+
+// 2. Small Input Chip
+Ux4gInputChip(
+    text = "Small",
+    size = Ux4gInputChipSize.S,
+    onDismiss = { /* remove chip */ }
+)
+
+// 3. Extra Small (XS) Input Chip
+Ux4gInputChip(
+    text = "XS Chip",
+    size = Ux4gInputChipSize.XS,
+    onDismiss = { /* remove chip */ }
+)`}
+>
+  <div className="flex flex-col items-center justify-center py-2">
+    <img
+      src="/images/components/chips_input_preview.png"
+      alt="UX4G Input Chip Preview"
+      className="max-w-full rounded-xl border border-border/60 shadow-sm"
+    />
+  </div>
+</ComponentPreview>
+
+---
+
+### 4. Input Chip Field (`Ux4gInputChipField`)
+
+<ComponentPreview
+  title="Ux4gInputChipField (Dynamic Text & Dropdown Input)"
+  category="Jetpack Compose"
+  code={`var inputText by remember { mutableStateOf("") }
+val chipList = remember { mutableStateListOf("Agriculture", "Healthcare", "Education") }
+
+// Text Input Mode with Dynamic Chip Addition
+Ux4gInputChipField(
+    value = inputText,
+    onValueChange = { inputText = it },
+    placeholder = "Type tag and press enter...",
+    onAddChip = { tag -> chipList.add(tag) },
+    chips = chipList.map { tag ->
+        {
+            Ux4gInputChip(
+                text = tag,
+                onDismiss = { chipList.remove(tag) }
+            )
+        }
+    },
+    arrangement = Ux4gChipGroupArrangement.Wrap
+)`}
+>
+  <div className="flex flex-col items-center justify-center py-2">
+    <img
+      src="/images/components/chips_input_field_preview.png"
+      alt="UX4G Input Chip Field Preview"
+      className="max-w-full rounded-xl border border-border/60 shadow-sm"
+    />
+  </div>
+</ComponentPreview>
+
+---
+
+### 5. Chip Group (`Ux4gChipGroup`)
+
+<ComponentPreview
+  title="Ux4gChipGroup (Horizontal & Wrap Arrangements)"
+  category="Jetpack Compose"
+  code={`val categories = listOf("All Schemes", "Direct Benefit", "Farmers", "Scholarships", "Pensions", "Healthcare")
+var selectedCategory by remember { mutableStateOf("All Schemes") }
+
+// 1. Horizontal Scrollable Chip Group
+Ux4gChipGroup(
+    arrangement = Ux4gChipGroupArrangement.Horizontal,
+    spacing = 8.dp,
+    chips = categories.map { category ->
+        {
+            Ux4gChoiceChip(
+                text = category,
+                selected = selectedCategory == category,
+                onClick = { selectedCategory = category }
+            )
+        }
+    }
+)
+
+// 2. Multi-line Flow Wrapping Chip Group
+Ux4gChipGroup(
+    arrangement = Ux4gChipGroupArrangement.Wrap,
+    spacing = 8.dp,
+    runSpacing = 8.dp,
+    chips = categories.map { category ->
+        {
+            Ux4gFilterChip(
+                text = category,
+                selected = selectedCategory == category,
+                onClick = { selectedCategory = category }
+            )
+        }
+    }
+)`}
+>
+  <div className="flex flex-col items-center justify-center py-2">
+    <img
+      src="/images/components/chips_group.png"
+      alt="UX4G Chip Group Preview"
       className="max-w-full rounded-xl border border-border/60 shadow-sm"
     />
   </div>
@@ -42,20 +245,88 @@ Ux4gActionChip(
 
 <h2><MIcon name="code" /> Kotlin Usage</h2>
 
-```kotlin title="Compose Example"
+```kotlin title="Chips Showcase Example"
+import androidx.compose.foundation.layout.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Star
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
 import androidx.compose.runtime.*
-import com.ux4g.designsystemv1.components.Ux4gFilterChip
-import com.ux4g.designsystemv1.components.Ux4gActionChip
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
+import com.ux4g.designsystemv1.components.*
+import com.ux4g.designsystemv1.foundation.Ux4gColors
+import com.ux4g.designsystemv1.foundation.defaultTypography
 
 @Composable
-fun ChipGroupExample() {
-    var selected by remember { mutableStateOf(true) }
+fun ChipsShowcaseScreen() {
+    Column(
+        modifier = Modifier.padding(16.dp),
+        verticalArrangement = Arrangement.spacedBy(20.dp)
+    ) {
+        // 1. Choice Chips
+        Text("Choice Chips", style = defaultTypography.hS_default)
+        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            var choice1 by remember { mutableStateOf(true) }
+            Ux4gChoiceChip(
+                text = "Selected",
+                selected = choice1,
+                onClick = { choice1 = !choice1 },
+                leadingContent = {
+                    Icon(Icons.Default.Check, null, Modifier.size(16.dp), tint = Ux4gColors.neutral50)
+                }
+            )
+            Ux4gChoiceChip(text = "Unselected", selected = false, onClick = {})
+            Ux4gChoiceChip(
+                text = "Small",
+                selected = true,
+                size = Ux4gChoiceChipSize.S,
+                onClick = {},
+                trailingContent = {
+                    Icon(Icons.Default.Star, null, Modifier.size(12.dp), tint = Ux4gColors.neutral50)
+                }
+            )
+        }
 
-    Ux4gFilterChip(
-        label = "Scholarships",
-        selected = selected,
-        onClick = { selected = !selected }
-    )
+        // 2. Filter Chips
+        Text("Filter Chips", style = defaultTypography.hS_default)
+        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            var filter1 by remember { mutableStateOf(true) }
+            Ux4gFilterChip(text = "Selected", selected = filter1, onClick = { filter1 = !filter1 })
+            Ux4gFilterChip(text = "Unselected", selected = false, onClick = {})
+            Ux4gFilterChip(text = "Small Filter", selected = true, size = Ux4gFilterChipSize.S, onClick = {})
+        }
+
+        // 3. Input Chips
+        Text("Input Chips", style = defaultTypography.hS_default)
+        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            Ux4gInputChip(
+                text = "Medium",
+                onDismiss = {},
+                leadingContent = {
+                    Icon(Icons.Default.Person, null, Modifier.size(16.dp), tint = Ux4gColors.neutral700)
+                }
+            )
+            Ux4gInputChip(text = "Small", onDismiss = {}, size = Ux4gInputChipSize.S)
+            Ux4gInputChip(text = "XS Chip", onDismiss = {}, size = Ux4gInputChipSize.XS)
+        }
+
+        // 4. Input Chip Field
+        Text("Input Chip Field", style = defaultTypography.hS_default)
+        var inputVal by remember { mutableStateOf("") }
+        val tags = remember { mutableStateListOf("Aadhaar", "PAN Card", "Voter ID") }
+        Ux4gInputChipField(
+            value = inputVal,
+            onValueChange = { inputVal = it },
+            placeholder = "Add required document...",
+            onAddChip = { tags.add(it) },
+            chips = tags.map { tag ->
+                { Ux4gInputChip(text = tag, onDismiss = { tags.remove(tag) }) }
+            }
+        )
+    }
 }
 ```
 
@@ -63,28 +334,120 @@ fun ChipGroupExample() {
 
 <h2><MIcon name="settings" /> Parameters</h2>
 
-### `Ux4gFilterChip` Props
+### 1. `Ux4gChoiceChip` Props
 
 | Prop | Type | Description | Default |
 | :--- | :--- | :--- | :--- |
-| `label` <span className="text-red-500 font-bold">*</span> | `String` | Text displayed inside the chip. | `—` |
-| `selected` <span className="text-red-500 font-bold">*</span> | `Boolean` | Current selected state of the filter chip. | `false` |
-| `onClick` <span className="text-red-500 font-bold">*</span> | `() -> Unit` | Callback invoked when chip is tapped. | `—` |
+| `text` <span className="text-red-500 font-bold">*</span> | `String` | Label text displayed inside the choice chip. | — |
+| `selected` <span className="text-red-500 font-bold">*</span> | `Boolean` | Whether the chip is currently active/selected. | — |
+| `onClick` <span className="text-red-500 font-bold">*</span> | `() -> Unit` | Click callback handler. | — |
 | `modifier` | `Modifier` | Compose layout modifier. | `Modifier` |
-| `enabled` | `Boolean` | Interactive enabled state. | `true` |
-| `leadingIcon` | `(@Composable () -> Unit)?` | Optional leading icon composable slot. | `null` |
-| `trailingIcon` | `(@Composable () -> Unit)?` | Optional trailing icon (e.g. close/clear cross). | `null` |
-
+| `enabled` | `Boolean` | Interactive touch state. | `true` |
+| `size` | `Ux4gChoiceChipSize` | Dimension preset: `S` (Small) or `M` (Medium). | `Ux4gChoiceChipSize.M` |
+| `leadingContent` | `(@Composable () -> Unit)?` | Optional composable icon/slot before label text. | `null` |
+| `trailingContent` | `(@Composable () -> Unit)?` | Optional composable icon/slot after label text. | `null` |
+| `borderRadius` | `Dp` | Corner rounding radius. | `4.dp` (`Ux4gRadius.Radius4`) |
+| `selectedBackgroundColor` | `Color?` | Background fill when selected (`null` uses `Ux4gColors.primary`). | `null` |
+| `unselectedBackgroundColor` | `Color?` | Background fill when unselected (`null` uses white surface). | `null` |
+| `selectedBorderColor` | `Color?` | Border color when selected. | `null` |
+| `unselectedBorderColor` | `Color?` | Border color when unselected (`null` uses onSurface 20%). | `null` |
+| `selectedTextColor` | `Color?` | Text color when selected (`null` uses white `#FFFFFF`). | `null` |
+| `unselectedTextColor` | `Color?` | Text color when unselected (`null` uses dark onSurface). | `null` |
+| `selectedBorderWidth` | `Dp` | Border thickness when selected. | `1.dp` |
+| `unselectedBorderWidth` | `Dp` | Border thickness when unselected. | `1.dp` |
 
 ---
 
-### `Ux4gActionChip` Props
+### 2. `Ux4gFilterChip` Props
 
 | Prop | Type | Description | Default |
 | :--- | :--- | :--- | :--- |
-| `label` <span className="text-red-500 font-bold">*</span> | `String` | Action button label text. | `—` |
-| `onClick` <span className="text-red-500 font-bold">*</span> | `() -> Unit` | Action callback handler. | `—` |
+| `text` <span className="text-red-500 font-bold">*</span> | `String` | Filter category text label. | — |
+| `selected` <span className="text-red-500 font-bold">*</span> | `Boolean` | Selection state of the filter chip. | — |
+| `onClick` <span className="text-red-500 font-bold">*</span> | `() -> Unit` | Click callback handler. | — |
 | `modifier` | `Modifier` | Compose layout modifier. | `Modifier` |
-| `leadingIcon` | `(@Composable () -> Unit)?` | Optional leading icon composable slot. | `null` |
-| `enabled` | `Boolean` | Interactive enabled state. | `true` |
+| `enabled` | `Boolean` | Interactive touch state. | `true` |
+| `size` | `Ux4gFilterChipSize` | Dimension preset: `S` (28dp height) or `M` (32dp height). | `Ux4gFilterChipSize.M` |
+| `leadingContent` | `(@Composable () -> Unit)?` | Optional composable icon before filter text. | `null` |
+| `borderRadius` | `Dp` | Corner rounding radius. | `4.dp` (`Ux4gRadius.Radius4`) |
+| `selectedBackgroundColor` | `Color?` | Background fill when selected (`null` uses primary 8% alpha). | `null` |
+| `unselectedBackgroundColor` | `Color?` | Background fill when unselected (`null` uses surface). | `null` |
+| `selectedBorderColor` | `Color?` | Border color when selected. | `null` |
+| `unselectedBorderColor` | `Color?` | Border color when unselected. | `null` |
+| `selectedTextColor` | `Color?` | Text color when selected (`null` uses primary purple). | `null` |
+| `unselectedTextColor` | `Color?` | Text color when unselected. | `null` |
+| `selectedBorderWidth` | `Dp` | Border thickness when selected. | `1.dp` |
+| `unselectedBorderWidth` | `Dp` | Border thickness when unselected. | `1.dp` |
 
+---
+
+### 3. `Ux4gInputChip` Props
+
+| Prop | Type | Description | Default |
+| :--- | :--- | :--- | :--- |
+| `text` <span className="text-red-500 font-bold">*</span> | `String` | Tag text label displayed inside chip. | — |
+| `onDismiss` <span className="text-red-500 font-bold">*</span> | `() -> Unit` | Callback invoked when citizen taps the trailing dismiss (`✕`) icon. | — |
+| `modifier` | `Modifier` | Compose layout modifier. | `Modifier` |
+| `enabled` | `Boolean` | Interactive touch state. | `true` |
+| `size` | `Ux4gInputChipSize` | Preset dimensions: `XS` (20dp), `S` (28dp), `M` (32dp). | `Ux4gInputChipSize.M` |
+| `leadingContent` | `(@Composable () -> Unit)?` | Optional leading composable slot (e.g. avatar or icon). | `null` |
+| `borderRadius` | `Dp` | Corner rounding radius. | `4.dp` (`Ux4gRadius.Radius4`) |
+| `backgroundColor` | `Color?` | Container background fill color override. | `null` |
+| `borderColor` | `Color?` | Border outline stroke color. | `null` |
+| `textColor` | `Color?` | Typography text color. | `null` |
+| `borderWidth` | `Dp` | Border thickness. | `1.dp` |
+
+---
+
+### 4. `Ux4gInputChipField` Props
+
+| Prop | Type | Description | Default |
+| :--- | :--- | :--- | :--- |
+| `value` <span className="text-red-500 font-bold">*</span> | `String` | Current text value in the input field. | — |
+| `onValueChange` <span className="text-red-500 font-bold">*</span> | `(String) -> Unit` | Callback when text changes. | — |
+| `onAddChip` <span className="text-red-500 font-bold">*</span> | `(String) -> Unit` | Callback invoked when citizen submits/clicks add or selects an option. | — |
+| `modifier` | `Modifier` | Compose layout modifier. | `Modifier` |
+| `placeholder` | `String` | Placeholder text when input is empty. | `"Please select.."` |
+| `leadingIcon` | `(@Composable () -> Unit)?` | Optional icon composable at start of input field. | `null` |
+| `isDropdown` | `Boolean` | When `true`, displays a selectable dropdown menu instead of raw text input. | `false` |
+| `dropdownOptions` | `List<String>` | List of selectable choices when `isDropdown = true`. | `emptyList()` |
+| `chips` | `List<@Composable () -> Unit>` | List of chip composable items to render below the field. | `emptyList()` |
+| `arrangement` | `Ux4gChipGroupArrangement` | Layout for child chips: `Horizontal` or `Wrap`. | `Ux4gChipGroupArrangement.Horizontal` |
+
+---
+
+### 5. `Ux4gChipGroup` Props
+
+| Prop | Type | Description | Default |
+| :--- | :--- | :--- | :--- |
+| `chips` <span className="text-red-500 font-bold">*</span> | `List<@Composable () -> Unit>` | List of chip composables to render in the group. | — |
+| `modifier` | `Modifier` | Compose layout modifier. | `Modifier` |
+| `arrangement` | `Ux4gChipGroupArrangement` | Layout arrangement: `Horizontal` (scrollable row) or `Wrap` (`FlowRow`). | `Ux4gChipGroupArrangement.Horizontal` |
+| `spacing` | `Dp` | Horizontal spacing between adjacent chips. | `8.dp` |
+| `runSpacing` | `Dp` | Vertical spacing between consecutive lines in `Wrap` mode. | `8.dp` |
+
+---
+
+### Token & Enum Tables
+
+#### `Ux4gChoiceChipSize` & `Ux4gFilterChipSize`
+
+| Size Token | Choice Chip Padding | Filter Chip Height & Padding | Typography |
+| :--- | :--- | :--- | :--- |
+| `S` (Small) | Horizontal: 12dp, Vertical: 6dp | Height: 28dp, Horizontal: 12dp | Label Medium (`12.sp`) |
+| `M` (Medium) | Horizontal: 16dp, Vertical: 8dp | Height: 32dp, Horizontal: 16dp | Label Large (`14.sp`) |
+
+#### `Ux4gInputChipSize`
+
+| Size Token | Container Height | Horizontal Padding | Icon Size | Typography |
+| :--- | :--- | :--- | :--- | :--- |
+| `XS` | `20.dp` | `8.dp` | `12.dp` | Label Small (`11.sp`) |
+| `S` | `28.dp` | `12.dp` | `16.dp` | Label Medium (`12.sp`) |
+| `M` | `32.dp` | `16.dp` | `16.dp` | Label Large (`14.sp`) |
+
+#### `Ux4gChipGroupArrangement`
+
+| Value | Behavior |
+| :--- | :--- |
+| `Horizontal` | Single-line horizontally-scrollable row (`Row` + `horizontalScroll`). |
+| `Wrap` | Multi-line wrapping layout (`FlowRow` with vertical `runSpacing`). |
