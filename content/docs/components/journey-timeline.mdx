@@ -1,47 +1,75 @@
 ---
 title: Journey Timeline
-description: Multi-stage citizen application tracking timeline with timestamps and actor badges
+description: Multi-stage application status tracker showing Submitted, Verified, Approved, Disbursed checkpoints
 ---
 
 # Journey Timeline (`Ux4gJourneyTimeline`)
+
+Multi-stage application status tracker showing Submitted, Verified, Approved, Disbursed checkpoints.
 
 Import from `com.ux4g.designsystemv1.components.Ux4gJourneyTimeline`.
 
 ---
 
-<h2><MIcon name="code" /> Basic Usage</h2>
+<h2><MIcon name="smartphone" /> Interactive Preview</h2>
 
-```kotlin
+<ComponentPreview
+  title="Ux4gJourneyTimeline"
+  category="Jetpack Compose"
+  code={`val steps = listOf(
+    JourneyTimelineStep(title = "Application Submitted", date = "12 Aug 2024", state = StepState.Completed),
+    JourneyTimelineStep(title = "Field Officer Verification", date = "15 Aug 2024", state = StepState.Completed),
+    JourneyTimelineStep(title = "Sanction Order Issued", date = "In Progress", state = StepState.Current),
+    JourneyTimelineStep(title = "Direct Bank Transfer", date = "Pending", state = StepState.Upcoming)
+)
+
+Ux4gJourneyTimeline(steps = steps)`}
+>
+  <div className="flex flex-col items-center justify-center py-2">
+    <img
+      src="/images/components/journey-timeline_preview.png"
+      alt="UX4G Journey Timeline Preview"
+      className="max-w-full rounded-xl border border-border/60 shadow-sm"
+    />
+  </div>
+</ComponentPreview>
+
+---
+
+<h2><MIcon name="code" /> Kotlin Usage</h2>
+
+```kotlin title="Compose Example"
+import androidx.compose.runtime.Composable
 import com.ux4g.designsystemv1.components.Ux4gJourneyTimeline
-import com.ux4g.designsystemv1.components.TimelineStage
+import com.ux4g.designsystemv1.components.JourneyTimelineStep
 
-val timelineStages = listOf(
-    TimelineStage(
-        title = "Application Submitted",
-        subtitle = "Citizen submitted form online",
-        timestamp = "10 Sep 2026, 10:30 AM",
-        isCompleted = true
-    ),
-    TimelineStage(
-        title = "Document Scrutiny",
-        subtitle = "Officer verified income certificate",
-        timestamp = "11 Sep 2026, 03:15 PM",
-        isCompleted = true
-    ),
-    TimelineStage(
-        title = "Field Verification",
-        subtitle = "Assigned to Revenue Inspector",
-        timestamp = "In Progress",
-        isActive = true
-    ),
-    TimelineStage(
-        title = "Certificate Dispatch",
-        subtitle = "Pending field approval",
-        isPending = true
-    )
-)
-
-Ux4gJourneyTimeline(
-    stages = timelineStages
-)
+@Composable
+fun ApplicationTrackingExample(steps: List<JourneyTimelineStep>) {
+    Ux4gJourneyTimeline(steps = steps)
+}
 ```
+
+---
+
+<h2><MIcon name="settings" /> Parameters</h2>
+
+### `Ux4gJourneyTimeline` Props
+
+| Prop | Type | Description | Default |
+| :--- | :--- | :--- | :--- |
+| `steps` <span className="text-red-500 font-bold">*</span> | `List<JourneyTimelineStep>` | Ordered list of lifecycle milestone checkpoint items. | `—` |
+| `modifier` | `Modifier` | Compose layout modifier. | `Modifier` |
+| `orientation` | `TimelineOrientation` | Layout orientation (`Vertical` or `Horizontal`). | `Vertical` |
+
+
+---
+
+### `JourneyTimelineStep` Model
+
+| Prop | Type | Description | Default |
+| :--- | :--- | :--- | :--- |
+| `title` <span className="text-red-500 font-bold">*</span> | `String` | Checkpoint title heading. | `—` |
+| `subtitle` | `String?` | Description or department officer remarks. | `null` |
+| `date` | `String?` | Timestamp string (e.g. `12 Aug 2024, 03:45 PM`). | `null` |
+| `state` | `StepState` | Progress state: `Completed`, `Current`, `Upcoming`, `Error`. | `StepState.Upcoming` |
+

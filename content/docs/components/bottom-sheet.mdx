@@ -1,31 +1,79 @@
 ---
 title: Bottom Sheet
-description: Draggable and modal bottom sheets for action menus, filters, and sub-tasks
+description: Slide-up modal container for mobile filter sheets, secondary actions, and contextual forms
 ---
 
 # Bottom Sheet (`Ux4gBottomSheet`)
+
+Slide-up modal container for mobile filter sheets, secondary actions, and contextual forms.
 
 Import from `com.ux4g.designsystemv1.components.Ux4gBottomSheet`.
 
 ---
 
-<h2><MIcon name="code" /> Basic Usage</h2>
+<h2><MIcon name="smartphone" /> Interactive Preview</h2>
 
-```kotlin
-import com.ux4g.designsystemv1.components.Ux4gBottomSheet
+<ComponentPreview
+  title="Ux4gBottomSheet"
+  category="Jetpack Compose"
+  code={`Ux4gBottomSheet(
+    show = showSheet,
+    title = "Filter Citizen Services",
+    onDismiss = { showSheet = false }
+) {
+    Column(modifier = Modifier.padding(16.dp)) {
+        Text("Select Category", style = Ux4gTheme.typography.tS_strong)
+        Spacer(modifier = Modifier.height(8.dp))
+        // Sheet content controls
+    }
+}`}
+>
+  <div className="flex flex-col items-center justify-center py-2">
+    <img
+      src="/images/components/bottom-sheet_preview.png"
+      alt="UX4G Bottom Sheet Preview"
+      className="max-w-full rounded-xl border border-border/60 shadow-sm"
+    />
+  </div>
+</ComponentPreview>
+
+---
+
+<h2><MIcon name="code" /> Kotlin Usage</h2>
+
+```kotlin title="Compose Example"
+import androidx.compose.runtime.*
 import androidx.compose.material3.Text
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import com.ux4g.designsystemv1.components.Ux4gBottomSheet
+import com.ux4g.designsystemv1.theme.Ux4gTheme
 
-var isSheetOpen by remember { mutableStateOf(false) }
+@Composable
+fun FilterSheetExample() {
+    var isSheetOpen by remember { mutableStateOf(false) }
 
-if (isSheetOpen) {
     Ux4gBottomSheet(
-        onDismissRequest = { isSheetOpen = false },
-        title = "Filter Applications"
+        show = isSheetOpen,
+        title = "Filter Schemes",
+        onDismiss = { isSheetOpen = false }
     ) {
-        // Filter options content
-        Text("Select Status, Department, or Submission Year")
+        Text("Choose scheme eligibility criteria...")
     }
 }
 ```
+
+---
+
+<h2><MIcon name="settings" /> Parameters</h2>
+
+| Prop | Type | Description | Default |
+| :--- | :--- | :--- | :--- |
+| `show` <span className="text-red-500 font-bold">*</span> | `Boolean` | Controls whether the bottom sheet modal is visible. | `—` |
+| `onDismiss` <span className="text-red-500 font-bold">*</span> | `() -> Unit` | Callback invoked when backdrop is tapped or sheet is swiped down. | `—` |
+| `content` <span className="text-red-500 font-bold">*</span> | `@Composable () -> Unit` | Main composable body content inside the sheet. | `—` |
+| `title` | `String?` | Optional header title text displayed at top of sheet. | `null` |
+| `showCloseButton` | `Boolean` | Whether to render top-right close icon button. | `true` |
+| `showDragHandle` | `Boolean` | Whether to show the top center drag pill handle. | `true` |
+| `modifier` | `Modifier` | Compose layout modifier. | `Modifier` |
+| `containerColor` | `Color` | Surface background color of sheet container. | `Ux4gTheme.colorScheme.surface` |
+| `scrimColor` | `Color` | Backdrop scrim dimmer color. | `Color.Black.copy(alpha = 0.5f)` |
+

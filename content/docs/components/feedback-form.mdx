@@ -1,57 +1,80 @@
 ---
-title: Citizen Feedback (Star, CSAT, NPS)
-description: Citizen satisfaction survey components for government service completion
+title: Feedback Form
+description: Citizen satisfaction ratings including 5-Star Ratings, CSAT (emojis), and NPS widgets
 ---
 
-# Citizen Feedback Components
+# Feedback Form (`Ux4gFeedbackFormStar`)
 
-Import from `com.ux4g.designsystemv1.components.feedback.*`.
+Citizen satisfaction ratings including 5-Star Ratings, CSAT (emojis), and NPS widgets.
+
+Import from `com.ux4g.designsystemv1.components.feedback.Ux4gFeedbackFormStar`.
 
 ---
 
-<h2><MIcon name="code" /> 1. Star Rating Form (`Ux4gFeedbackFormStar`)</h2>
+<h2><MIcon name="smartphone" /> Interactive Preview</h2>
 
-```kotlin
+<ComponentPreview
+  title="Ux4gFeedbackFormStar"
+  category="Jetpack Compose"
+  code={`Ux4gFeedbackFormStar(
+    title = "How was your service experience?",
+    subtitle = "Your feedback helps improve public digital delivery",
+    onRatingSubmit = { rating, remarks ->
+        /* Send telemetry */
+    }
+)`}
+>
+  <div className="flex flex-col items-center justify-center py-2">
+    <img
+      src="/images/components/feedback-form_preview.png"
+      alt="UX4G Feedback Form Preview"
+      className="max-w-full rounded-xl border border-border/60 shadow-sm"
+    />
+  </div>
+</ComponentPreview>
+
+---
+
+<h2><MIcon name="code" /> Kotlin Usage</h2>
+
+```kotlin title="Compose Example"
+import androidx.compose.runtime.Composable
 import com.ux4g.designsystemv1.components.feedback.Ux4gFeedbackFormStar
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.remember
-
-var starRating by remember { mutableIntStateOf(5) }
-
-Ux4gFeedbackFormStar(
-    title = "Rate your service experience",
-    rating = starRating,
-    onRatingChange = { starRating = it },
-    onSubmit = { rating, remarks -> /* Submit */ }
-)
-```
-
----
-
-<h2><MIcon name="code" /> 2. CSAT Emoji Rating (`Ux4gFeedbackFormCsat`)</h2>
-
-Emoji-based 1 to 5 Customer Satisfaction score:
-
-```kotlin
 import com.ux4g.designsystemv1.components.feedback.Ux4gFeedbackFormCsat
 
-Ux4gFeedbackFormCsat(
-    title = "How satisfied are you with this portal?",
-    onScoreChange = { score -> /* 1 = Very Dissatisfied, 5 = Very Satisfied */ }
-)
+@Composable
+fun FeedbackDemo() {
+    Ux4gFeedbackFormStar(
+        title = "Rate this service",
+        onRatingSubmit = { stars, comment ->
+            // Process feedback
+        }
+    )
+}
 ```
 
 ---
 
-<h2><MIcon name="code" /> 3. NPS Form (`Ux4gFeedbackFormNps`)</h2>
+<h2><MIcon name="settings" /> Parameters</h2>
 
-0-10 Net Promoter Score survey with Promoter / Passive / Detractor categorization:
+### `Ux4gFeedbackFormStar` Props
 
-```kotlin
-import com.ux4g.designsystemv1.components.feedback.Ux4gFeedbackFormNps
+| Prop | Type | Description | Default |
+| :--- | :--- | :--- | :--- |
+| `title` <span className="text-red-500 font-bold">*</span> | `String` | Headline prompt asking citizen for review. | `—` |
+| `onRatingSubmit` <span className="text-red-500 font-bold">*</span> | `(Int, String) -> Unit` | Callback providing rating score (1-5) and remarks. | `—` |
+| `subtitle` | `String?` | Optional secondary instruction message. | `null` |
+| `showCommentField` | `Boolean` | Whether to render multiline remarks text area. | `true` |
+| `modifier` | `Modifier` | Compose layout modifier. | `Modifier` |
 
-Ux4gFeedbackFormNps(
-    title = "How likely are you to recommend DigiLocker to friends?",
-    onSubmit = { npsScore, comment -> /* Send feedback */ }
-)
-```
+
+---
+
+### `Ux4gFeedbackFormCsat` Props
+
+| Prop | Type | Description | Default |
+| :--- | :--- | :--- | :--- |
+| `title` <span className="text-red-500 font-bold">*</span> | `String` | Question title prompt. | `—` |
+| `onCsatSubmit` <span className="text-red-500 font-bold">*</span> | `(Int, String) -> Unit` | Callback with CSAT emoji index (1-5) and feedback. | `—` |
+| `modifier` | `Modifier` | Compose layout modifier. | `Modifier` |
+

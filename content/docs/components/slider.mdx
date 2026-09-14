@@ -1,29 +1,72 @@
 ---
 title: Slider
-description: Continuous and discrete range selectors with value labels and steps
+description: Continuous and discrete range sliders for loan amounts, tenure months, and value thresholds
 ---
 
 # Slider (`Ux4gSlider`)
+
+Continuous and discrete range sliders for loan amounts, tenure months, and value thresholds.
 
 Import from `com.ux4g.designsystemv1.components.Ux4gSlider`.
 
 ---
 
-<h2><MIcon name="code" /> Basic Usage</h2>
+<h2><MIcon name="smartphone" /> Interactive Preview</h2>
 
-```kotlin
-import com.ux4g.designsystemv1.components.Ux4gSlider
-import androidx.compose.runtime.mutableFloatStateOf
-import androidx.compose.runtime.remember
-
-var loanAmount by remember { mutableFloatStateOf(50000f) }
-
-Ux4gSlider(
+<ComponentPreview
+  title="Ux4gSlider"
+  category="Jetpack Compose"
+  code={`Ux4gSlider(
     value = loanAmount,
     onValueChange = { loanAmount = it },
     valueRange = 10000f..500000f,
     steps = 49,
-    label = "Requested Loan Amount",
-    valueFormatter = { "₹${it.toInt()}" }
-)
+    label = "Loan Amount: ₹${loanAmount.toInt()}"
+)`}
+>
+  <div className="flex flex-col items-center justify-center py-2">
+    <img
+      src="/images/components/slider_preview.png"
+      alt="UX4G Slider Preview"
+      className="max-w-full rounded-xl border border-border/60 shadow-sm"
+    />
+  </div>
+</ComponentPreview>
+
+---
+
+<h2><MIcon name="code" /> Kotlin Usage</h2>
+
+```kotlin title="Compose Example"
+import androidx.compose.runtime.*
+import com.ux4g.designsystemv1.components.Ux4gSlider
+
+@Composable
+fun LoanSliderExample() {
+    var value by remember { mutableStateOf(50000f) }
+
+    Ux4gSlider(
+        value = value,
+        onValueChange = { value = it },
+        valueRange = 10000f..200000f,
+        label = "Requested Amount"
+    )
+}
 ```
+
+---
+
+<h2><MIcon name="settings" /> Parameters</h2>
+
+| Prop | Type | Description | Default |
+| :--- | :--- | :--- | :--- |
+| `value` <span className="text-red-500 font-bold">*</span> | `Float` | Current slider float value. | `—` |
+| `onValueChange` <span className="text-red-500 font-bold">*</span> | `(Float) -> Unit` | Callback invoked when slider thumb is dragged. | `—` |
+| `modifier` | `Modifier` | Compose layout modifier. | `Modifier` |
+| `valueRange` | `ClosedFloatingPointRange<Float>` | Permitted minimum and maximum bounds. | `0f..1f` |
+| `steps` | `Int` | Number of discrete snap notches between bounds. | `0` |
+| `label` | `String?` | Value summary label above track. | `null` |
+| `enabled` | `Boolean` | Interactive enabled state. | `true` |
+| `thumbColor` | `Color?` | Drag handle thumb color. | `null` |
+| `activeTrackColor` | `Color?` | Progressed track highlight color. | `null` |
+

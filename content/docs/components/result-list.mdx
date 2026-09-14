@@ -1,34 +1,66 @@
 ---
 title: Result List
-description: Standardized citizen service search results with reference ID badges, status labels, and actions
+description: High-density search results, scheme cards, and grievance list rows with thumbnail, metadata, and status badges
 ---
 
 # Result List (`Ux4gResultList`)
 
-Import from `com.ux4g.designsystemv1.components.Ux4gResultList` and `Ux4gResultRow`.
+High-density search results, scheme cards, and grievance list rows with thumbnail, metadata, and status badges.
+
+Import from `com.ux4g.designsystemv1.components.Ux4gResultList`.
 
 ---
 
-<h2><MIcon name="code" /> Basic Usage</h2>
+<h2><MIcon name="smartphone" /> Interactive Preview</h2>
 
-```kotlin
-import com.ux4g.designsystemv1.components.Ux4gResultList
+<ComponentPreview
+  title="Ux4gResultList"
+  category="Jetpack Compose"
+  code={`Ux4gResultRow(
+    title = "Pradhan Mantri Awas Yojana (Urban)",
+    subtitle = "Ministry of Housing & Urban Affairs",
+    badgeText = "Subsidy upto ₹2.67 Lakh",
+    onClick = { /* navigate to scheme detail */ }
+)`}
+>
+  <div className="flex flex-col items-center justify-center py-2">
+    <img
+      src="/images/components/result-list_preview.png"
+      alt="UX4G Result List Preview"
+      className="max-w-full rounded-xl border border-border/60 shadow-sm"
+    />
+  </div>
+</ComponentPreview>
+
+---
+
+<h2><MIcon name="code" /> Kotlin Usage</h2>
+
+```kotlin title="Compose Example"
+import androidx.compose.runtime.Composable
 import com.ux4g.designsystemv1.components.Ux4gResultRow
-import com.ux4g.designsystemv1.components.Ux4gBadge
-import com.ux4g.designsystemv1.components.Ux4gBadgeVariant
 
-Ux4gResultList {
+@Composable
+fun ResultListingDemo() {
     Ux4gResultRow(
-        title = "Birth Certificate Application",
-        subtitle = "Applicant: Aarav Sharma • Ref #92837",
-        badge = { Ux4gBadge(text = "Approved", variant = Ux4gBadgeVariant.Success) },
-        onClick = { /* View certificate */ }
-    )
-    Ux4gResultRow(
-        title = "Income Certificate Verification",
-        subtitle = "Applicant: Sunita Verma • Ref #92838",
-        badge = { Ux4gBadge(text = "Pending", variant = Ux4gBadgeVariant.Warning) },
-        onClick = { /* View status */ }
+        title = "National Social Assistance Programme",
+        subtitle = "Ministry of Rural Development",
+        badgeText = "Direct Pension",
+        onClick = { /* View details */ }
     )
 }
 ```
+
+---
+
+<h2><MIcon name="settings" /> Parameters</h2>
+
+| Prop | Type | Description | Default |
+| :--- | :--- | :--- | :--- |
+| `title` <span className="text-red-500 font-bold">*</span> | `String` | Primary heading title. | `—` |
+| `subtitle` <span className="text-red-500 font-bold">*</span> | `String` | Secondary department or category subtitle. | `—` |
+| `badgeText` | `String?` | Optional highlight tag text. | `null` |
+| `leadingIcon` | `(@Composable () -> Unit)?` | Optional leading icon or thumbnail. | `null` |
+| `onClick` | `(() -> Unit)?` | Row click listener callback. | `null` |
+| `modifier` | `Modifier` | Compose layout modifier. | `Modifier` |
+

@@ -1,25 +1,82 @@
 ---
 title: Status Banner
-description: Draft status alert, notice banners, and action-required announcements
+description: Prominent announcement alert bar for draft state, KYC pending, or system maintenance alerts
 ---
 
 # Status Banner (`Ux4gStatusBanner`)
+
+Prominent announcement alert bar for draft state, KYC pending, or system maintenance alerts.
 
 Import from `com.ux4g.designsystemv1.components.Ux4gStatusBanner`.
 
 ---
 
-<h2><MIcon name="code" /> Basic Usage</h2>
+<h2><MIcon name="smartphone" /> Interactive Preview</h2>
 
-```kotlin
+<ComponentPreview
+  title="Ux4gStatusBanner"
+  category="Jetpack Compose"
+  code={`Ux4gStatusBanner(
+    title = "Application in Draft State",
+    message = "Your scholarship application is saved as a draft. Please submit before 30 Sep.",
+    variant = Ux4gBannerVariant.Warning,
+    actionLabel = "Resume Form",
+    onActionClick = { /* continue application */ }
+)`}
+>
+  <div className="flex flex-col items-center justify-center py-2">
+    <img
+      src="/images/components/status-banner_preview.png"
+      alt="UX4G Status Banner Preview"
+      className="max-w-full rounded-xl border border-border/60 shadow-sm"
+    />
+  </div>
+</ComponentPreview>
+
+---
+
+<h2><MIcon name="code" /> Kotlin Usage</h2>
+
+```kotlin title="Compose Example"
+import androidx.compose.runtime.Composable
 import com.ux4g.designsystemv1.components.Ux4gStatusBanner
 import com.ux4g.designsystemv1.components.Ux4gBannerVariant
 
-Ux4gStatusBanner(
-    title = "Draft Saved Automatically",
-    description = "Your form draft will be preserved for 30 days.",
-    variant = Ux4gBannerVariant.Info,
-    actionLabel = "Resume Later",
-    onAction = { /* save and exit */ }
-)
+@Composable
+fun BannerDemo() {
+    Ux4gStatusBanner(
+        title = "Aadhaar e-KYC Pending",
+        message = "Complete your biometrics to activate DBT payment disbursements.",
+        variant = Ux4gBannerVariant.Warning
+    )
+}
 ```
+
+---
+
+<h2><MIcon name="settings" /> Parameters</h2>
+
+### `Ux4gStatusBanner` Props
+
+| Prop | Type | Description | Default |
+| :--- | :--- | :--- | :--- |
+| `title` <span className="text-red-500 font-bold">*</span> | `String` | Banner headline message. | `—` |
+| `message` <span className="text-red-500 font-bold">*</span> | `String` | Detailed explanation text. | `—` |
+| `modifier` | `Modifier` | Compose layout modifier. | `Modifier` |
+| `variant` | `Ux4gBannerVariant` | Status tone: `Info`, `Success`, `Warning`, `Error`. | `Ux4gBannerVariant.Info` |
+| `actionLabel` | `String?` | Optional call-to-action button label. | `null` |
+| `onActionClick` | `(() -> Unit)?` | Callback when action is clicked. | `null` |
+| `onDismiss` | `(() -> Unit)?` | Callback when close cross is tapped. | `null` |
+
+
+---
+
+### `Ux4gBannerVariant` Enum
+
+| Variant | Tone Color | Use Case |
+| :--- | :--- | :--- |
+| `Info` | Blue (`#3B82F6`) | General informational guidance and system notices |
+| `Success` | Green (`#22C55E`) | Positive confirmations and verified milestone alerts |
+| `Warning` | Amber (`#F59E0B`) | Action required, expiring deadlines, and pending draft states |
+| `Error` | Red (`#EF4444`) | Rejection notices, critical system errors, and authentication failures |
+

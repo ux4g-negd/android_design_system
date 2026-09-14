@@ -1,37 +1,90 @@
 ---
-title: Chips & ChipGroup
-description: Choice chips, filter chips, input tags, and wrapping ChipGroup layout in Jetpack Compose
+title: Chips
+description: Filter, choice, and input chips for categorical selection, scheme tagging, and quick actions
 ---
 
-# Chips (`Ux4gChips`)
+# Chips (`Ux4gChip`)
 
-Chips allow users to filter content, select choices, or enter structured metadata.
+Filter, choice, and input chips for categorical selection, scheme tagging, and quick actions.
 
-Import from `com.ux4g.designsystemv1.components.Ux4gChips`.
+Import from `com.ux4g.designsystemv1.components.Ux4gChip`.
 
 ---
 
-<h2><MIcon name="code" /> Chip Types</h2>
+<h2><MIcon name="smartphone" /> Interactive Preview</h2>
 
-1. **Choice Chip**: Single selection from multiple mutual choices.
-2. **Filter Chip**: Multi-select filters with checkmark indication.
-3. **Input Chip**: Removable tag with trailing close icon.
+<ComponentPreview
+  title="Ux4gChip"
+  category="Jetpack Compose"
+  code={`// Filter Chip
+Ux4gFilterChip(
+    selected = isSelected,
+    onClick = { isSelected = !isSelected },
+    label = "Agriculture & Farming"
+)
 
-```kotlin
-import com.ux4g.designsystemv1.components.Ux4gChoiceChip
+// Action Chip
+Ux4gActionChip(
+    label = "Download Certificate",
+    onClick = { /* download action */ }
+)`}
+>
+  <div className="flex flex-col items-center justify-center py-2">
+    <img
+      src="/images/components/chips_preview.png"
+      alt="UX4G Chips Preview"
+      className="max-w-full rounded-xl border border-border/60 shadow-sm"
+    />
+  </div>
+</ComponentPreview>
+
+---
+
+<h2><MIcon name="code" /> Kotlin Usage</h2>
+
+```kotlin title="Compose Example"
+import androidx.compose.runtime.*
 import com.ux4g.designsystemv1.components.Ux4gFilterChip
-import com.ux4g.designsystemv1.components.Ux4gInputChip
+import com.ux4g.designsystemv1.components.Ux4gActionChip
 
-// Choice Chip
-Ux4gChoiceChip(
-    text = "Income Certificate",
-    selected = true,
-    onClick = { /* toggle */ }
-)
+@Composable
+fun ChipGroupExample() {
+    var selected by remember { mutableStateOf(true) }
 
-// Input Chip with Dismiss
-Ux4gInputChip(
-    text = "Aadhaar Linked",
-    onDismiss = { /* remove tag */ }
-)
+    Ux4gFilterChip(
+        label = "Scholarships",
+        selected = selected,
+        onClick = { selected = !selected }
+    )
+}
 ```
+
+---
+
+<h2><MIcon name="settings" /> Parameters</h2>
+
+### `Ux4gFilterChip` Props
+
+| Prop | Type | Description | Default |
+| :--- | :--- | :--- | :--- |
+| `label` <span className="text-red-500 font-bold">*</span> | `String` | Text displayed inside the chip. | `—` |
+| `selected` <span className="text-red-500 font-bold">*</span> | `Boolean` | Current selected state of the filter chip. | `false` |
+| `onClick` <span className="text-red-500 font-bold">*</span> | `() -> Unit` | Callback invoked when chip is tapped. | `—` |
+| `modifier` | `Modifier` | Compose layout modifier. | `Modifier` |
+| `enabled` | `Boolean` | Interactive enabled state. | `true` |
+| `leadingIcon` | `(@Composable () -> Unit)?` | Optional leading icon composable slot. | `null` |
+| `trailingIcon` | `(@Composable () -> Unit)?` | Optional trailing icon (e.g. close/clear cross). | `null` |
+
+
+---
+
+### `Ux4gActionChip` Props
+
+| Prop | Type | Description | Default |
+| :--- | :--- | :--- | :--- |
+| `label` <span className="text-red-500 font-bold">*</span> | `String` | Action button label text. | `—` |
+| `onClick` <span className="text-red-500 font-bold">*</span> | `() -> Unit` | Action callback handler. | `—` |
+| `modifier` | `Modifier` | Compose layout modifier. | `Modifier` |
+| `leadingIcon` | `(@Composable () -> Unit)?` | Optional leading icon composable slot. | `null` |
+| `enabled` | `Boolean` | Interactive enabled state. | `true` |
+

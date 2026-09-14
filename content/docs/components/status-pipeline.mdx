@@ -1,28 +1,59 @@
 ---
 title: Status Pipeline
-description: Horizontal & vertical workflow pipeline showing completed, active, and pending steps
+description: Visual horizontal progress pipeline tracking approval checkpoints across departments
 ---
 
 # Status Pipeline (`Ux4gStatusPipeline`)
+
+Visual horizontal progress pipeline tracking approval checkpoints across departments.
 
 Import from `com.ux4g.designsystemv1.components.Ux4gStatusPipeline`.
 
 ---
 
-<h2><MIcon name="code" /> Basic Usage</h2>
+<h2><MIcon name="smartphone" /> Interactive Preview</h2>
 
-```kotlin
+<ComponentPreview
+  title="Ux4gStatusPipeline"
+  category="Jetpack Compose"
+  code={`Ux4gStatusPipeline(
+    stages = listOf("Submitted", "Tehsildar Review", "SDM Approval", "Certificate Issued"),
+    currentStageIndex = 2
+)`}
+>
+  <div className="flex flex-col items-center justify-center py-2">
+    <img
+      src="/images/components/status-pipeline_preview.png"
+      alt="UX4G Status Pipeline Preview"
+      className="max-w-full rounded-xl border border-border/60 shadow-sm"
+    />
+  </div>
+</ComponentPreview>
+
+---
+
+<h2><MIcon name="code" /> Kotlin Usage</h2>
+
+```kotlin title="Compose Example"
+import androidx.compose.runtime.Composable
 import com.ux4g.designsystemv1.components.Ux4gStatusPipeline
-import com.ux4g.designsystemv1.components.PipelineStep
 
-val steps = listOf(
-    PipelineStep(title = "Draft", isCompleted = true),
-    PipelineStep(title = "Payment", isCompleted = true),
-    PipelineStep(title = "Verification", isActive = true),
-    PipelineStep(title = "Approval", isPending = true)
-)
-
-Ux4gStatusPipeline(
-    steps = steps
-)
+@Composable
+fun PipelineExample() {
+    Ux4gStatusPipeline(
+        stages = listOf("Applied", "Verified", "Sanctioned", "Disbursed"),
+        currentStageIndex = 1
+    )
+}
 ```
+
+---
+
+<h2><MIcon name="settings" /> Parameters</h2>
+
+| Prop | Type | Description | Default |
+| :--- | :--- | :--- | :--- |
+| `stages` <span className="text-red-500 font-bold">*</span> | `List<String>` | List of pipeline approval department stage names. | `—` |
+| `currentStageIndex` <span className="text-red-500 font-bold">*</span> | `Int` | Active 0-indexed progress checkpoint pointer. | `—` |
+| `modifier` | `Modifier` | Compose layout modifier. | `Modifier` |
+

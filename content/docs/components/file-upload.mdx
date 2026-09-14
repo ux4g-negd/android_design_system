@@ -1,24 +1,70 @@
 ---
 title: File Upload
-description: Document scanner and upload UI with file size validation, progress bars, and previews
+description: Document attachment drag/picker zone with file extension checking, max file size enforcement, and upload progress
 ---
 
 # File Upload (`Ux4gFileUpload`)
+
+Document attachment drag/picker zone with file extension checking, max file size enforcement, and upload progress.
 
 Import from `com.ux4g.designsystemv1.components.Ux4gFileUpload`.
 
 ---
 
-<h2><MIcon name="code" /> Basic Usage</h2>
+<h2><MIcon name="smartphone" /> Interactive Preview</h2>
 
-```kotlin
+<ComponentPreview
+  title="Ux4gFileUpload"
+  category="Jetpack Compose"
+  code={`Ux4gFileUpload(
+    label = "Upload Income Certificate",
+    allowedExtensions = listOf("pdf", "jpg", "png"),
+    maxSizeMb = 5,
+    onFileSelected = { uri -> /* Upload document */ }
+)`}
+>
+  <div className="flex flex-col items-center justify-center py-2">
+    <img
+      src="/images/components/file-upload_preview.png"
+      alt="UX4G File Upload Preview"
+      className="max-w-full rounded-xl border border-border/60 shadow-sm"
+    />
+  </div>
+</ComponentPreview>
+
+---
+
+<h2><MIcon name="code" /> Kotlin Usage</h2>
+
+```kotlin title="Compose Example"
+import androidx.compose.runtime.Composable
 import com.ux4g.designsystemv1.components.Ux4gFileUpload
 
-Ux4gFileUpload(
-    label = "Upload Income Proof (PDF or JPG)",
-    helperText = "Maximum file size: 5 MB",
-    allowedExtensions = listOf("pdf", "jpg", "png"),
-    onFileSelected = { uri -> /* upload file */ },
-    isRequired = true
-)
+@Composable
+fun DocumentUploadExample() {
+    Ux4gFileUpload(
+        label = "Proof of Residence (PDF / JPG up to 5MB)",
+        allowedExtensions = listOf("pdf", "jpg", "png"),
+        maxSizeMb = 5,
+        onFileSelected = { fileUri ->
+            // Upload to server
+        }
+    )
+}
 ```
+
+---
+
+<h2><MIcon name="settings" /> Parameters</h2>
+
+| Prop | Type | Description | Default |
+| :--- | :--- | :--- | :--- |
+| `label` <span className="text-red-500 font-bold">*</span> | `String` | Attachment title prompt. | `—` |
+| `onFileSelected` <span className="text-red-500 font-bold">*</span> | `(Uri) -> Unit` | Callback returning picked document Uri. | `—` |
+| `allowedExtensions` | `List<String>` | Permitted file extensions. | `listOf("pdf", "jpg", "png")` |
+| `maxSizeMb` | `Int` | Maximum permissible file size in Megabytes. | `5` |
+| `enabled` | `Boolean` | Interactive enabled state. | `true` |
+| `isError` | `Boolean` | Error state highlighting. | `false` |
+| `errorMessage` | `String?` | Error helper message. | `null` |
+| `modifier` | `Modifier` | Compose layout modifier. | `Modifier` |
+

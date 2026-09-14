@@ -1,34 +1,88 @@
 ---
-title: Time Slot Booking Grid
-description: Appointment booking slot grid (Available, Selected, Booked, Inactive) for citizen seva kendras
+title: Time Slot
+description: Available and booked appointment grid chips for RTO, Passport Seva, and Sub-Registrar slots
 ---
 
-# Time Slot Booking Grid (`Ux4gTimeslot`)
+# Time Slot (`Ux4gTimeSlotGrid`)
 
-Import from `com.ux4g.designsystemv1.components.timeslot.*`.
+Available and booked appointment grid chips for RTO, Passport Seva, and Sub-Registrar slots.
+
+Import from `com.ux4g.designsystemv1.components.timeslot.Ux4gTimeSlotGrid`.
 
 ---
 
-<h2><MIcon name="code" /> Basic Usage</h2>
+<h2><MIcon name="smartphone" /> Interactive Preview</h2>
 
-```kotlin
-import com.ux4g.designsystemv1.components.timeslot.Ux4gTimeslot
-import com.ux4g.designsystemv1.components.timeslot.SlotItem
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-
-var selectedSlotId by remember { mutableStateOf<String?>(null) }
-
-val slots = listOf(
-    SlotItem(id = "1", timeLabel = "09:30 AM", isAvailable = true),
-    SlotItem(id = "2", timeLabel = "10:00 AM", isAvailable = true),
-    SlotItem(id = "3", timeLabel = "10:30 AM", isBooked = true),
-    SlotItem(id = "4", timeLabel = "11:00 AM", isAvailable = true)
+<ComponentPreview
+  title="Ux4gTimeSlotGrid"
+  category="Jetpack Compose"
+  code={`val slots = listOf(
+    TimeSlot(time = "09:30 AM", isAvailable = true),
+    TimeSlot(time = "10:00 AM", isAvailable = false),
+    TimeSlot(time = "10:30 AM", isAvailable = true)
 )
 
-Ux4gTimeslot(
+Ux4gTimeSlotGrid(
     slots = slots,
-    selectedSlotId = selectedSlotId,
-    onSlotSelected = { slotId -> selectedSlotId = slotId }
-)
+    selectedSlot = selectedSlot,
+    onSlotSelected = { slot -> selectedSlot = slot }
+)`}
+>
+  <div className="flex flex-col items-center justify-center py-2">
+    <img
+      src="/images/components/time-slot_preview.png"
+      alt="UX4G Time Slot Preview"
+      className="max-w-full rounded-xl border border-border/60 shadow-sm"
+    />
+  </div>
+</ComponentPreview>
+
+---
+
+<h2><MIcon name="code" /> Kotlin Usage</h2>
+
+```kotlin title="Compose Example"
+import androidx.compose.runtime.*
+import com.ux4g.designsystemv1.components.timeslot.Ux4gTimeSlotGrid
+import com.ux4g.designsystemv1.components.timeslot.TimeSlot
+
+@Composable
+fun AppointmentGridDemo() {
+    var selected by remember { mutableStateOf<TimeSlot?>(null) }
+
+    Ux4gTimeSlotGrid(
+        slots = listOf(
+            TimeSlot("10:00 AM", isAvailable = true),
+            TimeSlot("11:00 AM", isAvailable = true)
+        ),
+        selectedSlot = selected,
+        onSlotSelected = { selected = it }
+    )
+}
 ```
+
+---
+
+<h2><MIcon name="settings" /> Parameters</h2>
+
+### `Ux4gTimeSlotGrid` Props
+
+| Prop | Type | Description | Default |
+| :--- | :--- | :--- | :--- |
+| `slots` <span className="text-red-500 font-bold">*</span> | `List<TimeSlot>` | List of available and booked appointment slot objects. | `—` |
+| `onSlotSelected` <span className="text-red-500 font-bold">*</span> | `(TimeSlot) -> Unit` | Callback invoked when citizen picks a slot. | `—` |
+| `selectedSlot` | `TimeSlot?` | Currently selected appointment slot. | `null` |
+| `columns` | `Int` | Number of columns in the slot grid. | `3` |
+| `modifier` | `Modifier` | Compose layout modifier. | `Modifier` |
+
+
+---
+
+### `TimeSlot` Model
+
+| Prop | Type | Description | Default |
+| :--- | :--- | :--- | :--- |
+| `time` <span className="text-red-500 font-bold">*</span> | `String` | Slot time label string (e.g. `09:30 AM`). | `—` |
+| `isAvailable` | `Boolean` | Whether the slot is open for booking or disabled/booked. | `true` |
+| `badge` | `String?` | Optional badge text (e.g. `Fast Filling`, `Premium`). | `null` |
+

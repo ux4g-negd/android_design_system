@@ -1,31 +1,73 @@
 ---
 title: Carousel
-description: Touch-friendly swipeable banner with auto-scroll and indicator dots
+description: Horizontal paging banner with auto-scroll and indicators for announcements and flagship schemes
 ---
 
 # Carousel (`Ux4gCarousel`)
+
+Horizontal paging banner with auto-scroll and indicators for announcements and flagship schemes.
 
 Import from `com.ux4g.designsystemv1.components.Ux4gCarousel`.
 
 ---
 
-<h2><MIcon name="code" /> Basic Usage</h2>
+<h2><MIcon name="smartphone" /> Interactive Preview</h2>
 
-```kotlin
-import com.ux4g.designsystemv1.components.Ux4gCarousel
-import com.ux4g.designsystemv1.components.Ux4gCard
-
-val bannerItems = listOf("New Scheme Announced", "Direct Benefit Transfer Update", "Aadhaar Seva Camp")
+<ComponentPreview
+  title="Ux4gCarousel"
+  category="Jetpack Compose"
+  code={`val banners = listOf(
+    CarouselItem(title = "Digital India Week 2024", description = "Empowering citizens with digital governance"),
+    CarouselItem(title = "Viksit Bharat Sankalp", description = "Reaching the unreached with government benefits")
+)
 
 Ux4gCarousel(
-    itemCount = bannerItems.size,
-    autoScrollDurationMs = 4000
-) { pageIndex ->
-    Ux4gCard(
-        title = bannerItems[pageIndex],
-        subtitle = "Tap to learn more details"
-    ) {
-        // Banner content
+    items = banners,
+    autoScroll = true,
+    intervalMs = 4000L,
+    onItemClick = { item -> /* open detail */ }
+)`}
+>
+  <div className="flex flex-col items-center justify-center py-2">
+    <img
+      src="/images/components/carousel_preview.png"
+      alt="UX4G Carousel Preview"
+      className="max-w-full rounded-xl border border-border/60 shadow-sm"
+    />
+  </div>
+</ComponentPreview>
+
+---
+
+<h2><MIcon name="code" /> Kotlin Usage</h2>
+
+```kotlin title="Compose Example"
+import androidx.compose.runtime.Composable
+import com.ux4g.designsystemv1.components.Ux4gCarousel
+
+@Composable
+fun CarouselExample() {
+    Ux4gCarousel(
+        items = listOf("Banner 1", "Banner 2", "Banner 3"),
+        autoScroll = true,
+        intervalMs = 4000L
+    ) { index, item ->
+        // Render each slide
     }
 }
 ```
+
+---
+
+<h2><MIcon name="settings" /> Parameters</h2>
+
+| Prop | Type | Description | Default |
+| :--- | :--- | :--- | :--- |
+| `items` <span className="text-red-500 font-bold">*</span> | `List<T>` | List of items to render across carousel slides. | `—` |
+| `content` <span className="text-red-500 font-bold">*</span> | `@Composable (index: Int, item: T) -> Unit` | Composable lambda rendering slide content. | `—` |
+| `modifier` | `Modifier` | Compose layout modifier. | `Modifier` |
+| `autoScroll` | `Boolean` | Whether slides advance automatically on a timer. | `true` |
+| `intervalMs` | `Long` | Duration in milliseconds per slide before transitioning. | `4000L` |
+| `showIndicator` | `Boolean` | Whether to render page dots indicator at bottom. | `true` |
+| `onItemClick` | `((T) -> Unit)?` | Optional click listener callback when slide is tapped. | `null` |
+

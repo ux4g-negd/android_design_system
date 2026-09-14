@@ -1,28 +1,69 @@
 ---
 title: Tooltip
-description: Micro-copy hint popovers on long-press or tap with accessible role descriptions
+description: Contextual helper bubble explaining technical terms, mandatory requirements, and field guidance tips
 ---
 
 # Tooltip (`Ux4gTooltip`)
+
+Contextual helper bubble explaining technical terms, mandatory requirements, and field guidance tips.
 
 Import from `com.ux4g.designsystemv1.components.tooltip.Ux4gTooltip`.
 
 ---
 
-<h2><MIcon name="code" /> Basic Usage</h2>
+<h2><MIcon name="smartphone" /> Interactive Preview</h2>
 
-```kotlin
-import com.ux4g.designsystemv1.components.tooltip.Ux4gTooltip
-import androidx.compose.material3.Icon
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Info
-
-Ux4gTooltip(
-    tooltipText = "Your 12-digit Unique Identification Number"
+<ComponentPreview
+  title="Ux4gTooltip"
+  category="Jetpack Compose"
+  code={`Ux4gTooltip(
+    tooltipText = "Enter the 12-digit number printed on your Aadhaar card or e-Aadhaar PDF."
 ) {
     Icon(
         imageVector = Icons.Outlined.Info,
-        contentDescription = "More info"
+        contentDescription = "Help information",
+        tint = Ux4gTheme.colorScheme.primary
     )
+}`}
+>
+  <div className="flex flex-col items-center justify-center py-2">
+    <img
+      src="/images/components/tooltip_preview.png"
+      alt="UX4G Tooltip Preview"
+      className="max-w-full rounded-xl border border-border/60 shadow-sm"
+    />
+  </div>
+</ComponentPreview>
+
+---
+
+<h2><MIcon name="code" /> Kotlin Usage</h2>
+
+```kotlin title="Compose Example"
+import androidx.compose.runtime.Composable
+import androidx.compose.material3.Icon
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Info
+import com.ux4g.designsystemv1.components.tooltip.Ux4gTooltip
+import com.ux4g.designsystemv1.theme.Ux4gTheme
+
+@Composable
+fun TooltipExample() {
+    Ux4gTooltip(tooltipText = "Mandatory document for direct benefit bank transfer") {
+        Icon(Icons.Outlined.Info, contentDescription = "Help", tint = Ux4gTheme.colorScheme.primary)
+    }
 }
 ```
+
+---
+
+<h2><MIcon name="settings" /> Parameters</h2>
+
+| Prop | Type | Description | Default |
+| :--- | :--- | :--- | :--- |
+| `tooltipText` <span className="text-red-500 font-bold">*</span> | `String` | Guidance explanation text displayed inside the tooltip bubble. | `—` |
+| `content` <span className="text-red-500 font-bold">*</span> | `@Composable () -> Unit` | Anchor composable trigger that opens the tooltip on tap or hover. | `—` |
+| `modifier` | `Modifier` | Compose layout modifier. | `Modifier` |
+| `backgroundColor` | `Color` | Tooltip bubble background container color. | `Ux4gTheme.colorScheme.onSurface` |
+| `textColor` | `Color` | Tooltip text font color. | `Ux4gTheme.colorScheme.surface` |
+

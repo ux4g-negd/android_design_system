@@ -1,44 +1,77 @@
 ---
-title: Dropdown & Select
-description: Single selection, searchable dropdowns, and multi-select lists in Jetpack Compose
+title: Dropdown
+description: Selection and action dropdown menus for States, Districts, categories, and contextual options
 ---
 
-# Dropdown Components
+# Dropdown (`Ux4gSelectionDropdown`)
 
-Import from `com.ux4g.designsystemv1.components.dropdowns.*`.
+Selection and action dropdown menus for States, Districts, categories, and contextual options.
+
+Import from `com.ux4g.designsystemv1.components.dropdowns.Ux4gSelectionDropdown`.
 
 ---
 
-<h2><MIcon name="code" /> 1. Selection Dropdown (`Ux4gSelectionDropdown`)</h2>
+<h2><MIcon name="smartphone" /> Interactive Preview</h2>
 
-```kotlin
-import com.ux4g.designsystemv1.components.dropdowns.Ux4gSelectionDropdown
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-
-val statesList = listOf("Andhra Pradesh", "Delhi", "Karnataka", "Maharashtra", "Tamil Nadu", "Uttar Pradesh")
-var selectedState by remember { mutableStateOf("") }
+<ComponentPreview
+  title="Ux4gSelectionDropdown"
+  category="Jetpack Compose"
+  code={`val states = listOf("Andhra Pradesh", "Delhi", "Maharashtra", "Tamil Nadu", "Uttar Pradesh")
 
 Ux4gSelectionDropdown(
     label = "Select State / UT",
-    items = statesList,
+    items = states,
     selectedItem = selectedState,
     onItemSelected = { selectedState = it },
-    isSearchable = true,
-    isRequired = true
-)
+    isSearchable = true
+)`}
+>
+  <div className="flex flex-col items-center justify-center py-2">
+    <img
+      src="/images/components/dropdown_preview.png"
+      alt="UX4G Dropdown Preview"
+      className="max-w-full rounded-xl border border-border/60 shadow-sm"
+    />
+  </div>
+</ComponentPreview>
+
+---
+
+<h2><MIcon name="code" /> Kotlin Usage</h2>
+
+```kotlin title="Compose Example"
+import androidx.compose.runtime.*
+import com.ux4g.designsystemv1.components.dropdowns.Ux4gSelectionDropdown
+
+@Composable
+fun DropdownExample() {
+    var selected by remember { mutableStateOf<String?>(null) }
+    val districts = listOf("Central Delhi", "New Delhi", "North Delhi", "South Delhi")
+
+    Ux4gSelectionDropdown(
+        label = "District",
+        items = districts,
+        selectedItem = selected,
+        onItemSelected = { selected = it },
+        isSearchable = true
+    )
+}
 ```
 
 ---
 
-<h2><MIcon name="code" /> 2. Action Dropdown (`Ux4gActionDropdown`)</h2>
+<h2><MIcon name="settings" /> Parameters</h2>
 
-```kotlin
-import com.ux4g.designsystemv1.components.dropdowns.Ux4gActionDropdown
+| Prop | Type | Description | Default |
+| :--- | :--- | :--- | :--- |
+| `label` <span className="text-red-500 font-bold">*</span> | `String` | Header title displayed above dropdown field. | `—` |
+| `items` <span className="text-red-500 font-bold">*</span> | `List<T>` | List of selectable items. | `—` |
+| `onItemSelected` <span className="text-red-500 font-bold">*</span> | `(T) -> Unit` | Callback invoked when user picks an option. | `—` |
+| `selectedItem` | `T?` | Currently chosen item model. | `null` |
+| `placeholder` | `String` | Placeholder text when no item is selected. | `"Select option"` |
+| `isSearchable` | `Boolean` | Enables type-ahead search filter inside popup list. | `false` |
+| `enabled` | `Boolean` | Interactive enabled state. | `true` |
+| `isError` | `Boolean` | Shows red error validation styling. | `false` |
+| `errorMessage` | `String?` | Validation error message below input. | `null` |
+| `modifier` | `Modifier` | Compose layout modifier. | `Modifier` |
 
-Ux4gActionDropdown(
-    triggerText = "Actions",
-    menuItems = listOf("Download PDF", "Print Acknowledgement", "Cancel Request"),
-    onActionClick = { action -> /* handle action */ }
-)
-```

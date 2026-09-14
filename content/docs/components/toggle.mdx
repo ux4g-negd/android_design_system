@@ -1,29 +1,67 @@
 ---
-title: Toggle / Switch
-description: On/Off toggles and binary state selectors with accessible labels
+title: Toggle Switch
+description: Binary on/off switch for SMS alerts, biometric login, and system preference controls
 ---
 
-# Toggle / Switch (`Ux4gToggle`)
+# Toggle Switch (`Ux4gToggle`)
 
-Import from `com.ux4g.designsystemv1.components.Ux4gToggle` and `Ux4gSwitch`.
+Binary on/off switch for SMS alerts, biometric login, and system preference controls.
+
+Import from `com.ux4g.designsystemv1.components.Ux4gToggle`.
 
 ---
 
-<h2><MIcon name="code" /> Basic Usage</h2>
+<h2><MIcon name="smartphone" /> Interactive Preview</h2>
 
-```kotlin
+<ComponentPreview
+  title="Ux4gToggle"
+  category="Jetpack Compose"
+  code={`Ux4gToggle(
+    checked = isSmsAlertsEnabled,
+    onCheckedChange = { isSmsAlertsEnabled = it },
+    label = "Receive SMS status updates on registered mobile number"
+)`}
+>
+  <div className="flex flex-col items-center justify-center py-2">
+    <img
+      src="/images/components/toggle_preview.png"
+      alt="UX4G Toggle Switch Preview"
+      className="max-w-full rounded-xl border border-border/60 shadow-sm"
+    />
+  </div>
+</ComponentPreview>
+
+---
+
+<h2><MIcon name="code" /> Kotlin Usage</h2>
+
+```kotlin title="Compose Example"
+import androidx.compose.runtime.*
 import com.ux4g.designsystemv1.components.Ux4gToggle
-import com.ux4g.designsystemv1.components.Ux4gSwitchSize
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 
-var smsAlerts by remember { mutableStateOf(true) }
+@Composable
+fun ToggleDemo() {
+    var enabled by remember { mutableStateOf(true) }
 
-Ux4gToggle(
-    checked = smsAlerts,
-    onCheckedChange = { smsAlerts = it },
-    label = "Enable SMS Notifications",
-    supportingText = "Receive instant status updates on your registered mobile number",
-    size = Ux4gSwitchSize.Medium
-)
+    Ux4gToggle(
+        checked = enabled,
+        onCheckedChange = { enabled = it },
+        label = "Enable Biometric Login"
+    )
+}
 ```
+
+---
+
+<h2><MIcon name="settings" /> Parameters</h2>
+
+| Prop | Type | Description | Default |
+| :--- | :--- | :--- | :--- |
+| `checked` <span className="text-red-500 font-bold">*</span> | `Boolean` | Current boolean switch state. | `—` |
+| `onCheckedChange` <span className="text-red-500 font-bold">*</span> | `(Boolean) -> Unit` | Callback triggered when switch is toggled. | `—` |
+| `label` | `String?` | Accompanying text label adjacent to switch. | `null` |
+| `enabled` | `Boolean` | Whether toggle is interactive or grayed out. | `true` |
+| `modifier` | `Modifier` | Compose layout modifier. | `Modifier` |
+| `checkedThumbColor` | `Color?` | Thumb ball color when active. | `null` |
+| `checkedTrackColor` | `Color?` | Track bar background color when active. | `null` |
+

@@ -1,46 +1,74 @@
 ---
 title: OTP Input
-description: Secure 4-digit and 6-digit OTP / PIN input boxes with auto-focus and resend timers
+description: Auto-advancing 4/6-digit verification code input boxes with timer, paste handling, and resend action
 ---
 
 # OTP Input (`Ux4gOtpInput`)
 
-`Ux4gOtpInput` renders segmented PIN entry boxes for SMS verification, mobile login, and Aadhaar authentication.
+Auto-advancing 4/6-digit verification code input boxes with timer, paste handling, and resend action.
 
 Import from `com.ux4g.designsystemv1.components.Ux4gOtpInput`.
 
 ---
 
-<h2><MIcon name="code" /> Basic Usage</h2>
+<h2><MIcon name="smartphone" /> Interactive Preview</h2>
 
-```kotlin
+<ComponentPreview
+  title="Ux4gOtpInput"
+  category="Jetpack Compose"
+  code={`Ux4gOtpInput(
+    length = 6,
+    otpValue = otp,
+    onOtpChange = { otp = it },
+    onComplete = { code -> /* Trigger OTP verify API */ },
+    onResendClick = { /* Send new SMS OTP */ }
+)`}
+>
+  <div className="flex flex-col items-center justify-center py-2">
+    <img
+      src="/images/components/otp-input_preview.png"
+      alt="UX4G OTP Input Preview"
+      className="max-w-full rounded-xl border border-border/60 shadow-sm"
+    />
+  </div>
+</ComponentPreview>
+
+---
+
+<h2><MIcon name="code" /> Kotlin Usage</h2>
+
+```kotlin title="Compose Example"
+import androidx.compose.runtime.*
 import com.ux4g.designsystemv1.components.Ux4gOtpInput
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 
-var otpCode by remember { mutableStateOf("") }
+@Composable
+fun OtpVerificationScreen() {
+    var otp by remember { mutableStateOf("") }
 
-Ux4gOtpInput(
-    otpLength = 6,
-    value = otpCode,
-    onOtpChange = { code, isComplete ->
-        otpCode = code
-        if (isComplete) {
-            // Automatically verify OTP
+    Ux4gOtpInput(
+        length = 6,
+        otpValue = otp,
+        onOtpChange = { otp = it },
+        onComplete = { fullOtp ->
+            verifyOtpApi(fullOtp)
         }
-    },
-    isError = false
-)
+    )
+}
 ```
 
 ---
 
 <h2><MIcon name="settings" /> Parameters</h2>
 
-| Parameter | Type | Default | Description |
+| Prop | Type | Description | Default |
 | :--- | :--- | :--- | :--- |
-| `otpLength` | `Int` | `6` | Number of digit boxes (typically 4 or 6) |
-| `value` | `String` | **Required** | Current OTP string |
-| `onOtpChange` | `(String, Boolean) -> Unit` | **Required** | Callback with new string and completion flag |
-| `isError` | `Boolean` | `false` | Displays error border & shake feedback |
-| `isMasked` | `Boolean` | `false` | Masks digits with bullets for high-security PINs |
+| `otpValue` <span className="text-red-500 font-bold">*</span> | `String` | Current OTP string value. | `—` |
+| `onOtpChange` <span className="text-red-500 font-bold">*</span> | `(String) -> Unit` | Callback invoked on each digit change. | `—` |
+| `length` | `Int` | Number of OTP digit boxes (typically 4 or 6). | `6` |
+| `onComplete` | `((String) -> Unit)?` | Fires automatically when citizen enters all digits. | `null` |
+| `onResendClick` | `(() -> Unit)?` | Resend OTP action trigger callback. | `null` |
+| `isError` | `Boolean` | Highlights digit boxes in error red outline. | `false` |
+| `errorMessage` | `String?` | Error description text below boxes. | `null` |
+| `enabled` | `Boolean` | Interactive enabled state. | `true` |
+| `modifier` | `Modifier` | Compose layout modifier. | `Modifier` |
+

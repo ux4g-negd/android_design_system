@@ -1,37 +1,86 @@
 ---
 title: Radio Button
-description: Single-choice selection controls and card-style radio groups in Jetpack Compose
+description: Single-selection radio group for gender selection, payment modes, and mutually exclusive options
 ---
 
 # Radio Button (`Ux4gRadioButton`)
+
+Single-selection radio group for gender selection, payment modes, and mutually exclusive options.
 
 Import from `com.ux4g.designsystemv1.components.Ux4gRadioButton`.
 
 ---
 
-<h2><MIcon name="code" /> Basic Usage</h2>
+<h2><MIcon name="smartphone" /> Interactive Preview</h2>
 
-```kotlin
+<ComponentPreview
+  title="Ux4gRadioButton"
+  category="Jetpack Compose"
+  code={`val options = listOf("Male", "Female", "Transgender")
+
+Ux4gRadioGroup(
+    options = options,
+    selectedOption = selectedGender,
+    onOptionSelected = { selectedGender = it },
+    label = "Gender (as per Aadhaar)"
+)`}
+>
+  <div className="flex flex-col items-center justify-center py-2">
+    <img
+      src="/images/components/radio-button_preview.png"
+      alt="UX4G Radio Button Preview"
+      className="max-w-full rounded-xl border border-border/60 shadow-sm"
+    />
+  </div>
+</ComponentPreview>
+
+---
+
+<h2><MIcon name="code" /> Kotlin Usage</h2>
+
+```kotlin title="Compose Example"
+import androidx.compose.runtime.*
 import com.ux4g.designsystemv1.components.Ux4gRadioButton
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.foundation.layout.Column
+import com.ux4g.designsystemv1.components.Ux4gRadioGroup
 
-var selectedOption by remember { mutableStateOf("online") }
+@Composable
+fun RadioGroupExample() {
+    var selected by remember { mutableStateOf("Online") }
 
-Column {
-    Ux4gRadioButton(
-        selected = selectedOption == "online",
-        onClick = { selectedOption = "online" },
-        label = "Online Verification via Aadhaar OTP",
-        supportingText = "Instant approval within 2 minutes"
-    )
-
-    Ux4gRadioButton(
-        selected = selectedOption == "offline",
-        onClick = { selectedOption = "offline" },
-        label = "Physical Verification at Citizen Centre",
-        supportingText = "Visit nearest Seva Kendra with original documents"
+    Ux4gRadioGroup(
+        options = listOf("Online Payment", "Demand Draft", "Challan"),
+        selectedOption = selected,
+        onOptionSelected = { selected = it }
     )
 }
 ```
+
+---
+
+<h2><MIcon name="settings" /> Parameters</h2>
+
+### `Ux4gRadioButton` Props
+
+| Prop | Type | Description | Default |
+| :--- | :--- | :--- | :--- |
+| `selected` <span className="text-red-500 font-bold">*</span> | `Boolean` | Whether this radio button is selected. | `—` |
+| `onClick` <span className="text-red-500 font-bold">*</span> | `(() -> Unit)?` | Callback invoked when radio is clicked. | `—` |
+| `label` | `String?` | Accompanying text label. | `null` |
+| `enabled` | `Boolean` | Interactive enabled state. | `true` |
+| `modifier` | `Modifier` | Compose layout modifier. | `Modifier` |
+| `selectedColor` | `Color?` | Inner dot and ring color when selected. | `null` |
+| `unselectedColor` | `Color?` | Outer ring color when unselected. | `null` |
+
+
+---
+
+### `Ux4gRadioGroup` Props
+
+| Prop | Type | Description | Default |
+| :--- | :--- | :--- | :--- |
+| `options` <span className="text-red-500 font-bold">*</span> | `List<T>` | List of selectable option models. | `—` |
+| `selectedOption` <span className="text-red-500 font-bold">*</span> | `T?` | Currently chosen active option. | `—` |
+| `onOptionSelected` <span className="text-red-500 font-bold">*</span> | `(T) -> Unit` | Selection change event callback. | `—` |
+| `label` | `String?` | Group header label text. | `null` |
+| `modifier` | `Modifier` | Compose layout modifier. | `Modifier` |
+

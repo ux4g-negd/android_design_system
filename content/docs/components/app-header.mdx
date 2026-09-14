@@ -1,27 +1,119 @@
 ---
 title: App Header
-description: Top navigation app bar with National Emblem, back navigation, search, and action buttons
+description: Configurable top navigation app bar supporting official emblems, logos, title, trailing actions, and profile avatars
 ---
 
 # App Header (`Ux4gAppHeader`)
+
+Configurable top navigation app bar supporting official emblems, logos, title, trailing actions, and profile avatars.
 
 Import from `com.ux4g.designsystemv1.components.Ux4gAppHeader`.
 
 ---
 
-<h2><MIcon name="code" /> Basic Usage</h2>
+<h2><MIcon name="smartphone" /> Interactive Preview</h2>
 
-```kotlin
+<ComponentPreview
+  title="Ux4gAppHeader"
+  category="Jetpack Compose"
+  code={`Ux4gAppHeader(
+    title = "National Scholarship Portal",
+    variant = Ux4gAppHeaderVariant.Light,
+    showBackButton = false,
+    actions = listOf(
+        Ux4gAppHeaderAction(
+            icon = Ux4gIcons.Settings,
+            onClick = { /* open settings */ }
+        )
+    ),
+    showAvatar = true,
+    avatarInitials = "AS"
+)`}
+>
+  <div className="flex flex-col items-center justify-center py-2">
+    <img
+      src="/images/components/app-header_preview.png"
+      alt="UX4G App Header Preview"
+      className="max-w-full rounded-xl border border-border/60 shadow-sm"
+    />
+  </div>
+</ComponentPreview>
+
+---
+
+<h2><MIcon name="code" /> Kotlin Usage</h2>
+
+```kotlin title="Compose Example"
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import com.ux4g.designsystemv1.components.Ux4gAppHeader
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Notifications
+import com.ux4g.designsystemv1.components.Ux4gAppHeaderVariant
+import com.ux4g.designsystemv1.components.Ux4gAppHeaderAction
+import com.ux4g.designsystemv1.foundation.Ux4gIcons
 
-Ux4gAppHeader(
-    title = "DigiLocker Services",
-    subtitle = "Ministry of Electronics & IT",
-    showBackButton = true,
-    onBackClick = { /* Pop back stack */ },
-    actionIcon = Icons.Filled.Notifications,
-    onActionClick = { /* Open notifications */ }
-)
+@Composable
+fun AppHeaderExample() {
+    Ux4gAppHeader(
+        title = "Dashboard",
+        variant = Ux4gAppHeaderVariant.Filled,
+        showBackButton = true,
+        onBackPressed = { /* Navigate back */ },
+        actions = listOf(
+            Ux4gAppHeaderAction(icon = Ux4gIcons.Settings, onClick = { /* Settings */ })
+        )
+    )
+}
 ```
+
+---
+
+<h2><MIcon name="settings" /> Parameters</h2>
+
+### `Ux4gAppHeader` Props
+
+| Prop | Type | Description | Default |
+| :--- | :--- | :--- | :--- |
+| `title` <span className="text-red-500 font-bold">*</span> | `String` | Primary header title text. | `""` |
+| `modifier` | `Modifier` | Compose layout modifier applied to header container. | `Modifier` |
+| `variant` | `Ux4gAppHeaderVariant` | Visual style variant: `Light`, `Filled`, or `Outlined`. | `Outlined` |
+| `showBackButton` | `Boolean` | Whether to show back button as leading widget (overrides leading items). | `false` |
+| `onBackPressed` | `(() -> Unit)?` | Callback triggered when back button is tapped. | `null` |
+| `leadingWidgets` | `List<@Composable () -> Unit>?` | List of custom leading widgets (emblems, logos, dividers). | `null` |
+| `leadingContent` | `(@Composable () -> Unit)?` | Single custom leading composable slot. | `null` |
+| `actions` | `List<Ux4gAppHeaderAction>` | List of trailing action icon buttons or custom action widgets. | `emptyList()` |
+| `avatar` | `(@Composable () -> Unit)?` | Custom avatar composable slot at trailing end. | `null` |
+| `avatarSize` | `Ux4gAvatarSize` | Avatar dimension size when `showAvatar = true`. | `Ux4gAvatarSize.Medium` |
+| `showAvatar` | `Boolean` | Whether to render default `Ux4gAvatar` at trailing end. | `false` |
+| `avatarImageUrl` | `String?` | Image URL for default profile avatar. | `null` |
+| `avatarInitials` | `String?` | Initials fallback text when avatar image is absent. | `null` |
+| `onAvatarClick` | `(() -> Unit)?` | Click callback for trailing avatar. | `null` |
+| `titleWidget` | `(@Composable () -> Unit)?` | Custom composable slot for title (overrides `title` string). | `null` |
+| `useSafeArea` | `Boolean` | Applies status bar inset padding automatically. | `true` |
+| `height` | `Dp` | Height dimension of header bar. | `56.dp` |
+| `backgroundColor` | `Color?` | Custom background color override. | `null` |
+| `contentColor` | `Color?` | Custom text and icon color override. | `null` |
+| `borderColor` | `Color?` | Border color for Outlined variant. | `null` |
+
+
+---
+
+### `Ux4gAppHeaderAction` Model
+
+| Prop | Type | Description | Default |
+| :--- | :--- | :--- | :--- |
+| `icon` | `Ux4gIcon?` | Vector icon resource for action button. | `Ux4gIcons.Settings` |
+| `onClick` | `(() -> Unit)?` | Click handler callback when action is pressed. | `null` |
+| `tooltip` | `String?` | Accessibility label / tooltip description. | `null` |
+| `customWidget` | `(@Composable () -> Unit)?` | Custom composable slot replacing standard icon button. | `null` |
+
+
+---
+
+### `Ux4gAppHeaderVariant` Enum
+
+| Value | Description |
+| :--- | :--- |
+| `Light` | Surface background with dark text, emblem, and action icons. |
+| `Filled` | Primary purple solid background with high-contrast white text and icons. |
+| `Outlined` | Surface background with subtle bottom border line. |
+

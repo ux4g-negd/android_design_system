@@ -1,28 +1,70 @@
 ---
 title: Empty State
-description: Standard empty screens for no results, no applications, and network disconnects
+description: Informative fallback view for zero search results, empty inboxes, and fresh accounts
 ---
 
 # Empty State (`Ux4gEmptyState`)
+
+Informative fallback view for zero search results, empty inboxes, and fresh accounts.
 
 Import from `com.ux4g.designsystemv1.components.Ux4gEmptyState`.
 
 ---
 
-<h2><MIcon name="code" /> Basic Usage</h2>
+<h2><MIcon name="smartphone" /> Interactive Preview</h2>
 
-```kotlin
-import com.ux4g.designsystemv1.components.Ux4gEmptyState
-import com.ux4g.designsystemv1.components.buttons.Ux4gButton
-
-Ux4gEmptyState(
+<ComponentPreview
+  title="Ux4gEmptyState"
+  category="Jetpack Compose"
+  code={`Ux4gEmptyState(
+    icon = Ux4gIcons.Folder,
     title = "No Applications Found",
-    description = "You haven't submitted any service requests yet. Start a new application to track its progress.",
-    action = {
-        Ux4gButton(
-            text = "Apply for New Service",
-            onClick = { /* Navigate to catalogue */ }
-        )
-    }
-)
+    description = "You have not submitted any scheme applications yet. Start a new application to track status here.",
+    actionLabel = "Explore Schemes",
+    onActionClick = { /* navigate to schemes */ }
+)`}
+>
+  <div className="flex flex-col items-center justify-center py-2">
+    <img
+      src="/images/components/empty-state_preview.png"
+      alt="UX4G Empty State Preview"
+      className="max-w-full rounded-xl border border-border/60 shadow-sm"
+    />
+  </div>
+</ComponentPreview>
+
+---
+
+<h2><MIcon name="code" /> Kotlin Usage</h2>
+
+```kotlin title="Compose Example"
+import androidx.compose.runtime.Composable
+import com.ux4g.designsystemv1.components.Ux4gEmptyState
+import com.ux4g.designsystemv1.foundation.Ux4gIcons
+
+@Composable
+fun EmptyInboxExample() {
+    Ux4gEmptyState(
+        icon = Ux4gIcons.Inbox,
+        title = "No Pending Notifications",
+        description = "All your citizen service alerts will appear here.",
+        actionLabel = "Refresh",
+        onActionClick = { /* refresh */ }
+    )
+}
 ```
+
+---
+
+<h2><MIcon name="settings" /> Parameters</h2>
+
+| Prop | Type | Description | Default |
+| :--- | :--- | :--- | :--- |
+| `icon` <span className="text-red-500 font-bold">*</span> | `Ux4gIcon` | Hero vector icon displayed at the top. | `—` |
+| `title` <span className="text-red-500 font-bold">*</span> | `String` | Bold primary headline message. | `—` |
+| `description` <span className="text-red-500 font-bold">*</span> | `String` | Explanatory subtitle guiding the citizen. | `—` |
+| `modifier` | `Modifier` | Compose layout modifier. | `Modifier` |
+| `actionLabel` | `String?` | Optional call-to-action button text. | `null` |
+| `onActionClick` | `(() -> Unit)?` | Callback when action button is tapped. | `null` |
+| `iconTint` | `Color?` | Custom color tint for hero icon. | `null` |
+

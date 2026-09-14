@@ -1,31 +1,73 @@
 ---
 title: Search Field
-description: Search input with clear trigger, voice input icon, filter types, and live dropdown integration
+description: Universal search bar with search button, voice search trigger, clear cross, and filter dropdown integration
 ---
 
 # Search Field (`Ux4gSearchField`)
 
-Import from `com.ux4g.designsystemv1.components.searchfield.*`.
+Universal search bar with search button, voice search trigger, clear cross, and filter dropdown integration.
+
+Import from `com.ux4g.designsystemv1.components.searchfield.Ux4gSearchField`.
 
 ---
 
-<h2><MIcon name="code" /> Basic Usage</h2>
+<h2><MIcon name="smartphone" /> Interactive Preview</h2>
 
-```kotlin
-import com.ux4g.designsystemv1.components.searchfield.Ux4gSearchField
-import com.ux4g.designsystemv1.components.searchfield.Ux4gSearchFieldVariant
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-
-var searchQuery by remember { mutableStateOf("") }
-
-Ux4gSearchField(
+<ComponentPreview
+  title="Ux4gSearchField"
+  category="Jetpack Compose"
+  code={`Ux4gSearchField(
     query = searchQuery,
     onQueryChange = { searchQuery = it },
-    onSearch = { query -> /* Execute search */ },
-    placeholder = "Search citizen schemes, certificates, departments...",
-    variant = Ux4gSearchFieldVariant.Outlined,
-    showVoiceIcon = true,
-    onVoiceClick = { /* Start speech-to-text */ }
-)
+    placeholder = "Search schemes, certificates, or services...",
+    onSearch = { query -> /* Fetch search API */ },
+    onVoiceClick = { /* Launch voice recognition */ }
+)`}
+>
+  <div className="flex flex-col items-center justify-center py-2">
+    <img
+      src="/images/components/search-field_preview.png"
+      alt="UX4G Search Field Preview"
+      className="max-w-full rounded-xl border border-border/60 shadow-sm"
+    />
+  </div>
+</ComponentPreview>
+
+---
+
+<h2><MIcon name="code" /> Kotlin Usage</h2>
+
+```kotlin title="Compose Example"
+import androidx.compose.runtime.*
+import com.ux4g.designsystemv1.components.searchfield.Ux4gSearchField
+import com.ux4g.designsystemv1.components.searchfield.Ux4gSearchFieldSize
+
+@Composable
+fun SearchDemo() {
+    var query by remember { mutableStateOf("") }
+
+    Ux4gSearchField(
+        query = query,
+        onQueryChange = { query = it },
+        onSearch = { performSearch(it) },
+        placeholder = "Search government services..."
+    )
+}
 ```
+
+---
+
+<h2><MIcon name="settings" /> Parameters</h2>
+
+| Prop | Type | Description | Default |
+| :--- | :--- | :--- | :--- |
+| `query` <span className="text-red-500 font-bold">*</span> | `String` | Current search query string. | `—` |
+| `onQueryChange` <span className="text-red-500 font-bold">*</span> | `(String) -> Unit` | Callback invoked as citizen types into search bar. | `—` |
+| `onSearch` | `((String) -> Unit)?` | Fires when citizen presses Search action button or keyboard enter. | `null` |
+| `placeholder` | `String` | Placeholder text when field is empty. | `"Search..."` |
+| `size` | `Ux4gSearchFieldSize` | Size: `Small`, `Medium`, `Large`. | `Ux4gSearchFieldSize.Medium` |
+| `onVoiceClick` | `(() -> Unit)?` | Optional voice microphone trigger callback. | `null` |
+| `onClearClick` | `(() -> Unit)?` | Callback when clear cross icon is pressed. | `null` |
+| `enabled` | `Boolean` | Interactive enabled state. | `true` |
+| `modifier` | `Modifier` | Compose layout modifier. | `Modifier` |
+

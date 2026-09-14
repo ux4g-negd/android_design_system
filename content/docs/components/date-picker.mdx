@@ -1,29 +1,74 @@
 ---
 title: Date Picker
-description: Single date selection, Date of Birth picker, and calendar modal dialogs in Jetpack Compose
+description: Calendar modal and text field date selector supporting DOB, ranges, and maximum date limits
 ---
 
 # Date Picker (`Ux4gDatePicker`)
+
+Calendar modal and text field date selector supporting DOB, ranges, and maximum date limits.
 
 Import from `com.ux4g.designsystemv1.components.Ux4gDatePicker`.
 
 ---
 
-<h2><MIcon name="code" /> Basic Usage</h2>
+<h2><MIcon name="smartphone" /> Interactive Preview</h2>
 
-```kotlin
-import com.ux4g.designsystemv1.components.Ux4gDatePicker
-import java.time.LocalDate
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-
-var selectedDate by remember { mutableStateOf<LocalDate?>(null) }
-
-Ux4gDatePicker(
+<ComponentPreview
+  title="Ux4gDatePicker"
+  category="Jetpack Compose"
+  code={`Ux4gDatePicker(
     selectedDate = selectedDate,
-    onDateSelected = { selectedDate = it },
-    label = "Date of Birth",
-    isRequired = true,
+    onDateSelected = { date -> selectedDate = date },
+    label = "Date of Birth (as per Aadhaar)",
+    placeholder = "DD/MM/YYYY",
     maxDate = LocalDate.now()
-)
+)`}
+>
+  <div className="flex flex-col items-center justify-center py-2">
+    <img
+      src="/images/components/date-picker_preview.png"
+      alt="UX4G Date Picker Preview"
+      className="max-w-full rounded-xl border border-border/60 shadow-sm"
+    />
+  </div>
+</ComponentPreview>
+
+---
+
+<h2><MIcon name="code" /> Kotlin Usage</h2>
+
+```kotlin title="Compose Example"
+import androidx.compose.runtime.*
+import java.time.LocalDate
+import com.ux4g.designsystemv1.components.Ux4gDatePicker
+
+@Composable
+fun DatePickerExample() {
+    var dob by remember { mutableStateOf<LocalDate?>(null) }
+
+    Ux4gDatePicker(
+        label = "Date of Birth",
+        selectedDate = dob,
+        onDateSelected = { dob = it },
+        maxDate = LocalDate.now()
+    )
+}
 ```
+
+---
+
+<h2><MIcon name="settings" /> Parameters</h2>
+
+| Prop | Type | Description | Default |
+| :--- | :--- | :--- | :--- |
+| `label` <span className="text-red-500 font-bold">*</span> | `String` | Header title above the date input field. | `—` |
+| `onDateSelected` <span className="text-red-500 font-bold">*</span> | `(LocalDate) -> Unit` | Callback providing newly selected `LocalDate`. | `—` |
+| `selectedDate` | `LocalDate?` | Currently selected calendar date. | `null` |
+| `placeholder` | `String` | Hint text displayed when no date is picked. | `"DD/MM/YYYY"` |
+| `minDate` | `LocalDate?` | Earliest selectable date bound. | `null` |
+| `maxDate` | `LocalDate?` | Latest selectable date bound (e.g. `LocalDate.now()`). | `null` |
+| `isError` | `Boolean` | Highlights field in red validation error style. | `false` |
+| `errorMessage` | `String?` | Validation error message below input. | `null` |
+| `enabled` | `Boolean` | Whether date picker is interactive. | `true` |
+| `modifier` | `Modifier` | Compose layout modifier. | `Modifier` |
+

@@ -5,20 +5,172 @@ description: Expandable disclosure panels and grouped FAQ lists in Jetpack Compo
 
 # Accordion (`Ux4gAccordion`)
 
+Expandable disclosure panels and grouped FAQ lists in Jetpack Compose.
+
 Import from `com.ux4g.designsystemv1.components.Ux4gAccordion`.
 
 ---
 
-<h2><MIcon name="code" /> Basic Usage</h2>
+<h2><MIcon name="smartphone" /> Interactive Preview</h2>
 
-```kotlin
-import com.ux4g.designsystemv1.components.Ux4gAccordion
+<ComponentPreview
+  title="Ux4gAccordion"
+  category="Jetpack Compose"
+  code={`var expandedIndex by remember { mutableStateOf<Int?>(0) }
+
+Ux4gAccordionGroup(
+    items = listOf(
+        Ux4gAccordionItem(title = "What documents are required for Income Certificate?"),
+        Ux4gAccordionItem(title = "What is the processing turnaround time?"),
+        Ux4gAccordionItem(title = "Is offline physical verification mandatory?", enabled = false)
+    ),
+    expandedIndex = expandedIndex,
+    onExpandedIndexChange = { expandedIndex = it }
+) { index, item ->
+    when (index) {
+        0 -> Text(
+            text = "1. Aadhaar Card of the applicant\\n2. Salary slips for last 3 months or ITR\\n3. Proof of residence (Electricity bill / Ration card)",
+            style = Ux4gTheme.typography.bXS_default,
+            color = Ux4gColors.neutral600
+        )
+        1 -> Text(
+            text = "Standard processing time is 7 to 15 working days from submission.",
+            style = Ux4gTheme.typography.bXS_default,
+            color = Ux4gColors.neutral600
+        )
+    }
+}`}
+>
+  <div className="flex flex-col items-center justify-center py-2">
+    <img
+      src="/images/components/accordion_preview.png"
+      alt="UX4G Accordion Preview"
+      className="max-w-full rounded-xl border border-border/60 shadow-sm"
+    />
+  </div>
+</ComponentPreview>
+
+---
+
+<h2><MIcon name="code" /> Kotlin Usage</h2>
+
+```kotlin title="Standalone Accordion Example"
+import androidx.compose.runtime.*
+import androidx.compose.ui.Modifier
 import androidx.compose.material3.Text
+import com.ux4g.designsystemv1.components.Ux4gAccordion
+import com.ux4g.designsystemv1.components.Ux4gAccordionChevronPosition
+import com.ux4g.designsystemv1.theme.Ux4gTheme
+import com.ux4g.designsystemv1.foundation.Ux4gColors
 
-Ux4gAccordion(
-    title = "What documents are required for Income Certificate?",
-    subtitle = "Click to view mandatory verification proofs"
-) {
-    Text("1. Aadhaar Card of the applicant\n2. Salary slips for last 3 months or ITR\n3. Proof of residence (Electricity bill / Ration card)")
+@Composable
+fun SingleAccordionExample() {
+    var expanded by remember { mutableStateOf(false) }
+
+    Ux4gAccordion(
+        title = "What documents are required for Income Certificate?",
+        expanded = expanded,
+        onExpandedChange = { expanded = it },
+        chevronPosition = Ux4gAccordionChevronPosition.Trailing
+    ) {
+        Text(
+            text = "1. Aadhaar Card of the applicant\n2. Salary slips for last 3 months or ITR\n3. Proof of residence (Electricity bill / Ration card)",
+            style = Ux4gTheme.typography.bXS_default,
+            color = Ux4gColors.neutral600
+        )
+    }
 }
 ```
+
+```kotlin title="Grouped Accordion Example"
+import androidx.compose.runtime.*
+import androidx.compose.material3.Text
+import com.ux4g.designsystemv1.components.Ux4gAccordionGroup
+import com.ux4g.designsystemv1.components.Ux4gAccordionItem
+import com.ux4g.designsystemv1.theme.Ux4gTheme
+import com.ux4g.designsystemv1.foundation.Ux4gColors
+
+@Composable
+fun GroupedAccordionExample() {
+    var expandedIndex by remember { mutableStateOf<Int?>(0) }
+
+    val items = listOf(
+        Ux4gAccordionItem(title = "General Information"),
+        Ux4gAccordionItem(title = "Eligibility Criteria"),
+        Ux4gAccordionItem(title = "Fee Structure & Payment", enabled = false)
+    )
+
+    Ux4gAccordionGroup(
+        items = items,
+        expandedIndex = expandedIndex,
+        onExpandedIndexChange = { expandedIndex = it }
+    ) { index, item ->
+        Text(
+            text = "Detailed information for ${item.title}",
+            style = Ux4gTheme.typography.bXS_default,
+            color = Ux4gColors.neutral600
+        )
+    }
+}
+```
+
+---
+
+<h2><MIcon name="settings" /> Parameters</h2>
+
+### `Ux4gAccordion` Props
+
+| Prop | Type | Description | Default |
+| :--- | :--- | :--- | :--- |
+| `title` <span className="text-red-500 font-bold">*</span> | `String` | Header text displayed on the accordion panel. | — |
+| `content` <span className="text-red-500 font-bold">*</span> | `@Composable () -> Unit` | Content composable shown when expanded. | `{}` |
+| `modifier` | `Modifier` | Compose layout modifier applied to the accordion container. | `Modifier` |
+| `expanded` | `Boolean` | Current expanded state of the panel. | `false` |
+| `enabled` | `Boolean` | When false, header is grayed out and non-interactive. | `true` |
+| `onExpandedChange` | `((Boolean) -> Unit)?` | Called when the panel is toggled. | `null` |
+| `backgroundColor` | `Color?` | Header background. Defaults to `colors.surface` (theme-aware). | `null` |
+| `disabledBackgroundColor` | `Color?` | Header background when disabled. Defaults to `Ux4gColors.neutral100`. | `null` |
+| `contentBackgroundColor` | `Color?` | Background of the expanded content area only. Defaults to `colors.surface`. | `null` |
+| `collapsedBorderColor` | `Color?` | Border when collapsed. Defaults to `colors.onSurface` at 12% opacity (theme-aware). | `null` |
+| `expandedBorderColor` | `Color?` | Border when expanded. Defaults to `collapsedBorderColor`. | `null` |
+| `disabledBorderColor` | `Color?` | Border when disabled. Defaults to `colors.onSurface` at 12% opacity (theme-aware). | `null` |
+| `titleColor` | `Color?` | Header title text color when enabled. Defaults to `colors.onSurface`. | `null` |
+| `disabledTitleColor` | `Color?` | Header title text color when disabled. Defaults to `colors.onSurface` at 38% opacity. | `null` |
+| `iconColor` | `Color?` | Chevron and leading icon color when enabled. Defaults to `colors.onSurface`. | `null` |
+| `disabledIconColor` | `Color?` | Chevron and leading icon color when disabled. Defaults to `colors.onSurface` at 38% opacity. | `null` |
+| `leadingIcon` | `(@Composable () -> Unit)?` | Optional custom composable icon displayed before title. | `null` |
+| `chevronPosition` | `Ux4gAccordionChevronPosition` | Position of expand/collapse arrow icon (`Leading` or `Trailing`). | `Trailing` |
+
+---
+
+### `Ux4gAccordionGroup` Props
+
+| Prop | Type | Description | Default |
+| :--- | :--- | :--- | :--- |
+| `items` <span className="text-red-500 font-bold">*</span> | `List<Ux4gAccordionItem>` | List of accordion item configuration models to display. | — |
+| `content` <span className="text-red-500 font-bold">*</span> | `@Composable (index: Int, item: Ux4gAccordionItem) -> Unit` | Composable lambda rendering the expanded body for each item. | — |
+| `modifier` | `Modifier` | Compose layout modifier applied to the group container. | `Modifier` |
+| `expandedIndex` | `Int?` | Index of the currently expanded item, or `null` if all collapsed. | `null` |
+| `onExpandedIndexChange` | `(Int?) -> Unit` | Callback invoked when an item is expanded or collapsed. | `{}` |
+| `itemSpacing` | `Dp` | Vertical spacing between accordion items. | `20.dp` |
+
+---
+
+### `Ux4gAccordionItem` Data Class
+
+| Prop | Type | Description | Default |
+| :--- | :--- | :--- | :--- |
+| `title` <span className="text-red-500 font-bold">*</span> | `String` | Header title text for the accordion item. | — |
+| `enabled` | `Boolean` | Whether this item is interactive or disabled. | `true` |
+| `leadingIcon` | `(@Composable () -> Unit)?` | Optional leading icon composable slot before the title. | `null` |
+| `chevronPosition` | `Ux4gAccordionChevronPosition` | Chevron icon placement (`Leading` or `Trailing`). | `Trailing` |
+
+---
+
+### `Ux4gAccordionChevronPosition` Enum
+
+| Value | Description |
+| :--- | :--- |
+| `Leading` | Position chevron arrow at the start (left side) of the header row. |
+| `Trailing` | Position chevron arrow at the end (right side) of the header row (default). |
+

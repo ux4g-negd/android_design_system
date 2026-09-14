@@ -1,126 +1,101 @@
 ---
 title: Input Field
-description: Standard Text Input, Aadhaar Input Field, and PAN Card Input Field with built-in validation
+description: Standard Text Input, Aadhaar Number Input, and PAN Input with status states, masking, and validation
 ---
 
-# Input Field Components
+# Input Field (`Ux4gInputField`)
 
-UX4G provides versatile text input fields with built-in validation, leading/trailing icons, error messages, and specialized government document formatters.
+Standard Text Input, Aadhaar Number Input, and PAN Input with status states, masking, and validation.
 
-Import from `com.ux4g.designsystemv1.components.inputfield.*`.
+Import from `com.ux4g.designsystemv1.components.inputfield.Ux4gInputField`.
 
 ---
 
 <h2><MIcon name="smartphone" /> Interactive Preview</h2>
 
 <ComponentPreview
-  title="Aadhaar & Text Input Showcase"
-  code={`// 1. Standard Input Field
+  title="Ux4gInputField"
+  category="Jetpack Compose"
+  code={`// Standard Text Input
 Ux4gInputField(
     value = fullName,
     onValueChange = { fullName = it },
-    label = "Full Name",
-    placeholder = "Enter as per official ID",
-    isRequired = true
+    label = "Full Name (as per Aadhaar)",
+    placeholder = "e.g. Ramesh Kumar"
 )
 
-// 2. Aadhaar Formatted Field with Verhoeff validation
+// Aadhaar 12-Digit Auto-Formatting Input
 Ux4gAadhaarInputField(
     value = aadhaarNumber,
     onValueChange = { aadhaarNumber = it },
-    label = "Aadhaar Number",
-    isRequired = true,
-    allowMaskToggle = true
+    label = "Aadhaar Number"
 )`}
 >
-  <div className="w-full max-w-sm flex flex-col gap-4">
-    <div className="flex flex-col gap-1 text-left">
-      <label className="text-xs font-semibold text-foreground">
-        Full Name <span className="text-red-500">*</span>
-      </label>
-      <input
-        type="text"
-        placeholder="Enter as per official ID"
-        defaultValue="Aarav Sharma"
-        className="w-full px-3.5 py-2.5 rounded-xl border border-border bg-background text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
-      />
-    </div>
-
-    <div className="flex flex-col gap-1 text-left">
-      <label className="text-xs font-semibold text-foreground">
-        Aadhaar Number <span className="text-red-500">*</span>
-      </label>
-      <div className="relative">
-        <input
-          type="text"
-          placeholder="XXXX XXXX 8921"
-          defaultValue="4829 1928 8921"
-          className="w-full px-3.5 py-2.5 rounded-xl border border-border bg-background text-foreground text-sm font-mono tracking-wider focus:outline-none focus:ring-2 focus:ring-indigo-500"
-        />
-        <span className="absolute right-3 top-2.5 text-xs text-emerald-600 font-bold">✓ Valid</span>
-      </div>
-    </div>
+  <div className="flex flex-col items-center justify-center py-2">
+    <img
+      src="/images/components/input-field_preview.png"
+      alt="UX4G Input Field Preview"
+      className="max-w-full rounded-xl border border-border/60 shadow-sm"
+    />
   </div>
 </ComponentPreview>
 
 ---
 
-<h2><MIcon name="code" /> 1. Standard Input Field (`Ux4gInputField`)</h2>
+<h2><MIcon name="code" /> Kotlin Usage</h2>
 
 ```kotlin title="Compose Example"
+import androidx.compose.runtime.*
 import com.ux4g.designsystemv1.components.inputfield.Ux4gInputField
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import com.ux4g.designsystemv1.components.inputfield.Ux4gInputFieldStatus
+import com.ux4g.designsystemv1.components.inputfield.Ux4gInputFieldSize
 
-var name by remember { mutableStateOf("") }
+@Composable
+fun InputDemo() {
+    var name by remember { mutableStateOf("") }
 
-Ux4gInputField(
-    value = name,
-    onValueChange = { name = it },
-    label = "Full Name",
-    placeholder = "Enter your name as per Aadhaar",
-    isRequired = true,
-    helperText = "Must match official government records"
-)
+    Ux4gInputField(
+        value = name,
+        onValueChange = { name = it },
+        label = "Full Name",
+        placeholder = "Enter your full name",
+        size = Ux4gInputFieldSize.Medium,
+        status = Ux4gInputFieldStatus.Default
+    )
+}
 ```
 
 ---
 
-<h2><MIcon name="flag" /> 2. Aadhaar Input Field (<code>Ux4gAadhaarInputField</code>)</h2>
+<h2><MIcon name="settings" /> Parameters</h2>
 
-Specialized 12-digit formatter that automatically formats input into `XXXX XXXX XXXX` chunks with official Verhoeff algorithm verification and mask toggling.
+### `Ux4gInputField` Props
 
-```kotlin title="Aadhaar Example"
-import com.ux4g.designsystemv1.components.inputfield.Ux4gAadhaarInputField
+| Prop | Type | Description | Default |
+| :--- | :--- | :--- | :--- |
+| `value` <span className="text-red-500 font-bold">*</span> | `String` | Current text input value. | `—` |
+| `onValueChange` <span className="text-red-500 font-bold">*</span> | `(String) -> Unit` | Callback invoked when input text changes. | `—` |
+| `label` | `String?` | Header title label above input. | `null` |
+| `placeholder` | `String` | Placeholder text shown when field is empty. | `""` |
+| `modifier` | `Modifier` | Compose layout modifier. | `Modifier` |
+| `size` | `Ux4gInputFieldSize` | Input size: `Small`, `Medium`, `Large`. | `Ux4gInputFieldSize.Medium` |
+| `status` | `Ux4gInputFieldStatus` | Field state: `Default`, `Success`, `Warning`, `Error`, `Disabled`. | `Ux4gInputFieldStatus.Default` |
+| `type` | `Ux4gInputFieldType` | Input type: `Text`, `Password`, `Number`, `Email`, `Phone`. | `Ux4gInputFieldType.Text` |
+| `helperText` | `String?` | Secondary guidance or error text below field. | `null` |
+| `leadingIcon` | `(@Composable () -> Unit)?` | Optional composable icon at start. | `null` |
+| `trailingIcon` | `(@Composable () -> Unit)?` | Optional composable icon at end (e.g. password toggle). | `null` |
+| `enabled` | `Boolean` | Interactive enabled state. | `true` |
+| `readOnly` | `Boolean` | Whether field is read-only non-editable. | `false` |
 
-var aadhaar by remember { mutableStateOf("") }
-var isValid by remember { mutableStateOf(false) }
-
-Ux4gAadhaarInputField(
-    value = aadhaar,
-    onValueChange = { aadhaar = it },
-    onValidationChange = { isValid = it },
-    label = "Aadhaar Number",
-    isRequired = true,
-    allowMaskToggle = true
-)
-```
 
 ---
 
-<h2><MIcon name="badge" /> 3. PAN Card Input Field (<code>Ux4gPanInputField</code>)</h2>
+### `Ux4gAadhaarInputField` Props
 
-Auto-capitalizing 10-character alphanumeric PAN field with strict `AAAAA9999A` pattern validation.
+| Prop | Type | Description | Default |
+| :--- | :--- | :--- | :--- |
+| `value` <span className="text-red-500 font-bold">*</span> | `String` | 12-digit Aadhaar number string. | `—` |
+| `onValueChange` <span className="text-red-500 font-bold">*</span> | `(String) -> Unit` | Change listener formatting in `XXXX XXXX XXXX` chunks. | `—` |
+| `label` | `String?` | Header label. | `"Aadhaar Number"` |
+| `mask` | `Boolean` | Whether to mask first 8 digits for citizen privacy. | `false` |
 
-```kotlin title="PAN Example"
-import com.ux4g.designsystemv1.components.inputfield.Ux4gPanInputField
-
-var pan by remember { mutableStateOf("") }
-
-Ux4gPanInputField(
-    value = pan,
-    onValueChange = { pan = it },
-    label = "PAN Card Number",
-    isRequired = true
-)
-```

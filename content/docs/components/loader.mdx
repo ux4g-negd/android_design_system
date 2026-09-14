@@ -1,21 +1,59 @@
 ---
-title: Spinner Loader
-description: Branded animated rotating loader with standard sizes and theme color tokens
+title: Loader & Spinner
+description: Animated circular spinner and linear indeterminate progress bar for API loading states
 ---
 
-# Loader (`Ux4gLoader`)
+# Loader & Spinner (`Ux4gLoader`)
+
+Animated circular spinner and linear indeterminate progress bar for API loading states.
 
 Import from `com.ux4g.designsystemv1.components.Ux4gLoader`.
 
 ---
 
-<h2><MIcon name="code" /> Basic Usage</h2>
+<h2><MIcon name="smartphone" /> Interactive Preview</h2>
 
-```kotlin
-import com.ux4g.designsystemv1.components.Ux4gLoader
-import androidx.compose.ui.unit.dp
-
+<ComponentPreview
+  title="Ux4gLoader"
+  category="Jetpack Compose"
+  code={`// Circular Spinner
 Ux4gLoader(
-    size = 32.dp
-)
+    size = Ux4gLoaderSize.Medium,
+    color = Ux4gColors.primary
+)`}
+>
+  <div className="flex flex-col items-center justify-center py-2">
+    <img
+      src="/images/components/loader_preview.png"
+      alt="UX4G Loader & Spinner Preview"
+      className="max-w-full rounded-xl border border-border/60 shadow-sm"
+    />
+  </div>
+</ComponentPreview>
+
+---
+
+<h2><MIcon name="code" /> Kotlin Usage</h2>
+
+```kotlin title="Compose Example"
+import androidx.compose.runtime.Composable
+import com.ux4g.designsystemv1.components.Ux4gLoader
+import com.ux4g.designsystemv1.components.Ux4gLoaderSize
+
+@Composable
+fun LoaderExample() {
+    Ux4gLoader(size = Ux4gLoaderSize.Medium)
+}
 ```
+
+---
+
+<h2><MIcon name="settings" /> Parameters</h2>
+
+| Prop | Type | Description | Default |
+| :--- | :--- | :--- | :--- |
+| `modifier` | `Modifier` | Compose layout modifier. | `Modifier` |
+| `size` | `Ux4gLoaderSize` | Spinner dimensions: `Small` (16dp), `Medium` (24dp), `Large` (40dp). | `Ux4gLoaderSize.Medium` |
+| `color` | `Color` | Spinner stroke color. | `Ux4gTheme.colorScheme.primary` |
+| `strokeWidth` | `Dp?` | Optional custom stroke thickness. | `null` |
+

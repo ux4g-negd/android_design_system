@@ -1,34 +1,77 @@
 ---
-title: Modal & Dialog
-description: Confirmation dialogs, full-screen takeovers, and alert modals with sticky actions
+title: Modal Dialog
+description: Focus-trapping popup dialog for confirming destructive actions, service submissions, or alerts
 ---
 
-# Modal (`Ux4gModal`)
+# Modal Dialog (`Ux4gModal`)
+
+Focus-trapping popup dialog for confirming destructive actions, service submissions, or alerts.
 
 Import from `com.ux4g.designsystemv1.components.Ux4gModal`.
 
 ---
 
-<h2><MIcon name="code" /> Basic Usage</h2>
+<h2><MIcon name="smartphone" /> Interactive Preview</h2>
 
-```kotlin
+<ComponentPreview
+  title="Ux4gModal"
+  category="Jetpack Compose"
+  code={`Ux4gModal(
+    show = showDialog,
+    title = "Confirm Final Submission",
+    message = "Are you sure you want to submit your application? Once submitted, form details cannot be modified.",
+    confirmText = "Yes, Submit Application",
+    dismissText = "Review Again",
+    onConfirm = { /* Submit API */ },
+    onDismiss = { showDialog = false }
+)`}
+>
+  <div className="flex flex-col items-center justify-center py-2">
+    <img
+      src="/images/components/modal_preview.png"
+      alt="UX4G Modal Dialog Preview"
+      className="max-w-full rounded-xl border border-border/60 shadow-sm"
+    />
+  </div>
+</ComponentPreview>
+
+---
+
+<h2><MIcon name="code" /> Kotlin Usage</h2>
+
+```kotlin title="Compose Example"
+import androidx.compose.runtime.*
 import com.ux4g.designsystemv1.components.Ux4gModal
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 
-var showDialog by remember { mutableStateOf(false) }
+@Composable
+fun ConfirmationDialogExample() {
+    var open by remember { mutableStateOf(false) }
 
-if (showDialog) {
     Ux4gModal(
-        title = "Discard Draft Application?",
-        description = "All unsaved changes will be permanently lost. Are you sure you want to proceed?",
-        confirmButtonText = "Discard",
-        dismissButtonText = "Keep Editing",
-        onConfirm = {
-            showDialog = false
-            // Handle discard
-        },
-        onDismiss = { showDialog = false }
+        show = open,
+        title = "Confirm Action",
+        message = "Do you want to proceed with Aadhaar authentication?",
+        confirmText = "Proceed",
+        dismissText = "Cancel",
+        onConfirm = { open = false },
+        onDismiss = { open = false }
     )
 }
 ```
+
+---
+
+<h2><MIcon name="settings" /> Parameters</h2>
+
+| Prop | Type | Description | Default |
+| :--- | :--- | :--- | :--- |
+| `show` <span className="text-red-500 font-bold">*</span> | `Boolean` | Controls whether the modal dialog is visible. | `—` |
+| `title` <span className="text-red-500 font-bold">*</span> | `String` | Dialog headline title. | `—` |
+| `message` <span className="text-red-500 font-bold">*</span> | `String` | Dialog explanation body copy. | `—` |
+| `onConfirm` <span className="text-red-500 font-bold">*</span> | `() -> Unit` | Primary action button click callback. | `—` |
+| `onDismiss` <span className="text-red-500 font-bold">*</span> | `() -> Unit` | Dismiss / cancel button click callback. | `—` |
+| `confirmText` | `String` | Primary confirm button label. | `"Confirm"` |
+| `dismissText` | `String` | Dismiss button label. | `"Cancel"` |
+| `isDestructive` | `Boolean` | Styles confirm button in red destructive tone. | `false` |
+| `icon` | `Ux4gIcon?` | Optional top center status visual icon. | `null` |
+

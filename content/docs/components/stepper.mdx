@@ -1,40 +1,79 @@
 ---
 title: Stepper
-description: Horizontal multi-step form progression and compact capsule step indicators
+description: Multi-step form wizard navigation header and capsule stepper for multi-page citizen workflows
 ---
 
 # Stepper (`Ux4gStepper`)
 
-Import from `com.ux4g.designsystemv1.components.steppers.*`.
+Multi-step form wizard navigation header and capsule stepper for multi-page citizen workflows.
+
+Import from `com.ux4g.designsystemv1.components.steppers.Ux4gStepper`.
 
 ---
 
-<h2><MIcon name="code" /> 1. Standard Horizontal Stepper (`Ux4gStepper`)</h2>
+<h2><MIcon name="smartphone" /> Interactive Preview</h2>
 
-```kotlin
-import com.ux4g.designsystemv1.components.steppers.Ux4gStepper
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.remember
-
-var currentStep by remember { mutableIntStateOf(2) }
-val steps = listOf("Personal Info", "Upload Docs", "Verification", "Payment")
+<ComponentPreview
+  title="Ux4gStepper"
+  category="Jetpack Compose"
+  code={`val steps = listOf("Personal Details", "Address Proof", "Income Details", "Bank Account")
 
 Ux4gStepper(
     steps = steps,
-    currentStep = currentStep,
-    onStepClick = { stepIndex -> currentStep = stepIndex }
-)
+    currentStep = currentStepIndex,
+    onStepClick = { index -> currentStepIndex = index }
+)`}
+>
+  <div className="flex flex-col items-center justify-center py-2">
+    <img
+      src="/images/components/stepper_preview.png"
+      alt="UX4G Stepper Preview"
+      className="max-w-full rounded-xl border border-border/60 shadow-sm"
+    />
+  </div>
+</ComponentPreview>
+
+---
+
+<h2><MIcon name="code" /> Kotlin Usage</h2>
+
+```kotlin title="Compose Example"
+import androidx.compose.runtime.*
+import com.ux4g.designsystemv1.components.steppers.Ux4gStepper
+
+@Composable
+fun FormWizardExample() {
+    var step by remember { mutableStateOf(0) }
+
+    Ux4gStepper(
+        steps = listOf("Identity", "Documents", "Review"),
+        currentStep = step,
+        onStepClick = { step = it }
+    )
+}
 ```
 
 ---
 
-<h2><MIcon name="code" /> 2. Capsule Stepper (`Ux4gCapsuleStepper`)</h2>
+<h2><MIcon name="settings" /> Parameters</h2>
 
-```kotlin
-import com.ux4g.designsystemv1.components.steppers.Ux4gCapsuleStepper
+### `Ux4gStepper` Props
 
-Ux4gCapsuleStepper(
-    totalSteps = 5,
-    currentStep = 3
-)
-```
+| Prop | Type | Description | Default |
+| :--- | :--- | :--- | :--- |
+| `steps` <span className="text-red-500 font-bold">*</span> | `List<String>` | List of step title labels in the wizard. | `—` |
+| `currentStep` <span className="text-red-500 font-bold">*</span> | `Int` | Active 0-indexed step number. | `—` |
+| `onStepClick` | `((Int) -> Unit)?` | Optional step jump callback handler. | `null` |
+| `modifier` | `Modifier` | Compose layout modifier. | `Modifier` |
+
+
+---
+
+### `Ux4gCapsuleStepper` Props
+
+| Prop | Type | Description | Default |
+| :--- | :--- | :--- | :--- |
+| `totalSteps` <span className="text-red-500 font-bold">*</span> | `Int` | Total number of steps in the sequence. | `—` |
+| `currentStep` <span className="text-red-500 font-bold">*</span> | `Int` | Active step index. | `—` |
+| `modifier` | `Modifier` | Compose layout modifier. | `Modifier` |
+

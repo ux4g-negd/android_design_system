@@ -1,24 +1,73 @@
 ---
 title: Divider
-description: Horizontal and vertical section separators with optional center text labels
+description: Horizontal visual separator lines and labeled partition bars for dividing form sections
 ---
 
 # Divider (`Ux4gDivider`)
+
+Horizontal visual separator lines and labeled partition bars for dividing form sections.
 
 Import from `com.ux4g.designsystemv1.components.Ux4gDivider`.
 
 ---
 
-<h2><MIcon name="code" /> Basic Usage</h2>
+<h2><MIcon name="smartphone" /> Interactive Preview</h2>
 
-```kotlin
-import com.ux4g.designsystemv1.components.Ux4gDivider
-
-// Standard Divider
+<ComponentPreview
+  title="Ux4gDivider"
+  category="Jetpack Compose"
+  code={`// Standard Divider
 Ux4gDivider()
 
-// Divider with Center Label
-Ux4gDivider(
-    label = "OR CONTINUE WITH"
-)
+// Divider with Middle Label
+Ux4gDividerWithLabel(label = "OR VERIFY WITH")`}
+>
+  <div className="flex flex-col items-center justify-center py-2">
+    <img
+      src="/images/components/divider_preview.png"
+      alt="UX4G Divider Preview"
+      className="max-w-full rounded-xl border border-border/60 shadow-sm"
+    />
+  </div>
+</ComponentPreview>
+
+---
+
+<h2><MIcon name="code" /> Kotlin Usage</h2>
+
+```kotlin title="Compose Example"
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.unit.dp
+import com.ux4g.designsystemv1.components.Ux4gDivider
+import com.ux4g.designsystemv1.components.Ux4gDividerWithLabel
+
+@Composable
+fun DividerExample() {
+    Ux4gDivider(thickness = 1.dp)
+    Ux4gDividerWithLabel(label = "OR")
+}
 ```
+
+---
+
+<h2><MIcon name="settings" /> Parameters</h2>
+
+### `Ux4gDivider` Props
+
+| Prop | Type | Description | Default |
+| :--- | :--- | :--- | :--- |
+| `modifier` | `Modifier` | Compose layout modifier. | `Modifier` |
+| `thickness` | `Dp` | Stroke thickness height of divider line. | `1.dp` |
+| `color` | `Color` | Divider line stroke color token. | `Ux4gTheme.colorScheme.onSurface.copy(alpha = 0.12f)` |
+
+
+---
+
+### `Ux4gDividerWithLabel` Props
+
+| Prop | Type | Description | Default |
+| :--- | :--- | :--- | :--- |
+| `label` <span className="text-red-500 font-bold">*</span> | `String` | Middle partition label text. | `—` |
+| `modifier` | `Modifier` | Compose layout modifier. | `Modifier` |
+| `color` | `Color` | Line color token. | `Ux4gTheme.colorScheme.onSurface.copy(alpha = 0.12f)` |
+

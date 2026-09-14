@@ -1,32 +1,76 @@
 ---
 title: Text Area
-description: Multi-line text input with character limit counters, auto-resizing, and error states
+description: Multi-line expanded text box for grievance descriptions, remarks, and residential addresses
 ---
 
 # Text Area (`Ux4gTextArea`)
 
-`Ux4gTextArea` provides an expansive multiline editor for user feedback, grievances, and document remarks.
+Multi-line expanded text box for grievance descriptions, remarks, and residential addresses.
 
 Import from `com.ux4g.designsystemv1.components.textarea.Ux4gTextArea`.
 
 ---
 
-<h2><MIcon name="code" /> Basic Usage</h2>
+<h2><MIcon name="smartphone" /> Interactive Preview</h2>
 
-```kotlin
-import com.ux4g.designsystemv1.components.textarea.Ux4gTextArea
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-
-var complaintText by remember { mutableStateOf("") }
-
-Ux4gTextArea(
-    value = complaintText,
-    onValueChange = { complaintText = it },
+<ComponentPreview
+  title="Ux4gTextArea"
+  category="Jetpack Compose"
+  code={`Ux4gTextArea(
+    value = grievanceDetails,
+    onValueChange = { grievanceDetails = it },
     label = "Grievance Description",
-    placeholder = "Describe your issue with as much detail as possible...",
-    maxCharacters = 500,
-    minLines = 4,
-    isRequired = true
-)
+    placeholder = "Please provide detailed description of the issue faced (min 50 characters)...",
+    maxCharacters = 1000,
+    minLines = 4
+)`}
+>
+  <div className="flex flex-col items-center justify-center py-2">
+    <img
+      src="/images/components/text-area_preview.png"
+      alt="UX4G Text Area Preview"
+      className="max-w-full rounded-xl border border-border/60 shadow-sm"
+    />
+  </div>
+</ComponentPreview>
+
+---
+
+<h2><MIcon name="code" /> Kotlin Usage</h2>
+
+```kotlin title="Compose Example"
+import androidx.compose.runtime.*
+import com.ux4g.designsystemv1.components.textarea.Ux4gTextArea
+
+@Composable
+fun RemarksExample() {
+    var remarks by remember { mutableStateOf("") }
+
+    Ux4gTextArea(
+        value = remarks,
+        onValueChange = { remarks = it },
+        label = "Officer Remarks",
+        placeholder = "Enter remarks...",
+        minLines = 3
+    )
+}
 ```
+
+---
+
+<h2><MIcon name="settings" /> Parameters</h2>
+
+| Prop | Type | Description | Default |
+| :--- | :--- | :--- | :--- |
+| `value` <span className="text-red-500 font-bold">*</span> | `String` | Multi-line text content string. | `—` |
+| `onValueChange` <span className="text-red-500 font-bold">*</span> | `(String) -> Unit` | Text change event callback. | `—` |
+| `label` | `String?` | Header title above text area. | `null` |
+| `placeholder` | `String` | Placeholder text. | `""` |
+| `maxCharacters` | `Int?` | Character limit counter displayed at bottom-right. | `null` |
+| `minLines` | `Int` | Minimum initial height in text lines. | `4` |
+| `maxLines` | `Int` | Maximum expansion limit before internal scrolling. | `8` |
+| `isError` | `Boolean` | Validation error state styling. | `false` |
+| `errorMessage` | `String?` | Validation error message below input. | `null` |
+| `enabled` | `Boolean` | Interactive enabled state. | `true` |
+| `modifier` | `Modifier` | Compose layout modifier. | `Modifier` |
+

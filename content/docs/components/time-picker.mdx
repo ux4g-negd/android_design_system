@@ -1,28 +1,68 @@
 ---
 title: Time Picker
-description: 12-hour AM/PM and 24-hour time selectors with configurable minute intervals
+description: Analog clock and digital hour/minute selection dialog for appointment scheduling
 ---
 
 # Time Picker (`Ux4gTimePicker`)
+
+Analog clock and digital hour/minute selection dialog for appointment scheduling.
 
 Import from `com.ux4g.designsystemv1.components.Ux4gTimePicker`.
 
 ---
 
-<h2><MIcon name="code" /> Basic Usage</h2>
+<h2><MIcon name="smartphone" /> Interactive Preview</h2>
 
-```kotlin
-import com.ux4g.designsystemv1.components.Ux4gTimePicker
-import java.time.LocalTime
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-
-var appointmentTime by remember { mutableStateOf<LocalTime?>(null) }
-
-Ux4gTimePicker(
+<ComponentPreview
+  title="Ux4gTimePicker"
+  category="Jetpack Compose"
+  code={`Ux4gTimePicker(
     selectedTime = appointmentTime,
-    onTimeSelected = { appointmentTime = it },
-    label = "Preferred Slot Time",
+    onTimeSelected = { time -> appointmentTime = time },
+    label = "Appointment Slot Time",
     is24Hour = false
-)
+)`}
+>
+  <div className="flex flex-col items-center justify-center py-2">
+    <img
+      src="/images/components/time-picker_preview.png"
+      alt="UX4G Time Picker Preview"
+      className="max-w-full rounded-xl border border-border/60 shadow-sm"
+    />
+  </div>
+</ComponentPreview>
+
+---
+
+<h2><MIcon name="code" /> Kotlin Usage</h2>
+
+```kotlin title="Compose Example"
+import androidx.compose.runtime.*
+import java.time.LocalTime
+import com.ux4g.designsystemv1.components.Ux4gTimePicker
+
+@Composable
+fun TimePickerExample() {
+    var time by remember { mutableStateOf<LocalTime?>(null) }
+
+    Ux4gTimePicker(
+        label = "Preferred Slot",
+        selectedTime = time,
+        onTimeSelected = { time = it }
+    )
+}
 ```
+
+---
+
+<h2><MIcon name="settings" /> Parameters</h2>
+
+| Prop | Type | Description | Default |
+| :--- | :--- | :--- | :--- |
+| `label` <span className="text-red-500 font-bold">*</span> | `String` | Field title text. | `—` |
+| `onTimeSelected` <span className="text-red-500 font-bold">*</span> | `(LocalTime) -> Unit` | Callback providing chosen `LocalTime`. | `—` |
+| `selectedTime` | `LocalTime?` | Currently selected time value. | `null` |
+| `is24Hour` | `Boolean` | Toggles between 12-hour AM/PM vs 24-hour military clock. | `false` |
+| `enabled` | `Boolean` | Interactive enabled state. | `true` |
+| `modifier` | `Modifier` | Compose layout modifier. | `Modifier` |
+

@@ -1,48 +1,80 @@
 ---
-title: Progress Indicators
-description: Circular progress indicators, half-circle meter gauges, and linear progress bars
+title: Progress Indicator
+description: Linear progress bar, circular progress, and half-circle gauges for profile completion and workflow tracking
 ---
 
-# Progress Indicators
+# Progress Indicator (`Ux4gLinearProgressBar`)
 
-Import from `com.ux4g.designsystemv1.components.progress.*`.
+Linear progress bar, circular progress, and half-circle gauges for profile completion and workflow tracking.
+
+Import from `com.ux4g.designsystemv1.components.progress.Ux4gLinearProgressBar`.
 
 ---
 
-<h2><MIcon name="code" /> 1. Linear Progress Bar (`Ux4gLinearProgressBar`)</h2>
+<h2><MIcon name="smartphone" /> Interactive Preview</h2>
 
-```kotlin
-import com.ux4g.designsystemv1.components.progress.Ux4gLinearProgressBar
-
+<ComponentPreview
+  title="Ux4gLinearProgressBar"
+  category="Jetpack Compose"
+  code={`// Linear Progress
 Ux4gLinearProgressBar(
-    progress = 0.75f, // 75% complete
-    showLabel = true
+    progress = 0.75f,
+    label = "Profile Completion: 75%"
 )
-```
+
+// Circular Progress Gauge
+Ux4gCircularProgress(
+    progress = 0.80f,
+    size = 64.dp
+)`}
+>
+  <div className="flex flex-col items-center justify-center py-2">
+    <img
+      src="/images/components/progress-indicator_preview.png"
+      alt="UX4G Progress Indicator Preview"
+      className="max-w-full rounded-xl border border-border/60 shadow-sm"
+    />
+  </div>
+</ComponentPreview>
 
 ---
 
-<h2><MIcon name="code" /> 2. Circular Progress Indicator (`Ux4gCircularProgress`)</h2>
+<h2><MIcon name="code" /> Kotlin Usage</h2>
 
-```kotlin
+```kotlin title="Compose Example"
+import androidx.compose.runtime.Composable
+import com.ux4g.designsystemv1.components.progress.Ux4gLinearProgressBar
 import com.ux4g.designsystemv1.components.progress.Ux4gCircularProgress
 
-Ux4gCircularProgress(
-    progress = 0.60f,
-    size = 64.dp,
-    showPercentage = true
-)
+@Composable
+fun ProgressDemo() {
+    Ux4gLinearProgressBar(progress = 0.6f)
+}
 ```
 
 ---
 
-<h2><MIcon name="code" /> 3. Half Circle Meter Gauge (`Ux4gHalfCircleProgress`)</h2>
+<h2><MIcon name="settings" /> Parameters</h2>
 
-```kotlin
-import com.ux4g.designsystemv1.components.progress.Ux4gHalfCircleProgress
+### `Ux4gLinearProgressBar` Props
 
-Ux4gHalfCircleProgress(
-    progress = 0.85f,
-    label = "Profile 85% Complete"
-)
-```
+| Prop | Type | Description | Default |
+| :--- | :--- | :--- | :--- |
+| `progress` <span className="text-red-500 font-bold">*</span> | `Float` | Determinate progress float value between `0.0f` and `1.0f`. | `—` |
+| `modifier` | `Modifier` | Compose layout modifier. | `Modifier` |
+| `label` | `String?` | Optional label above progress bar. | `null` |
+| `color` | `Color` | Progress fill bar color. | `Ux4gTheme.colorScheme.primary` |
+| `trackColor` | `Color` | Background track rail color. | `Ux4gTheme.colorScheme.onSurface.copy(alpha = 0.12f)` |
+
+
+---
+
+### `Ux4gCircularProgress` Props
+
+| Prop | Type | Description | Default |
+| :--- | :--- | :--- | :--- |
+| `progress` <span className="text-red-500 font-bold">*</span> | `Float` | Progress float value from `0.0f` to `1.0f`. | `—` |
+| `size` | `Dp` | Diameter dimension of circle. | `48.dp` |
+| `strokeWidth` | `Dp` | Thickness of gauge arc. | `4.dp` |
+| `color` | `Color` | Progress arc color. | `Ux4gTheme.colorScheme.primary` |
+

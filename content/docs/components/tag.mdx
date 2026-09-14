@@ -1,24 +1,57 @@
 ---
 title: Tag
-description: Pill and square tags with close triggers, leading icons, and theme color tokens
+description: Small metadata pills for document categories, government schemes, and priority flags
 ---
 
 # Tag (`Ux4gTag`)
+
+Small metadata pills for document categories, government schemes, and priority flags.
 
 Import from `com.ux4g.designsystemv1.components.Ux4gTag`.
 
 ---
 
-<h2><MIcon name="code" /> Basic Usage</h2>
+<h2><MIcon name="smartphone" /> Interactive Preview</h2>
 
-```kotlin
+<ComponentPreview
+  title="Ux4gTag"
+  category="Jetpack Compose"
+  code={`Ux4gTag(text = "Central Sector Scheme", variant = Ux4gTagVariant.Primary)
+Ux4gTag(text = "High Priority", variant = Ux4gTagVariant.Error)
+Ux4gTag(text = "Offline Verification", variant = Ux4gTagVariant.Neutral)`}
+>
+  <div className="flex flex-col items-center justify-center py-2">
+    <img
+      src="/images/components/tag_preview.png"
+      alt="UX4G Tag Preview"
+      className="max-w-full rounded-xl border border-border/60 shadow-sm"
+    />
+  </div>
+</ComponentPreview>
+
+---
+
+<h2><MIcon name="code" /> Kotlin Usage</h2>
+
+```kotlin title="Compose Example"
+import androidx.compose.runtime.Composable
 import com.ux4g.designsystemv1.components.Ux4gTag
 import com.ux4g.designsystemv1.components.Ux4gTagVariant
 
-// Dismissible Tag
-Ux4gTag(
-    text = "Ration Card Holder",
-    onClose = { /* remove tag */ },
-    variant = Ux4gTagVariant.Primary
-)
+@Composable
+fun TagDemo() {
+    Ux4gTag(text = "DBT Active", variant = Ux4gTagVariant.Success)
+}
 ```
+
+---
+
+<h2><MIcon name="settings" /> Parameters</h2>
+
+| Prop | Type | Description | Default |
+| :--- | :--- | :--- | :--- |
+| `text` <span className="text-red-500 font-bold">*</span> | `String` | Label text rendered inside the tag pill. | `—` |
+| `variant` | `Ux4gTagVariant` | Color tone: `Primary`, `Neutral`, `Success`, `Warning`, `Error`. | `Ux4gTagVariant.Primary` |
+| `modifier` | `Modifier` | Compose layout modifier. | `Modifier` |
+| `leadingIcon` | `(@Composable () -> Unit)?` | Optional leading icon composable slot. | `null` |
+

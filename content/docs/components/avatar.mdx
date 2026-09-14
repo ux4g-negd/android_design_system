@@ -1,42 +1,116 @@
 ---
 title: Avatar
-description: User profile representations, status indicators, and grouped avatar stacks in Jetpack Compose
+description: User profile picture, initials fallback, active status indicator, and grouped stacked avatars
 ---
 
 # Avatar (`Ux4gAvatar`)
 
-Avatars represent citizen profiles, administrative officers, or organizations with photo, initials, or fallback icons.
+User profile picture, initials fallback, active status indicator, and grouped stacked avatars.
 
-Import from `com.ux4g.designsystemv1.components.avatar_component.*`.
-
----
-
-<h2><MIcon name="code" /> Components</h2>
-
-1. **`Ux4gAvatar`**: Standard circular avatar with image URL, initials, or fallback icon.
-2. **`Ux4gAvatarGroup`**: Stack of overlapping avatars with overflow counter (`+3`).
-3. **`Ux4gProfileAvatar`**: Avatar with verified government badge overlay.
-4. **`Ux4gStatusAvatar`**: Avatar with online/offline/busy status indicator dot.
+Import from `com.ux4g.designsystemv1.components.avatar_component.Ux4gAvatar`.
 
 ---
 
-<h2><MIcon name="code" /> Basic Usage</h2>
+<h2><MIcon name="smartphone" /> Interactive Preview</h2>
 
-```kotlin
+<ComponentPreview
+  title="Ux4gAvatar"
+  category="Jetpack Compose"
+  code={`// Profile Avatar with Initials
+Ux4gAvatar(
+    name = "Aarav Sharma",
+    size = Ux4gAvatarSize.Large,
+    status = Ux4gAvatarStatus.Online
+)
+
+// Avatar with Image URL
+Ux4gAvatar(
+    imageUrl = "https://example.com/avatar.jpg",
+    name = "Priya Patel",
+    size = Ux4gAvatarSize.Medium
+)`}
+>
+  <div className="flex flex-col items-center justify-center py-2">
+    <img
+      src="/images/components/avatar_preview.png"
+      alt="UX4G Avatar Preview"
+      className="max-w-full rounded-xl border border-border/60 shadow-sm"
+    />
+  </div>
+</ComponentPreview>
+
+---
+
+<h2><MIcon name="code" /> Kotlin Usage</h2>
+
+```kotlin title="Compose Example"
+import androidx.compose.runtime.Composable
 import com.ux4g.designsystemv1.components.avatar_component.Ux4gAvatar
 import com.ux4g.designsystemv1.components.avatar_component.Ux4gAvatarSize
-import com.ux4g.designsystemv1.components.avatar_component.Ux4gProfileAvatar
+import com.ux4g.designsystemv1.components.avatar_component.Ux4gAvatarStatus
+import com.ux4g.designsystemv1.components.avatar_component.Ux4gAvatarGroup
 
-// Standard Initials Avatar
-Ux4gAvatar(
-    name = "Ramesh Kumar",
-    size = Ux4gAvatarSize.Large
-)
-
-// Verified Citizen Profile Avatar
-Ux4gProfileAvatar(
-    imageUrl = "https://example.com/photo.jpg",
-    name = "Asha Sharma",
-    isVerified = true
-)
+@Composable
+fun AvatarExample() {
+    Ux4gAvatar(
+        name = "Rajesh Kumar",
+        size = Ux4gAvatarSize.Large,
+        status = Ux4gAvatarStatus.Online,
+        onClick = { /* Open citizen profile */ }
+    )
+}
 ```
+
+---
+
+<h2><MIcon name="settings" /> Parameters</h2>
+
+### `Ux4gAvatar` Props
+
+| Prop | Type | Description | Default |
+| :--- | :--- | :--- | :--- |
+| `name` <span className="text-red-500 font-bold">*</span> | `String` | Citizen/User name used for computing initials & accessibility content description. | `—` |
+| `imageUrl` | `String?` | Optional remote image URL. | `null` |
+| `size` | `Ux4gAvatarSize` | Avatar dimension: `ExtraSmall`, `Small`, `Medium`, `Large`, `ExtraLarge`. | `Medium` |
+| `status` | `Ux4gAvatarStatus?` | Presence status dot badge: `Online`, `Offline`, `Away`, `Busy`. | `null` |
+| `shape` | `Shape` | Shape applied to the avatar boundary (Circle or Rounded Corner). | `CircleShape` |
+| `onClick` | `(() -> Unit)?` | Optional click listener callback when avatar is tapped. | `null` |
+| `modifier` | `Modifier` | Compose layout modifier. | `Modifier` |
+
+
+---
+
+### `Ux4gAvatarGroup` Props
+
+| Prop | Type | Description | Default |
+| :--- | :--- | :--- | :--- |
+| `avatars` <span className="text-red-500 font-bold">*</span> | `List<Ux4gAvatarData>` | List of user avatar models to render in an overlapping horizontal stack. | `—` |
+| `maxVisible` | `Int` | Maximum number of avatar circles to display before showing `+N` count pill. | `4` |
+| `size` | `Ux4gAvatarSize` | Uniform dimension size for all avatars in group. | `Ux4gAvatarSize.Medium` |
+| `modifier` | `Modifier` | Compose layout modifier. | `Modifier` |
+
+
+---
+
+### `Ux4gAvatarSize` Enum
+
+| Value | Dimension | Text Style |
+| :--- | :--- | :--- |
+| `ExtraSmall` | `24.dp` | `10.sp` bold initials |
+| `Small` | `32.dp` | `12.sp` bold initials |
+| `Medium` | `40.dp` | `14.sp` bold initials |
+| `Large` | `48.dp` | `16.sp` bold initials |
+| `ExtraLarge` | `64.dp` | `20.sp` bold initials |
+
+
+---
+
+### `Ux4gAvatarStatus` Enum
+
+| Value | Color | Description |
+| :--- | :--- | :--- |
+| `Online` | Green (`#22C55E`) | User currently active / signed in |
+| `Offline` | Neutral Gray (`#9CA3AF`) | User offline |
+| `Away` | Amber (`#F59E0B`) | User temporarily away |
+| `Busy` | Red (`#EF4444`) | User busy / in verification session |
+

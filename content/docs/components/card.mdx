@@ -1,11 +1,11 @@
 ---
 title: Card
-description: Structured container for citizen services, application summaries, and dashboard statistics
+description: Surface containers for citizen services, scheme benefits, statistics, and interactive items
 ---
 
 # Card (`Ux4gCard`)
 
-Cards group related information, interactive CTAs, and multimedia previews into clean, elevated containers.
+Surface containers for citizen services, scheme benefits, statistics, and interactive items.
 
 Import from `com.ux4g.designsystemv1.components.Ux4gCard`.
 
@@ -14,38 +14,27 @@ Import from `com.ux4g.designsystemv1.components.Ux4gCard`.
 <h2><MIcon name="smartphone" /> Interactive Preview</h2>
 
 <ComponentPreview
-  title="Ux4gCard Preview"
+  title="Ux4gCard"
+  category="Jetpack Compose"
   code={`Ux4gCard(
-    title = "Application #109283",
-    subtitle = "Income Certificate • Submitted on 12 Sep 2026",
+    modifier = Modifier.fillMaxWidth(),
     variant = Ux4gCardVariant.Elevated,
-    onClick = { /* navigate */ }
+    onClick = { /* Open scheme */ }
 ) {
-    Text("Status: Document Verification in Progress")
-    Ux4gButton(
-        text = "Track Application",
-        onClick = { /* track */ }
-    )
+    Column(modifier = Modifier.padding(16.dp)) {
+        Ux4gBadge(type = Ux4gBadgeType.Label("DBT Enabled"), containerColor = Ux4gColors.green600)
+        Spacer(modifier = Modifier.height(8.dp))
+        Text(text = "PM Kisan Samman Nidhi", style = Ux4gTheme.typography.tM_strong)
+        Text(text = "Direct income support of ₹6,000 per year in 3 equal installments.", style = Ux4gTheme.typography.bS_default)
+    }
 }`}
 >
-  <div className="w-full max-w-sm p-5 rounded-2xl border border-border bg-card shadow-lg transition-all hover:border-indigo-500/50">
-    <div className="flex items-center justify-between mb-2">
-      <h3 className="font-bold text-sm text-foreground">Application #109283</h3>
-      <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 text-amber-800 dark:bg-amber-950/60 dark:text-amber-300">
-        In Review
-      </span>
-    </div>
-    <p className="text-xs text-muted-foreground mb-4">
-      Income Certificate &bull; Submitted on 12 Sep 2026
-    </p>
-    <div className="pt-3 border-t border-border flex items-center justify-end gap-2">
-      <button className="px-3 py-1.5 rounded-lg border border-border text-xs font-semibold hover:bg-accent">
-        View Slip
-      </button>
-      <button className="px-3 py-1.5 rounded-lg bg-indigo-600 text-white text-xs font-semibold shadow-xs hover:bg-indigo-700">
-        Track Status
-      </button>
-    </div>
+  <div className="flex flex-col items-center justify-center py-2">
+    <img
+      src="/images/components/card_preview.png"
+      alt="UX4G Card Preview"
+      className="max-w-full rounded-xl border border-border/60 shadow-sm"
+    />
   </div>
 </ComponentPreview>
 
@@ -54,23 +43,19 @@ Import from `com.ux4g.designsystemv1.components.Ux4gCard`.
 <h2><MIcon name="code" /> Kotlin Usage</h2>
 
 ```kotlin title="Compose Example"
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import com.ux4g.designsystemv1.components.Ux4gCard
 import com.ux4g.designsystemv1.components.Ux4gCardVariant
-import com.ux4g.designsystemv1.components.buttons.Ux4gButton
-import androidx.compose.material3.Text
 
-Ux4gCard(
-    title = "Application #109283",
-    subtitle = "Submitted on 12 Sep 2026",
-    variant = Ux4gCardVariant.Elevated,
-    onClick = { /* Open detail */ }
-) {
-    Text("Status: Document Verification in Progress")
-    Ux4gButton(
-        text = "Track Application",
-        onClick = { /* Navigate */ },
-        modifier = Modifier.padding(top = 8.dp)
-    )
+@Composable
+fun CardExample() {
+    Ux4gCard(
+        variant = Ux4gCardVariant.Elevated,
+        onClick = { /* card tapped */ }
+    ) {
+        // Child composables inside card
+    }
 }
 ```
 
@@ -78,10 +63,28 @@ Ux4gCard(
 
 <h2><MIcon name="settings" /> Parameters</h2>
 
-| Parameter | Type | Default | Description |
+### `Ux4gCard` Props
+
+| Prop | Type | Description | Default |
 | :--- | :--- | :--- | :--- |
-| `title` | `String?` | `null` | Header title |
-| `subtitle` | `String?` | `null` | Secondary supporting text |
-| `variant` | `Ux4gCardVariant` | `Elevated` | Visual style (`Elevated`, `Outlined`, `Filled`) |
-| `onClick` | `(() -> Unit)?` | `null` | Click listener (makes card clickable with ripple) |
-| `content` | `@Composable ColumnScope.() -> Unit` | **Required** | Inner card composable content |
+| `content` <span className="text-red-500 font-bold">*</span> | `@Composable () -> Unit` | Child composable content inside the card container. | `—` |
+| `modifier` | `Modifier` | Compose layout modifier. | `Modifier` |
+| `variant` | `Ux4gCardVariant` | Elevation style: `Elevated`, `Outlined`, `Filled`. | `Ux4gCardVariant.Elevated` |
+| `shape` | `Shape` | Corner shape applied to card boundary. | `RoundedCornerShape(8.dp)` |
+| `backgroundColor` | `Color?` | Container background color (defaults to surface). | `null` |
+| `borderColor` | `Color?` | Border stroke color for outlined variant. | `null` |
+| `elevation` | `Dp` | Shadow elevation depth for elevated variant. | `2.dp` |
+| `onClick` | `(() -> Unit)?` | Optional click listener turning card into interactive touch target. | `null` |
+| `enabled` | `Boolean` | Whether click interaction is enabled. | `true` |
+
+
+---
+
+### `Ux4gCardVariant` Enum
+
+| Variant | Visual Description |
+| :--- | :--- |
+| `Elevated` | Surface fill with soft drop-shadow elevation. |
+| `Outlined` | Flat surface fill with 1dp border stroke outline. |
+| `Filled` | Neutral container fill without shadow or border. |
+

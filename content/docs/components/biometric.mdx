@@ -1,37 +1,90 @@
 ---
-title: Biometric Verification Flow
-description: Face alignment overlay, camera capture screen, and biometric identity consent module
+title: Biometric Verification
+description: Aadhaar e-KYC face liveness, iris scan, and fingerprint verification flow with camera overlay and device checks
 ---
 
-# Biometric Verification Flow
+# Biometric Verification (`Ux4gBiometricVerificationFlow`)
 
-The UX4G Biometric module provides an accessible camera capture and face detection verification interface for Aadhaar FaceRD, KYC liveliness verification, and government officer biometric checks.
+Aadhaar e-KYC face liveness, iris scan, and fingerprint verification flow with camera overlay and device checks.
 
-Import from `com.ux4g.designsystemv1.components.biometric.*`.
-
----
-
-<h2><MIcon name="code" /> Components</h2>
-
-- **`BiometricVerificationFlow`**: Multi-stage state machine controlling consent, camera feed, and result screen.
-- **`FaceAlignmentOverlay`**: Oval cutout with guidance cues ("Blink once", "Move closer", "Hold still").
-- **`IdentityConsentScreen`**: Consent modal informing citizen how biometric data is handled.
+Import from `com.ux4g.designsystemv1.components.biometric.Ux4gBiometricVerificationFlow`.
 
 ---
 
-<h2><MIcon name="code" /> Basic Usage</h2>
+<h2><MIcon name="smartphone" /> Interactive Preview</h2>
 
-```kotlin
-import com.ux4g.designsystemv1.components.biometric.BiometricVerificationFlow
-import com.ux4g.designsystemv1.components.biometric.BiometricState
-
-BiometricVerificationFlow(
-    onVerificationSuccess = { verificationToken ->
-        // Handle successful face match
+<ComponentPreview
+  title="Ux4gBiometricVerificationFlow"
+  category="Jetpack Compose"
+  code={`Ux4gBiometricVerificationFlow(
+    onVerify = { capturedBytes ->
+        // Simulate Aadhaar biometric match API
+        BiometricVerificationResult(
+            success = true,
+            userId = "GOV-UID-9842",
+            maskedName = "Aarav Sharma"
+        )
     },
-    onVerificationFailure = { error ->
-        // Handle failure or retry
-    },
-    onCancel = { /* User exited flow */ }
-)
+    enableBlinkCheck = true,
+    enableLightingCheck = true,
+    enableLiveness = true,
+    maxAttempts = 3,
+    onSuccess = { result -> /* Handle auth success */ },
+    onFailure = { reason, message -> /* Handle auth error */ },
+    onDismiss = { /* Dismiss modal */ }
+)`}
+>
+  <div className="flex flex-col items-center justify-center py-2">
+    <img
+      src="/images/components/biometric_preview.png"
+      alt="UX4G Biometric Verification Preview"
+      className="max-w-full rounded-xl border border-border/60 shadow-sm"
+    />
+  </div>
+</ComponentPreview>
+
+---
+
+<h2><MIcon name="code" /> Kotlin Usage</h2>
+
+```kotlin title="Compose Example"
+import androidx.compose.runtime.Composable
+import com.ux4g.designsystemv1.components.biometric.Ux4gBiometricVerificationFlow
+
+@Composable
+fun BiometricAuthScreen() {
+    Ux4gBiometricVerificationFlow(
+        onVerify = { bytes ->
+            // Authenticate with RD service backend
+            verifyWithUidai(bytes)
+        },
+        onSuccess = { result ->
+            navigateToDashboard(result.userId)
+        },
+        onFailure = { reason, msg ->
+            showErrorToast(msg)
+        },
+        onDismiss = {
+            finishActivity()
+        }
+    )
+}
 ```
+
+---
+
+<h2><MIcon name="settings" /> Parameters</h2>
+
+| Prop | Type | Description | Default |
+| :--- | :--- | :--- | :--- |
+| `onVerify` <span className="text-red-500 font-bold">*</span> | `suspend (ByteArray) -> BiometricVerificationResult` | Async API callback invoked with captured biometric payload. | `—` |
+| `onSuccess` <span className="text-red-500 font-bold">*</span> | `(BiometricVerificationResult) -> Unit` | Callback executed upon successful biometric identity confirmation. | `—` |
+| `onFailure` <span className="text-red-500 font-bold">*</span> | `(BiometricFailureReason, String?) -> Unit` | Callback executed when verification fails or max attempts are exceeded. | `—` |
+| `onDismiss` | `(() -> Unit)?` | Callback when citizen closes or cancels the verification flow. | `null` |
+| `onAlternateVerify` | `(() -> Unit)?` | Callback when citizen opts for fallback verification (e.g. OTP). | `null` |
+| `enableBlinkCheck` | `Boolean` | Enforces eye-blink detection for passive liveness verification. | `true` |
+| `enableLightingCheck` | `Boolean` | Validates ambient illumination threshold before capture. | `true` |
+| `enableLiveness` | `Boolean` | Enables full facial liveness anti-spoof analysis. | `true` |
+| `maxAttempts` | `Int` | Maximum permitted capture attempts before lockout. | `3` |
+| `modifier` | `Modifier` | Compose layout modifier. | `Modifier` |
+

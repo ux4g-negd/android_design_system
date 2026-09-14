@@ -1,34 +1,78 @@
 ---
-title: Toast Notifications
-description: Floating notification banners with action buttons, timers, and queue management
+title: Toast & Snackbars
+description: Transient feedback messages with category icons, title, subtitle, and top/bottom positioning
 ---
 
-# Toast (`Ux4gToast`)
+# Toast & Snackbars (`Ux4gToast`)
 
-Import from `com.ux4g.designsystemv1.components.*`.
+Transient feedback messages with category icons, title, subtitle, and top/bottom positioning.
+
+Import from `com.ux4g.designsystemv1.components.Ux4gToast`.
 
 ---
 
-<h2><MIcon name="code" /> Basic Usage</h2>
+<h2><MIcon name="smartphone" /> Interactive Preview</h2>
 
-```kotlin
+<ComponentPreview
+  title="Ux4gToast"
+  category="Jetpack Compose"
+  code={`// Show Toast Notification
+val toastHostState = remember { Ux4gToastHostState() }
+
+toastHostState.showToast(
+    category = Ux4gToastCategory.Success,
+    title = "Application Submitted Successfully",
+    subtitle = "Reference ID: GOV-2024-89412 has been sent via SMS."
+)`}
+>
+  <div className="flex flex-col items-center justify-center py-2">
+    <img
+      src="/images/components/toast_preview.png"
+      alt="UX4G Toast & Snackbars Preview"
+      className="max-w-full rounded-xl border border-border/60 shadow-sm"
+    />
+  </div>
+</ComponentPreview>
+
+---
+
+<h2><MIcon name="code" /> Kotlin Usage</h2>
+
+```kotlin title="Compose Example"
+import androidx.compose.runtime.*
 import com.ux4g.designsystemv1.components.Ux4gToastHost
 import com.ux4g.designsystemv1.components.Ux4gToastHostState
 import com.ux4g.designsystemv1.components.Ux4gToastCategory
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
-import kotlinx.coroutines.launch
 
-val toastHostState = remember { Ux4gToastHostState() }
-val scope = rememberCoroutineScope()
-
-// Display Toast Alert
-scope.launch {
-    toastHostState.showToast(
-        message = "Application #10928 saved as draft.",
-        category = Ux4gToastCategory.Success,
-        actionLabel = "UNDO",
-        onAction = { /* Handle undo */ }
-    )
+@Composable
+fun ToastDemo() {
+    val toastState = remember { Ux4gToastHostState() }
+    Ux4gToastHost(hostState = toastState)
 }
 ```
+
+---
+
+<h2><MIcon name="settings" /> Parameters</h2>
+
+### `Ux4gToastHostState.showToast` Parameters
+
+| Prop | Type | Description | Default |
+| :--- | :--- | :--- | :--- |
+| `title` <span className="text-red-500 font-bold">*</span> | `String` | Primary notification bold heading text. | `—` |
+| `subtitle` | `String?` | Secondary description line. | `null` |
+| `category` | `Ux4gToastCategory` | Category tone: `Success`, `Error`, `Warning`, `Info`. | `Ux4gToastCategory.Info` |
+| `duration` | `Ux4gToastDuration` | Display duration: `Short` (3s), `Long` (5s), `Indefinite`. | `Ux4gToastDuration.Short` |
+
+
+---
+
+### `Ux4gToastCategory` Enum
+
+| Category | Color Token | Icon Description |
+| :--- | :--- | :--- |
+| `Success` | Green (`#22C55E`) | Checkmark in circle — for completed tasks & submissions |
+| `Error` | Red (`#EF4444`) | Cross in circle — for API failure & auth errors |
+| `Warning` | Amber (`#F59E0B`) | Alert triangle — for warnings & connectivity interruptions |
+| `Info` | Blue (`#3B82F6`) | Info circle — for background sync updates & notifications |
+
