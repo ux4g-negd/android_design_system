@@ -1,11 +1,14 @@
 ---
 title: Empty State
-description: Informative fallback view for zero search results, empty inboxes, and fresh accounts
+description: Informative fallback view for zero search results, empty inboxes, offline errors, and upcoming features
 ---
 
-# Empty State (`Ux4gEmptyState`)
+# Empty State Suite (`Ux4gEmptyState`)
 
-Informative fallback view for zero search results, empty inboxes, and fresh accounts.
+The UX4G Empty State suite provides clean and informative fallback screens when data is absent, search filters return zero items, or network errors occur:
+1. **Semantic Presets (`Ux4gEmptyStateVariant`)**: Automatic icon selection and typography for `NoResults`, `NoData`, `ComingSoon`, and `Error`.
+2. **Actionable Call-to-Action**: Integrated tonal button (e.g. `"Clear all filters"`, `"Refresh Inbox"`, `"Try Again"`).
+3. **Custom Content Slot**: Support for custom illustrations, vector drawables, and additional action buttons.
 
 Import from `com.ux4g.designsystemv1.components.Ux4gEmptyState`.
 
@@ -14,14 +17,42 @@ Import from `com.ux4g.designsystemv1.components.Ux4gEmptyState`.
 <h2><MIcon name="smartphone" /> Interactive Preview</h2>
 
 <ComponentPreview
-  title="Ux4gEmptyState"
+  title="Ux4gEmptyState - Semantic Presets & Actions"
   category="Jetpack Compose"
-  code={`Ux4gEmptyState(
-    icon = Ux4gIcons.Folder,
-    title = "No Applications Found",
-    description = "You have not submitted any scheme applications yet. Start a new application to track status here.",
-    actionLabel = "Explore Schemes",
-    onActionClick = { /* navigate to schemes */ }
+  code={`// 1. No Search Results Preset
+Ux4gEmptyState(
+    variant = Ux4gEmptyStateVariant.NoResults,
+    title = "No results found",
+    subtitle = "Did you mean: Driving License, Ration Card",
+    buttonText = "Clear all filters",
+    onButtonPressed = { /* Reset filters */ }
+)
+
+// 2. Empty Inbox / No Data Preset
+Ux4gEmptyState(
+    variant = Ux4gEmptyStateVariant.NoData,
+    title = "No items in your inbox",
+    subtitle = "When you receive messages or notifications, they will appear here.",
+    buttonText = "Refresh Inbox",
+    onButtonPressed = { /* Fetch inbox */ }
+)
+
+// 3. Feature Coming Soon
+Ux4gEmptyState(
+    variant = Ux4gEmptyStateVariant.ComingSoon,
+    title = "Feature Coming Soon",
+    subtitle = "We are working hard to bring this feature to you. Stay tuned!",
+    buttonText = "Notify Me",
+    onButtonPressed = { /* Subscribe alert */ }
+)
+
+// 4. Network / Server Error
+Ux4gEmptyState(
+    variant = Ux4gEmptyStateVariant.Error,
+    title = "Unable to load data",
+    subtitle = "Please check your network connection and try again.",
+    buttonText = "Try Again",
+    onButtonPressed = { /* Retry request */ }
 )`}
 >
   <div className="flex flex-col items-center justify-center py-2">
@@ -37,20 +68,42 @@ Import from `com.ux4g.designsystemv1.components.Ux4gEmptyState`.
 
 <h2><MIcon name="code" /> Kotlin Usage</h2>
 
-```kotlin title="Compose Example"
+```kotlin title="Empty State Showcase Example"
+import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import com.ux4g.designsystemv1.components.Ux4gEmptyState
-import com.ux4g.designsystemv1.foundation.Ux4gIcons
+import com.ux4g.designsystemv1.components.Ux4gEmptyStateVariant
+import com.ux4g.designsystemv1.components.buttons.Ux4gButtonSize
 
 @Composable
-fun EmptyInboxExample() {
-    Ux4gEmptyState(
-        icon = Ux4gIcons.Inbox,
-        title = "No Pending Notifications",
-        description = "All your citizen service alerts will appear here.",
-        actionLabel = "Refresh",
-        onActionClick = { /* refresh */ }
-    )
+fun EmptyStateShowcaseScreen() {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp),
+        verticalArrangement = Arrangement.spacedBy(24.dp)
+    ) {
+        // Search Zero State
+        Ux4gEmptyState(
+            variant = Ux4gEmptyStateVariant.NoResults,
+            title = "No applications found",
+            subtitle = "Try adjusting your search criteria or explore popular citizen services.",
+            buttonText = "Explore All Services",
+            buttonSize = Ux4gButtonSize.Medium,
+            onButtonPressed = { /* navigate to directory */ }
+        )
+
+        // Empty Inbox
+        Ux4gEmptyState(
+            variant = Ux4gEmptyStateVariant.NoData,
+            title = "All Caught Up!",
+            subtitle = "You have no unread notifications or pending actions.",
+            buttonText = "Check Again",
+            onButtonPressed = { /* refresh */ }
+        )
+    }
 }
 ```
 
@@ -58,13 +111,37 @@ fun EmptyInboxExample() {
 
 <h2><MIcon name="settings" /> Parameters</h2>
 
+### `Ux4gEmptyState` Props
+
 | Prop | Type | Description | Default |
 | :--- | :--- | :--- | :--- |
-| `icon` <span className="text-red-500 font-bold">*</span> | `Ux4gIcon` | Hero vector icon displayed at the top. | `—` |
-| `title` <span className="text-red-500 font-bold">*</span> | `String` | Bold primary headline message. | `—` |
-| `description` <span className="text-red-500 font-bold">*</span> | `String` | Explanatory subtitle guiding the citizen. | `—` |
-| `modifier` | `Modifier` | Compose layout modifier. | `Modifier` |
-| `actionLabel` | `String?` | Optional call-to-action button text. | `null` |
-| `onActionClick` | `(() -> Unit)?` | Callback when action button is tapped. | `null` |
-| `iconTint` | `Color?` | Custom color tint for hero icon. | `null` |
+| `title` <span className="text-red-500 font-bold">*</span> | `String` | Bold primary headline message displayed below icon. | — |
+| `modifier` | `Modifier` | Compose layout modifier applied to outer column. | `Modifier` |
+| `variant` | `Ux4gEmptyStateVariant` | Semantic preset controlling default icon selection. | `Ux4gEmptyStateVariant.Custom` |
+| `icon` | `Any?` | Custom icon override (`ImageVector`, `Ux4gIcon`, or drawable resource ID). | `null` (uses variant default) |
+| `iconContent` | `(@Composable () -> Unit)?` | Custom composable slot replacing the default icon. | `null` |
+| `iconSize` | `Dp` | Size dimensions (width & height) of the hero icon. | `48.dp` |
+| `iconColor` | `Color?` | Custom tint color for hero icon (`null` uses `Ux4gColors.primary`). | `null` |
+| `subtitle` | `String?` | Secondary subtitle text line. | `null` |
+| `description` | `String?` | Tertiary explanatory description line. | `null` |
+| `titleStyle` | `TextStyle?` | Custom typography style override for title. | `null` (`hXXS_strong`) |
+| `bodyStyle` | `TextStyle?` | Custom typography style override for subtitle/description. | `null` (`bS_default`) |
+| `buttonText` | `String?` | Label text for the filled tonal call-to-action button. | `null` |
+| `onButtonPressed` | `(() -> Unit)?` | Callback invoked when citizen taps the action button. | `null` |
+| `buttonSize` | `Ux4gButtonSize` | Size dimensions of the action button: `Small`, `Medium`, `Large`. | `Ux4gButtonSize.Small` |
+| `buttonLeadingIcon` | `Any?` | Optional leading icon rendered inside the action button. | `null` |
+| `padding` | `PaddingValues` | Outer padding surrounding the entire empty state container. | `PaddingValues(24.dp)` |
+| `bodyHorizontalPadding` | `Dp` | Horizontal padding applied to body text for optimal reading width. | `24.dp` |
+| `customContent` | `(@Composable () -> Unit)?` | Optional composable slot below body text. | `null` |
 
+---
+
+### `Ux4gEmptyStateVariant` Enum
+
+| Variant | Default Icon | Semantic Use Case |
+| :--- | :--- | :--- |
+| `NoResults` | `Icons.Default.SearchOff` | Search or filter criteria returned 0 items. |
+| `NoData` | `Icons.Default.Inbox` | List or inbox is currently empty. |
+| `ComingSoon` | `Icons.Default.RocketLaunch` | New service or feature under development. |
+| `Error` | `Icons.Default.ErrorOutline` | Network failure or server request error. |
+| `Custom` | `Icons.Default.Info` | Fully customized empty state. |
