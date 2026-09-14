@@ -1,33 +1,114 @@
 ---
 title: Feedback Form
-description: Citizen satisfaction ratings including 5-Star Ratings, CSAT (emojis), and NPS widgets
+description: Comprehensive citizen feedback suite featuring 5-Star Ratings with improvement tags, CSAT sentiment face scales, and NPS (0-10) recommendation forms
 ---
 
-# Feedback Form (`Ux4gFeedbackFormStar`)
+# Feedback Form Suite (`Ux4gFeedbackForm`)
 
-Citizen satisfaction ratings including 5-Star Ratings, CSAT (emojis), and NPS widgets.
+The UX4G Feedback Form suite provides citizen sentiment and satisfaction rating components with confirmation screens, improvement tag chips, multiline remarks, and skip callbacks:
+1. **Star Rating Feedback Form (`Ux4gFeedbackFormStar`)**: 5-star interactive rating with dynamic low/high color thresholds, improvement category chips, and comment box.
+2. **CSAT Satisfaction Form (`Ux4gFeedbackFormCsat`)**: 5-point sentiment face rating scale with color-coded feedback states and descriptive scale labels (`← Bad`, `Good →`).
+3. **NPS Recommendation Form (`Ux4gFeedbackFormNps`)**: Net Promoter Score (0 to 10) horizontal scale with low (0-3), medium (4-6), and high (7-10) score highlights.
 
-Import from `com.ux4g.designsystemv1.components.feedback.Ux4gFeedbackFormStar`.
+Import from `com.ux4g.designsystemv1.components.feedback.*`.
 
 ---
 
-<h2><MIcon name="smartphone" /> Interactive Preview</h2>
+<h2><MIcon name="smartphone" /> Interactive Previews</h2>
+
+### 1. Star Rating Form (`Ux4gFeedbackFormStar`)
 
 <ComponentPreview
-  title="Ux4gFeedbackFormStar"
+  title="Ux4gFeedbackFormStar (5-Star & Improvement Chips)"
   category="Jetpack Compose"
-  code={`Ux4gFeedbackFormStar(
-    title = "How was your service experience?",
-    subtitle = "Your feedback helps improve public digital delivery",
-    onRatingSubmit = { rating, remarks ->
-        /* Send telemetry */
+  code={`val improvementTags = listOf(
+    "Content accuracy",
+    "Visual design",
+    "Performance",
+    "Navigation"
+)
+
+Ux4gFeedbackFormStar(
+    title = "Rate your experience",
+    improvementTitle = "What can we improve?",
+    improvementOptions = improvementTags,
+    commentPlaceholder = "Tell us more about your experience",
+    submitButtonText = "Submit",
+    skipButtonText = "Skip",
+    onSubmit = { rating, selectedChips, comment ->
+        // Submit feedback payload
+    },
+    onSkip = {
+        // Handle skip
     }
 )`}
 >
   <div className="flex flex-col items-center justify-center py-2">
     <img
       src="/images/components/feedback-form_preview.png"
-      alt="UX4G Feedback Form Preview"
+      alt="UX4G Star Feedback Form Preview"
+      className="max-w-full rounded-xl border border-border/60 shadow-sm"
+    />
+  </div>
+</ComponentPreview>
+
+---
+
+### 2. CSAT Sentiment Form (`Ux4gFeedbackFormCsat`)
+
+<ComponentPreview
+  title="Ux4gFeedbackFormCsat (5-Face Sentiment Scale)"
+  category="Jetpack Compose"
+  code={`Ux4gFeedbackFormCsat(
+    title = "How do you feel about this service?",
+    badLabel = "← Bad",
+    goodLabel = "Good →",
+    commentPlaceholder = "Please tell us how can we improve",
+    submitButtonText = "Submit",
+    skipButtonText = "Skip",
+    onSubmit = { score, comment ->
+        // score is 1 (saddest) to 5 (happiest)
+    },
+    onSkip = {
+        // Handle skip
+    }
+)`}
+>
+  <div className="flex flex-col items-center justify-center py-2">
+    <img
+      src="/images/components/feedback-form-csat_preview.png"
+      alt="UX4G CSAT Feedback Form Preview"
+      className="max-w-full rounded-xl border border-border/60 shadow-sm"
+    />
+  </div>
+</ComponentPreview>
+
+---
+
+### 3. NPS Form (`Ux4gFeedbackFormNps`)
+
+<ComponentPreview
+  title="Ux4gFeedbackFormNps (0-10 Net Promoter Score)"
+  category="Jetpack Compose"
+  code={`Ux4gFeedbackFormNps(
+    title = "How likely are you to recommend us?",
+    unlikelyLabel = "0 - Extremely Unlikely",
+    likelyLabel = "10 - Extremely Likely",
+    commentPlaceholder = "Please tell us why you gave this score",
+    submitButtonText = "Submit",
+    skipButtonText = "Skip",
+    onSubmit = { score, comment ->
+        // score is 0 to 10
+    },
+    onSkip = {
+        // Handle skip
+    }
+)`}
+>
+  <div className="flex flex-col items-center justify-center py-2">
+    <img
+      src="/images/components/feedback-form-nps_preview.png"
+      alt="UX4G NPS Feedback Form Preview"
       className="max-w-full rounded-xl border border-border/60 shadow-sm"
     />
   </div>
@@ -37,19 +118,48 @@ Import from `com.ux4g.designsystemv1.components.feedback.Ux4gFeedbackFormStar`.
 
 <h2><MIcon name="code" /> Kotlin Usage</h2>
 
-```kotlin title="Compose Example"
+```kotlin title="Feedback Showcase Example"
+import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.Composable
-import com.ux4g.designsystemv1.components.feedback.Ux4gFeedbackFormStar
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import com.ux4g.designsystemv1.components.feedback.Ux4gFeedbackFormCsat
+import com.ux4g.designsystemv1.components.feedback.Ux4gFeedbackFormNps
+import com.ux4g.designsystemv1.components.feedback.Ux4gFeedbackFormStar
 
 @Composable
-fun FeedbackDemo() {
-    Ux4gFeedbackFormStar(
-        title = "Rate this service",
-        onRatingSubmit = { stars, comment ->
-            // Process feedback
-        }
-    )
+fun FeedbackShowcaseScreen() {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp),
+        verticalArrangement = Arrangement.spacedBy(24.dp)
+    ) {
+        // 1. Star Feedback Form
+        Ux4gFeedbackFormStar(
+            improvementOptions = listOf("Service Speed", "Document Upload", "Payment Gateway", "UI Clarity"),
+            onSubmit = { rating, chips, comment ->
+                // Process 5-star feedback
+            },
+            onSkip = { /* Skip */ }
+        )
+
+        // 2. CSAT Sentiment Form
+        Ux4gFeedbackFormCsat(
+            onSubmit = { score, comment ->
+                // Process 1-5 CSAT
+            },
+            onSkip = { /* Skip */ }
+        )
+
+        // 3. NPS 0-10 Form
+        Ux4gFeedbackFormNps(
+            onSubmit = { score, comment ->
+                // Process NPS score
+            },
+            onSkip = { /* Skip */ }
+        )
+    }
 }
 ```
 
@@ -57,24 +167,74 @@ fun FeedbackDemo() {
 
 <h2><MIcon name="settings" /> Parameters</h2>
 
-### `Ux4gFeedbackFormStar` Props
+### 1. `Ux4gFeedbackFormStar` Props
 
 | Prop | Type | Description | Default |
 | :--- | :--- | :--- | :--- |
-| `title` <span className="text-red-500 font-bold">*</span> | `String` | Headline prompt asking citizen for review. | `—` |
-| `onRatingSubmit` <span className="text-red-500 font-bold">*</span> | `(Int, String) -> Unit` | Callback providing rating score (1-5) and remarks. | `—` |
-| `subtitle` | `String?` | Optional secondary instruction message. | `null` |
-| `showCommentField` | `Boolean` | Whether to render multiline remarks text area. | `true` |
-| `modifier` | `Modifier` | Compose layout modifier. | `Modifier` |
-
+| `improvementOptions` <span className="text-red-500 font-bold">*</span> | `List<String>` | List of selectable improvement tag chips. | — |
+| `onSubmit` <span className="text-red-500 font-bold">*</span> | `(rating: Int, selectedChips: List<String>, comment: String) -> Unit` | Callback with selected star rating (1-5), chips, and comment. | — |
+| `modifier` | `Modifier` | Compose layout modifier applied to outer card container. | `Modifier` |
+| `minWords` | `Int` | Minimum word count required in comment before submit enables. | `0` |
+| `maxLength` | `Int` | Maximum character length allowed in comment. | `200` |
+| `onSkip` | `(() -> Unit)?` | Optional callback when citizen taps the skip button. | `null` |
+| `onCloseSuccess` | `(() -> Unit)?` | Callback invoked when citizen closes the success screen. | `null` |
+| `chipBorderRadius` | `Dp` | Corner radius of the improvement tag chips. | `4.dp` |
+| `title` | `String` | Form title heading prompt. | `"Rate your experience"` |
+| `improvementTitle` | `String` | Section title above the improvement chips. | `"What can we improve?"` |
+| `commentPlaceholder` | `String` | Placeholder text inside multiline comment text area. | `"Tell us more about your experience"` |
+| `submitButtonText` | `String` | Label text on the primary submit button. | `"Submit"` |
+| `skipButtonText` | `String` | Label text on the optional skip button. | `"Skip"` |
+| `successTitle` | `String` | Headline text displayed on success confirmation screen. | `"Feedback submitted"` |
+| `successMessage` | `String` | Descriptive message on success confirmation screen. | `"Thank you for your feedback. This helps improve government services."` |
+| `ratingIcon` | `Ux4gIcon` | Icon rendered for rating stars. | `Ux4gIcons.Star` |
+| `successIcon` | `Ux4gIcon` | Icon rendered on success confirmation. | `Ux4gIcons.ThumbUp` |
+| `lowRatingColor` | `Color` | Color applied to stars with rating at or below `lowRatingThreshold`. | `Ux4gColors.red600` |
+| `highRatingColor` | `Color` | Color applied to stars with rating above `lowRatingThreshold`. | `Ux4gColors.yellow600` |
+| `lowRatingThreshold` | `Int` | Star index cutoff for low vs high rating colors. | `2` |
 
 ---
 
-### `Ux4gFeedbackFormCsat` Props
+### 2. `Ux4gFeedbackFormCsat` Props
 
 | Prop | Type | Description | Default |
 | :--- | :--- | :--- | :--- |
-| `title` <span className="text-red-500 font-bold">*</span> | `String` | Question title prompt. | `—` |
-| `onCsatSubmit` <span className="text-red-500 font-bold">*</span> | `(Int, String) -> Unit` | Callback with CSAT emoji index (1-5) and feedback. | `—` |
+| `onSubmit` <span className="text-red-500 font-bold">*</span> | `(score: Int, comment: String) -> Unit` | Callback providing selected score (1 to 5) and feedback comment. | — |
 | `modifier` | `Modifier` | Compose layout modifier. | `Modifier` |
+| `minWords` | `Int` | Minimum word count required in comment. | `0` |
+| `maxLength` | `Int` | Maximum comment character length. | `200` |
+| `onSkip` | `(() -> Unit)?` | Callback when skip button is tapped. | `null` |
+| `onCloseSuccess` | `(() -> Unit)?` | Callback when success screen is closed. | `null` |
+| `title` | `String` | Form question title. | `"How do you feel about this service?"` |
+| `badLabel` | `String` | Left label below the low sentiment faces. | `"← Bad"` |
+| `goodLabel` | `String` | Right label below the high sentiment faces. | `"Good →"` |
+| `commentPlaceholder` | `String` | Placeholder text inside comment text area. | `"Please tell us how can we improve"` |
+| `submitButtonText` | `String` | Submit button label. | `"Submit"` |
+| `skipButtonText` | `String` | Skip button label. | `"Skip"` |
+| `successTitle` | `String` | Success confirmation title. | `"Feedback submitted"` |
+| `successMessage` | `String` | Success confirmation message. | `"Thank you for your feedback. This helps improve government services."` |
+| `ratingFaces` | `List<Ux4gIcon>` | List of 5 sentiment face icons from saddest to happiest. | `listOf(ic_face_0, ..., ic_face_4)` |
+| `successIcon` | `Ux4gIcon` | Icon on success confirmation. | `Ux4gIcons.ThumbUp` |
 
+---
+
+### 3. `Ux4gFeedbackFormNps` Props
+
+| Prop | Type | Description | Default |
+| :--- | :--- | :--- | :--- |
+| `onSubmit` <span className="text-red-500 font-bold">*</span> | `(score: Int, comment: String) -> Unit` | Callback providing selected NPS score (0 to 10) and comment. | — |
+| `modifier` | `Modifier` | Compose layout modifier. | `Modifier` |
+| `minWords` | `Int` | Minimum word count required in comment. | `0` |
+| `maxLength` | `Int` | Maximum comment character length. | `200` |
+| `onSkip` | `(() -> Unit)?` | Callback when skip is clicked. | `null` |
+| `onCloseSuccess` | `(() -> Unit)?` | Callback when success screen is closed. | `null` |
+| `title` | `String` | Form prompt title. | `"How likely are you to recommend us?"` |
+| `unlikelyLabel` | `String` | Label below the low score range (0-3). | `"0 - Extremely Unlikely"` |
+| `likelyLabel` | `String` | Label below the high score range (7-10). | `"10 - Extremely Likely"` |
+| `commentPlaceholder` | `String` | Placeholder inside comment area. | `"Please tell us why you gave this score"` |
+| `submitButtonText` | `String` | Submit button text. | `"Submit"` |
+| `skipButtonText` | `String` | Skip button text. | `"Skip"` |
+| `successTitle` | `String` | Success title heading. | `"Feedback submitted"` |
+| `successMessage` | `String` | Success confirmation message. | `"Thank you for your feedback. This helps improve government services."` |
+| `lowScoreBackgroundColor` | `Color` | Highlight color for scores 0-3. | `Ux4gColors.red100` |
+| `mediumScoreBackgroundColor` | `Color` | Highlight color for scores 4-6. | `Ux4gColors.orange100` |
+| `highScoreBackgroundColor` | `Color` | Highlight color for scores 7-10. | `Ux4gColors.green100` |
