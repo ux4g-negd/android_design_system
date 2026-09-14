@@ -1,34 +1,63 @@
 ---
 title: Result List
-description: High-density search results, scheme cards, and grievance list rows with thumbnail, metadata, and status badges
+description: High-density expandable search results, application tracking cards, and grievance list rows with metadata pills, status tags, and detail grids
 ---
 
 # Result List (`Ux4gResultList`)
 
-High-density search results, scheme cards, and grievance list rows with thumbnail, metadata, and status badges.
+The UX4G Result List (and its companion alias `Ux4gResultRow`) provides an expandable list item component designed for government service portals, application tracking dashboards, search listings, and grievance monitoring systems.
 
-Import from `com.ux4g.designsystemv1.components.Ux4gResultList`.
+### Key Capabilities
+
+- **Expandable Accordion Behavior**: Smooth animated expansion (`AnimatedVisibility`) revealing structured 2-column (or custom) metadata details grids.
+- **Status Tags & Pill Segments**: Integrates with `Ux4gTag` (e.g. Approved, Pending, Rejected) and `Ux4gUnifiedPillTag` metadata segments.
+- **Action Buttons**: Built-in outline CTA button with optional leading icons (e.g., "View Details", "Download", "Track Status").
+- **Customizable Layout**: Configurable detail columns, custom trailing icons, title badges, and bottom dividers.
+
+Import from `com.ux4g.designsystemv1.components.*`.
 
 ---
 
 <h2><MIcon name="smartphone" /> Interactive Preview</h2>
 
+### Collapsed & Expanded States
+
+The preview below illustrates both the compact **Collapsed** row state and the detailed **Expanded** state showing the metadata grid and active chevron indicator.
+
 <ComponentPreview
   title="Ux4gResultList"
   category="Jetpack Compose"
-  code={`Ux4gResultRow(
-    title = "Pradhan Mantri Awas Yojana (Urban)",
-    subtitle = "Ministry of Housing & Urban Affairs",
-    badgeText = "Subsidy upto ₹2.67 Lakh",
-    onClick = { /* navigate to scheme detail */ }
+  code={`Ux4gResultList(
+    title = "Application #2024-001",
+    statusTag = "Approved",
+    tagColorScheme = Ux4gTagColor.Success,
+    actionButtonText = "View Details",
+    onActionPressed = { /* Handle button click */ },
+    details = listOf(
+        Ux4gResultDetail(label = "Applicant", value = "Ravi Kumar"),
+        Ux4gResultDetail(label = "Date", value = "12 May 2025"),
+        Ux4gResultDetail(label = "Sanctioned Amount", value = "₹1,20,000", isBold = true)
+    ),
+    showBottomDivider = false
 )`}
 >
-  <div className="flex flex-col items-center justify-center py-2">
-    <img
-      src="/images/components/result-list_preview.png"
-      alt="UX4G Result List Preview"
-      className="max-w-full rounded-xl border border-border/60 shadow-sm"
-    />
+  <div className="flex flex-col gap-4 items-center justify-center py-2 w-full max-w-2xl mx-auto">
+    <div className="w-full">
+      <div className="text-xs font-semibold text-muted-foreground mb-1.5 uppercase tracking-wider">Collapsed State</div>
+      <img
+        src="/images/components/result-list_preview.png"
+        alt="UX4G Result List Collapsed Preview"
+        className="w-full rounded-xl border border-border/60 shadow-sm"
+      />
+    </div>
+    <div className="w-full">
+      <div className="text-xs font-semibold text-muted-foreground mb-1.5 uppercase tracking-wider">Expanded State</div>
+      <img
+        src="/images/components/result-list-expanded_preview.png"
+        alt="UX4G Result List Expanded Preview"
+        className="w-full rounded-xl border border-border/60 shadow-sm"
+      />
+    </div>
   </div>
 </ComponentPreview>
 
@@ -36,17 +65,75 @@ Import from `com.ux4g.designsystemv1.components.Ux4gResultList`.
 
 <h2><MIcon name="code" /> Kotlin Usage</h2>
 
-```kotlin title="Compose Example"
+### 1. Application Tracking Card
+
+```kotlin title="ApplicationTrackingCard.kt"
+import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.Composable
-import com.ux4g.designsystemv1.components.Ux4gResultRow
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
+import com.ux4g.designsystemv1.components.*
+import com.ux4g.designsystemv1.foundation.Ux4gColors
 
 @Composable
-fun ResultListingDemo() {
+fun ApplicationTrackingExample() {
+    Ux4gCard(
+        modifier = Modifier.fillMaxWidth(),
+        cornerRadius = 12.dp,
+        borderColor = Ux4gColors.neutral900.copy(alpha = 0.12f),
+        borderWidth = 1.dp
+    ) {
+        Ux4gResultList(
+            title = "Pradhan Mantri Awas Yojana (Urban)",
+            statusTag = "Approved",
+            tagColorScheme = Ux4gTagColor.Success,
+            actionButtonText = "View Details",
+            onActionPressed = { /* Navigate to details */ },
+            details = listOf(
+                Ux4gResultDetail(label = "Applicant", value = "Ravi Kumar"),
+                Ux4gResultDetail(label = "Application No", value = "PMAY-2025-09821"),
+                Ux4gResultDetail(label = "Sanctioned Amount", value = "₹ 2,67,000", isBold = true),
+                Ux4gResultDetail(label = "Disbursement Status", value = "Stage 2 Credited", valueColor = Ux4gColors.green600)
+            ),
+            showBottomDivider = false
+        )
+    }
+}
+```
+
+### 2. Document Download with Verified Badge
+
+```kotlin title="CertificateResultRow.kt"
+import androidx.compose.foundation.layout.size
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
+import com.ux4g.designsystemv1.components.*
+import com.ux4g.designsystemv1.foundation.Ux4gColors
+import com.ux4g.designsystemv1.foundation.Ux4gIconComponent
+import com.ux4g.designsystemv1.foundation.Ux4gIcons
+
+@Composable
+fun VerifiedCertificateRow() {
     Ux4gResultRow(
-        title = "National Social Assistance Programme",
-        subtitle = "Ministry of Rural Development",
-        badgeText = "Direct Pension",
-        onClick = { /* View details */ }
+        title = "Income Certificate",
+        titleTrailing = {
+            Ux4gIconComponent(
+                icon = Ux4gIcons.success_circle,
+                contentDescription = "Verified Certificate",
+                tint = Ux4gColors.green600,
+                modifier = Modifier.size(18.dp)
+            )
+        },
+        actionButtonText = "Download",
+        actionButtonIcon = Ux4gIcons.upload,
+        onActionPressed = { /* Initiate download */ },
+        details = listOf(
+            Ux4gResultDetail(label = "Reference Number", value = "INC-2026-MH-04127"),
+            Ux4gResultDetail(label = "Issued Date", value = "05 Apr 2026"),
+            Ux4gResultDetail(label = "Valid Till", value = "05 Apr 2027"),
+            Ux4gResultDetail(label = "Issuing Authority", value = "Tehsildar Office, Pune")
+        )
     )
 }
 ```
@@ -55,12 +142,54 @@ fun ResultListingDemo() {
 
 <h2><MIcon name="settings" /> Parameters</h2>
 
+### `Ux4gResultList` / `Ux4gResultRow` Props
+
 | Prop | Type | Description | Default |
 | :--- | :--- | :--- | :--- |
-| `title` <span className="text-red-500 font-bold">*</span> | `String` | Primary heading title. | `—` |
-| `subtitle` <span className="text-red-500 font-bold">*</span> | `String` | Secondary department or category subtitle. | `—` |
-| `badgeText` | `String?` | Optional highlight tag text. | `null` |
-| `leadingIcon` | `(@Composable () -> Unit)?` | Optional leading icon or thumbnail. | `null` |
-| `onClick` | `(() -> Unit)?` | Row click listener callback. | `null` |
-| `modifier` | `Modifier` | Compose layout modifier. | `Modifier` |
+| `title` <span className="text-red-500 font-bold">*</span> | `String` | Primary heading title of the result row item. | `—` |
+| `modifier` | `Modifier` | Compose modifier applied to the outer container. | `Modifier` |
+| `titleTrailing` | `(@Composable () -> Unit)?` | Optional composable trailing the title (e.g. verified icon). | `null` |
+| `statusTag` | `String?` | Optional status text displayed inside a rectangular tonal `Ux4gTag`. | `null` |
+| `tagColorScheme` | `Ux4gTagColor` | Color scheme for the status tag. | `Ux4gTagColor.Neutral` |
+| `metadataSegments` | `List<Ux4gPillSegment>?` | List of metadata pill segments displayed in a unified pill tag. | `null` |
+| `customMetadata` | `(@Composable () -> Unit)?` | Custom composable replacement for metadata tags. | `null` |
+| `actionButtonText` | `String?` | Label text for the outline action button on the right. | `null` |
+| `actionLeading` | `(@Composable () -> Unit)?` | Optional composable rendered immediately before the action button. | `null` |
+| `onActionPressed` | `(() -> Unit)?` | Callback invoked when the action button is clicked. | `null` |
+| `actionButtonIcon` | `Ux4gIcon?` | Optional leading icon rendered inside the action button. | `null` |
+| `actionButtonColor` | `Color?` | Custom color override for the action button border and content. | `null` |
+| `details` | `List<Ux4gResultDetail>` | List of detail items rendered in a grid when expanded. | `emptyList()` |
+| `expandedChild` | `(@Composable () -> Unit)?` | Custom composable placed below the details grid when expanded. | `null` |
+| `detailsColumns` | `Int` | Number of columns for laying out the details grid. | `2` |
+| `initialExpanded` | `Boolean` | Whether the item is expanded by default. | `false` |
+| `onToggle` | `((Boolean) -> Unit)?` | Callback triggered when the expanded/collapsed state changes. | `null` |
+| `showBottomDivider` | `Boolean` | Whether to render a horizontal divider below the row. | `true` |
+| `contentPadding` | `PaddingValues` | Inner padding for the header and expanded content. | `PaddingValues(16.dp)` |
+| `colors` | `Ux4gResultListColors` | Color configuration for titles, labels, values, and expand arrows. | `Ux4gResultListDefaults.colors()` |
 
+---
+
+### `Ux4gResultDetail` Props
+
+| Prop | Type | Description | Default |
+| :--- | :--- | :--- | :--- |
+| `label` <span className="text-red-500 font-bold">*</span> | `String` | Descriptor title (e.g., `"Application No"`, `"Date"`). | `—` |
+| `value` <span className="text-red-500 font-bold">*</span> | `String` | Value string to display. | `—` |
+| `icon` | `Ux4gIcon?` | Optional icon preceding the value string. | `null` |
+| `valueColor` | `Color?` | Custom text and icon color for this value. | `null` |
+| `isBold` | `Boolean` | Whether the value text is rendered with bold typography. | `false` |
+| `customValueWidget` | `(@Composable () -> Unit)?` | Custom composable override for the value content. | `null` |
+
+---
+
+### `Ux4gResultListColors` Reference
+
+| Color Token | Default Light Color | Description |
+| :--- | :--- | :--- |
+| `titleColor` | `Ux4gColors.neutral900` | Color of the primary title text |
+| `onSurface` | `Ux4gColors.neutral900` | Foreground color for default elements and action button |
+| `surface` | `Ux4gColors.white` | Background surface color |
+| `dividerColor` | `Ux4gColors.neutral900 (10% alpha)` | Color for bottom separator line |
+| `labelColor` | `Ux4gColors.neutral900 (50% alpha)` | Color for metadata descriptor labels |
+| `valueColor` | `Ux4gColors.neutral900` | Default color for metadata values |
+| `expandIconColor` | `Ux4gColors.neutral900 (80% alpha)` | Color for the rotating chevron expand/collapse arrow |
