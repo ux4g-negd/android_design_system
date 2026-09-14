@@ -1,34 +1,144 @@
 ---
 title: Journey Timeline
-description: Multi-stage application status tracker showing Submitted, Verified, Approved, Disbursed checkpoints
+description: Multi-stage application status tracker and citizen journey milestone component supporting both Vertical and Horizontal layout orientations
 ---
 
 # Journey Timeline (`Ux4gJourneyTimeline`)
 
-Multi-stage application status tracker showing Submitted, Verified, Approved, Disbursed checkpoints.
+The UX4G Journey Timeline component visualizes multi-stage citizen workflows, application processes, and milestone checkpoints in both **Vertical** and **Horizontal** orientations.
 
-Import from `com.ux4g.designsystemv1.components.Ux4gJourneyTimeline`.
+It provides step indicators (completed checks, active rings, upcoming nodes), connecting lines, date tags, helper text, inline status pills (e.g. `2 days remaining | Pending`), and customizable header sections.
+
+Import from `com.ux4g.designsystemv1.components.*`.
 
 ---
 
-<h2><MIcon name="smartphone" /> Interactive Preview</h2>
+<h2><MIcon name="smartphone" /> Interactive Previews</h2>
+
+### 1. Vertical Journey Timeline
+
+The default vertical orientation renders a continuous timeline on the left with connected milestone cards detailing step progression, tags, helping text, links, and status badges.
 
 <ComponentPreview
-  title="Ux4gJourneyTimeline"
+  title="Ux4gJourneyTimeline (Vertical Orientation)"
   category="Jetpack Compose"
   code={`val steps = listOf(
-    JourneyTimelineStep(title = "Application Submitted", date = "12 Aug 2024", state = StepState.Completed),
-    JourneyTimelineStep(title = "Field Officer Verification", date = "15 Aug 2024", state = StepState.Completed),
-    JourneyTimelineStep(title = "Sanction Order Issued", date = "In Progress", state = StepState.Current),
-    JourneyTimelineStep(title = "Direct Bank Transfer", date = "Pending", state = StepState.Upcoming)
+    Ux4gJourneyStep(
+        state = Ux4gJourneyStepState.Completed,
+        date = "Date",
+        tag = "Tag",
+        title = "Title"
+    ),
+    Ux4gJourneyStep(
+        state = Ux4gJourneyStepState.Completed,
+        date = "Date",
+        tag = "Tag",
+        title = "Title",
+        helpingText = "Helping Text"
+    ),
+    Ux4gJourneyStep(
+        state = Ux4gJourneyStepState.Completed,
+        date = "Date",
+        tag = "Tag",
+        title = "Title",
+        icon = Ux4gIcons.Link
+    ),
+    Ux4gJourneyStep(
+        state = Ux4gJourneyStepState.Completed,
+        date = "Date",
+        tag = "Tag",
+        title = "Title",
+        status = Ux4gJourneyStepStatus(
+            text = "2 days remaining",
+            badgeText = "Pending",
+            badgePosition = Ux4gJourneyBadgePosition.Bottom
+        )
+    ),
+    Ux4gJourneyStep(
+        state = Ux4gJourneyStepState.Current,
+        date = "Date",
+        tag = "Tag",
+        title = "Title"
+    )
 )
 
-Ux4gJourneyTimeline(steps = steps)`}
+Ux4gJourneyTimeline(
+    steps = steps,
+    orientation = Ux4gJourneyOrientation.Vertical
+)`}
 >
   <div className="flex flex-col items-center justify-center py-2">
     <img
       src="/images/components/journey-timeline_preview.png"
-      alt="UX4G Journey Timeline Preview"
+      alt="UX4G Vertical Journey Timeline Preview"
+      className="max-w-full rounded-xl border border-border/60 shadow-sm"
+    />
+  </div>
+</ComponentPreview>
+
+---
+
+### 2. Horizontal Journey Timeline
+
+Horizontal layout showing a compact step indicator bar across the top with active/completed connections, an optional header, and detailed card info for the selected step below.
+
+<ComponentPreview
+  title="Ux4gJourneyTimeline (Horizontal Orientation)"
+  category="Jetpack Compose"
+  code={`val steps = listOf(
+    Ux4gJourneyStep(
+        state = Ux4gJourneyStepState.Completed,
+        date = "Date",
+        tag = "Tag",
+        title = "Title"
+    ),
+    Ux4gJourneyStep(
+        state = Ux4gJourneyStepState.Current,
+        date = "Date",
+        tag = "Tag",
+        title = "Title"
+    ),
+    Ux4gJourneyStep(
+        state = Ux4gJourneyStepState.Upcoming,
+        date = "Date",
+        tag = "Tag",
+        title = "Title"
+    ),
+    Ux4gJourneyStep(
+        state = Ux4gJourneyStepState.Upcoming,
+        date = "Date",
+        tag = "Tag",
+        title = "Title"
+    ),
+    Ux4gJourneyStep(
+        state = Ux4gJourneyStepState.Upcoming,
+        date = "Date",
+        tag = "Tag",
+        title = "Title"
+    ),
+    Ux4gJourneyStep(
+        state = Ux4gJourneyStepState.Upcoming,
+        date = "Date",
+        tag = "Tag",
+        title = "Title"
+    )
+)
+
+Ux4gJourneyTimeline(
+    header = Ux4gJourneyHeader(
+        title = "Title",
+        description = "Description",
+        icon = Ux4gIcons.Settings
+    ),
+    steps = steps,
+    orientation = Ux4gJourneyOrientation.Horizontal,
+    currentStep = 1
+)`}
+>
+  <div className="flex flex-col items-center justify-center py-2">
+    <img
+      src="/images/components/journey-timeline-horizontal_preview.png"
+      alt="UX4G Horizontal Journey Timeline Preview"
       className="max-w-full rounded-xl border border-border/60 shadow-sm"
     />
   </div>
@@ -38,14 +148,67 @@ Ux4gJourneyTimeline(steps = steps)`}
 
 <h2><MIcon name="code" /> Kotlin Usage</h2>
 
-```kotlin title="Compose Example"
+```kotlin title="Citizen Scheme Tracking Example"
+import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.Composable
-import com.ux4g.designsystemv1.components.Ux4gJourneyTimeline
-import com.ux4g.designsystemv1.components.JourneyTimelineStep
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
+import com.ux4g.designsystemv1.components.*
+import com.ux4g.designsystemv1.foundation.Ux4gIcons
 
 @Composable
-fun ApplicationTrackingExample(steps: List<JourneyTimelineStep>) {
-    Ux4gJourneyTimeline(steps = steps)
+fun SchemeApplicationTracker() {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp),
+        verticalArrangement = Arrangement.spacedBy(24.dp)
+    ) {
+        // Vertical Timeline Tracker
+        Ux4gJourneyTimeline(
+            header = Ux4gJourneyHeader(
+                title = "Application Progress",
+                description = "Track the status of your scholarship application in real time",
+                icon = Ux4gIcons.Info
+            ),
+            orientation = Ux4gJourneyOrientation.Vertical,
+            steps = listOf(
+                Ux4gJourneyStep(
+                    state = Ux4gJourneyStepState.Completed,
+                    date = "12 Aug, 10:30 AM",
+                    tag = "Verified",
+                    title = "Application Submitted",
+                    helpingText = "All documents uploaded and digitally signed."
+                ),
+                Ux4gJourneyStep(
+                    state = Ux4gJourneyStepState.Completed,
+                    date = "13 Aug, 02:15 PM",
+                    tag = "Approved",
+                    title = "Identity Verification",
+                    helpingText = "Aadhaar and academic certificates verified."
+                ),
+                Ux4gJourneyStep(
+                    state = Ux4gJourneyStepState.Current,
+                    date = "15 Aug, 11:00 AM",
+                    tag = "In Progress",
+                    title = "Under Review by Verification Officer",
+                    helpingText = "Application is currently pending nodal officer sign-off.",
+                    status = Ux4gJourneyStepStatus(
+                        text = "2 days remaining",
+                        badgeText = "Pending",
+                        badgePosition = Ux4gJourneyBadgePosition.Bottom
+                    )
+                ),
+                Ux4gJourneyStep(
+                    state = Ux4gJourneyStepState.Upcoming,
+                    date = "Pending",
+                    tag = "Upcoming",
+                    title = "Direct Benefit Transfer (DBT)",
+                    helpingText = "Disbursement directly into Aadhaar linked bank account."
+                )
+            )
+        )
+    }
 }
 ```
 
@@ -53,23 +216,93 @@ fun ApplicationTrackingExample(steps: List<JourneyTimelineStep>) {
 
 <h2><MIcon name="settings" /> Parameters</h2>
 
-### `Ux4gJourneyTimeline` Props
+### 1. `Ux4gJourneyTimeline` Props
 
 | Prop | Type | Description | Default |
 | :--- | :--- | :--- | :--- |
-| `steps` <span className="text-red-500 font-bold">*</span> | `List<JourneyTimelineStep>` | Ordered list of lifecycle milestone checkpoint items. | `—` |
-| `modifier` | `Modifier` | Compose layout modifier. | `Modifier` |
-| `orientation` | `TimelineOrientation` | Layout orientation (`Vertical` or `Horizontal`). | `Vertical` |
-
+| `steps` <span className="text-red-500 font-bold">*</span> | `List<Ux4gJourneyStep>` | List of milestone checkpoints in chronological order. | — |
+| `modifier` | `Modifier` | Compose layout modifier applied to outer container. | `Modifier` |
+| `header` | `Ux4gJourneyHeader?` | Optional header section with title, description, and action icon. | `null` |
+| `currentStep` | `Int?` | Zero-based index of the active step. When specified, automatically marks earlier steps as `Completed`, current index as `Current`, and later steps as `Upcoming`. | `null` |
+| `orientation` | `Ux4gJourneyOrientation` | Layout direction: `Vertical` or `Horizontal`. | `Ux4gJourneyOrientation.Vertical` |
+| `indicatorSize` | `Dp` | Diameter of the step circle indicators. | `20.dp` |
+| `lineWidth` | `Dp` | Thickness of the connecting progression line. | `3.dp` |
+| `indicatorCardSpacing` | `Dp` | Horizontal gap between indicator column and cards in vertical orientation, or vertical gap to card in horizontal orientation. | `12.dp` |
+| `stepSpacing` | `Dp` | Space between adjacent step cards. | `12.dp` |
+| `activeColor` | `Color?` | Color for completed/current indicators and lines. | `Ux4gColors.primary` |
+| `inactiveColor` | `Color?` | Color for upcoming indicators and connecting lines. | `Ux4gColors.neutral900 (25% opacity)` |
+| `cardBorderRadius` | `Dp` | Corner radius of the step card containers. | `8.dp` |
+| `cardPadding` | `PaddingValues` | Inner padding of step cards. | `PaddingValues(horizontal = 16.dp, vertical = 12.dp)` |
+| `cardColor` | `Color?` | Background color override for all step cards. | `Ux4gColors.neutral0` |
+| `cardBorderColor` | `Color?` | Border color override for all step cards. | `Ux4gColors.neutral900 (10% opacity)` |
+| `dateStyle` | `TextStyle?` | Text style override for dates across all steps. | `null` |
+| `titleStyle` | `TextStyle?` | Text style override for titles across all steps. | `null` |
 
 ---
 
-### `JourneyTimelineStep` Model
+### 2. `Ux4gJourneyStep` Model
 
 | Prop | Type | Description | Default |
 | :--- | :--- | :--- | :--- |
-| `title` <span className="text-red-500 font-bold">*</span> | `String` | Checkpoint title heading. | `—` |
-| `subtitle` | `String?` | Description or department officer remarks. | `null` |
-| `date` | `String?` | Timestamp string (e.g. `12 Aug 2024, 03:45 PM`). | `null` |
-| `state` | `StepState` | Progress state: `Completed`, `Current`, `Upcoming`, `Error`. | `StepState.Upcoming` |
+| `title` <span className="text-red-500 font-bold">*</span> | `String` | Headline title of the milestone checkpoint. | — |
+| `state` | `Ux4gJourneyStepState` | Milestone state: `Completed`, `Current`, `Upcoming`. | `Ux4gJourneyStepState.Upcoming` |
+| `date` | `String?` | Date or timestamp text displayed at the top-left of the card. | `null` |
+| `tag` | `String?` | Pill tag text displayed at the top-right of the card. | `null` |
+| `helpingText` | `String?` | Supporting explanatory text below the title. | `null` |
+| `icon` | `Ux4gIcon?` | Optional icon rendered below the title (e.g. link or file icon). | `null` |
+| `iconColor` | `Color?` | Color override for the step icon. | `null` |
+| `status` | `Ux4gJourneyStepStatus?` | Status indicator pill with dot, status text, and badge. | `null` |
+| `customContent` | `(@Composable () -> Unit)?` | Composable slot for embedding custom rich UI inside the card. | `null` |
+| `stepNumber` | `String?` | Custom number or character shown inside the indicator circle instead of the checkmark. | `null` |
+| `cardColor` | `Color?` | Individual card background color override. | `null` |
+| `cardBorderColor` | `Color?` | Individual card border color override. | `null` |
+| `dateColor` | `Color?` | Individual date text color override. | `null` |
+| `titleColor` | `Color?` | Individual title text color override. | `null` |
+| `dateStyle` | `TextStyle?` | Individual date text style override. | `null` |
+| `titleStyle` | `TextStyle?` | Individual title text style override. | `null` |
 
+---
+
+### 3. `Ux4gJourneyHeader` Model
+
+| Prop | Type | Description | Default |
+| :--- | :--- | :--- | :--- |
+| `title` <span className="text-red-500 font-bold">*</span> | `String` | Timeline section header title. | — |
+| `description` | `String?` | Subtitle description below the header title. | `null` |
+| `icon` | `Ux4gIcon?` | Optional action icon displayed on the header. | `null` |
+| `onIconPressed` | `(() -> Unit)?` | Callback when header icon is tapped. | `null` |
+
+---
+
+### 4. `Ux4gJourneyStepStatus` Model
+
+| Prop | Type | Description | Default |
+| :--- | :--- | :--- | :--- |
+| `text` <span className="text-red-500 font-bold">*</span> | `String` | Status text message (e.g. `"2 days remaining"`). | — |
+| `dotColor` | `Color?` | Color of the status indicator dot. | `Ux4gColors.secondary` |
+| `badgeText` | `String?` | Additional badge label (e.g. `"Pending"` or `"In Progress"`). | `null` |
+| `badgeColor` | `Color?` | Badge background color override. | `null` |
+| `badgeTextColor` | `Color?` | Badge text color override. | `null` |
+| `badgePosition` | `Ux4gJourneyBadgePosition` | Position of badge: `Bottom` or `TopRight`. | `Ux4gJourneyBadgePosition.Bottom` |
+
+---
+
+### 5. Enums Reference
+
+```kotlin
+enum class Ux4gJourneyOrientation {
+    Vertical,   // Continuous vertical timeline layout
+    Horizontal  // Compact horizontal milestone stepper layout
+}
+
+enum class Ux4gJourneyStepState {
+    Completed,  // Filled circle with check icon, active line
+    Current,    // Target concentric double-ring indicator, active line
+    Upcoming    // Subtle outlined circle, muted gray line
+}
+
+enum class Ux4gJourneyBadgePosition {
+    Bottom,     // Unified pill tag at bottom of step card
+    TopRight    // Tag badge at top-right next to date
+}
+```
