@@ -1,31 +1,76 @@
 ---
 title: Toggle Switch
-description: Binary on/off switch for SMS alerts, biometric login, and system preference controls
+description: Accessible binary on/off switches with smooth animations, customizable sizes, label positions, required markers, and trailing icons
 ---
 
-# Toggle Switch (`Ux4gToggle`)
+# Toggle Switch (`Ux4gToggle` / `Ux4gSwitch`)
 
-Binary on/off switch for SMS alerts, biometric login, and system preference controls.
+The UX4G Toggle Switch component provides an accessible binary on/off control for user preferences, SMS alerts, biometric authentication, and conditional form inputs in government portals.
 
-Import from `com.ux4g.designsystemv1.components.Ux4gToggle`.
+### Key Capabilities
+
+- **Standalone & Labeled Variants**: Use as a standalone switch (`Ux4gSwitchLabelPosition.NoLabel`) or alongside descriptive labels with helper descriptions.
+- **Flexible Label Positioning**: Place labels on the `Right` (default), `Left`, or on `BothSides` (e.g., Monthly vs Annual billing switch).
+- **Required Asterisk & Trailing Icons**: Mark critical consent switches with `isRequired = true` and attach informative trailing icons (`trailingIcon`).
+- **Standardized Size Hierarchy**: Three carefully calibrated sizes — `S` (32×18dp), `M` (40×22dp), and `L` (48×28dp).
+- **Smooth Interaction & Dark Mode**: Smooth animated thumb transitions (150ms tween) with integrated ripple indications and automatic dark theme track/thumb color adaptation.
+
+Import from `com.ux4g.designsystemv1.components.*`.
 
 ---
 
-<h2><MIcon name="smartphone" /> Interactive Preview</h2>
+<h2><MIcon name="smartphone" /> Interactive Previews</h2>
+
+### 1. Default Toggle Switch (Standalone)
+
+Standalone binary switch without accompanying label text.
 
 <ComponentPreview
-  title="Ux4gToggle"
+  title="Ux4gToggle - Default Standalone"
   category="Jetpack Compose"
-  code={`Ux4gToggle(
-    checked = isSmsAlertsEnabled,
-    onCheckedChange = { isSmsAlertsEnabled = it },
-    label = "Receive SMS status updates on registered mobile number"
+  code={`var isChecked by remember { mutableStateOf(false) }
+
+Ux4gToggle(
+    checked = isChecked,
+    onCheckedChange = { isChecked = it },
+    labelPosition = Ux4gSwitchLabelPosition.NoLabel,
+    size = Ux4gSwitchSize.M
 )`}
 >
   <div className="flex flex-col items-center justify-center py-2">
     <img
       src="/images/components/toggle_preview.png"
-      alt="UX4G Toggle Switch Preview"
+      alt="UX4G Default Standalone Toggle Switch Preview"
+      className="max-w-full rounded-xl border border-border/60 shadow-sm"
+    />
+  </div>
+</ComponentPreview>
+
+---
+
+### 2. Toggle Switch with Label
+
+Toggle switch paired with field label text, required asterisk (`*`), and informative trailing icon.
+
+<ComponentPreview
+  title="Ux4gToggle - With Label"
+  category="Jetpack Compose"
+  code={`var isChecked by remember { mutableStateOf(false) }
+
+Ux4gToggle(
+    checked = isChecked,
+    onCheckedChange = { isChecked = it },
+    label = "Label text",
+    isRequired = true,
+    trailingIcon = Ux4gIcons.Category,
+    size = Ux4gSwitchSize.M,
+    labelPosition = Ux4gSwitchLabelPosition.Right
+)`}
+>
+  <div className="flex flex-col items-center justify-center py-2">
+    <img
+      src="/images/components/toggle-label_preview.png"
+      alt="UX4G Toggle Switch with Label Preview"
       className="max-w-full rounded-xl border border-border/60 shadow-sm"
     />
   </div>
@@ -35,18 +80,82 @@ Import from `com.ux4g.designsystemv1.components.Ux4gToggle`.
 
 <h2><MIcon name="code" /> Kotlin Usage</h2>
 
-```kotlin title="Compose Example"
+### 1. Notification & SMS Preference Settings
+
+```kotlin title="NotificationPreferences.kt"
+import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.*
-import com.ux4g.designsystemv1.components.Ux4gToggle
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
+import com.ux4g.designsystemv1.components.Ux4gSwitch
+import com.ux4g.designsystemv1.components.Ux4gSwitchLabelPosition
+import com.ux4g.designsystemv1.components.Ux4gSwitchSize
+import com.ux4g.designsystemv1.foundation.Ux4gIcons
 
 @Composable
-fun ToggleDemo() {
-    var enabled by remember { mutableStateOf(true) }
+fun NotificationPreferencesSection() {
+    var smsAlerts by remember { mutableStateOf(true) }
+    var emailDigest by remember { mutableStateOf(false) }
+    var biometricLogin by remember { mutableStateOf(true) }
 
-    Ux4gToggle(
-        checked = enabled,
-        onCheckedChange = { enabled = it },
-        label = "Enable Biometric Login"
+    Column(
+        modifier = Modifier.padding(16.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
+        // Standard switch with label, required asterisk, and description
+        Ux4gSwitch(
+            checked = smsAlerts,
+            onCheckedChange = { smsAlerts = it },
+            label = "SMS Application Status Alerts",
+            description = "Receive instant transaction and dispatch updates via SMS",
+            isRequired = true,
+            trailingIcon = Ux4gIcons.info_circle,
+            size = Ux4gSwitchSize.M,
+            labelPosition = Ux4gSwitchLabelPosition.Right
+        )
+
+        // Compact Small switch
+        Ux4gSwitch(
+            checked = emailDigest,
+            onCheckedChange = { emailDigest = it },
+            label = "Weekly Digest Email",
+            description = "Summary of portal announcements and new state schemes",
+            size = Ux4gSwitchSize.S,
+            labelPosition = Ux4gSwitchLabelPosition.Right
+        )
+
+        // Large prominent switch
+        Ux4gSwitch(
+            checked = biometricLogin,
+            onCheckedChange = { biometricLogin = it },
+            label = "Biometric Aadhaar Quick Login",
+            description = "Unlock dashboard using registered device fingerprint",
+            size = Ux4gSwitchSize.L,
+            labelPosition = Ux4gSwitchLabelPosition.Right
+        )
+    }
+}
+```
+
+### 2. Dual-Sided Label Switch (BothSides Layout)
+
+```kotlin title="DualSidedBillingToggle.kt"
+import androidx.compose.runtime.*
+import com.ux4g.designsystemv1.components.Ux4gSwitch
+import com.ux4g.designsystemv1.components.Ux4gSwitchLabelPosition
+import com.ux4g.designsystemv1.components.Ux4gSwitchSize
+
+@Composable
+fun SchemeTenureSelector() {
+    var isAnnual by remember { mutableStateOf(false) }
+
+    Ux4gSwitch(
+        checked = isAnnual,
+        onCheckedChange = { isAnnual = it },
+        label = "Quarterly Subsidy",
+        secondaryLabel = "Annual Disbursal",
+        size = Ux4gSwitchSize.M,
+        labelPosition = Ux4gSwitchLabelPosition.BothSides
     )
 }
 ```
@@ -55,13 +164,46 @@ fun ToggleDemo() {
 
 <h2><MIcon name="settings" /> Parameters</h2>
 
+### `Ux4gToggle` / `Ux4gSwitch` Props
+
 | Prop | Type | Description | Default |
 | :--- | :--- | :--- | :--- |
-| `checked` <span className="text-red-500 font-bold">*</span> | `Boolean` | Current boolean switch state. | `—` |
-| `onCheckedChange` <span className="text-red-500 font-bold">*</span> | `(Boolean) -> Unit` | Callback triggered when switch is toggled. | `—` |
-| `label` | `String?` | Accompanying text label adjacent to switch. | `null` |
-| `enabled` | `Boolean` | Whether toggle is interactive or grayed out. | `true` |
-| `modifier` | `Modifier` | Compose layout modifier. | `Modifier` |
-| `checkedThumbColor` | `Color?` | Thumb ball color when active. | `null` |
-| `checkedTrackColor` | `Color?` | Track bar background color when active. | `null` |
+| `checked` <span className="text-red-500 font-bold">*</span> | `Boolean` | Whether the toggle switch is currently in the active/checked state. | `—` |
+| `onCheckedChange` <span className="text-red-500 font-bold">*</span> | `((Boolean) -> Unit)?` | Callback triggered when the switch is toggled. Pass `null` for read-only. | `—` |
+| `modifier` | `Modifier` | Compose layout modifier applied to the outer container. | `Modifier` |
+| `label` | `String?` | Primary label text displayed next to the switch. | `null` |
+| `description` | `String?` | Secondary supporting description text rendered below the primary label. | `null` |
+| `size` | `Ux4gSwitchSize` | Switch dimensions: `S` (32×18dp), `M` (40×22dp), or `L` (48×28dp). | `Ux4gSwitchSize.M` |
+| `labelPosition` | `Ux4gSwitchLabelPosition` | Layout placement: `Right`, `Left`, `BothSides`, or `NoLabel`. | `Ux4gSwitchLabelPosition.Right` |
+| `enabled` | `Boolean` | Controls interactive touch response and disabled opacity. | `true` |
+| `isRequired` | `Boolean` | When `true`, appends a red asterisk (`*`) to the primary label. | `false` |
+| `trailingIcon` | `Ux4gIcon?` | Optional icon rendered immediately after the primary label text. | `null` |
+| `icon` | `(@Composable () -> Unit)?` | Optional composable icon slot placed next to the primary label. | `null` |
+| `labelStyle` | `TextStyle?` | Custom typography style for primary label. | `null` |
+| `descriptionStyle` | `TextStyle?` | Custom typography style for supporting description text. | `null` |
+| `secondaryLabel` | `String?` | Secondary label text used when `labelPosition = BothSides`. | `null` |
+| `isSecondaryRequired` | `Boolean` | Appends a red asterisk (`*`) to the secondary label. | `false` |
+| `trailingSecondaryIcon` | `Ux4gIcon?` | Trailing icon for secondary label when using `BothSides`. | `null` |
+| `colors` | `Ux4gToggleColors?` | Custom color palette overrides for track and thumb states. | `null` |
+| `interactionSource` | `MutableInteractionSource` | Stream of interactions for ripple feedback. | `remember { MutableInteractionSource() }` |
 
+---
+
+### `Ux4gSwitchSize` Reference
+
+| Size | Track Width (`Dp`) | Track Height (`Dp`) | Thumb Diameter (`Dp`) | Typical Usage |
+| :--- | :--- | :--- | :--- | :--- |
+| `S` | `32.dp` | `18.dp` | `14.dp` | Dense table rows, compact bottom sheets, toolbars |
+| `M` | `40.dp` | `22.dp` | `18.dp` | Standard mobile settings, citizen preference forms |
+| `L` | `48.dp` | `28.dp` | `24.dp` | Prominent featured switches, primary app mode toggles |
+
+---
+
+### `Ux4gSwitchLabelPosition` Reference
+
+| Position | Layout Behavior |
+| :--- | :--- |
+| `NoLabel` | Standalone switch control without text labels. |
+| `Right` | Standard layout: Switch on left, primary label and description on right. |
+| `Left` | Inverted layout: Primary label and description on left, switch on right. |
+| `BothSides` | Dual-mode layout: Primary label on left, switch in middle, secondary label on right. |

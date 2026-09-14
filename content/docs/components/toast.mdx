@@ -1,11 +1,19 @@
 ---
 title: Toast & Snackbars
-description: Transient feedback messages with category icons, title, subtitle, and top/bottom positioning
+description: Transient feedback messages with category icons, titles, subtitles, action buttons, and animated top/bottom toast host positioning
 ---
 
 # Toast & Snackbars (`Ux4gToast`)
 
-Transient feedback messages with category icons, title, subtitle, and top/bottom positioning.
+The UX4G Toast and Snackbar component displays non-intrusive, transient feedback messages to inform citizens about application submissions, system status updates, validation warnings, and background process results.
+
+### Key Capabilities
+
+- **Semantic Feedback Categories**: Pre-styled visual indicators for `Info`, `Success`, `Warning`, `Error`, and `Slot` states.
+- **Title & Supporting Description**: Emphasized bold heading with an optional secondary subtitle describing the status or error details.
+- **Adaptive Layouts**: Supports `Full` layout (one-line format for tablet/desktop) and `Stacked` layout (multi-line indented format for mobile devices).
+- **Interactive Action Buttons & Dismiss**: Integrated call-to-action link button (`actionText`, `onActionClick`) and optional dismiss close button (`onCloseClick`).
+- **Animated Toast Host**: `Ux4gToastHost` and `Ux4gToastHostState` for coordinated top or bottom animated slide and fade overlays with auto-close timers.
 
 Import from `com.ux4g.designsystemv1.components.Ux4gToast`.
 
@@ -16,19 +24,40 @@ Import from `com.ux4g.designsystemv1.components.Ux4gToast`.
 <ComponentPreview
   title="Ux4gToast"
   category="Jetpack Compose"
-  code={`// Show Toast Notification
-val toastHostState = remember { Ux4gToastHostState() }
+  code={`Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+    // 1. Info Message
+    Ux4gToast(
+        category = Ux4gToastCategory.Info,
+        title = "Info message",
+        subtitle = "Supporting description text."
+    )
 
-toastHostState.showToast(
-    category = Ux4gToastCategory.Success,
-    title = "Application Submitted Successfully",
-    subtitle = "Reference ID: GOV-2024-89412 has been sent via SMS."
-)`}
+    // 2. Success Message
+    Ux4gToast(
+        category = Ux4gToastCategory.Success,
+        title = "Success message",
+        subtitle = "Supporting description text."
+    )
+
+    // 3. Warning Message
+    Ux4gToast(
+        category = Ux4gToastCategory.Warning,
+        title = "Warning message",
+        subtitle = "Supporting description text."
+    )
+
+    // 4. Error Message
+    Ux4gToast(
+        category = Ux4gToastCategory.Error,
+        title = "Error message",
+        subtitle = "Supporting description text."
+    )
+}`}
 >
   <div className="flex flex-col items-center justify-center py-2">
     <img
       src="/images/components/toast_preview.png"
-      alt="UX4G Toast & Snackbars Preview"
+      alt="UX4G Toast Category Messages Preview"
       className="max-w-full rounded-xl border border-border/60 shadow-sm"
     />
   </div>
@@ -38,16 +67,99 @@ toastHostState.showToast(
 
 <h2><MIcon name="code" /> Kotlin Usage</h2>
 
-```kotlin title="Compose Example"
-import androidx.compose.runtime.*
-import com.ux4g.designsystemv1.components.Ux4gToastHost
-import com.ux4g.designsystemv1.components.Ux4gToastHostState
+### 1. Direct Toast Component Placement
+
+```kotlin title="StaticToastShowcase.kt"
+import androidx.compose.foundation.layout.*
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
+import com.ux4g.designsystemv1.components.Ux4gToast
 import com.ux4g.designsystemv1.components.Ux4gToastCategory
 
 @Composable
-fun ToastDemo() {
-    val toastState = remember { Ux4gToastHostState() }
-    Ux4gToastHost(hostState = toastState)
+fun ToastShowcase() {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp),
+        verticalArrangement = Arrangement.spacedBy(12.dp)
+    ) {
+        Ux4gToast(
+            category = Ux4gToastCategory.Info,
+            title = "Info message",
+            subtitle = "Supporting description text."
+        )
+
+        Ux4gToast(
+            category = Ux4gToastCategory.Success,
+            title = "Success message",
+            subtitle = "Supporting description text.",
+            actionText = "View",
+            onActionClick = { /* Navigate to details */ }
+        )
+
+        Ux4gToast(
+            category = Ux4gToastCategory.Warning,
+            title = "Warning message",
+            subtitle = "Supporting description text."
+        )
+
+        Ux4gToast(
+            category = Ux4gToastCategory.Error,
+            title = "Error message",
+            subtitle = "Supporting description text."
+        )
+    }
+}
+```
+
+### 2. Animated Toast Host with State Management
+
+```kotlin title="ToastHostExample.kt"
+import androidx.compose.foundation.layout.*
+import androidx.compose.runtime.*
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
+import com.ux4g.designsystemv1.components.Ux4gToastCategory
+import com.ux4g.designsystemv1.components.Ux4gToastHost
+import com.ux4g.designsystemv1.components.Ux4gToastHostState
+import com.ux4g.designsystemv1.components.buttons.Ux4gButton
+import kotlinx.coroutines.launch
+
+@Composable
+fun ApplicationSubmissionScreen() {
+    val coroutineScope = rememberCoroutineScope()
+    val toastHostState = remember { Ux4gToastHostState() }
+
+    Box(modifier = Modifier.fillMaxSize()) {
+        Column(
+            modifier = Modifier.padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
+            Ux4gButton(
+                text = "Submit Application",
+                onClick = {
+                    coroutineScope.launch {
+                        toastHostState.showToast(
+                            category = Ux4gToastCategory.Success,
+                            title = "Success message",
+                            subtitle = "Supporting description text.",
+                            actionText = "Track",
+                            onActionClick = { /* Track Application */ },
+                            durationMillis = 3000
+                        )
+                    }
+                }
+            )
+        }
+
+        // Top-floating animated toast overlay
+        Ux4gToastHost(
+            hostState = toastHostState,
+            isBottom = false
+        )
+    }
 }
 ```
 
@@ -55,24 +167,38 @@ fun ToastDemo() {
 
 <h2><MIcon name="settings" /> Parameters</h2>
 
-### `Ux4gToastHostState.showToast` Parameters
+### `Ux4gToast` Props
 
 | Prop | Type | Description | Default |
 | :--- | :--- | :--- | :--- |
-| `title` <span className="text-red-500 font-bold">*</span> | `String` | Primary notification bold heading text. | `—` |
-| `subtitle` | `String?` | Secondary description line. | `null` |
-| `category` | `Ux4gToastCategory` | Category tone: `Success`, `Error`, `Warning`, `Info`. | `Ux4gToastCategory.Info` |
-| `duration` | `Ux4gToastDuration` | Display duration: `Short` (3s), `Long` (5s), `Indefinite`. | `Ux4gToastDuration.Short` |
-
+| `category` <span className="text-red-500 font-bold">*</span> | `Ux4gToastCategory` | Semantic tone determining icon, background tint, and action colors (`Info`, `Success`, `Warning`, `Error`, `Slot`). | `—` |
+| `title` <span className="text-red-500 font-bold">*</span> | `String` | Primary bold notification heading text. | `—` |
+| `modifier` | `Modifier` | Compose layout modifier applied to the toast card. | `Modifier` |
+| `subtitle` | `String?` | Optional secondary description text providing supporting context. | `null` |
+| `actionText` | `String?` | Optional text label for the right-aligned action trigger button. | `null` |
+| `onActionClick` | `(() -> Unit)?` | Callback invoked when the citizen taps the action text. | `null` |
+| `onCloseClick` | `(() -> Unit)?` | Callback triggered when the citizen taps the close (`X`) icon button. | `null` |
+| `showCloseButton` | `Boolean` | Whether to render the trailing close (`X`) dismiss button. | `true` |
+| `layout` | `Ux4gToastLayout?` | Layout structure: `Full` (single-line horizontal) or `Stacked` (multi-line indented for mobile). | Auto-detected |
 
 ---
 
-### `Ux4gToastCategory` Enum
+### `Ux4gToastHost` Props
 
-| Category | Color Token | Icon Description |
-| :--- | :--- | :--- |
-| `Success` | Green (`#22C55E`) | Checkmark in circle — for completed tasks & submissions |
-| `Error` | Red (`#EF4444`) | Cross in circle — for API failure & auth errors |
-| `Warning` | Amber (`#F59E0B`) | Alert triangle — for warnings & connectivity interruptions |
-| `Info` | Blue (`#3B82F6`) | Info circle — for background sync updates & notifications |
+| Prop | Type | Description | Default |
+| :--- | :--- | :--- | :--- |
+| `hostState` <span className="text-red-500 font-bold">*</span> | `Ux4gToastHostState` | State object controlling current active toast display and dismissal. | `—` |
+| `modifier` | `Modifier` | Compose modifier applied to the toast host container. | `Modifier` |
+| `isBottom` | `Boolean` | When `true`, slides up from bottom; when `false`, slides down from top. | `false` |
 
+---
+
+### `Ux4gToastCategory` Reference
+
+| Category | Background Color | Icon Tint | Standard Icon | Purpose |
+| :--- | :--- | :--- | :--- | :--- |
+| `Info` | `Ux4gColors.cyan50` | `Ux4gColors.cyan500` | `Ux4gIcons.info_circle` | Informational announcements, sync status, and generic notices |
+| `Success` | `Ux4gColors.green50` | `Ux4gColors.green500` | `Ux4gIcons.success_circle` | Confirmation of completed applications, uploads, and saved data |
+| `Warning` | `Ux4gColors.gold50` | `Ux4gColors.gold600` | `Ux4gIcons.warning` | Session expiration warnings, pending documents, or soft limits |
+| `Error` | `Ux4gColors.red50` | `Ux4gColors.red600` | `Ux4gIcons.error` | Failed network requests, authorization errors, or upload failures |
+| `Slot` | `Ux4gColors.purple50` | `Ux4gColors.purple500` | `Ux4gIcons.Settings` | Custom slot or administrative system notification |
