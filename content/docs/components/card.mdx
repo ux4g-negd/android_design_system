@@ -1,38 +1,217 @@
 ---
 title: Card
-description: Surface containers for citizen services, scheme benefits, statistics, and interactive items
+description: Versatile surface container supporting Vertical & Horizontal layouts, media banners with tags, headers with avatars, status chips, body text, bottom chips, and action button footers
 ---
 
-# Card (`Ux4gCard`)
+# Card Suite (`Ux4gCard`)
 
-Surface containers for citizen services, scheme benefits, statistics, and interactive items.
+The UX4G Card suite provides rich, modular surface containers designed for citizen self-service dashboards, scheme benefits, service discovery, and application tracking:
+1. **Standard / Basic Card**: Clean surface container with title, subtitle, description, and optional click interaction.
+2. **Card with Action Buttons**: Interactive card featuring customizable primary and secondary footer action buttons.
+3. **Horizontal Card**: Split-layout card with media thumbnail on the left and structured content on the right.
+4. **Complex Vertical Card**: Feature-complete card with full-bleed media banner, label badge, top-end bookmark, avatar header, status row, body text, bottom tag chips, and dual action buttons.
+5. **Complex Horizontal Card**: Rich horizontal layout with media banner, avatar, status chips, description, and primary CTA.
 
 Import from `com.ux4g.designsystemv1.components.Ux4gCard`.
 
 ---
 
-<h2><MIcon name="smartphone" /> Interactive Preview</h2>
+<h2><MIcon name="smartphone" /> Interactive Previews</h2>
+
+### 1. Standard / Basic Card
 
 <ComponentPreview
-  title="Ux4gCard"
+  title="Ux4gCard - Standard / Basic"
   category="Jetpack Compose"
-  code={`Ux4gCard(
+  code={`// Standard Informational Card
+Ux4gCard(
     modifier = Modifier.fillMaxWidth(),
-    variant = Ux4gCardVariant.Elevated,
-    onClick = { /* Open scheme */ }
-) {
-    Column(modifier = Modifier.padding(16.dp)) {
-        Ux4gBadge(type = Ux4gBadgeType.Label("DBT Enabled"), containerColor = Ux4gColors.green600)
-        Spacer(modifier = Modifier.height(8.dp))
-        Text(text = "PM Kisan Samman Nidhi", style = Ux4gTheme.typography.tM_strong)
-        Text(text = "Direct income support of ₹6,000 per year in 3 equal installments.", style = Ux4gTheme.typography.bS_default)
-    }
-}`}
+    title = "Scheme Information",
+    subtitle = "Department of Agriculture",
+    body = "Direct benefit transfer scheme providing financial assistance to cultivating farmer families across the country.",
+    isClickable = true,
+    onClick = { /* Open scheme details */ }
+)`}
 >
   <div className="flex flex-col items-center justify-center py-2">
     <img
       src="/images/components/card_preview.png"
-      alt="UX4G Card Preview"
+      alt="UX4G Standard Card Preview"
+      className="max-w-full rounded-xl border border-border/60 shadow-sm"
+    />
+  </div>
+</ComponentPreview>
+
+---
+
+### 2. Card with Footer Action Buttons
+
+<ComponentPreview
+  title="Ux4gCard - With Action Buttons"
+  category="Jetpack Compose"
+  code={`// Card with Primary & Secondary Footer Buttons
+Ux4gCard(
+    modifier = Modifier.fillMaxWidth(),
+    title = "Application Verification",
+    subtitle = "Pending Citizen Approval",
+    body = "Review your submitted documents and verify biometric authentication to proceed with certificate dispatch.",
+    footerType = Ux4gCardFooterType.PrimaryAndSecondary,
+    primaryButtonText = "Approve & Sign",
+    secondaryButtonText = "Reject",
+    onPrimaryClick = { /* Handle approval */ },
+    onSecondaryClick = { /* Handle rejection */ }
+)`}
+>
+  <div className="flex flex-col items-center justify-center py-2">
+    <img
+      src="/images/components/card_with_button_preview.png"
+      alt="UX4G Card with Action Buttons Preview"
+      className="max-w-full rounded-xl border border-border/60 shadow-sm"
+    />
+  </div>
+</ComponentPreview>
+
+---
+
+### 3. Horizontal Card (`Ux4gCardDirection.Horizontal`)
+
+<ComponentPreview
+  title="Ux4gCard - Horizontal Orientation"
+  category="Jetpack Compose"
+  code={`// Horizontal Layout with Left Thumbnail Media
+Ux4gCard(
+    modifier = Modifier.fillMaxWidth(),
+    direction = Ux4gCardDirection.Horizontal,
+    mediaImageUrl = "https://picsum.photos/seed/digilocker/300/300",
+    mediaWidth = 120.dp,
+    title = "Digital Locker",
+    subtitle = "Government of India",
+    body = "Secure cloud-based platform for storage, sharing and verification of citizen documents & digital certificates.",
+    footerType = Ux4gCardFooterType.SecondaryOnly,
+    secondaryButtonText = "View Files",
+    onSecondaryClick = { /* Open DigiLocker */ }
+)`}
+>
+  <div className="flex flex-col items-center justify-center py-2">
+    <img
+      src="/images/components/card_horizontal_preview.png"
+      alt="UX4G Horizontal Card Preview"
+      className="max-w-full rounded-xl border border-border/60 shadow-sm"
+    />
+  </div>
+</ComponentPreview>
+
+---
+
+### 4. Complex Vertical Card (Media, Avatar, Chips & Actions)
+
+<ComponentPreview
+  title="Ux4gCard - Complex Vertical Banner"
+  category="Jetpack Compose"
+  code={`// Feature-rich Vertical Card with Banner & Metadata
+Ux4gCard(
+    modifier = Modifier.fillMaxWidth(),
+    direction = Ux4gCardDirection.Vertical,
+    mediaImageUrl = "https://picsum.photos/seed/pmkisan/600/300",
+    mediaHeight = 180.dp,
+    mediaLabelText = "Agriculture & Rural",
+    mediaLabelLeading = {
+        Icon(
+            imageVector = Icons.Filled.Category,
+            contentDescription = null,
+            tint = Color.White,
+            modifier = Modifier.size(12.dp)
+        )
+    },
+    mediaTopEndAction = {
+        Box(
+            modifier = Modifier
+                .size(32.dp)
+                .clip(CircleShape)
+                .background(Color(0x66000000)),
+            contentAlignment = Alignment.Center
+        ) {
+            Icon(
+                imageVector = Icons.Filled.BookmarkBorder,
+                contentDescription = "Bookmark",
+                tint = Color.White,
+                modifier = Modifier.size(16.dp)
+            )
+        }
+    },
+    avatar = {
+        Ux4gAvatar(
+            size = Ux4gAvatarSize.M,
+            initials = "PM",
+            containerColor = Ux4gColors.primary100,
+            contentColor = Ux4gColors.primary700
+        )
+    },
+    title = "PM Kisan Samman Nidhi",
+    subtitle = "Direct Benefit Transfer (DBT)",
+    headerTrailing = {
+        Icon(
+            imageVector = Icons.Filled.Share,
+            contentDescription = "Share",
+            tint = Ux4gColors.primary,
+            modifier = Modifier.size(22.dp)
+        )
+    },
+    statusChips = listOf("Active Scheme", "Central Sector", "100% Funded"),
+    body = "Income support of ₹6,000 per year in three equal installments to all land holding farmer families.",
+    bottomChips = listOf("DBT", "Farmers", "Annual Support", "Aadhaar Linked"),
+    footerType = Ux4gCardFooterType.PrimaryAndSecondary,
+    primaryButtonText = "Apply Now",
+    secondaryButtonText = "Guidelines",
+    onPrimaryClick = { /* Launch application */ },
+    onSecondaryClick = { /* Open guidelines */ }
+)`}
+>
+  <div className="flex flex-col items-center justify-center py-2">
+    <img
+      src="/images/components/card_complex_vertical_preview.png"
+      alt="UX4G Complex Vertical Card Preview"
+      className="max-w-full rounded-xl border border-border/60 shadow-sm"
+    />
+  </div>
+</ComponentPreview>
+
+---
+
+### 5. Complex Horizontal Card (Media, Avatar & Status Chips)
+
+<ComponentPreview
+  title="Ux4gCard - Complex Horizontal Layout"
+  category="Jetpack Compose"
+  code={`// Feature-rich Horizontal Card with Left Banner & Badges
+Ux4gCard(
+    modifier = Modifier.fillMaxWidth(),
+    direction = Ux4gCardDirection.Horizontal,
+    mediaImageUrl = "https://picsum.photos/seed/ayushman/400/400",
+    mediaWidth = 140.dp,
+    mediaLabelText = "Health Scheme",
+    avatar = {
+        Ux4gAvatar(
+            size = Ux4gAvatarSize.S,
+            initials = "AB",
+            containerColor = Ux4gColors.secondary100,
+            contentColor = Ux4gColors.secondary700
+        )
+    },
+    title = "Ayushman Bharat PM-JAY",
+    subtitle = "National Health Authority",
+    statusChips = listOf("₹5 Lakh Cover", "Cashless"),
+    body = "World's largest health assurance scheme providing secondary and tertiary care hospitalization coverage.",
+    bottomChips = listOf("Healthcare", "Hospitals"),
+    footerType = Ux4gCardFooterType.PrimaryOnly,
+    primaryButtonText = "Check Eligibility",
+    onPrimaryClick = { /* Check citizen eligibility */ }
+)`}
+>
+  <div className="flex flex-col items-center justify-center py-2">
+    <img
+      src="/images/components/card_complex_horizontal_preview.png"
+      alt="UX4G Complex Horizontal Card Preview"
       className="max-w-full rounded-xl border border-border/60 shadow-sm"
     />
   </div>
@@ -42,19 +221,75 @@ Import from `com.ux4g.designsystemv1.components.Ux4gCard`.
 
 <h2><MIcon name="code" /> Kotlin Usage</h2>
 
-```kotlin title="Compose Example"
+```kotlin title="Card Showcase Example"
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.BookmarkBorder
+import androidx.compose.material.icons.filled.Category
+import androidx.compose.material.icons.filled.Share
+import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.dp
 import com.ux4g.designsystemv1.components.Ux4gCard
-import com.ux4g.designsystemv1.components.Ux4gCardVariant
+import com.ux4g.designsystemv1.components.Ux4gCardDirection
+import com.ux4g.designsystemv1.components.Ux4gCardFooterAlignment
+import com.ux4g.designsystemv1.components.Ux4gCardFooterType
+import com.ux4g.designsystemv1.components.avatar_component.Ux4gAvatar
+import com.ux4g.designsystemv1.components.avatar_component.Ux4gAvatarSize
+import com.ux4g.designsystemv1.foundation.Ux4gColors
 
 @Composable
-fun CardExample() {
-    Ux4gCard(
-        variant = Ux4gCardVariant.Elevated,
-        onClick = { /* card tapped */ }
+fun CardShowcaseScreen() {
+    Column(
+        modifier = Modifier.padding(16.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        // Child composables inside card
+        // 1. Basic Informational Card
+        Ux4gCard(
+            title = "Digital India Initiative",
+            subtitle = "Ministry of Electronics & IT",
+            body = "Empowering citizens with access to digital infrastructure and government e-services."
+        )
+
+        // 2. Card with Primary and Secondary Buttons
+        Ux4gCard(
+            title = "Aadhaar e-KYC Verification",
+            subtitle = "Action Required",
+            body = "Complete one-time OTP authentication to unlock all digital services.",
+            footerType = Ux4gCardFooterType.PrimaryAndSecondary,
+            primaryButtonText = "Verify Now",
+            secondaryButtonText = "Remind Later",
+            onPrimaryClick = { /* Start OTP flow */ },
+            onSecondaryClick = { /* Dismiss */ }
+        )
+
+        // 3. Rich Vertical Card with Media Banner & Avatar
+        Ux4gCard(
+            direction = Ux4gCardDirection.Vertical,
+            mediaImageUrl = "https://picsum.photos/seed/agri/600/300",
+            mediaHeight = 180.dp,
+            mediaLabelText = "New Scheme",
+            avatar = {
+                Ux4gAvatar(
+                    size = Ux4gAvatarSize.M,
+                    initials = "PM"
+                )
+            },
+            title = "PM Kisan Samman Nidhi",
+            subtitle = "Direct Benefit Transfer",
+            statusChips = listOf("Active", "Central Sector"),
+            body = "Direct financial support of ₹6,000 per year in three equal installments to eligible farmers.",
+            bottomChips = listOf("DBT", "Agriculture", "Farmers"),
+            footerType = Ux4gCardFooterType.PrimaryAndSecondary,
+            primaryButtonText = "Apply Now",
+            secondaryButtonText = "Guidelines"
+        )
     }
 }
 ```
@@ -67,24 +302,67 @@ fun CardExample() {
 
 | Prop | Type | Description | Default |
 | :--- | :--- | :--- | :--- |
-| `content` <span className="text-red-500 font-bold">*</span> | `@Composable () -> Unit` | Child composable content inside the card container. | `—` |
-| `modifier` | `Modifier` | Compose layout modifier. | `Modifier` |
-| `variant` | `Ux4gCardVariant` | Elevation style: `Elevated`, `Outlined`, `Filled`. | `Ux4gCardVariant.Elevated` |
-| `shape` | `Shape` | Corner shape applied to card boundary. | `RoundedCornerShape(8.dp)` |
-| `backgroundColor` | `Color?` | Container background color (defaults to surface). | `null` |
-| `borderColor` | `Color?` | Border stroke color for outlined variant. | `null` |
-| `elevation` | `Dp` | Shadow elevation depth for elevated variant. | `2.dp` |
-| `onClick` | `(() -> Unit)?` | Optional click listener turning card into interactive touch target. | `null` |
-| `enabled` | `Boolean` | Whether click interaction is enabled. | `true` |
-
+| `modifier` | `Modifier` | Compose layout modifier applied to the root card container. | `Modifier` |
+| `cornerRadius` | `Dp` | Corner rounding radius of the card boundary. | `12.dp` (`Ux4gRadius.Radius12`) |
+| `backgroundColor` | `Color?` | Background fill color (`null` defaults to theme surface). | `null` |
+| `borderColor` | `Color` | Border stroke color outline. | `Color.Transparent` |
+| `borderWidth` | `Dp` | Thickness of the border outline stroke. | `0.dp` |
+| `elevation` | `Dp` | Drop-shadow elevation depth. | `0.dp` |
+| `isClickable` | `Boolean` | When true or when `onClick`/`onPressed` is set, enables ripple touch clicks. | `false` |
+| `onPressed` | `(() -> Unit)?` | Tap callback handler when card is clicked. | `null` |
+| `onClick` | `(() -> Unit)?` | Alias for `onPressed`. | `null` |
+| `direction` | `Ux4gCardDirection` | Layout orientation: `Ux4gCardDirection.Vertical` or `Ux4gCardDirection.Horizontal`. | `Ux4gCardDirection.Vertical` |
+| `mediaImageUrl` | `String?` | Remote image URL for full-bleed top banner (vertical) or left thumbnail (horizontal). | `null` |
+| `mediaHeight` | `Dp` | Height of media image in Vertical layout mode. | `180.dp` |
+| `mediaWidth` | `Dp` | Width of media image in Horizontal layout mode. | `120.dp` |
+| `mediaLabelText` | `String?` | Optional text badge overlaid at the top-left of the media image. | `null` |
+| `mediaLabelLeading` | `(@Composable () -> Unit)?` | Leading icon or composable inside the media label badge. | `null` |
+| `mediaTopEndAction` | `(@Composable () -> Unit)?` | Action icon or button overlaid at the top-right of media. | `null` |
+| `avatar` | `(@Composable () -> Unit)?` | Composable avatar slot displayed at the left of the header row. | `null` |
+| `title` | `String?` | Primary card headline title text. | `null` |
+| `subtitle` | `String?` | Secondary muted subtitle text below title. | `null` |
+| `headerTrailing` | `(@Composable () -> Unit)?` | Trailing action icon or button at the right side of header row. | `null` |
+| `statusChips` | `List<String>` | List of inline metadata tags separated by vertical divider lines. | `emptyList()` |
+| `statusContent` | `(@Composable () -> Unit)?` | Custom composable slot replacing standard `statusChips` row. | `null` |
+| `body` | `String?` | Main description paragraph text. | `null` |
+| `bodyText` | `String?` | Alias for `body`. | `null` |
+| `bottomChips` | `List<String>` | List of rounded pill tags rendered below description. | `emptyList()` |
+| `bottomChipsContent` | `(@Composable () -> Unit)?` | Custom composable slot replacing standard `bottomChips` row. | `null` |
+| `footerType` | `Ux4gCardFooterType` | Button layout: `None`, `PrimaryOnly`, `SecondaryOnly`, `PrimaryAndSecondary`. | `Ux4gCardFooterType.None` |
+| `footerAlignment` | `Ux4gCardFooterAlignment` | Horizontal alignment: `Left`, `Centered`, `Right`. | `Ux4gCardFooterAlignment.Left` |
+| `primaryButtonText` | `String` | Label text for the filled primary button. | `"Confirm"` |
+| `secondaryButtonText` | `String` | Label text for the outlined secondary button. | `"Cancel"` |
+| `onPrimaryClick` | `(() -> Unit)?` | Click listener callback for the primary button. | `null` |
+| `onSecondaryClick` | `(() -> Unit)?` | Click listener callback for the secondary button. | `null` |
+| `footerContent` | `(@Composable () -> Unit)?` | Custom composable slot replacing default footer buttons. | `null` |
+| `content` | `(@Composable ColumnScope.() -> Unit)?` | Custom composable slot replacing entire structured card layout. | `null` |
 
 ---
 
-### `Ux4gCardVariant` Enum
+### `Ux4gCardDirection` Enum
 
-| Variant | Visual Description |
-| :--- | :--- |
-| `Elevated` | Surface fill with soft drop-shadow elevation. |
-| `Outlined` | Flat surface fill with 1dp border stroke outline. |
-| `Filled` | Neutral container fill without shadow or border. |
+| Direction | Visual Orientation | Layout Behavior |
+| :--- | :--- | :--- |
+| `Vertical` | Top-to-Bottom | Media banner placed on top, followed by full-width content column. |
+| `Horizontal` | Left-to-Right | Media thumbnail pinned to left edge with intrinsic height, content on right. |
 
+---
+
+### `Ux4gCardFooterType` Enum
+
+| Type | Buttons Rendered | Description |
+| :--- | :--- | :--- |
+| `None` | No buttons | No footer row is displayed. |
+| `PrimaryOnly` | Filled Primary Button | Single high-emphasis CTA button. |
+| `SecondaryOnly` | Outlined Secondary Button | Single low/medium emphasis button. |
+| `PrimaryAndSecondary` | Primary & Outlined Buttons | Dual-action row with primary action on left/first and outline on right/second. |
+
+---
+
+### `Ux4gCardFooterAlignment` Enum
+
+| Alignment | Row Arrangement | Behavior |
+| :--- | :--- | :--- |
+| `Left` | `Arrangement.Start` | Buttons aligned to the start/left edge. |
+| `Centered` | `Arrangement.Center` | Buttons centered (or full width if single button). |
+| `Right` | `Arrangement.End` | Buttons aligned to the end/right edge. |
