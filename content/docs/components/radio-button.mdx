@@ -1,34 +1,134 @@
 ---
 title: Radio Button
-description: Single-selection radio group for gender selection, payment modes, and mutually exclusive options
+description: Single-selection radio button and radio group supporting custom sizes, validation status variants, required indicators, and helper text
 ---
 
 # Radio Button (`Ux4gRadioButton`)
 
-Single-selection radio group for gender selection, payment modes, and mutually exclusive options.
+The UX4G Radio Button component allows users to select a single option from a set of mutually exclusive choices. It is designed specifically for citizen-facing forms, survey questionnaires, payment gateway options, and administrative workflows.
 
-Import from `com.ux4g.designsystemv1.components.Ux4gRadioButton`.
+### Key Capabilities
+
+- **Generic & Boolean Overloads**: Type-safe `<T>` selection with `value` / `groupValue` binding or direct `selected` / `onClick` state control.
+- **Validation & Status Variants**: Visual ring status and contextual description messaging (`Helper`, `Error`, `Warning`, `Success`) with automatic status icons.
+- **Size Options**: Preconfigured sizes: `Small` (16dp), `Medium` (20dp), and `Large` (24dp).
+- **Form Controls**: Support for required indicator asterisks (`*`), trailing icons, custom typography, disabled states, and centered touch ripples.
+
+Import from `com.ux4g.designsystemv1.components.*`.
 
 ---
 
-<h2><MIcon name="smartphone" /> Interactive Preview</h2>
+<h2><MIcon name="smartphone" /> Interactive Previews</h2>
+
+### 1. Default Radio Group
+
+Standard radio button selection with multiple options where only one choice can be selected at a time.
 
 <ComponentPreview
-  title="Ux4gRadioButton"
+  title="Ux4gRadioButton (Default Selection)"
   category="Jetpack Compose"
-  code={`val options = listOf("Male", "Female", "Transgender")
+  code={`var selectedOption by remember { mutableStateOf("Option A") }
 
-Ux4gRadioGroup(
-    options = options,
-    selectedOption = selectedGender,
-    onOptionSelected = { selectedGender = it },
-    label = "Gender (as per Aadhaar)"
-)`}
+Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+    Ux4gRadioButton(
+        value = "Option A",
+        groupValue = selectedOption,
+        onValueChange = { selectedOption = it },
+        label = "Option A",
+        size = Ux4gRadioButtonSize.Medium
+    )
+
+    Ux4gRadioButton(
+        value = "Option B",
+        groupValue = selectedOption,
+        onValueChange = { selectedOption = it },
+        label = "Option B",
+        size = Ux4gRadioButtonSize.Medium
+    )
+
+    Ux4gRadioButton(
+        value = "Option C",
+        groupValue = selectedOption,
+        onValueChange = { selectedOption = it },
+        label = "Option C",
+        size = Ux4gRadioButtonSize.Medium
+    )
+}`}
 >
   <div className="flex flex-col items-center justify-center py-2">
     <img
       src="/images/components/radio-button_preview.png"
-      alt="UX4G Radio Button Preview"
+      alt="UX4G Default Radio Button Preview"
+      className="max-w-full rounded-xl border border-border/60 shadow-sm"
+    />
+  </div>
+</ComponentPreview>
+
+---
+
+### 2. Status & Validation Variants
+
+Radio button options configured with validation severities (`Helper`, `Error`, `Warning`, `Success`). Each state renders custom ring coloring and descriptive messages with contextual status icons.
+
+<ComponentPreview
+  title="Ux4gRadioButton (Status Variants)"
+  category="Jetpack Compose"
+  code={`var selectedStatus by remember { mutableStateOf("Helper") }
+
+Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+    // 1. Helper State
+    Ux4gRadioButton(
+        value = "Helper",
+        groupValue = selectedStatus,
+        onValueChange = { selectedStatus = it },
+        label = "Helper",
+        description = "helper description text",
+        descriptionVariant = Ux4gRadioButtonDescriptionVariant.Helper,
+        status = Ux4gRadioButtonStatus.DefaultStatus,
+        size = Ux4gRadioButtonSize.Medium
+    )
+
+    // 2. Error State
+    Ux4gRadioButton(
+        value = "Error",
+        groupValue = selectedStatus,
+        onValueChange = { selectedStatus = it },
+        label = "Error",
+        description = "error description text",
+        descriptionVariant = Ux4gRadioButtonDescriptionVariant.Error,
+        status = Ux4gRadioButtonStatus.Error,
+        size = Ux4gRadioButtonSize.Medium
+    )
+
+    // 3. Warning State
+    Ux4gRadioButton(
+        value = "Warning",
+        groupValue = selectedStatus,
+        onValueChange = { selectedStatus = it },
+        label = "Warning",
+        description = "warning description text",
+        descriptionVariant = Ux4gRadioButtonDescriptionVariant.Warning,
+        status = Ux4gRadioButtonStatus.Warning,
+        size = Ux4gRadioButtonSize.Medium
+    )
+
+    // 4. Success State
+    Ux4gRadioButton(
+        value = "Success",
+        groupValue = selectedStatus,
+        onValueChange = { selectedStatus = it },
+        label = "Success",
+        description = "success description text",
+        descriptionVariant = Ux4gRadioButtonDescriptionVariant.Success,
+        status = Ux4gRadioButtonStatus.Success,
+        size = Ux4gRadioButtonSize.Medium
+    )
+}`}
+>
+  <div className="flex flex-col items-center justify-center py-2">
+    <img
+      src="/images/components/radio-button-status_preview.png"
+      alt="UX4G Status Radio Button Preview"
       className="max-w-full rounded-xl border border-border/60 shadow-sm"
     />
   </div>
@@ -38,20 +138,84 @@ Ux4gRadioGroup(
 
 <h2><MIcon name="code" /> Kotlin Usage</h2>
 
-```kotlin title="Compose Example"
+### 1. Type-Safe Radio Selection Group
+
+```kotlin title="PaymentModeSelection.kt"
+import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import com.ux4g.designsystemv1.components.Ux4gRadioButton
-import com.ux4g.designsystemv1.components.Ux4gRadioGroup
+import com.ux4g.designsystemv1.components.Ux4gRadioButtonSize
+
+enum class PaymentMode(val title: String) {
+    UPI("UPI / Instant Transfer"),
+    NetBanking("Internet Banking"),
+    DebitCard("Debit / Credit Card")
+}
 
 @Composable
-fun RadioGroupExample() {
-    var selected by remember { mutableStateOf("Online") }
+fun PaymentSelectionSection() {
+    var selectedMode by remember { mutableStateOf(PaymentMode.UPI) }
 
-    Ux4gRadioGroup(
-        options = listOf("Online Payment", "Demand Draft", "Challan"),
-        selectedOption = selected,
-        onOptionSelected = { selected = it }
-    )
+    Column(
+        modifier = Modifier.padding(16.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        PaymentMode.values().forEach { mode ->
+            Ux4gRadioButton(
+                value = mode,
+                groupValue = selectedMode,
+                onValueChange = { selectedMode = it },
+                label = mode.title,
+                size = Ux4gRadioButtonSize.Medium
+            )
+        }
+    }
+}
+```
+
+### 2. Form Field with Required Asterisk & Validation
+
+```kotlin title="DeclarationRadio.kt"
+import androidx.compose.foundation.layout.*
+import androidx.compose.runtime.*
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
+import com.ux4g.designsystemv1.components.Ux4gRadioButton
+import com.ux4g.designsystemv1.components.Ux4gRadioButtonDescriptionVariant
+import com.ux4g.designsystemv1.components.Ux4gRadioButtonSize
+import com.ux4g.designsystemv1.components.Ux4gRadioButtonStatus
+
+@Composable
+fun CitizenshipDeclaration(
+    isCitizen: Boolean?,
+    onStatusChange: (Boolean) -> Unit,
+    hasValidationError: Boolean
+) {
+    Column(
+        modifier = Modifier.padding(16.dp),
+        verticalArrangement = Arrangement.spacedBy(10.dp)
+    ) {
+        Ux4gRadioButton(
+            selected = isCitizen == true,
+            onClick = { onStatusChange(true) },
+            label = "I am an Indian Citizen",
+            isRequired = true,
+            size = Ux4gRadioButtonSize.Medium,
+            description = if (hasValidationError && isCitizen == null) "Mandatory selection required" else null,
+            descriptionVariant = if (hasValidationError && isCitizen == null) Ux4gRadioButtonDescriptionVariant.Error else Ux4gRadioButtonDescriptionVariant.Helper,
+            status = if (hasValidationError && isCitizen == null) Ux4gRadioButtonStatus.Error else Ux4gRadioButtonStatus.DefaultStatus
+        )
+
+        Ux4gRadioButton(
+            selected = isCitizen == false,
+            onClick = { onStatusChange(false) },
+            label = "I am a Foreign National / NRI",
+            isRequired = true,
+            size = Ux4gRadioButtonSize.Medium
+        )
+    }
 }
 ```
 
@@ -59,28 +223,80 @@ fun RadioGroupExample() {
 
 <h2><MIcon name="settings" /> Parameters</h2>
 
-### `Ux4gRadioButton` Props
+### `Ux4gRadioButton<T>` (Generic Model)
 
 | Prop | Type | Description | Default |
 | :--- | :--- | :--- | :--- |
-| `selected` <span className="text-red-500 font-bold">*</span> | `Boolean` | Whether this radio button is selected. | `—` |
-| `onClick` <span className="text-red-500 font-bold">*</span> | `(() -> Unit)?` | Callback invoked when radio is clicked. | `—` |
-| `label` | `String?` | Accompanying text label. | `null` |
-| `enabled` | `Boolean` | Interactive enabled state. | `true` |
-| `modifier` | `Modifier` | Compose layout modifier. | `Modifier` |
-| `selectedColor` | `Color?` | Inner dot and ring color when selected. | `null` |
-| `unselectedColor` | `Color?` | Outer ring color when unselected. | `null` |
-
+| `value` <span className="text-red-500 font-bold">*</span> | `T` | The value represented by this individual radio button. | `—` |
+| `groupValue` <span className="text-red-500 font-bold">*</span> | `T?` | The currently active selected value for the radio group. | `—` |
+| `onValueChange` <span className="text-red-500 font-bold">*</span> | `(T) -> Unit` | Callback invoked when this radio option is selected. | `—` |
+| `modifier` | `Modifier` | Compose layout modifier for outer container. | `Modifier` |
+| `label` | `String?` | Primary label text displayed next to the radio button. | `null` |
+| `description` | `String?` | Supporting helper message or validation error text. | `null` |
+| `size` | `Ux4gRadioButtonSize` | Radio button size variant (`Small`, `Medium`, `Large`). | `Ux4gRadioButtonSize.Medium` |
+| `isRequired` | `Boolean` | Appends a red asterisk (`*`) next to the label when `true`. | `false` |
+| `trailingIcon` | `Ux4gIcon?` | Optional UX4G icon placed inline beside the label text. | `null` |
+| `trailingImageVector` | `ImageVector?` | Optional Compose `ImageVector` placed beside the label text. | `null` |
+| `descriptionVariant` | `Ux4gRadioButtonDescriptionVariant` | Contextual severity style (`Helper`, `Error`, `Warning`, `Success`). | `Ux4gRadioButtonDescriptionVariant.Helper` |
+| `status` | `Ux4gRadioButtonStatus` | Outer ring visual state coloring (`DefaultStatus`, `Error`, `Warning`, `Success`). | `Ux4gRadioButtonStatus.DefaultStatus` |
+| `color` | `Color?` | Custom tint color for selected circle ring. Takes precedence over `status`. | `null` |
+| `labelColor` | `Color?` | Custom text color for the label. | `null` |
+| `labelStyle` | `TextStyle?` | Custom typography style override for the label text. | `null` |
+| `descriptionStyle` | `TextStyle?` | Custom typography style override for the description text. | `null` |
+| `enabled` | `Boolean` | Controls interactive touch state and disabled opacity. | `true` |
 
 ---
 
-### `Ux4gRadioGroup` Props
+### `Ux4gRadioButton` (Boolean Overload)
 
 | Prop | Type | Description | Default |
 | :--- | :--- | :--- | :--- |
-| `options` <span className="text-red-500 font-bold">*</span> | `List<T>` | List of selectable option models. | `—` |
-| `selectedOption` <span className="text-red-500 font-bold">*</span> | `T?` | Currently chosen active option. | `—` |
-| `onOptionSelected` <span className="text-red-500 font-bold">*</span> | `(T) -> Unit` | Selection change event callback. | `—` |
-| `label` | `String?` | Group header label text. | `null` |
-| `modifier` | `Modifier` | Compose layout modifier. | `Modifier` |
+| `selected` <span className="text-red-500 font-bold">*</span> | `Boolean` | Whether this radio button is in a selected state. | `—` |
+| `onClick` <span className="text-red-500 font-bold">*</span> | `() -> Unit` | Callback invoked when the radio button is clicked. | `—` |
+| `modifier` | `Modifier` | Compose layout modifier for outer container. | `Modifier` |
+| `label` | `String?` | Primary label text displayed next to the radio button. | `null` |
+| `description` | `String?` | Supporting helper message or validation error text. | `null` |
+| `size` | `Ux4gRadioButtonSize` | Radio button size variant (`Small`, `Medium`, `Large`). | `Ux4gRadioButtonSize.Medium` |
+| `isRequired` | `Boolean` | Appends a red asterisk (`*`) next to the label when `true`. | `false` |
+| `trailingIcon` | `Ux4gIcon?` | Optional UX4G icon placed inline beside the label text. | `null` |
+| `trailingImageVector` | `ImageVector?` | Optional Compose `ImageVector` placed beside the label text. | `null` |
+| `descriptionVariant` | `Ux4gRadioButtonDescriptionVariant` | Contextual severity style (`Helper`, `Error`, `Warning`, `Success`). | `Ux4gRadioButtonDescriptionVariant.Helper` |
+| `status` | `Ux4gRadioButtonStatus` | Outer ring visual state coloring (`DefaultStatus`, `Error`, `Warning`, `Success`). | `Ux4gRadioButtonStatus.DefaultStatus` |
+| `color` | `Color?` | Custom tint color for selected circle ring. Takes precedence over `status`. | `null` |
+| `labelColor` | `Color?` | Custom text color for the label. | `null` |
+| `labelStyle` | `TextStyle?` | Custom typography style override for the label text. | `null` |
+| `descriptionStyle` | `TextStyle?` | Custom typography style override for the description text. | `null` |
+| `enabled` | `Boolean` | Controls interactive touch state and disabled opacity. | `true` |
+| `interactionSource` | `MutableInteractionSource` | Custom interaction stream for ripple feedback. | `remember { MutableInteractionSource() }` |
 
+---
+
+### `Ux4gRadioButtonSize` Reference
+
+| Size | Outer Circle (`sizeDp`) | Inner Dot (`dotSizeDp`) | Typography Level |
+| :--- | :--- | :--- | :--- |
+| `Small` | `16.dp` | `8.dp` | `lM_default` (Label), `lS_default` (Desc) |
+| `Medium` | `20.dp` | `10.dp` | `lL_default` (Label), `lM_default` (Desc) |
+| `Large` | `24.dp` | `12.dp` | `lXL_default` (Label), `lL_default` (Desc) |
+
+---
+
+### `Ux4gRadioButtonDescriptionVariant` Reference
+
+| Variant | Icon | Text Color | Usage Context |
+| :--- | :--- | :--- | :--- |
+| `Helper` | `Icons.Outlined.Info` | `onSurface (70% alpha)` | Informational hints and general guidance |
+| `Error` | `Icons.Outlined.ErrorOutline` | `Ux4gTheme.colorScheme.error` | Form validation failures and mandatory field alerts |
+| `Warning` | `Icons.Outlined.WarningAmber` | `Ux4gColors.secondary600` | Cautionary warnings and soft prerequisite notices |
+| `Success` | `Icons.Outlined.CheckCircleOutline` | `Ux4gColors.green600` | Confirmation and successful condition validation |
+
+---
+
+### `Ux4gRadioButtonStatus` Reference
+
+| Status | Ring Color | Description |
+| :--- | :--- | :--- |
+| `DefaultStatus` | `Ux4gTheme.colorScheme.primary` (selected) / `neutral300` (unselected) | Standard neutral theme-aware radio ring |
+| `Error` | `Ux4gTheme.colorScheme.error` | Highlighted error ring for invalid selection |
+| `Warning` | `Ux4gColors.secondary600` | Amber cautionary ring |
+| `Success` | `Ux4gColors.green600` | Green success ring |
