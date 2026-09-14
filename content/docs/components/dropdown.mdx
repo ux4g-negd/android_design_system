@@ -1,35 +1,133 @@
 ---
 title: Dropdown
-description: Selection and action dropdown menus for States, Districts, categories, and contextual options
+description: Interactive Action Dropdown menus and Selection Dropdown fields supporting Single select, Multi-select with chips, and search filtering
 ---
 
-# Dropdown (`Ux4gSelectionDropdown`)
+# Dropdown Suite (`Ux4gDropdown`)
 
-Selection and action dropdown menus for States, Districts, categories, and contextual options.
+The UX4G Dropdown suite provides production-ready menu and selection systems designed for citizen forms, administrative actions, and filter toolbars:
+1. **Action Dropdown (`Ux4gActionDropdown`)**: Triggerable context menu attached to buttons or icons with trailing navigation arrows and active checkmark items.
+2. **Single Selection Dropdown (`Ux4gSelectionDropdown`)**: Accessible form field with type-ahead search filter, status feedback, and custom leading icons.
+3. **Multi-Selection Dropdown (`Ux4gSelectionDropdown`)**: Multi-choice selection menu with checkboxes and integrated dismissible input chips in the trigger container.
 
-Import from `com.ux4g.designsystemv1.components.dropdowns.Ux4gSelectionDropdown`.
+Import from `com.ux4g.designsystemv1.components.dropdowns.*`.
 
 ---
 
-<h2><MIcon name="smartphone" /> Interactive Preview</h2>
+<h2><MIcon name="smartphone" /> Interactive Previews</h2>
+
+### 1. Action Dropdown (`Ux4gActionDropdown`)
 
 <ComponentPreview
-  title="Ux4gSelectionDropdown"
+  title="Ux4gActionDropdown (Contextual Actions Menu)"
   category="Jetpack Compose"
-  code={`val states = listOf("Andhra Pradesh", "Delhi", "Maharashtra", "Tamil Nadu", "Uttar Pradesh")
+  code={`val actionOptions = listOf(
+    Ux4gActionDropdownOption(id = "1", label = "View Profile", showTrailingArrow = true),
+    Ux4gActionDropdownOption(id = "2", label = "Account Settings", showTrailingArrow = true),
+    Ux4gActionDropdownOption(id = "3", label = "Download Records", showTrailingArrow = true),
+    Ux4gActionDropdownOption(id = "4", label = "Active Session", showTrailingArrow = false)
+)
 
-Ux4gSelectionDropdown(
-    label = "Select State / UT",
-    items = states,
-    selectedItem = selectedState,
-    onItemSelected = { selectedState = it },
-    isSearchable = true
-)`}
+var selectedActionId by remember { mutableStateOf("4") }
+
+// Triggered by an Icon Button or Action Button
+Ux4gActionDropdown(
+    options = actionOptions,
+    selectedOptionId = selectedActionId,
+    onOptionClick = { option -> selectedActionId = option.id }
+) { onClick ->
+    Ux4gIconButton(
+        onClick = onClick,
+        type = Ux4gIconButtonStyle.Tonal,
+        size = Ux4gIconButtonSize.M
+    ) {
+        Icon(
+            imageVector = Icons.Default.MoreVert,
+            contentDescription = "Actions Menu",
+            tint = Ux4gColors.neutral900
+        )
+    }
+}`}
 >
   <div className="flex flex-col items-center justify-center py-2">
     <img
       src="/images/components/dropdown_preview.png"
-      alt="UX4G Dropdown Preview"
+      alt="UX4G Action Dropdown Preview"
+      className="max-w-full rounded-xl border border-border/60 shadow-sm"
+    />
+  </div>
+</ComponentPreview>
+
+---
+
+### 2. Selection Dropdown - Single Select
+
+<ComponentPreview
+  title="Ux4gSelectionDropdown (Single Select with Search)"
+  category="Jetpack Compose"
+  code={`val statesList = listOf(
+    Ux4gDropdownOption("1", "Andhra Pradesh"),
+    Ux4gDropdownOption("2", "Delhi (NCT)"),
+    Ux4gDropdownOption("3", "Maharashtra"),
+    Ux4gDropdownOption("4", "Tamil Nadu"),
+    Ux4gDropdownOption("5", "Uttar Pradesh")
+)
+
+var selectedState by remember { mutableStateOf(listOf("2")) }
+
+Ux4gSelectionDropdown(
+    label = "State / Union Territory",
+    isRequired = true,
+    options = statesList,
+    selectedOptionIds = selectedState,
+    onSelectionChange = { selectedState = it },
+    mode = Ux4gDropdownMode.Single,
+    searchEnabled = true,
+    placeholder = "Select State",
+    description = "Select state as per your permanent address"
+)`}
+>
+  <div className="flex flex-col items-center justify-center py-2">
+    <img
+      src="/images/components/dropdown_single_select_preview.png"
+      alt="UX4G Single Select Dropdown Preview"
+      className="max-w-full rounded-xl border border-border/60 shadow-sm"
+    />
+  </div>
+</ComponentPreview>
+
+---
+
+### 3. Selection Dropdown - Multi-Select with Chips
+
+<ComponentPreview
+  title="Ux4gSelectionDropdown (Multi-Select with Integrated Chips)"
+  category="Jetpack Compose"
+  code={`val serviceCategories = listOf(
+    Ux4gDropdownOption("1", "Agriculture & Rural"),
+    Ux4gDropdownOption("2", "Education & Learning"),
+    Ux4gDropdownOption("3", "Healthcare & Wellness"),
+    Ux4gDropdownOption("4", "Electricity & Utilities"),
+    Ux4gDropdownOption("5", "Social Welfare")
+)
+
+var selectedCategories by remember { mutableStateOf(listOf("1", "2")) }
+
+Ux4gSelectionDropdown(
+    label = "Target Scheme Categories",
+    options = serviceCategories,
+    selectedOptionIds = selectedCategories,
+    onSelectionChange = { selectedCategories = it },
+    mode = Ux4gDropdownMode.Multi,
+    searchEnabled = true,
+    placeholder = "Select one or more categories",
+    description = "Selected categories will appear as dismissible tags"
+)`}
+>
+  <div className="flex flex-col items-center justify-center py-2">
+    <img
+      src="/images/components/dropdown_multi_select_preview.png"
+      alt="UX4G Multi-Select Dropdown Preview"
       className="max-w-full rounded-xl border border-border/60 shadow-sm"
     />
   </div>
@@ -39,22 +137,78 @@ Ux4gSelectionDropdown(
 
 <h2><MIcon name="code" /> Kotlin Usage</h2>
 
-```kotlin title="Compose Example"
+```kotlin title="Dropdown Showcase Example"
+import androidx.compose.foundation.layout.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
 import androidx.compose.runtime.*
-import com.ux4g.designsystemv1.components.dropdowns.Ux4gSelectionDropdown
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
+import com.ux4g.designsystemv1.components.buttons.Ux4gIconButton
+import com.ux4g.designsystemv1.components.buttons.Ux4gIconButtonSize
+import com.ux4g.designsystemv1.components.buttons.Ux4gIconButtonStyle
+import com.ux4g.designsystemv1.components.dropdowns.*
+import com.ux4g.designsystemv1.foundation.Ux4gColors
+import com.ux4g.designsystemv1.foundation.defaultTypography
 
 @Composable
-fun DropdownExample() {
-    var selected by remember { mutableStateOf<String?>(null) }
-    val districts = listOf("Central Delhi", "New Delhi", "North Delhi", "South Delhi")
+fun DropdownShowcaseScreen() {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp),
+        verticalArrangement = Arrangement.spacedBy(20.dp)
+    ) {
+        val sampleOptions = listOf(
+            Ux4gDropdownOption("1", "English (India)"),
+            Ux4gDropdownOption("2", "Hindi (हिन्दी)"),
+            Ux4gDropdownOption("3", "Tamil (தமிழ்)"),
+            Ux4gDropdownOption("4", "Bengali (বাংলা)")
+        )
 
-    Ux4gSelectionDropdown(
-        label = "District",
-        items = districts,
-        selectedItem = selected,
-        onItemSelected = { selected = it },
-        isSearchable = true
-    )
+        // 1. Single Selection Dropdown
+        Text("Single Selection Dropdown", style = defaultTypography.hS_strong)
+        var singleSelect by remember { mutableStateOf(listOf("1")) }
+        Ux4gSelectionDropdown(
+            label = "Language Preference",
+            isRequired = true,
+            options = sampleOptions,
+            selectedOptionIds = singleSelect,
+            onSelectionChange = { singleSelect = it },
+            searchEnabled = true,
+            description = "Select primary language for citizen notifications"
+        )
+
+        // 2. Multi-Selection Dropdown
+        Text("Multi-Selection Dropdown", style = defaultTypography.hS_strong)
+        var multiSelect by remember { mutableStateOf(listOf("1", "2")) }
+        Ux4gSelectionDropdown(
+            label = "Notification Channels",
+            options = listOf(
+                Ux4gDropdownOption("sms", "SMS Alert"),
+                Ux4gDropdownOption("email", "Email Digest"),
+                Ux4gDropdownOption("whatsapp", "WhatsApp Updates"),
+                Ux4gDropdownOption("inapp", "In-App Push")
+            ),
+            selectedOptionIds = multiSelect,
+            onSelectionChange = { multiSelect = it },
+            mode = Ux4gDropdownMode.Multi,
+            description = "Choose communication preferences"
+        )
+
+        // 3. Validation Status State
+        Text("Validation States", style = defaultTypography.hS_strong)
+        Ux4gSelectionDropdown(
+            label = "District (Mandatory)",
+            options = emptyList(),
+            selectedOptionIds = emptyList(),
+            onSelectionChange = {},
+            status = Ux4gDropdownStatus.Error,
+            description = "Please select a valid district from the list"
+        )
+    }
 }
 ```
 
@@ -62,16 +216,60 @@ fun DropdownExample() {
 
 <h2><MIcon name="settings" /> Parameters</h2>
 
+### 1. `Ux4gSelectionDropdown` Props
+
 | Prop | Type | Description | Default |
 | :--- | :--- | :--- | :--- |
-| `label` <span className="text-red-500 font-bold">*</span> | `String` | Header title displayed above dropdown field. | `—` |
-| `items` <span className="text-red-500 font-bold">*</span> | `List<T>` | List of selectable items. | `—` |
-| `onItemSelected` <span className="text-red-500 font-bold">*</span> | `(T) -> Unit` | Callback invoked when user picks an option. | `—` |
-| `selectedItem` | `T?` | Currently chosen item model. | `null` |
-| `placeholder` | `String` | Placeholder text when no item is selected. | `"Select option"` |
-| `isSearchable` | `Boolean` | Enables type-ahead search filter inside popup list. | `false` |
-| `enabled` | `Boolean` | Interactive enabled state. | `true` |
-| `isError` | `Boolean` | Shows red error validation styling. | `false` |
-| `errorMessage` | `String?` | Validation error message below input. | `null` |
-| `modifier` | `Modifier` | Compose layout modifier. | `Modifier` |
+| `options` <span className="text-red-500 font-bold">*</span> | `List<Ux4gDropdownOption>` | List of selectable dropdown options. | — |
+| `selectedOptionIds` <span className="text-red-500 font-bold">*</span> | `List<String>` | List of currently selected option ID keys. | — |
+| `onSelectionChange` <span className="text-red-500 font-bold">*</span> | `(List<String>) -> Unit` | Callback invoked when selection changes. | — |
+| `modifier` | `Modifier` | Compose layout modifier applied to outer container. | `Modifier` |
+| `label` | `String?` | Header title label displayed above input box. | `null` |
+| `isRequired` | `Boolean` | When `true`, appends red asterisk (`*`) to the label. | `false` |
+| `description` | `String?` | Supplementary helper or validation status message. | `null` |
+| `placeholder` | `String` | Hint text displayed when selection is empty. | `"Please select.."` |
+| `size` | `Ux4gDropdownSize` | Height & padding preset: `S` (32dp), `M` (40dp), `L` (48dp). | `Ux4gDropdownSize.M` |
+| `mode` | `Ux4gDropdownMode` | Selection mode: `Ux4gDropdownMode.Single` or `Ux4gDropdownMode.Multi`. | `Ux4gDropdownMode.Single` |
+| `status` | `Ux4gDropdownStatus` | Validation tone: `Default`, `Error`, `Warning`, `Success`, `Disabled`. | `Ux4gDropdownStatus.Default` |
+| `searchEnabled` | `Boolean` | Enables type-ahead search input bar inside the popup menu. | `false` |
+| `filterType` | `Ux4gDropdownFilterType` | Match rule: `Contains`, `StartsWith`, `StartsWithPerTerm`. | `Ux4gDropdownFilterType.Contains` |
+| `leadingIcon` | `ImageVector?` | Optional leading icon rendered inside the trigger box. | `null` |
 
+---
+
+### 2. `Ux4gActionDropdown` Props
+
+| Prop | Type | Description | Default |
+| :--- | :--- | :--- | :--- |
+| `options` <span className="text-red-500 font-bold">*</span> | `List<Ux4gActionDropdownOption>` | List of action items displayed in menu. | — |
+| `onOptionClick` <span className="text-red-500 font-bold">*</span> | `(Ux4gActionDropdownOption) -> Unit` | Callback invoked when citizen taps a menu item. | — |
+| `triggerContent` <span className="text-red-500 font-bold">*</span> | `@Composable (onClick: () -> Unit) -> Unit` | Composable trigger slot (e.g. Button or IconButton). | — |
+| `modifier` | `Modifier` | Compose layout modifier. | `Modifier` |
+| `selectedOptionId` | `String?` | ID of currently active option (renders checkmark). | `null` |
+
+---
+
+### 3. Data Models & Enums
+
+#### `Ux4gDropdownOption` Data Class
+| Prop | Type | Description | Default |
+| :--- | :--- | :--- | :--- |
+| `id` <span className="text-red-500 font-bold">*</span> | `String` | Unique key identifier for the option. | — |
+| `label` <span className="text-red-500 font-bold">*</span> | `String` | Display text string shown in trigger and menu. | — |
+| `leadingIcon` | `Any?` | Optional `ImageVector`, `Ux4gIcon`, or drawable resource ID. | `null` |
+
+#### `Ux4gActionDropdownOption` Data Class
+| Prop | Type | Description | Default |
+| :--- | :--- | :--- | :--- |
+| `id` <span className="text-red-500 font-bold">*</span> | `String` | Unique action key identifier. | — |
+| `label` <span className="text-red-500 font-bold">*</span> | `String` | Action title text. | — |
+| `showTrailingArrow` | `Boolean` | Displays chevron right navigation arrow (`>`). | `true` |
+
+#### `Ux4gDropdownMode` & `Ux4gDropdownSize`
+| Enum | Value | Description |
+| :--- | :--- | :--- |
+| **`Ux4gDropdownMode`** | `Single` | Single select mode closing popup on selection. |
+| **`Ux4gDropdownMode`** | `Multi` | Multi-select mode with checkboxes and trigger chips. |
+| **`Ux4gDropdownSize`** | `S` | Compact 32dp height container. |
+| **`Ux4gDropdownSize`** | `M` | Standard 40dp height container. |
+| **`Ux4gDropdownSize`** | `L` | Large 48dp height container. |
