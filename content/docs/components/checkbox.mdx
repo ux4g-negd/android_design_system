@@ -1,11 +1,16 @@
 ---
 title: Checkbox
-description: Multi-selection controls with custom states, tri-state support, and citizen declaration labels
+description: Tri-state selection controls featuring custom sizes, helper/error/warning/success validation descriptions, required flags, and disabled states
 ---
 
-# Checkbox (`Ux4gCheckbox`)
+# Checkbox Suite (`Ux4gCheckbox`)
 
-Multi-selection controls with custom states, tri-state support, and citizen declaration labels.
+The UX4G Checkbox suite provides accessible multi-selection and declaration controls supporting boolean (`true`/`false`) and indeterminate (`null`) tri-state values, context validation descriptions, and required field asterisks:
+1. **Interactive Tri-State**: Supports Checked (`true`), Unchecked (`false`), and Indeterminate (`null`).
+2. **Context Validation**: Built-in description variants (`Helper`, `Error`, `Warning`, `Success`) for form feedback.
+3. **Required Field Support**: Automatic red asterisk indicator (`*`) appended to the label with `isRequired = true`.
+4. **Preset Sizes**: Standardized dimension tokens (`Small` 16dp, `Medium` 20dp, `Large` 24dp).
+5. **Disabled States**: Compliant muted accessibility states for non-interactive forms.
 
 Import from `com.ux4g.designsystemv1.components.Ux4gCheckbox`.
 
@@ -14,12 +19,55 @@ Import from `com.ux4g.designsystemv1.components.Ux4gCheckbox`.
 <h2><MIcon name="smartphone" /> Interactive Preview</h2>
 
 <ComponentPreview
-  title="Ux4gCheckbox"
+  title="Ux4gCheckbox - States & Labels"
   category="Jetpack Compose"
-  code={`Ux4gCheckbox(
-    checked = isAgreed,
-    onCheckedChange = { isAgreed = it },
-    label = "I declare that all submitted information is accurate and verified as per Aadhaar."
+  code={`// 1. Checked
+var checked by remember { mutableStateOf<Boolean?>(true) }
+Ux4gCheckbox(
+    value = checked,
+    onValueChange = { checked = it },
+    label = "Checked"
+)
+
+// 2. Unchecked
+var unchecked by remember { mutableStateOf<Boolean?>(false) }
+Ux4gCheckbox(
+    value = unchecked,
+    onValueChange = { unchecked = it },
+    label = "Unchecked"
+)
+
+// 3. Indeterminate
+var indeterminate by remember { mutableStateOf<Boolean?>(null) }
+Ux4gCheckbox(
+    value = indeterminate,
+    onValueChange = { indeterminate = it },
+    label = "Indeterminate"
+)
+
+// 4. Error State with Required Asterisk (*)
+var errorState by remember { mutableStateOf<Boolean?>(false) }
+Ux4gCheckbox(
+    value = errorState,
+    onValueChange = { errorState = it },
+    label = "Error state",
+    isRequired = true,
+    hasError = true
+)
+
+// 5. Disabled States
+Ux4gCheckbox(
+    value = true,
+    onValueChange = {},
+    label = "Disabled (checked)",
+    enabled = false
+)
+
+Ux4gCheckbox(
+    value = false,
+    onValueChange = {},
+    label = "Disabled (unchecked)",
+    enabled = false
 )`}
 >
   <div className="flex flex-col items-center justify-center py-2">
@@ -35,20 +83,110 @@ Import from `com.ux4g.designsystemv1.components.Ux4gCheckbox`.
 
 <h2><MIcon name="code" /> Kotlin Usage</h2>
 
-```kotlin title="Compose Example"
+```kotlin title="Checkbox Showcase Example"
+import androidx.compose.foundation.layout.*
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.*
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import com.ux4g.designsystemv1.components.Ux4gCheckbox
+import com.ux4g.designsystemv1.components.Ux4gCheckboxDescriptionVariant
+import com.ux4g.designsystemv1.components.Ux4gCheckboxSize
+import com.ux4g.designsystemv1.foundation.Ux4gColors
+import com.ux4g.designsystemv1.foundation.Ux4gIcons
+import com.ux4g.designsystemv1.foundation.defaultTypography
 
 @Composable
-fun CheckboxExample() {
-    var checked by remember { mutableStateOf(false) }
+fun CheckboxShowcaseScreen() {
+    Surface(color = Ux4gColors.white) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
+            // 1. Medium Checked with Helper
+            var val1 by remember { mutableStateOf<Boolean?>(true) }
+            Ux4gCheckbox(
+                value = val1,
+                onValueChange = { val1 = it },
+                label = "Medium Checked",
+                size = Ux4gCheckboxSize.Medium,
+                description = "This is a helper description",
+                descriptionVariant = Ux4gCheckboxDescriptionVariant.Helper
+            )
 
-    Ux4gCheckbox(
-        checked = checked,
-        onCheckedChange = { checked = it },
-        label = "Agree to Terms and Conditions",
-        enabled = true
-    )
+            // 2. Large Unchecked Required with Error
+            var val2 by remember { mutableStateOf<Boolean?>(false) }
+            Ux4gCheckbox(
+                value = val2,
+                onValueChange = { val2 = it },
+                label = "Large Unchecked Required",
+                size = Ux4gCheckboxSize.Large,
+                isRequired = true,
+                description = "This field is required",
+                descriptionVariant = Ux4gCheckboxDescriptionVariant.Error
+            )
+
+            // 3. Small Indeterminate with Warning
+            var val3 by remember { mutableStateOf<Boolean?>(null) }
+            Ux4gCheckbox(
+                value = val3,
+                onValueChange = { val3 = it },
+                label = "Small Indeterminate Warning",
+                size = Ux4gCheckboxSize.Small,
+                description = "This is a warning",
+                descriptionVariant = Ux4gCheckboxDescriptionVariant.Warning,
+                trailingIcon = Ux4gIcons.Settings
+            )
+
+            // 4. Medium Success State
+            var val4 by remember { mutableStateOf<Boolean?>(true) }
+            Ux4gCheckbox(
+                value = val4,
+                onValueChange = { val4 = it },
+                label = "Medium Success",
+                size = Ux4gCheckboxSize.Medium,
+                description = "Successfully validated",
+                descriptionVariant = Ux4gCheckboxDescriptionVariant.Success
+            )
+
+            // 5. Disabled Non-Interactive States
+            Text(
+                text = "Disabled States",
+                style = defaultTypography.hS_default,
+                color = Ux4gColors.neutral900
+            )
+
+            Ux4gCheckbox(
+                value = false,
+                onValueChange = {},
+                label = "Disabled Unchecked",
+                size = Ux4gCheckboxSize.Medium,
+                isRequired = true,
+                enabled = false
+            )
+
+            Ux4gCheckbox(
+                value = true,
+                onValueChange = {},
+                label = "Disabled Checked",
+                size = Ux4gCheckboxSize.Medium,
+                isRequired = true,
+                enabled = false
+            )
+
+            Ux4gCheckbox(
+                value = null,
+                onValueChange = {},
+                label = "Disabled Indeterminate",
+                size = Ux4gCheckboxSize.Medium,
+                isRequired = true,
+                enabled = false
+            )
+        }
+    }
 }
 ```
 
@@ -56,15 +194,42 @@ fun CheckboxExample() {
 
 <h2><MIcon name="settings" /> Parameters</h2>
 
+### `Ux4gCheckbox` Props
+
 | Prop | Type | Description | Default |
 | :--- | :--- | :--- | :--- |
-| `checked` <span className="text-red-500 font-bold">*</span> | `Boolean` | Current boolean checked state. | `—` |
-| `onCheckedChange` <span className="text-red-500 font-bold">*</span> | `((Boolean) -> Unit)?` | Callback triggered when checkbox is toggled. | `—` |
-| `modifier` | `Modifier` | Compose layout modifier. | `Modifier` |
-| `label` | `String?` | Accompanying text label rendered adjacent to checkbox. | `null` |
-| `enabled` | `Boolean` | Whether control responds to user touch interaction. | `true` |
-| `isError` | `Boolean` | Renders red error outline when mandatory field is unchecked. | `false` |
-| `checkedColor` | `Color?` | Background fill color when checked. | `null` |
-| `uncheckedColor` | `Color?` | Border outline color when unchecked. | `null` |
-| `checkmarkColor` | `Color?` | Checkmark icon tick color. | `null` |
+| `value` <span className="text-red-500 font-bold">*</span> | `Boolean?` | Tri-state value: `true` (Checked), `false` (Unchecked), `null` (Indeterminate). | — |
+| `onValueChange` <span className="text-red-500 font-bold">*</span> | `(Boolean?) -> Unit` | Callback invoked when citizen taps the checkbox. | — |
+| `modifier` | `Modifier` | Compose layout modifier applied to outer row. | `Modifier` |
+| `label` | `String?` | Primary label text displayed next to checkbox box. | `null` |
+| `description` | `String?` | Secondary helper or validation message displayed below label. | `null` |
+| `size` | `Ux4gCheckboxSize` | Checkbox box & typography dimension preset: `Small`, `Medium`, `Large`. | `Ux4gCheckboxSize.Medium` |
+| `isRequired` | `Boolean` | When `true`, appends red asterisk (`*`) to the label. | `false` |
+| `hasError` | `Boolean` | Forces checkbox border into red error color state. | `false` |
+| `descriptionVariant` | `Ux4gCheckboxDescriptionVariant` | Visual feedback tone: `Helper`, `Error`, `Warning`, `Success`. | `Ux4gCheckboxDescriptionVariant.Helper` |
+| `enabled` | `Boolean` | Whether checkbox responds to citizen touch interaction. | `true` |
+| `trailingIcon` | `Ux4gIcon?` | Optional icon composable displayed after label text. | `null` |
+| `checkedIcon` | `Ux4gIcon?` | Custom icon replacing default white checkmark tick. | `null` |
+| `indeterminateIcon` | `Ux4gIcon?` | Custom icon replacing default horizontal minus bar. | `null` |
+| `interactionSource` | `MutableInteractionSource` | Interaction state tracker for ripple touch effects. | `remember { MutableInteractionSource() }` |
 
+---
+
+### `Ux4gCheckboxSize` Enum
+
+| Token | Box Dimensions | Typography Style |
+| :--- | :--- | :--- |
+| `Small` | `16.dp x 16.dp` | Label Medium (`12.sp`) |
+| `Medium` | `20.dp x 20.dp` | Label Large (`14.sp`) |
+| `Large` | `24.dp x 24.dp` | Label XL (`16.sp`) |
+
+---
+
+### `Ux4gCheckboxDescriptionVariant` Enum
+
+| Variant | Text Color | Intended Context |
+| :--- | :--- | :--- |
+| `Helper` | Neutral Gray (`#374151`) | General guidance and supplementary explanation. |
+| `Error` | Red (`#DC2626`) | Mandatory checkbox missing, validation failed. |
+| `Warning` | Orange (`#EA580C`) | Cautionary guidance (e.g. battery drain, permission note). |
+| `Success` | Green (`#16A34A`) | Successful Aadhaar/consent verification. |
