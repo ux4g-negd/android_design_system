@@ -1,35 +1,113 @@
 ---
 title: Modal Dialog
-description: Focus-trapping popup dialog for confirming destructive actions, service submissions, or alerts
+description: Focus-trapping modal dialog featuring standard alerts, hero image banners, customizable avatars, icons, and flexible button footers
 ---
 
 # Modal Dialog (`Ux4gModal`)
 
-Focus-trapping popup dialog for confirming destructive actions, service submissions, or alerts.
+The UX4G Modal Dialog component displays high-priority information, confirmation prompts, destructive action safeguards, or multi-step decisions overlaying the main application interface.
 
-Import from `com.ux4g.designsystemv1.components.Ux4gModal`.
+It supports:
+- **Header Variants**: Standard left-aligned/centered titles, leading icons, circular avatars, or image thumbnails.
+- **Hero Image Banners**: Full-bleed edge-to-edge banners or padded rounded cards.
+- **Content Flexibility**: Subtitles, rich body copy, or custom composable slots with customizable divider lines.
+- **Footer Buttons**: Single or double action buttons with left, right, center, or split alignments and optional leading helper icons.
+
+Import from `com.ux4g.designsystemv1.components.*`.
 
 ---
 
-<h2><MIcon name="smartphone" /> Interactive Preview</h2>
+<h2><MIcon name="smartphone" /> Interactive Previews</h2>
+
+### 1. Default Modal
+
+Standard dialog with a title header, close icon, subtitle, body text, and two right-aligned footer action buttons.
 
 <ComponentPreview
-  title="Ux4gModal"
+  title="Ux4gModal (Default Variant)"
   category="Jetpack Compose"
-  code={`Ux4gModal(
-    show = showDialog,
-    title = "Confirm Final Submission",
-    message = "Are you sure you want to submit your application? Once submitted, form details cannot be modified.",
-    confirmText = "Yes, Submit Application",
-    dismissText = "Review Again",
-    onConfirm = { /* Submit API */ },
-    onDismiss = { showDialog = false }
-)`}
+  code={`var showModal by remember { mutableStateOf(false) }
+
+if (showModal) {
+    Ux4gModal(
+        onDismiss = { showModal = false },
+        headerTitle = "Default Modal",
+        showCloseButton = true,
+        showSubtitle = true,
+        subtitleText = "Subtitle",
+        showBody = true,
+        bodyText = "This is the standard left-aligned modal with two footer buttons.",
+        showFooter = true,
+        footerButtons = Ux4gModalFooterButtons.TwoButtons,
+        footerAlign = Ux4gModalFooterAlign.Right,
+        primaryButtonText = "Button",
+        secondaryButtonText = "Button",
+        onPrimaryClick = {
+            // Handle primary action
+            showModal = false
+        },
+        onSecondaryClick = { showModal = false }
+    )
+}`}
 >
   <div className="flex flex-col items-center justify-center py-2">
     <img
       src="/images/components/modal_preview.png"
-      alt="UX4G Modal Dialog Preview"
+      alt="UX4G Default Modal Preview"
+      className="max-w-full rounded-xl border border-border/60 shadow-sm"
+    />
+  </div>
+</ComponentPreview>
+
+---
+
+### 2. Hero Image Modal
+
+Prominent modal with a top full-bleed colored hero banner, leading category icon, description subtitle, body copy, and dual action buttons.
+
+<ComponentPreview
+  title="Ux4gModal (Hero Image Variant)"
+  category="Jetpack Compose"
+  code={`var showHeroModal by remember { mutableStateOf(false) }
+
+if (showHeroModal) {
+    Ux4gModal(
+        onDismiss = { showHeroModal = false },
+        headerImageHeight = 160.dp,
+        headerImageStyle = Ux4gModalHeaderImage.FullBleed,
+        headerImageContent = {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(Ux4gColors.primary)
+            )
+        },
+        leadingItem = Ux4gModalLeadingItem.Icon,
+        leadingIcon = Ux4gIcons.Category,
+        headerTitle = "Header",
+        showDescription = true,
+        descriptionText = "Write description here",
+        showSubtitle = true,
+        subtitleText = "Subtitle",
+        showBody = true,
+        bodyText = "A modal is a design element that appears over the main content of a webpage, capturing the user's attention by disabling interaction with the rest of the page until the modal is addressed.",
+        showFooter = true,
+        footerButtons = Ux4gModalFooterButtons.TwoButtons,
+        footerAlign = Ux4gModalFooterAlign.Right,
+        primaryButtonText = "Button",
+        secondaryButtonText = "Button",
+        onPrimaryClick = {
+            // Confirm action
+            showHeroModal = false
+        },
+        onSecondaryClick = { showHeroModal = false }
+    )
+}`}
+>
+  <div className="flex flex-col items-center justify-center py-2">
+    <img
+      src="/images/components/modal-hero-varient_preview.png"
+      alt="UX4G Hero Image Modal Preview"
       className="max-w-full rounded-xl border border-border/60 shadow-sm"
     />
   </div>
@@ -39,23 +117,44 @@ Import from `com.ux4g.designsystemv1.components.Ux4gModal`.
 
 <h2><MIcon name="code" /> Kotlin Usage</h2>
 
-```kotlin title="Compose Example"
+```kotlin title="Citizen Confirmation Dialog Example"
+import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.*
-import com.ux4g.designsystemv1.components.Ux4gModal
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
+import com.ux4g.designsystemv1.components.*
+import com.ux4g.designsystemv1.foundation.Ux4gIcons
 
 @Composable
-fun ConfirmationDialogExample() {
-    var open by remember { mutableStateOf(false) }
+fun CitizenApplicationScreen() {
+    var showConfirmModal by remember { mutableStateOf(false) }
 
-    Ux4gModal(
-        show = open,
-        title = "Confirm Action",
-        message = "Do you want to proceed with Aadhaar authentication?",
-        confirmText = "Proceed",
-        dismissText = "Cancel",
-        onConfirm = { open = false },
-        onDismiss = { open = false }
+    Ux4gButton(
+        text = "Submit Scheme Application",
+        onClick = { showConfirmModal = true }
     )
+
+    if (showConfirmModal) {
+        Ux4gModal(
+            onDismiss = { showConfirmModal = false },
+            headerTitle = "Confirm Final Submission",
+            leadingItem = Ux4gModalLeadingItem.Icon,
+            leadingIcon = Ux4gIcons.Info,
+            showSubtitle = true,
+            subtitleText = "Application Review",
+            showBody = true,
+            bodyText = "Are you sure you want to finalize and submit this application? Once submitted, form details cannot be modified.",
+            footerButtons = Ux4gModalFooterButtons.TwoButtons,
+            footerAlign = Ux4gModalFooterAlign.Right,
+            primaryButtonText = "Yes, Submit",
+            secondaryButtonText = "Cancel",
+            onPrimaryClick = {
+                // Execute API call
+                showConfirmModal = false
+            },
+            onSecondaryClick = { showConfirmModal = false }
+        )
+    }
 }
 ```
 
@@ -63,15 +162,81 @@ fun ConfirmationDialogExample() {
 
 <h2><MIcon name="settings" /> Parameters</h2>
 
+### `Ux4gModal` Props
+
 | Prop | Type | Description | Default |
 | :--- | :--- | :--- | :--- |
-| `show` <span className="text-red-500 font-bold">*</span> | `Boolean` | Controls whether the modal dialog is visible. | `—` |
-| `title` <span className="text-red-500 font-bold">*</span> | `String` | Dialog headline title. | `—` |
-| `message` <span className="text-red-500 font-bold">*</span> | `String` | Dialog explanation body copy. | `—` |
-| `onConfirm` <span className="text-red-500 font-bold">*</span> | `() -> Unit` | Primary action button click callback. | `—` |
-| `onDismiss` <span className="text-red-500 font-bold">*</span> | `() -> Unit` | Dismiss / cancel button click callback. | `—` |
-| `confirmText` | `String` | Primary confirm button label. | `"Confirm"` |
-| `dismissText` | `String` | Dismiss button label. | `"Cancel"` |
-| `isDestructive` | `Boolean` | Styles confirm button in red destructive tone. | `false` |
-| `icon` | `Ux4gIcon?` | Optional top center status visual icon. | `null` |
+| `onDismiss` <span className="text-red-500 font-bold">*</span> | `() -> Unit` | Callback invoked when citizen dismisses dialog by clicking backdrop, back press, or close icon. | — |
+| `modifier` | `Modifier` | Compose layout modifier. | `Modifier` |
+| `headerImageUrl` | `String?` | Remote image URL for the top hero banner. | `null` |
+| `headerImageContent` | `(@Composable () -> Unit)?` | Custom composable slot for the top hero banner (e.g. gradient background). | `null` |
+| `headerImageHeight` | `Dp` | Height of the top hero image area. | `160.dp` |
+| `headerImageStyle` | `Ux4gModalHeaderImage` | Hero image style: `FullBleed`, `Padded`, or `None`. | `Ux4gModalHeaderImage.FullBleed` |
+| `leadingItem` | `Ux4gModalLeadingItem` | Header leading element: `None`, `Icon`, `Avatar`, or `Image`. | `Ux4gModalLeadingItem.None` |
+| `leadingIcon` | `Ux4gIcon` | Icon rendered when `leadingItem = Ux4gModalLeadingItem.Icon`. | `Ux4gIcons.info_circle` |
+| `leadingIconTint` | `Color?` | Custom color tint for the leading icon. | `null` |
+| `avatarInitials` | `String?` | Initials string rendered when `leadingItem = Ux4gModalLeadingItem.Avatar`. | `null` |
+| `avatarImageUrl` | `Any?` | Image URL or resource for avatar. | `null` |
+| `avatarIcon` | `Ux4gIcon?` | Fallback icon for avatar. | `null` |
+| `showHeader` | `Boolean` | Controls visibility of the header section. | `true` |
+| `headerTitle` | `String` | Main title text displayed in the header. | `"Header"` |
+| `showDescription` | `Boolean` | Controls visibility of the description text below header title. | `false` |
+| `descriptionText` | `String` | Description text content below header title. | `"Write description here"` |
+| `showDividers` | `Boolean` | Renders divider lines separating header, body, and footer. | `true` |
+| `showSubtitle` | `Boolean` | Controls visibility of the subtitle heading inside body. | `true` |
+| `subtitleText` | `String` | Subtitle text content. | `"Subtitle"` |
+| `showBody` | `Boolean` | Controls visibility of the main body content. | `true` |
+| `bodyText` | `String` | Paragraph text in the body area. | `"A modal is a design element..."` |
+| `bodyContent` | `(@Composable () -> Unit)?` | Custom composable slot replacing standard `bodyText`. | `null` |
+| `showFooter` | `Boolean` | Controls visibility of the footer actions section. | `true` |
+| `footerButtons` | `Ux4gModalFooterButtons` | Button layout: `OneButton`, `TwoButtons`, `OneButtonWithIcon`, or `TwoButtonsWithIcon`. | `Ux4gModalFooterButtons.TwoButtons` |
+| `footerAlign` | `Ux4gModalFooterAlign` | Alignment of buttons: `Left`, `Right`, `Center`, or `Split`. | `Ux4gModalFooterAlign.Right` |
+| `isDestructive` | `Boolean` | When true, renders primary button in destructive error red tone. | `false` |
+| `primaryButtonText` | `String` | Label for the primary filled action button. | `"Button"` |
+| `secondaryButtonText` | `String` | Label for the secondary outline button. | `"Button"` |
+| `leadingActionIcon` | `Ux4gIcon` | Icon for footer leading auxiliary button. | `Ux4gIcons.info_circle` |
+| `onPrimaryClick` | `(() -> Unit)?` | Click callback for the primary button. Defaults to `onDismiss`. | `null` |
+| `onSecondaryClick` | `(() -> Unit)?` | Click callback for the secondary button. Defaults to `onDismiss`. | `null` |
+| `onLeadingIconClick` | `(() -> Unit)?` | Click callback for the footer leading icon button. | `null` |
+| `alignment` | `Ux4gModalAlignment` | Content alignment: `LeftAligned` or `Centered`. | `Ux4gModalAlignment.LeftAligned` |
+| `showCloseButton` | `Boolean` | Whether to display the top-right close icon button. | `true` |
+| `backgroundColor` | `Color?` | Modal card background color. | `Ux4gColors.white` |
+| `cornerRadius` | `Dp` | Corner radius of the modal dialog card. | `16.dp` |
 
+---
+
+### Enums Reference
+
+```kotlin
+enum class Ux4gModalAlignment {
+    LeftAligned,  // Standard left-aligned layout
+    Centered      // Centered text and avatar header
+}
+
+enum class Ux4gModalLeadingItem {
+    None,    // No leading element
+    Icon,    // Small inline icon beside title
+    Avatar,  // Circular citizen avatar
+    Image    // Small thumbnail image
+}
+
+enum class Ux4gModalHeaderImage {
+    FullBleed,  // Top image spanning full width
+    Padded,     // Padded image card with rounded corners
+    None        // No top hero image
+}
+
+enum class Ux4gModalFooterButtons {
+    OneButton,            // Single primary button
+    TwoButtons,           // Secondary outline + Primary filled
+    OneButtonWithIcon,    // Leading helper icon + Primary button
+    TwoButtonsWithIcon    // Leading helper icon + Secondary + Primary
+}
+
+enum class Ux4gModalFooterAlign {
+    Left,    // Buttons aligned to left
+    Right,   // Buttons aligned to right
+    Center,  // Buttons centered
+    Split    // Secondary left, Primary right
+}
+```
