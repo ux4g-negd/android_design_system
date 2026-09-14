@@ -1,37 +1,123 @@
 ---
 title: Carousel
-description: Horizontal paging banner with auto-scroll and indicators for announcements and flagship schemes
+description: Horizontal paging banner carousel with auto-play, animated pill dot indicators, navigation arrows, hero gradient slides, and image gallery overlays
 ---
 
-# Carousel (`Ux4gCarousel`)
+# Carousel Suite (`Ux4gCarousel`)
 
-Horizontal paging banner with auto-scroll and indicators for announcements and flagship schemes.
+The UX4G Carousel suite provides production-ready horizontal paging banners with smooth spring animations, auto-play timers, and animated dot/capsule pagination:
+1. **Hero Banner Carousel (`Ux4gHeroCarouselSlide`)**: Vibrant multi-color gradient slide with category badge, bold headline, description, and white action button.
+2. **Image Gallery Carousel (`Ux4gImageCarouselSlide`)**: Full-bleed photo slide with dark gradient overlay, category tag, headline, and subtitle.
+3. **Custom Content Carousel**: Dynamic carousel accepting any custom composable slide builder with configurable heights and page transitions.
 
 Import from `com.ux4g.designsystemv1.components.Ux4gCarousel`.
 
 ---
 
-<h2><MIcon name="smartphone" /> Interactive Preview</h2>
+<h2><MIcon name="smartphone" /> Interactive Previews</h2>
+
+### 1. Hero Banner Carousel (`Ux4gHeroCarouselSlide`)
 
 <ComponentPreview
-  title="Ux4gCarousel"
+  title="Ux4gCarousel - Hero Gradient Banners"
   category="Jetpack Compose"
-  code={`val banners = listOf(
-    CarouselItem(title = "Digital India Week 2024", description = "Empowering citizens with digital governance"),
-    CarouselItem(title = "Viksit Bharat Sankalp", description = "Reaching the unreached with government benefits")
-)
-
+  code={`// 1. Hero Gradient Banner Carousel
 Ux4gCarousel(
-    items = banners,
-    autoScroll = true,
-    intervalMs = 4000L,
-    onItemClick = { item -> /* open detail */ }
+    height = 240.dp,
+    autoPlay = true,
+    autoPlayIntervalMs = 3500L,
+    showPagination = true,
+    showPaginationArrows = true,
+    items = listOf(
+        {
+            Ux4gHeroCarouselSlide(
+                gradientColors = listOf(Color(0xFF4F46E5), Color(0xFF7C3AED)),
+                badgeText = "FEATURED",
+                title = "Digital Services Portal 2.0",
+                description = "Seamlessly access government citizen services with single sign-on and instant verification.",
+                buttonText = "Explore Services",
+                onButtonClick = { /* Navigate to directory */ }
+            )
+        },
+        {
+            Ux4gHeroCarouselSlide(
+                gradientColors = listOf(Color(0xFF0D9488), Color(0xFF0284C7)),
+                badgeText = "NEW UPDATE",
+                title = "Biometric Identity Capture",
+                description = "Fast, secure face verification integration with real-time liveness checks.",
+                buttonText = "View Documentation",
+                onButtonClick = { /* Open docs */ }
+            )
+        },
+        {
+            Ux4gHeroCarouselSlide(
+                gradientColors = listOf(Color(0xFFD97706), Color(0xFFE11D48)),
+                badgeText = "POPULAR",
+                title = "Unified Design System",
+                description = "Production-ready accessible Android UI components built for digital infrastructure.",
+                buttonText = "Get Started",
+                onButtonClick = { /* Launch setup */ }
+            )
+        }
+    )
 )`}
 >
   <div className="flex flex-col items-center justify-center py-2">
     <img
       src="/images/components/carousel_preview.png"
-      alt="UX4G Carousel Preview"
+      alt="UX4G Carousel Hero Banner Preview"
+      className="max-w-full rounded-xl border border-border/60 shadow-sm"
+    />
+  </div>
+</ComponentPreview>
+
+---
+
+### 2. Image Gallery Carousel (`Ux4gImageCarouselSlide`)
+
+<ComponentPreview
+  title="Ux4gCarousel - Image Gallery with Dark Overlay"
+  category="Jetpack Compose"
+  code={`// 2. Image Gallery Slide Carousel
+Ux4gCarousel(
+    height = 240.dp,
+    autoPlay = false,
+    activePaginationColor = Color(0xFF5E3CEE),
+    inactivePaginationColor = Color.White.copy(alpha = 0.8f),
+    paginationArrowBackgroundColor = Color(0xFFDCD6FD),
+    paginationArrowColor = Color(0xFF5E3CEE),
+    items = listOf(
+        {
+            Ux4gImageCarouselSlide(
+                imageUrl = "https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=800&q=80",
+                badgeText = "NETWORK",
+                title = "Global Cloud Infrastructure",
+                subtitle = "High availability and low latency cross-region deployment."
+            )
+        },
+        {
+            Ux4gImageCarouselSlide(
+                imageUrl = "https://images.unsplash.com/photo-1579546929518-9e396f3cc809?auto=format&fit=crop&w=800&q=80",
+                badgeText = "DESIGN",
+                title = "Modern UI System Architecture",
+                subtitle = "Crafted with accessible design tokens & fluid responsive components."
+            )
+        },
+        {
+            Ux4gImageCarouselSlide(
+                imageUrl = "https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=800&q=80",
+                badgeText = "SECURITY",
+                title = "Cryptographic Hardware Modules",
+                subtitle = "Next-generation secure key storage and identity management."
+            )
+        }
+    )
+)`}
+>
+  <div className="flex flex-col items-center justify-center py-2">
+    <img
+      src="/images/components/carousel_preview.png"
+      alt="UX4G Carousel Image Gallery Preview"
       className="max-w-full rounded-xl border border-border/60 shadow-sm"
     />
   </div>
@@ -41,18 +127,78 @@ Ux4gCarousel(
 
 <h2><MIcon name="code" /> Kotlin Usage</h2>
 
-```kotlin title="Compose Example"
+```kotlin title="Carousel Showcase Example"
+import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.dp
 import com.ux4g.designsystemv1.components.Ux4gCarousel
+import com.ux4g.designsystemv1.components.Ux4gHeroCarouselSlide
+import com.ux4g.designsystemv1.components.Ux4gImageCarouselSlide
 
 @Composable
-fun CarouselExample() {
-    Ux4gCarousel(
-        items = listOf("Banner 1", "Banner 2", "Banner 3"),
-        autoScroll = true,
-        intervalMs = 4000L
-    ) { index, item ->
-        // Render each slide
+fun CarouselShowcaseScreen() {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp),
+        verticalArrangement = Arrangement.spacedBy(24.dp)
+    ) {
+        // 1. Hero Gradient Banners Carousel
+        Ux4gCarousel(
+            height = 240.dp,
+            autoPlay = true,
+            autoPlayIntervalMs = 3000L,
+            showPagination = true,
+            showPaginationArrows = true,
+            items = listOf(
+                {
+                    Ux4gHeroCarouselSlide(
+                        gradientColors = listOf(Color(0xFF4F46E5), Color(0xFF7C3AED)),
+                        badgeText = "FEATURED",
+                        title = "Digital Services Portal 2.0",
+                        description = "Seamlessly access government citizen services with single sign-on and instant verification.",
+                        buttonText = "Explore Services",
+                        onButtonClick = { /* handle action */ }
+                    )
+                },
+                {
+                    Ux4gHeroCarouselSlide(
+                        gradientColors = listOf(Color(0xFF0D9488), Color(0xFF0284C7)),
+                        badgeText = "NEW UPDATE",
+                        title = "Biometric Identity Capture",
+                        description = "Fast, secure face verification integration with real-time liveness checks.",
+                        buttonText = "View Documentation",
+                        onButtonClick = { /* handle action */ }
+                    )
+                }
+            )
+        )
+
+        // 2. Image Gallery Overlay Carousel
+        Ux4gCarousel(
+            height = 240.dp,
+            autoPlay = false,
+            items = listOf(
+                {
+                    Ux4gImageCarouselSlide(
+                        imageUrl = "https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=800&q=80",
+                        badgeText = "NETWORK",
+                        title = "Global Cloud Infrastructure",
+                        subtitle = "High availability and low latency cross-region deployment."
+                    )
+                },
+                {
+                    Ux4gImageCarouselSlide(
+                        imageUrl = "https://images.unsplash.com/photo-1579546929518-9e396f3cc809?auto=format&fit=crop&w=800&q=80",
+                        badgeText = "DESIGN",
+                        title = "Modern UI System Architecture",
+                        subtitle = "Crafted with accessible design tokens & fluid responsive components."
+                    )
+                }
+            )
+        )
     }
 }
 ```
@@ -61,13 +207,52 @@ fun CarouselExample() {
 
 <h2><MIcon name="settings" /> Parameters</h2>
 
+### 1. `Ux4gCarousel` Props
+
 | Prop | Type | Description | Default |
 | :--- | :--- | :--- | :--- |
-| `items` <span className="text-red-500 font-bold">*</span> | `List<T>` | List of items to render across carousel slides. | `—` |
-| `content` <span className="text-red-500 font-bold">*</span> | `@Composable (index: Int, item: T) -> Unit` | Composable lambda rendering slide content. | `—` |
-| `modifier` | `Modifier` | Compose layout modifier. | `Modifier` |
-| `autoScroll` | `Boolean` | Whether slides advance automatically on a timer. | `true` |
-| `intervalMs` | `Long` | Duration in milliseconds per slide before transitioning. | `4000L` |
-| `showIndicator` | `Boolean` | Whether to render page dots indicator at bottom. | `true` |
-| `onItemClick` | `((T) -> Unit)?` | Optional click listener callback when slide is tapped. | `null` |
+| `items` <span className="text-red-500 font-bold">*</span> | `List<@Composable () -> Unit>` | List of composable slide items to render. | — |
+| `modifier` | `Modifier` | Compose layout modifier applied to the carousel root container. | `Modifier` |
+| `autoPlay` | `Boolean` | Whether the carousel automatically cycles through slide pages. | `true` |
+| `autoPlayIntervalMs` | `Long` | Time in milliseconds between automatic slide transitions. | `3000L` |
+| `showPagination` | `Boolean` | Whether to display the dot pagination indicator at the bottom. | `true` |
+| `showPaginationArrows` | `Boolean` | Whether to show left/right arrow buttons alongside pagination dots. | `true` |
+| `height` | `Dp` | Fixed height of the carousel container. | `240.dp` |
+| `viewportFraction` | `Float` | Fraction of the viewport each page should occupy (`1.0f` for full width). | `1.0f` |
+| `contentPadding` | `PaddingValues` | Inner padding surrounding pages in viewport. | `PaddingValues(0.dp)` |
+| `pageSpacing` | `Dp` | Spacing between consecutive slide pages. | `0.dp` |
+| `activePaginationColor` | `Color` | Fill color for the active elongated pill indicator. | `Ux4gColors.primary` |
+| `inactivePaginationColor` | `Color` | Fill color for inactive dot indicators. | `Ux4gColors.primary100` |
+| `paginationArrowBackgroundColor` | `Color` | Circular background color for previous/next arrow buttons. | `Color(0xFFDCD6FD)` |
+| `paginationArrowColor` | `Color` | Icon tint color for navigation arrow chevrons. | `Ux4gColors.primary` |
+| `paginationVariant` | `Ux4gPaginationVariant` | Visual container style: `Default` (transparent) or `Capsule` (white pill). | `Ux4gPaginationVariant.Default` |
+| `paginationSize` | `Ux4gPaginationSize` | Sizing preset: `Small` or `Medium`. | `Ux4gPaginationSize.Small` |
+| `onPageChange` | `((Int) -> Unit)?` | Callback triggered whenever the current active page index changes. | `null` |
 
+---
+
+### 2. `Ux4gHeroCarouselSlide` Props
+
+| Prop | Type | Description | Default |
+| :--- | :--- | :--- | :--- |
+| `gradientColors` <span className="text-red-500 font-bold">*</span> | `List<Color>` | Linear gradient color stops applied to background banner. | — |
+| `badgeText` <span className="text-red-500 font-bold">*</span> | `String` | Text displayed in top semi-transparent category badge. | — |
+| `title` <span className="text-red-500 font-bold">*</span> | `String` | Large headline text inside the banner. | — |
+| `description` <span className="text-red-500 font-bold">*</span> | `String` | Paragraph description text. | — |
+| `buttonText` <span className="text-red-500 font-bold">*</span> | `String` | Label for the white filled call-to-action button. | — |
+| `modifier` | `Modifier` | Compose layout modifier. | `Modifier` |
+| `borderRadius` | `Dp` | Corner rounding radius for slide boundary. | `16.dp` |
+| `onButtonClick` | `() -> Unit` | Click listener callback for the action button. | `{}` |
+
+---
+
+### 3. `Ux4gImageCarouselSlide` Props
+
+| Prop | Type | Description | Default |
+| :--- | :--- | :--- | :--- |
+| `imageUrl` <span className="text-red-500 font-bold">*</span> | `String` | Remote URL or image asset path loaded via Coil. | — |
+| `badgeText` <span className="text-red-500 font-bold">*</span> | `String` | Text displayed inside the top-left dark tag badge. | — |
+| `title` <span className="text-red-500 font-bold">*</span> | `String` | Headline text overlaid on dark bottom gradient. | — |
+| `subtitle` <span className="text-red-500 font-bold">*</span> | `String` | Subtitle description text. | — |
+| `modifier` | `Modifier` | Compose layout modifier. | `Modifier` |
+| `borderRadius` | `Dp` | Corner rounding radius. | `16.dp` |
