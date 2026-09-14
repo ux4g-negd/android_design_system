@@ -1,31 +1,85 @@
 ---
 title: Status Pipeline
-description: Visual horizontal progress pipeline tracking approval checkpoints across departments
+description: Horizontal and vertical progress pipeline tracking multi-stage approval checkpoints and citizen application lifecycles
 ---
 
 # Status Pipeline (`Ux4gStatusPipeline`)
 
-Visual horizontal progress pipeline tracking approval checkpoints across departments.
+The UX4G Status Pipeline component visualizes sequential checkpoints in administrative approval workflows, citizen application tracking, grievance redressal lifecycles, and verification pipelines.
 
-Import from `com.ux4g.designsystemv1.components.Ux4gStatusPipeline`.
+### Key Capabilities
+
+- **Dual Orientations**: Seamless switching between `Ux4gPipelineOrientation.Horizontal` for top summary banners and `Ux4gPipelineOrientation.Vertical` for detailed timeline views.
+- **Automated State Progression**: Given a `currentStep` index, prior steps auto-resolve to `Completed` (green checkmark), the active step resolves to `Current` (ring donut), and remaining steps render as numbered `Upcoming` circles.
+- **Custom States & Colors**: Explicit step overriding for `Error` (failed inspection), `Warning` (clarification requested), custom icons, or tailored status colors.
+- **Preset Sizes**: Three standardized sizes: `S` (20dp circle, 2dp line), `M` (32dp circle, 3dp line), and `L` (40dp circle, 3dp line).
+
+Import from `com.ux4g.designsystemv1.components.*`.
 
 ---
 
-<h2><MIcon name="smartphone" /> Interactive Preview</h2>
+<h2><MIcon name="smartphone" /> Interactive Previews</h2>
+
+### 1. Horizontal Status Pipeline
+
+Horizontal progress pipeline ideal for desktop/tablet headers, application summary cards, and multi-stage form progress tracks.
 
 <ComponentPreview
-  title="Ux4gStatusPipeline"
+  title="Ux4gStatusPipeline (Horizontal)"
   category="Jetpack Compose"
-  code={`Ux4gStatusPipeline(
-    stages = listOf("Submitted", "Tehsildar Review", "SDM Approval", "Certificate Issued"),
-    currentStageIndex = 2
+  code={`val pipelineSteps = listOf(
+    Ux4gPipelineStep(label = "Submitted", description = "5 Apr"),
+    Ux4gPipelineStep(label = "Verification", description = "In progress"),
+    Ux4gPipelineStep(label = "Inspection", description = "Est. 10 Apr"),
+    Ux4gPipelineStep(label = "Decision", description = "Est. 18 Apr"),
+    Ux4gPipelineStep(label = "Issued", description = "Est. 20 Apr")
+)
+
+Ux4gStatusPipeline(
+    steps = pipelineSteps,
+    currentStep = 1,
+    orientation = Ux4gPipelineOrientation.Horizontal,
+    size = Ux4gPipelineSize.M
 )`}
 >
   <div className="flex flex-col items-center justify-center py-2">
     <img
       src="/images/components/status-pipeline_preview.png"
-      alt="UX4G Status Pipeline Preview"
+      alt="UX4G Horizontal Status Pipeline Preview"
       className="max-w-full rounded-xl border border-border/60 shadow-sm"
+    />
+  </div>
+</ComponentPreview>
+
+---
+
+### 2. Vertical Status Pipeline
+
+Vertical progress pipeline best suited for mobile application details, audit logs, and detailed chronological stage descriptions.
+
+<ComponentPreview
+  title="Ux4gStatusPipeline (Vertical)"
+  category="Jetpack Compose"
+  code={`val pipelineSteps = listOf(
+    Ux4gPipelineStep(label = "Submitted", description = "5 Apr"),
+    Ux4gPipelineStep(label = "Verification", description = "In progress"),
+    Ux4gPipelineStep(label = "Inspection", description = "Est. 10 Apr"),
+    Ux4gPipelineStep(label = "Decision", description = "Est. 18 Apr"),
+    Ux4gPipelineStep(label = "Issued", description = "Est. 20 Apr")
+)
+
+Ux4gStatusPipeline(
+    steps = pipelineSteps,
+    currentStep = 1,
+    orientation = Ux4gPipelineOrientation.Vertical,
+    size = Ux4gPipelineSize.M
+)`}
+>
+  <div className="flex flex-col items-center justify-center py-2">
+    <img
+      src="/images/components/status-pipeline-vertical_preview.png"
+      alt="UX4G Vertical Status Pipeline Preview"
+      className="max-w-[240px] rounded-xl border border-border/60 shadow-sm"
     />
   </div>
 </ComponentPreview>
@@ -34,15 +88,92 @@ Import from `com.ux4g.designsystemv1.components.Ux4gStatusPipeline`.
 
 <h2><MIcon name="code" /> Kotlin Usage</h2>
 
-```kotlin title="Compose Example"
-import androidx.compose.runtime.Composable
-import com.ux4g.designsystemv1.components.Ux4gStatusPipeline
+### 1. Dynamic Application Approval Tracking
+
+```kotlin title="ApplicationStatusScreen.kt"
+import androidx.compose.foundation.layout.*
+import androidx.compose.runtime.*
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
+import com.ux4g.designsystemv1.components.*
 
 @Composable
-fun PipelineExample() {
+fun ApplicationTrackingPipeline(currentStage: Int) {
+    val steps = remember {
+        listOf(
+            Ux4gPipelineStep(
+                label = "Application Submitted",
+                description = "12 May 2026, 09:30 AM"
+            ),
+            Ux4gPipelineStep(
+                label = "Document Scrutiny",
+                description = "Revenue Officer Assigned"
+            ),
+            Ux4gPipelineStep(
+                label = "Field Inspection",
+                description = "Scheduled on 18 May"
+            ),
+            Ux4gPipelineStep(
+                label = "SDM Sanction",
+                description = "Pending Final Approval"
+            ),
+            Ux4gPipelineStep(
+                label = "Certificate Dispatch",
+                description = "Digital Download"
+            )
+        )
+    }
+
     Ux4gStatusPipeline(
-        stages = listOf("Applied", "Verified", "Sanctioned", "Disbursed"),
-        currentStageIndex = 1
+        steps = steps,
+        currentStep = currentStage,
+        orientation = Ux4gPipelineOrientation.Vertical,
+        size = Ux4gPipelineSize.M,
+        modifier = Modifier.padding(16.dp)
+    )
+}
+```
+
+### 2. Pipeline with Error and Warning Checkpoints
+
+```kotlin title="VerificationPipelineWithExceptions.kt"
+import androidx.compose.foundation.layout.padding
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
+import com.ux4g.designsystemv1.components.*
+
+@Composable
+fun PipelineWithValidationIssues() {
+    val steps = listOf(
+        Ux4gPipelineStep(
+            label = "Aadhaar eKYC",
+            description = "Verified successfully",
+            state = Ux4gPipelineStepState.Completed
+        ),
+        Ux4gPipelineStep(
+            label = "Bank Account Match",
+            description = "Warning: Name spelling mismatch",
+            state = Ux4gPipelineStepState.Warning
+        ),
+        Ux4gPipelineStep(
+            label = "Income Verification",
+            description = "Failed: Certificate expired",
+            state = Ux4gPipelineStepState.Error
+        ),
+        Ux4gPipelineStep(
+            label = "Final Sanction",
+            description = "Awaiting corrected documents",
+            state = Ux4gPipelineStepState.Upcoming
+        )
+    )
+
+    Ux4gStatusPipeline(
+        steps = steps,
+        currentStep = -1, // Use explicit states from step models
+        orientation = Ux4gPipelineOrientation.Vertical,
+        size = Ux4gPipelineSize.M,
+        modifier = Modifier.padding(16.dp)
     )
 }
 ```
@@ -51,9 +182,69 @@ fun PipelineExample() {
 
 <h2><MIcon name="settings" /> Parameters</h2>
 
+### `Ux4gStatusPipeline` Props
+
 | Prop | Type | Description | Default |
 | :--- | :--- | :--- | :--- |
-| `stages` <span className="text-red-500 font-bold">*</span> | `List<String>` | List of pipeline approval department stage names. | `—` |
-| `currentStageIndex` <span className="text-red-500 font-bold">*</span> | `Int` | Active 0-indexed progress checkpoint pointer. | `—` |
-| `modifier` | `Modifier` | Compose layout modifier. | `Modifier` |
+| `steps` <span className="text-red-500 font-bold">*</span> | `List<Ux4gPipelineStep>` | Sequential list of pipeline checkpoint data models. | `—` |
+| `modifier` | `Modifier` | Compose modifier applied to outer container layout. | `Modifier` |
+| `currentStep` | `Int` | 0-indexed active progress pointer. When `>= 0`, auto-resolves states. | `0` |
+| `orientation` | `Ux4gPipelineOrientation` | Pipeline orientation (`Vertical` or `Horizontal`). | `Ux4gPipelineOrientation.Vertical` |
+| `size` | `Ux4gPipelineSize` | Preset size sizing dimensions (`S`, `M`, `L`). | `Ux4gPipelineSize.M` |
+| `showLabels` | `Boolean` | Whether step label titles are displayed. | `true` |
+| `showDescriptions` | `Boolean` | Whether step description subtitles are displayed. | `true` |
+| `activeLineWidth` | `Dp?` | Custom line width for completed/active connector segments. | `null` |
+| `inactiveLineWidth` | `Dp?` | Custom line width for upcoming connector segments. | `null` |
+| `completedColor` | `Color?` | Custom circle and icon color override for completed steps. | `null` |
+| `currentColor` | `Color?` | Custom circle color override for the active step. | `null` |
+| `upcomingColor` | `Color?` | Custom border color override for upcoming steps. | `null` |
+| `errorColor` | `Color?` | Custom color override for error steps. | `null` |
+| `warningColor` | `Color?` | Custom color override for warning steps. | `null` |
+| `completedLineColor` | `Color?` | Custom color for active connecting lines. | `null` |
+| `upcomingLineColor` | `Color?` | Custom color for inactive upcoming connecting lines. | `null` |
+| `labelSpacing` | `Dp?` | Custom spacing between the circle indicator and label text. | `null` |
+| `circleSize` | `Dp?` | Custom diameter override for step indicator circles. | `null` |
 
+---
+
+### `Ux4gPipelineStep` Model Props
+
+| Prop | Type | Description | Default |
+| :--- | :--- | :--- | :--- |
+| `label` | `String?` | Primary title for this checkpoint (e.g., `"Submitted"`). | `null` |
+| `description` | `String?` | Supporting timestamp or status note (e.g., `"5 Apr"`). | `null` |
+| `state` | `Ux4gPipelineStepState` | Step status (`Completed`, `Current`, `Upcoming`, `Error`, `Warning`). | `Ux4gPipelineStepState.Upcoming` |
+| `customIcon` | `(@Composable () -> Unit)?` | Custom composable icon rendered inside the step circle. | `null` |
+| `customIconVector` | `Ux4gIcon?` | Custom UX4G icon vector rendered inside the step circle. | `null` |
+| `customColor` | `Color?` | Custom color override for this individual step circle. | `null` |
+
+---
+
+### `Ux4gPipelineOrientation` Reference
+
+| Orientation | Description |
+| :--- | :--- |
+| `Horizontal` | Renders steps in a horizontal row connected by horizontal lines, with labels centered beneath. |
+| `Vertical` | Renders steps in a vertical column with connecting lines running down and labels placed to the right. |
+
+---
+
+### `Ux4gPipelineStepState` Reference
+
+| State | Visual Rendering | Meaning |
+| :--- | :--- | :--- |
+| `Completed` | Solid green circle with white checkmark icon (`Ux4gIcons.Check`) | Step successfully finished |
+| `Current` | Solid primary color ring with inner surface circle (donut) | Step currently in progress |
+| `Upcoming` | Gray outlined circular border with numbered step index | Step pending execution |
+| `Error` | Red outlined circular border with red step index | Step failed validation / rejected |
+| `Warning` | Amber/orange outlined circular border with step index | Action required / soft alert |
+
+---
+
+### `Ux4gPipelineSize` Reference
+
+| Size | Circle Diameter (`Dp`) | Active Line Width (`Dp`) | Inactive Line Width (`Dp`) | Icon Size (`Dp`) |
+| :--- | :--- | :--- | :--- | :--- |
+| `S` | `20.dp` | `2.dp` | `1.dp` | `12.dp` |
+| `M` | `32.dp` | `3.dp` | `2.dp` | `18.dp` |
+| `L` | `40.dp` | `3.dp` | `2.dp` | `22.dp` |
