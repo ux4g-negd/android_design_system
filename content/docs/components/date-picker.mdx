@@ -1,33 +1,43 @@
 ---
 title: Date Picker
-description: Calendar modal and text field date selector supporting DOB, ranges, and maximum date limits
+description: Date selection input and calendar dialog supporting Single date mode, Range selection, month/year grid switchers, status validations, and date constraints
 ---
 
-# Date Picker (`Ux4gDatePicker`)
+# Date Picker Suite (`Ux4gDatePicker`)
 
-Calendar modal and text field date selector supporting DOB, ranges, and maximum date limits.
+The UX4G Date Picker suite provides accessible date selection components following government form guidelines with integrated calendar dialog modals, month/year grid quick-pickers, and dual-field date range selectors:
+1. **Single Date Picker (`Ux4gDatePickerMode.Single`)**: Form input field with calendar trigger icon, custom label, required asterisk, and status validation messages.
+2. **Date Range Picker (`Ux4gDatePickerMode.Range`)**: Dual-box start and end date selector for booking periods, financial years, and service timelines.
+3. **Calendar Dialog Modal**: Full-featured calendar modal automatically invoked when a citizen taps the date picker input.
 
 Import from `com.ux4g.designsystemv1.components.Ux4gDatePicker`.
 
 ---
 
-<h2><MIcon name="smartphone" /> Interactive Preview</h2>
+<h2><MIcon name="smartphone" /> Interactive Previews</h2>
+
+### 1. Single Date Picker (`Ux4gDatePickerMode.Single`)
 
 <ComponentPreview
-  title="Ux4gDatePicker"
+  title="Ux4gDatePicker - Single Date Selection"
   category="Jetpack Compose"
-  code={`Ux4gDatePicker(
+  code={`// 1. Single Date Picker with Validation & Required Asterisk
+var selectedDate by remember { mutableStateOf<LocalDate?>(LocalDate.now()) }
+
+Ux4gDatePicker(
+    label = "Date of Birth",
+    isRequired = true,
     selectedDate = selectedDate,
-    onDateSelected = { date -> selectedDate = date },
-    label = "Date of Birth (as per Aadhaar)",
+    onDateSelected = { selectedDate = it },
     placeholder = "DD/MM/YYYY",
-    maxDate = LocalDate.now()
+    maxDate = LocalDate.now(),
+    description = "Select your birth date as per official records"
 )`}
 >
   <div className="flex flex-col items-center justify-center py-2">
     <img
       src="/images/components/date-picker_preview.png"
-      alt="UX4G Date Picker Preview"
+      alt="UX4G Single Date Picker Preview"
       className="max-w-full rounded-xl border border-border/60 shadow-sm"
     />
   </div>
@@ -35,23 +45,128 @@ Import from `com.ux4g.designsystemv1.components.Ux4gDatePicker`.
 
 ---
 
+### 2. Date Range Picker (`Ux4gDatePickerMode.Range`)
+
+<ComponentPreview
+  title="Ux4gDatePicker - Range Date Selection"
+  category="Jetpack Compose"
+  code={`// 2. Date Range Picker for Period Selection
+var dateRange by remember {
+    mutableStateOf<Ux4gDateRange?>(
+        Ux4gDateRange(
+            start = LocalDate.now(),
+            end = LocalDate.now().plusDays(7)
+        )
+    )
+}
+
+Ux4gDatePicker(
+    mode = Ux4gDatePickerMode.Range,
+    label = "Service Period",
+    selectedDateRange = dateRange,
+    onDateRangeSelected = { dateRange = it },
+    placeholder = "Select date",
+    description = "Select start and end dates for your application"
+)`}
+>
+  <div className="flex flex-col items-center justify-center py-2">
+    <img
+      src="/images/components/date-range-picker_preview.png"
+      alt="UX4G Date Range Picker Preview"
+      className="max-w-full rounded-xl border border-border/60 shadow-sm"
+    />
+  </div>
+</ComponentPreview>
+
+---
+
+### 3. Calendar Dialog Modal (Auto-Opened on Click)
+
+When a citizen clicks on either the Single or Range date picker input field, the interactive calendar dialog modal opens automatically to allow day, month, and year selection:
+
+<div className="flex flex-col items-center justify-center p-6 bg-muted/20 border border-border/60 rounded-xl my-4">
+  <img
+    src="/images/components/date-picker-dialog.png"
+    alt="UX4G Date Picker Dialog Modal"
+    className="max-w-xs rounded-xl shadow-lg border border-border/60"
+  />
+  <p className="text-xs text-muted-foreground mt-3 font-medium text-center">
+    Modal dialog view with month/year navigation, weekday column headers, date range highlights, and Confirm / Cancel action buttons.
+  </p>
+</div>
+
+---
+
 <h2><MIcon name="code" /> Kotlin Usage</h2>
 
-```kotlin title="Compose Example"
+```kotlin title="Date Picker Showcase Example"
+import androidx.compose.foundation.layout.*
+import androidx.compose.material3.Text
 import androidx.compose.runtime.*
-import java.time.LocalDate
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import com.ux4g.designsystemv1.components.Ux4gDatePicker
+import com.ux4g.designsystemv1.components.Ux4gDatePickerMode
+import com.ux4g.designsystemv1.components.Ux4gDateRange
+import com.ux4g.designsystemv1.components.inputfield.Ux4gInputFieldStatus
+import com.ux4g.designsystemv1.foundation.defaultTypography
+import java.time.LocalDate
 
 @Composable
-fun DatePickerExample() {
-    var dob by remember { mutableStateOf<LocalDate?>(null) }
+fun DatePickerShowcaseScreen() {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp),
+        verticalArrangement = Arrangement.spacedBy(20.dp)
+    ) {
+        // 1. Single Date Picker with Required Flag
+        Text("Single Date Picker", style = defaultTypography.hS_strong)
+        var birthDate by remember { mutableStateOf<LocalDate?>(LocalDate.now()) }
+        Ux4gDatePicker(
+            label = "Date of Birth",
+            isRequired = true,
+            selectedDate = birthDate,
+            onDateSelected = { birthDate = it },
+            description = "Select your birth date for verification"
+        )
 
-    Ux4gDatePicker(
-        label = "Date of Birth",
-        selectedDate = dob,
-        onDateSelected = { dob = it },
-        maxDate = LocalDate.now()
-    )
+        // 2. Date Range Picker
+        Text("Date Range Picker", style = defaultTypography.hS_strong)
+        var bookingRange by remember {
+            mutableStateOf<Ux4gDateRange?>(
+                Ux4gDateRange(LocalDate.now(), LocalDate.now().plusDays(5))
+            )
+        }
+        Ux4gDatePicker(
+            mode = Ux4gDatePickerMode.Range,
+            label = "Booking Period",
+            selectedDateRange = bookingRange,
+            onDateRangeSelected = { bookingRange = it },
+            description = "Select start and end dates"
+        )
+
+        // 3. Validation States
+        Text("Validation States", style = defaultTypography.hS_strong)
+        Ux4gDatePicker(
+            label = "Error State",
+            status = Ux4gInputFieldStatus.Error,
+            description = "Please select a valid future date"
+        )
+
+        Ux4gDatePicker(
+            label = "Success State",
+            status = Ux4gInputFieldStatus.Success,
+            selectedDate = LocalDate.now(),
+            description = "Appointment slot available"
+        )
+
+        Ux4gDatePicker(
+            label = "Disabled State",
+            enabled = false,
+            description = "This field is locked during submission"
+        )
+    }
 }
 ```
 
@@ -59,16 +174,39 @@ fun DatePickerExample() {
 
 <h2><MIcon name="settings" /> Parameters</h2>
 
+### `Ux4gDatePicker` Props
+
 | Prop | Type | Description | Default |
 | :--- | :--- | :--- | :--- |
-| `label` <span className="text-red-500 font-bold">*</span> | `String` | Header title above the date input field. | `—` |
-| `onDateSelected` <span className="text-red-500 font-bold">*</span> | `(LocalDate) -> Unit` | Callback providing newly selected `LocalDate`. | `—` |
-| `selectedDate` | `LocalDate?` | Currently selected calendar date. | `null` |
-| `placeholder` | `String` | Hint text displayed when no date is picked. | `"DD/MM/YYYY"` |
-| `minDate` | `LocalDate?` | Earliest selectable date bound. | `null` |
-| `maxDate` | `LocalDate?` | Latest selectable date bound (e.g. `LocalDate.now()`). | `null` |
-| `isError` | `Boolean` | Highlights field in red validation error style. | `false` |
-| `errorMessage` | `String?` | Validation error message below input. | `null` |
-| `enabled` | `Boolean` | Whether date picker is interactive. | `true` |
-| `modifier` | `Modifier` | Compose layout modifier. | `Modifier` |
+| `modifier` | `Modifier` | Compose layout modifier applied to outer container. | `Modifier` |
+| `mode` | `Ux4gDatePickerMode` | Picker mode: `Ux4gDatePickerMode.Single` or `Ux4gDatePickerMode.Range`. | `Ux4gDatePickerMode.Single` |
+| `selectedDate` | `LocalDate?` | Currently selected date in `Single` mode. | `null` |
+| `selectedDateRange` | `Ux4gDateRange?` | Currently selected date range (`start` and `end`) in `Range` mode. | `null` |
+| `minDate` | `LocalDate?` | Earliest selectable date constraint. Earlier dates are disabled. | `null` |
+| `maxDate` | `LocalDate?` | Latest selectable date constraint (e.g. `LocalDate.now()`). | `null` |
+| `onDateSelected` | `((LocalDate) -> Unit)?` | Callback invoked when a date is confirmed in `Single` mode. | `null` |
+| `onDateRangeSelected` | `((Ux4gDateRange) -> Unit)?` | Callback invoked when a date range is confirmed in `Range` mode. | `null` |
+| `placeholder` | `String` | Hint text displayed inside input box when no date is selected. | `"Select date"` |
+| `enabled` | `Boolean` | Whether the date picker input is interactive. | `true` |
+| `label` | `String?` | Header title displayed above the date input field. | `null` |
+| `description` | `String?` | Supplementary helper or validation message displayed below input. | `null` |
+| `isRequired` | `Boolean` | When `true`, appends red asterisk (`*`) to the label. | `false` |
+| `status` | `Ux4gInputFieldStatus` | Status validation style: `Default`, `Error`, `Warning`, `Success`. | `Ux4gInputFieldStatus.Default` |
 
+---
+
+### `Ux4gDateRange` Data Class
+
+| Prop | Type | Description |
+| :--- | :--- | :--- |
+| `start` <span className="text-red-500 font-bold">*</span> | `LocalDate` | Beginning date of the selected date range. |
+| `end` <span className="text-red-500 font-bold">*</span> | `LocalDate` | Ending date of the selected date range. |
+
+---
+
+### `Ux4gDatePickerMode` Enum
+
+| Value | Description |
+| :--- | :--- |
+| `Single` | Single date input trigger box and single day cell selection. |
+| `Range` | Dual-box start and end input layout with highlighted date range interval. |

@@ -1,31 +1,133 @@
 ---
 title: Divider
-description: Horizontal visual separator lines and labeled partition bars for dividing form sections
+description: Visual separator lines supporting Horizontal & Vertical orientations, Solid/Dashed/Dotted stroke styles, indents, and center label partitions
 ---
 
-# Divider (`Ux4gDivider`)
+# Divider Suite (`Ux4gDivider`)
 
-Horizontal visual separator lines and labeled partition bars for dividing form sections.
+The UX4G Divider suite provides clean visual separation between layout sections, lists, form groups, and alternative authentication options:
+1. **Horizontal Divider**: Standard full-width or indented horizontal separator supporting `Solid`, `Dashed`, and `Dotted` stroke styles.
+2. **Vertical Divider**: Vertical partition bar for separating items inside row containers and action toolbars.
+3. **Label Divider**: Centered text or badge separator (e.g. `"OR"` / `"SECTION"`) with symmetric splitting lines and configurable spacing.
 
 Import from `com.ux4g.designsystemv1.components.Ux4gDivider`.
 
 ---
 
-<h2><MIcon name="smartphone" /> Interactive Preview</h2>
+<h2><MIcon name="smartphone" /> Interactive Previews</h2>
+
+### 1. Horizontal Divider (`Ux4gDividerOrientation.Horizontal`)
 
 <ComponentPreview
-  title="Ux4gDivider"
+  title="Ux4gDivider - Horizontal Styles & Indents"
   category="Jetpack Compose"
-  code={`// Standard Divider
-Ux4gDivider()
+  code={`// 1. Standard Solid Horizontal Divider
+Ux4gDivider(
+    thickness = 1.dp
+)
 
-// Divider with Middle Label
-Ux4gDividerWithLabel(label = "OR VERIFY WITH")`}
+// 2. Dashed Horizontal Divider
+Ux4gDivider(
+    style = Ux4gDividerStyle.Dashed,
+    color = Ux4gColors.primary
+)
+
+// 3. Dotted Horizontal Divider with Start & End Indents
+Ux4gDivider(
+    style = Ux4gDividerStyle.Dotted,
+    startIndent = 24.dp,
+    endIndent = 24.dp,
+    thickness = 2.dp
+)`}
 >
   <div className="flex flex-col items-center justify-center py-2">
     <img
       src="/images/components/divider_preview.png"
-      alt="UX4G Divider Preview"
+      alt="UX4G Horizontal Divider Preview"
+      className="max-w-full rounded-xl border border-border/60 shadow-sm"
+    />
+  </div>
+</ComponentPreview>
+
+---
+
+### 2. Vertical Divider (`Ux4gDividerOrientation.Vertical`)
+
+<ComponentPreview
+  title="Ux4gDivider - Vertical Orientation"
+  category="Jetpack Compose"
+  code={`// Vertical Dividers inside a Row Container
+Row(
+    modifier = Modifier
+        .fillMaxWidth()
+        .height(48.dp),
+    horizontalArrangement = Arrangement.SpaceEvenly,
+    verticalAlignment = Alignment.CenterVertically
+) {
+    Text("Option 1", style = defaultTypography.bM_default)
+
+    // Solid Vertical Divider
+    Ux4gDivider(
+        orientation = Ux4gDividerOrientation.Vertical,
+        thickness = 1.dp
+    )
+
+    Text("Option 2", style = defaultTypography.bM_default)
+
+    // Dashed Vertical Divider
+    Ux4gDivider(
+        orientation = Ux4gDividerOrientation.Vertical,
+        style = Ux4gDividerStyle.Dashed
+    )
+
+    Text("Option 3", style = defaultTypography.bM_default)
+}`}
+>
+  <div className="flex flex-col items-center justify-center py-2">
+    <img
+      src="/images/components/divider_vertical_preview.png"
+      alt="UX4G Vertical Divider Preview"
+      className="max-w-full rounded-xl border border-border/60 shadow-sm"
+    />
+  </div>
+</ComponentPreview>
+
+---
+
+### 3. Label Divider (Partition with Center Text)
+
+<ComponentPreview
+  title="Ux4gDivider - Labeled Partition"
+  category="Jetpack Compose"
+  code={`// 1. "OR" Separator for Alternative Auth Actions
+Ux4gDivider(
+    label = {
+        Text(
+            text = "OR",
+            style = defaultTypography.lS_strong,
+            color = Ux4gColors.neutral600
+        )
+    },
+    labelSpacing = 12.dp
+)
+
+// 2. Dashed Section Partition
+Ux4gDivider(
+    style = Ux4gDividerStyle.Dashed,
+    color = Ux4gColors.primary300,
+    label = {
+        Text(
+            text = "DECLARATION",
+            style = defaultTypography.lS_strong,
+            color = Ux4gColors.primary
+        )
+    }
+)`}
+>
+  <div className="flex flex-col items-center justify-center py-2">
+    <img
+      src="/images/components/divider_label_preview.png"
+      alt="UX4G Label Divider Preview"
       className="max-w-full rounded-xl border border-border/60 shadow-sm"
     />
   </div>
@@ -35,16 +137,54 @@ Ux4gDividerWithLabel(label = "OR VERIFY WITH")`}
 
 <h2><MIcon name="code" /> Kotlin Usage</h2>
 
-```kotlin title="Compose Example"
+```kotlin title="Divider Showcase Example"
+import androidx.compose.foundation.layout.*
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.ux4g.designsystemv1.components.Ux4gDivider
-import com.ux4g.designsystemv1.components.Ux4gDividerWithLabel
+import com.ux4g.designsystemv1.components.Ux4gDividerOrientation
+import com.ux4g.designsystemv1.components.Ux4gDividerStyle
+import com.ux4g.designsystemv1.foundation.Ux4gColors
+import com.ux4g.designsystemv1.foundation.defaultTypography
 
 @Composable
-fun DividerExample() {
-    Ux4gDivider(thickness = 1.dp)
-    Ux4gDividerWithLabel(label = "OR")
+fun DividerShowcaseScreen() {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp),
+        verticalArrangement = Arrangement.spacedBy(20.dp)
+    ) {
+        // 1. Standard Solid Divider
+        Text("Standard Divider", style = defaultTypography.hS_strong)
+        Ux4gDivider()
+
+        // 2. Labeled "OR" Separator
+        Ux4gDivider(
+            label = {
+                Text("OR CONTINUE WITH", style = defaultTypography.lS_strong, color = Ux4gColors.neutral600)
+            }
+        )
+
+        // 3. Vertical Separator Row
+        Text("Vertical Partition", style = defaultTypography.hS_strong)
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(40.dp),
+            horizontalArrangement = Arrangement.spacedBy(16.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text("Citizen Login", style = defaultTypography.bM_default)
+            Ux4gDivider(orientation = Ux4gDividerOrientation.Vertical)
+            Text("Officer Portal", style = defaultTypography.bM_default)
+            Ux4gDivider(orientation = Ux4gDividerOrientation.Vertical)
+            Text("Admin Console", style = defaultTypography.bM_default)
+        }
+    }
 }
 ```
 
@@ -57,17 +197,32 @@ fun DividerExample() {
 | Prop | Type | Description | Default |
 | :--- | :--- | :--- | :--- |
 | `modifier` | `Modifier` | Compose layout modifier. | `Modifier` |
-| `thickness` | `Dp` | Stroke thickness height of divider line. | `1.dp` |
-| `color` | `Color` | Divider line stroke color token. | `Ux4gTheme.colorScheme.onSurface.copy(alpha = 0.12f)` |
-
+| `orientation` | `Ux4gDividerOrientation` | Line orientation: `Horizontal` or `Vertical`. | `Ux4gDividerOrientation.Horizontal` |
+| `color` | `Color` | Stroke color of the divider line. | `Ux4gColors.neutral900.copy(alpha = 0.2f)` |
+| `thickness` | `Dp` | Thickness height (horizontal) or width (vertical) of the stroke. | `1.dp` |
+| `style` | `Ux4gDividerStyle` | Visual stroke style: `Solid`, `Dashed`, `Dotted`. | `Ux4gDividerStyle.Solid` |
+| `startIndent` | `Dp` | Inset padding before the start of the divider line. | `0.dp` |
+| `endIndent` | `Dp` | Inset padding after the end of the divider line. | `0.dp` |
+| `label` | `(@Composable () -> Unit)?` | Optional composable centered between symmetric partition lines. | `null` |
+| `labelSpacing` | `Dp` | Spacing gap between the partition lines and the centered label. | `8.dp` |
+| `width` | `Dp?` | Optional fixed width constraint override. | `null` |
+| `height` | `Dp?` | Optional fixed height constraint override. | `null` |
 
 ---
 
-### `Ux4gDividerWithLabel` Props
+### `Ux4gDividerOrientation` Enum
 
-| Prop | Type | Description | Default |
-| :--- | :--- | :--- | :--- |
-| `label` <span className="text-red-500 font-bold">*</span> | `String` | Middle partition label text. | `—` |
-| `modifier` | `Modifier` | Compose layout modifier. | `Modifier` |
-| `color` | `Color` | Line color token. | `Ux4gTheme.colorScheme.onSurface.copy(alpha = 0.12f)` |
+| Value | Description |
+| :--- | :--- |
+| `Horizontal` | Full-width horizontal divider dividing vertical content blocks. |
+| `Vertical` | Vertical partition dividing horizontally aligned elements in a `Row`. |
 
+---
+
+### `Ux4gDividerStyle` Enum
+
+| Value | Dash Pattern | Description |
+| :--- | :--- | :--- |
+| `Solid` | Continuous | Standard solid straight separator line. |
+| `Dashed` | `12.dp` line, `8.dp` gap | Elongated dashed boundary line. |
+| `Dotted` | `4.dp` dot, `4.dp` gap | Compact dotted boundary line. |
