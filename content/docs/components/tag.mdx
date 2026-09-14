@@ -1,29 +1,110 @@
 ---
 title: Tag
-description: Small metadata pills for document categories, government schemes, and priority flags
+description: Compact metadata pills and unified multi-segment status badges for categories, government schemes, and verification states
 ---
 
-# Tag (`Ux4gTag`)
+# Tag (`Ux4gTag` / `Ux4gUnifiedPillTag`)
 
-Small metadata pills for document categories, government schemes, and priority flags.
+The UX4G Tag component renders compact metadata pills and status indicators. It helps citizens and administrators quickly identify document classifications, application states, priority flags, and multi-part status summaries across government portals.
 
-Import from `com.ux4g.designsystemv1.components.Ux4gTag`.
+### Key Capabilities
+
+- **Semantic Color Schemes**: 6 purpose-built color themes (`Neutral`, `Brand`, `Success`, `Warning`, `Error`, `Info`).
+- **Visual Styles**: `Tonal` (tinted background), `Filled` (solid high-contrast background), `Outline` (bordered), and `Text` (minimal plain text).
+- **Shapes & Sizes**: `Circular` (pill shape, 999dp radius) and `Rectangular` (rounded rectangular, 4dp radius); `M` (20dp height) and `L` (24dp height).
+- **Unified Multi-Segment Pill Tag**: `Ux4gUnifiedPillTag` combining multiple `Ux4gPillSegment` entries separated by clean vertical dividers inside a single cohesive container (e.g., `"2 days remaining | Pending"`).
+- **Leading Content & Dismiss Slot**: Support for leading icons, avatar initials, or status dots, plus optional `onDismiss` close action button.
+- **Custom Styling**: Complete custom overrides for background color, content color, border stroke, typography, and corner radius.
+
+Import from `com.ux4g.designsystemv1.components.*`.
 
 ---
 
-<h2><MIcon name="smartphone" /> Interactive Preview</h2>
+<h2><MIcon name="smartphone" /> Interactive Previews</h2>
+
+### 1. Default Tags (`Ux4gTag`)
+
+Single-value status and category pills rendered across semantic color themes (`Neutral`, `Brand`, `Success`, `Warning`, `Error`, `Info`) with leading icon slots.
 
 <ComponentPreview
   title="Ux4gTag"
   category="Jetpack Compose"
-  code={`Ux4gTag(text = "Central Sector Scheme", variant = Ux4gTagVariant.Primary)
-Ux4gTag(text = "High Priority", variant = Ux4gTagVariant.Error)
-Ux4gTag(text = "Offline Verification", variant = Ux4gTagVariant.Neutral)`}
+  code={`Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+    Ux4gTag(
+        text = "Neutral",
+        colorScheme = Ux4gTagColor.Neutral,
+        style = Ux4gTagStyle.Filled,
+        leadingContent = { Ux4gIconComponent(icon = Ux4gIcons.Circle, modifier = Modifier.size(12.dp)) }
+    )
+    Ux4gTag(
+        text = "Brand",
+        colorScheme = Ux4gTagColor.Brand,
+        style = Ux4gTagStyle.Filled,
+        leadingContent = { Ux4gIconComponent(icon = Ux4gIcons.Circle, modifier = Modifier.size(12.dp)) }
+    )
+    Ux4gTag(
+        text = "Success",
+        colorScheme = Ux4gTagColor.Success,
+        style = Ux4gTagStyle.Filled,
+        leadingContent = { Ux4gIconComponent(icon = Ux4gIcons.Circle, modifier = Modifier.size(12.dp)) }
+    )
+    Ux4gTag(
+        text = "Warning",
+        colorScheme = Ux4gTagColor.Warning,
+        style = Ux4gTagStyle.Filled,
+        leadingContent = { Ux4gIconComponent(icon = Ux4gIcons.Circle, modifier = Modifier.size(12.dp)) }
+    )
+    Ux4gTag(
+        text = "Error",
+        colorScheme = Ux4gTagColor.Error,
+        style = Ux4gTagStyle.Filled,
+        leadingContent = { Ux4gIconComponent(icon = Ux4gIcons.Circle, modifier = Modifier.size(12.dp)) }
+    )
+    Ux4gTag(
+        text = "Info",
+        colorScheme = Ux4gTagColor.Info,
+        style = Ux4gTagStyle.Filled,
+        leadingContent = { Ux4gIconComponent(icon = Ux4gIcons.Circle, modifier = Modifier.size(12.dp)) }
+    )
+}`}
 >
   <div className="flex flex-col items-center justify-center py-2">
     <img
       src="/images/components/tag_preview.png"
-      alt="UX4G Tag Preview"
+      alt="UX4G Default Tags Preview"
+      className="max-w-full rounded-xl border border-border/60 shadow-sm"
+    />
+  </div>
+</ComponentPreview>
+
+---
+
+### 2. Unified Pill Tag (`Ux4gUnifiedPillTag`)
+
+Multi-segment unified pill badge combining timeline metadata and status states separated by an integrated vertical divider.
+
+<ComponentPreview
+  title="Ux4gUnifiedPillTag"
+  category="Jetpack Compose"
+  code={`Ux4gUnifiedPillTag(
+    segments = listOf(
+        Ux4gPillSegment(
+            text = "2 days remaining",
+            bold = false
+        ),
+        Ux4gPillSegment(
+            text = "Pending",
+            textColor = Color(0xFFFA8C16),
+            bold = true
+        )
+    ),
+    size = Ux4gTagSize.L
+)`}
+>
+  <div className="flex flex-col items-center justify-center py-2">
+    <img
+      src="/images/components/tag-unifield_preview.png"
+      alt="UX4G Unified Pill Tag Preview"
       className="max-w-full rounded-xl border border-border/60 shadow-sm"
     />
   </div>
@@ -33,14 +114,99 @@ Ux4gTag(text = "Offline Verification", variant = Ux4gTagVariant.Neutral)`}
 
 <h2><MIcon name="code" /> Kotlin Usage</h2>
 
-```kotlin title="Compose Example"
-import androidx.compose.runtime.Composable
+### 1. Document Classification & Verification Status
+
+```kotlin title="DocumentStatusTags.kt"
+import androidx.compose.foundation.layout.*
+import androidx.compose.runtime.*
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import com.ux4g.designsystemv1.components.Ux4gTag
-import com.ux4g.designsystemv1.components.Ux4gTagVariant
+import com.ux4g.designsystemv1.components.Ux4gTagColor
+import com.ux4g.designsystemv1.components.Ux4gTagShape
+import com.ux4g.designsystemv1.components.Ux4gTagSize
+import com.ux4g.designsystemv1.components.Ux4gTagStyle
+import com.ux4g.designsystemv1.foundation.Ux4gColors
+import com.ux4g.designsystemv1.foundation.Ux4gIconComponent
+import com.ux4g.designsystemv1.foundation.Ux4gIcons
 
 @Composable
-fun TagDemo() {
-    Ux4gTag(text = "DBT Active", variant = Ux4gTagVariant.Success)
+fun DocumentStatusTagExample() {
+    var isDismissed by remember { mutableStateOf(false) }
+
+    Row(
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        modifier = Modifier.padding(16.dp)
+    ) {
+        // Tonal Scheme Pill Tag with Leading Icon
+        Ux4gTag(
+            text = "Central Sector Scheme",
+            colorScheme = Ux4gTagColor.Brand,
+            style = Ux4gTagStyle.Tonal,
+            size = Ux4gTagSize.M,
+            leadingContent = {
+                Ux4gIconComponent(
+                    icon = Ux4gIcons.Home,
+                    contentDescription = "Scheme",
+                    modifier = Modifier.size(12.dp),
+                    tint = Ux4gColors.primary
+                )
+            }
+        )
+
+        // Rectangular Outline Status Tag
+        Ux4gTag(
+            text = "Verified",
+            colorScheme = Ux4gTagColor.Success,
+            shape = Ux4gTagShape.Rectangular,
+            style = Ux4gTagStyle.Outline,
+            size = Ux4gTagSize.M
+        )
+
+        // Dismissible Filter Tag
+        if (!isDismissed) {
+            Ux4gTag(
+                text = "State: Maharashtra",
+                colorScheme = Ux4gTagColor.Neutral,
+                style = Ux4gTagStyle.Tonal,
+                size = Ux4gTagSize.M,
+                onDismiss = { isDismissed = true }
+            )
+        }
+    }
+}
+```
+
+### 2. Unified Multi-Segment Tracking Pill
+
+```kotlin title="ApplicationTrackingTag.kt"
+import androidx.compose.foundation.layout.*
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.dp
+import com.ux4g.designsystemv1.components.Ux4gPillSegment
+import com.ux4g.designsystemv1.components.Ux4gTagSize
+import com.ux4g.designsystemv1.components.Ux4gUnifiedPillTag
+
+@Composable
+fun ApplicationTrackingBadge() {
+    Ux4gUnifiedPillTag(
+        segments = listOf(
+            Ux4gPillSegment(
+                text = "2 days remaining",
+                bold = false
+            ),
+            Ux4gPillSegment(
+                text = "Pending",
+                textColor = Color(0xFFFA8C16), // Warning Orange
+                bold = true
+            )
+        ),
+        size = Ux4gTagSize.L,
+        backgroundColor = Color(0xFFFFFFFF),
+        borderColor = Color(0xFFE5E7EB),
+        dividerColor = Color(0xFFE5E7EB)
+    )
 }
 ```
 
@@ -48,10 +214,71 @@ fun TagDemo() {
 
 <h2><MIcon name="settings" /> Parameters</h2>
 
+### `Ux4gTag` Props
+
 | Prop | Type | Description | Default |
 | :--- | :--- | :--- | :--- |
-| `text` <span className="text-red-500 font-bold">*</span> | `String` | Label text rendered inside the tag pill. | `—` |
-| `variant` | `Ux4gTagVariant` | Color tone: `Primary`, `Neutral`, `Success`, `Warning`, `Error`. | `Ux4gTagVariant.Primary` |
-| `modifier` | `Modifier` | Compose layout modifier. | `Modifier` |
-| `leadingIcon` | `(@Composable () -> Unit)?` | Optional leading icon composable slot. | `null` |
+| `text` <span className="text-red-500 font-bold">*</span> | `String` | Label text displayed inside the tag container. | `—` |
+| `modifier` | `Modifier` | Compose modifier applied to the outer tag container. | `Modifier` |
+| `size` | `Ux4gTagSize` | Tag height and padding size (`M` = 20dp, `L` = 24dp). | `Ux4gTagSize.M` |
+| `shape` | `Ux4gTagShape` | Tag corner geometry (`Circular` = 999dp pill, `Rectangular` = 4dp). | `Ux4gTagShape.Circular` |
+| `style` | `Ux4gTagStyle` | Fill style variant (`Tonal`, `Filled`, `Outline`, `Text`). | `Ux4gTagStyle.Tonal` |
+| `colorScheme` | `Ux4gTagColor` | Predefined semantic color theme (`Neutral`, `Brand`, `Success`, `Warning`, `Error`, `Info`). | `Ux4gTagColor.Neutral` |
+| `leadingContent` | `(@Composable () -> Unit)?` | Optional leading composable slot for icons, avatars, or status indicators. | `null` |
+| `onDismiss` | `(() -> Unit)?` | Optional callback rendering a trailing close icon button for removable tags. | `null` |
+| `customBackgroundColor` | `Color?` | Custom background color override. | `null` |
+| `customContentColor` | `Color?` | Custom text and icon tint color override. | `null` |
+| `customBorderColor` | `Color?` | Custom border stroke color override. | `null` |
+| `customBorderWidth` | `Dp?` | Custom border stroke width override. | `null` |
+| `customTextStyle` | `TextStyle?` | Custom typography style override. | `null` |
+| `customCornerRadius` | `Dp?` | Custom corner radius value override. | `null` |
 
+---
+
+### `Ux4gUnifiedPillTag` Props
+
+| Prop | Type | Description | Default |
+| :--- | :--- | :--- | :--- |
+| `segments` <span className="text-red-500 font-bold">*</span> | `List<Ux4gPillSegment>` | List of text/icon segments displayed sequentially with integrated dividers. | `—` |
+| `modifier` | `Modifier` | Compose modifier applied to the unified pill container. | `Modifier` |
+| `size` | `Ux4gTagSize` | Height and padding scale (`M` = 20dp, `L` = 24dp). | `Ux4gTagSize.L` |
+| `backgroundColor` | `Color?` | Background fill color for the unified container. | `null` |
+| `borderColor` | `Color?` | Outer border stroke color. | `null` |
+| `borderWidth` | `Dp` | Outer border stroke width. | `1.dp` |
+| `dividerColor` | `Color?` | Color of vertical dividers placed between segments. | `null` |
+| `customBorderRadius` | `Dp` | Container corner radius. | `Ux4gRadius.Radius8` |
+
+---
+
+### `Ux4gPillSegment` Data Model
+
+| Field | Type | Description | Default |
+| :--- | :--- | :--- | :--- |
+| `text` <span className="text-red-500 font-bold">*</span> | `String` | Segment text label. | `—` |
+| `leading` | `(@Composable () -> Unit)?` | Optional composable rendered before the segment text (e.g. status dot). | `null` |
+| `textColor` | `Color?` | Custom text color for this individual segment. | `null` |
+| `bold` | `Boolean` | Whether to apply bold/strong font weight styling. | `false` |
+
+---
+
+### `Ux4gTagColor` Reference
+
+| Color Scheme | Background (`Tonal`) | Background (`Filled`) | Content / Text (`Tonal`) | Content (`Filled`) |
+| :--- | :--- | :--- | :--- | :--- |
+| `Neutral` | `onSurface (10% alpha)` | `onSurface (50% alpha)` | `onSurface (80% alpha)` | `Ux4gColors.white` |
+| `Brand` | `primary (12% alpha)` | `primary` | `primary` | `Ux4gColors.white` |
+| `Success` | `green600 (12% alpha)` | `green600` | `green600` | `Ux4gColors.white` |
+| `Warning` | `orange600 (12% alpha)` | `orange600` | `orange600` | `Ux4gColors.white` |
+| `Error` | `red600 (12% alpha)` | `red600` | `red600` | `Ux4gColors.white` |
+| `Info` | `cyan600 (12% alpha)` | `cyan600` | `cyan600` | `Ux4gColors.white` |
+
+---
+
+### `Ux4gTagStyle` Reference
+
+| Style | Background | Border | Content Color | Typical Context |
+| :--- | :--- | :--- | :--- | :--- |
+| `Tonal` | Theme Tint (12% alpha) | None | Full Tone Color | Category badges, metadata chips, status summaries |
+| `Filled` | Solid Theme Color | None | White / Surface | High-contrast critical alerts, urgent flags |
+| `Outline` | Transparent | Theme Color (1dp) | Theme Color | Secondary filters, selectable tags, status tags |
+| `Text` | Transparent | None | Theme Color | Lightweight inline tags in dense tables or list rows |
