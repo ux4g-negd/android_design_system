@@ -1,31 +1,161 @@
 ---
 title: Pagination
-description: Page number navigation, next/prev triggers, and dot indicators for large result sets
+description: Dot pagination indicators featuring animated pill active states, capsule containers, and flexible arrow alignments
 ---
 
-# Pagination (`Ux4gPaginationIndicator`)
+# Pagination (`Ux4gPaginationDotted`)
 
-Page number navigation, next/prev triggers, and dot indicators for large result sets.
+The UX4G Pagination component provides animated dot progression indicators for multi-page carousels, onboarding walkthroughs, and large list views.
 
-Import from `com.ux4g.designsystemv1.components.Ux4gPaginationIndicator`.
+It supports:
+- **Smooth Animation**: Active page dot seamlessly expands into an elongated pill (`size.dotSize * 2.5f`).
+- **Container Styling**: Default borderless indicator or rounded `Capsule` container pill.
+- **Arrow Alignments**: Inline bilateral navigation chevrons (`<` ... dots ... `>`), chevron-free mode, or right-grouped arrow controls.
+- **Sizes**: `Small` (10dp dot, 24dp arrow) and `Medium` (12dp dot, 32dp arrow).
+
+Import from `com.ux4g.designsystemv1.components.*`.
 
 ---
 
-<h2><MIcon name="smartphone" /> Interactive Preview</h2>
+<h2><MIcon name="smartphone" /> Interactive Previews</h2>
+
+### 1. Default (Bilateral Arrows)
+
+Standard pagination indicator with previous and next arrow buttons flanking the dot progression row.
 
 <ComponentPreview
-  title="Ux4gPaginationIndicator"
+  title="Ux4gPaginationDotted (Default)"
   category="Jetpack Compose"
-  code={`Ux4gPaginationIndicator(
-    currentPage = page,
-    totalPages = 12,
-    onPageChange = { newPage -> page = newPage }
+  code={`var currentPage by remember { mutableStateOf(2) }
+
+Ux4gPaginationDotted(
+    totalPageCount = 7,
+    currentPageIndex = currentPage,
+    onPageChange = { currentPage = it },
+    showArrows = true,
+    arrowsOnRight = false,
+    variant = Ux4gPaginationVariant.Default
 )`}
 >
   <div className="flex flex-col items-center justify-center py-2">
     <img
       src="/images/components/pagination_preview.png"
-      alt="UX4G Pagination Preview"
+      alt="UX4G Default Pagination Preview"
+      className="max-w-full rounded-xl border border-border/60 shadow-sm"
+    />
+  </div>
+</ComponentPreview>
+
+---
+
+### 2. Capsule with Arrows
+
+Pagination indicator wrapped inside a protective white capsule container pill with subtle borders and bilateral navigation arrows.
+
+<ComponentPreview
+  title="Ux4gPaginationDotted (Capsule with Arrows)"
+  category="Jetpack Compose"
+  code={`var currentPage by remember { mutableStateOf(2) }
+
+Ux4gPaginationDotted(
+    totalPageCount = 7,
+    currentPageIndex = currentPage,
+    onPageChange = { currentPage = it },
+    showArrows = true,
+    arrowsOnRight = false,
+    variant = Ux4gPaginationVariant.Capsule
+)`}
+>
+  <div className="flex flex-col items-center justify-center py-2">
+    <img
+      src="/images/components/pagination-capsule-arrow_preview.png"
+      alt="UX4G Capsule with Arrows Pagination Preview"
+      className="max-w-full rounded-xl border border-border/60 shadow-sm"
+    />
+  </div>
+</ComponentPreview>
+
+---
+
+### 3. Capsule without Arrows
+
+Minimalist capsule pill enclosing only the animated page dots without arrow buttons.
+
+<ComponentPreview
+  title="Ux4gPaginationDotted (Capsule without Arrows)"
+  category="Jetpack Compose"
+  code={`var currentPage by remember { mutableStateOf(2) }
+
+Ux4gPaginationDotted(
+    totalPageCount = 7,
+    currentPageIndex = currentPage,
+    onPageChange = { currentPage = it },
+    showArrows = false,
+    variant = Ux4gPaginationVariant.Capsule
+)`}
+>
+  <div className="flex flex-col items-center justify-center py-2">
+    <img
+      src="/images/components/pagination-capsule-without-arrow_preview.png"
+      alt="UX4G Capsule without Arrows Pagination Preview"
+      className="max-w-full rounded-xl border border-border/60 shadow-sm"
+    />
+  </div>
+</ComponentPreview>
+
+---
+
+### 4. Capsule with Right-Aligned Arrows
+
+Dot indicator row wrapped inside a capsule pill on the left, with previous and next arrow buttons grouped together on the right.
+
+<ComponentPreview
+  title="Ux4gPaginationDotted (Capsule with Right-Aligned Arrows)"
+  category="Jetpack Compose"
+  code={`var currentPage by remember { mutableStateOf(0) }
+
+Ux4gPaginationDotted(
+    totalPageCount = 7,
+    currentPageIndex = currentPage,
+    onPageChange = { currentPage = it },
+    showArrows = true,
+    arrowsOnRight = true,
+    variant = Ux4gPaginationVariant.Capsule
+)`}
+>
+  <div className="flex flex-col items-center justify-center py-2">
+    <img
+      src="/images/components/pagination-capsule-right-align_preview.png"
+      alt="UX4G Capsule with Right-Aligned Arrows Preview"
+      className="max-w-full rounded-xl border border-border/60 shadow-sm"
+    />
+  </div>
+</ComponentPreview>
+
+---
+
+### 5. Without Capsule with Right-Aligned Arrows
+
+Borderless dot row aligned to the left, paired with right-grouped circular previous and next buttons.
+
+<ComponentPreview
+  title="Ux4gPaginationDotted (Without Capsule with Right-Aligned Arrows)"
+  category="Jetpack Compose"
+  code={`var currentPage by remember { mutableStateOf(2) }
+
+Ux4gPaginationDotted(
+    totalPageCount = 7,
+    currentPageIndex = currentPage,
+    onPageChange = { currentPage = it },
+    showArrows = true,
+    arrowsOnRight = true,
+    variant = Ux4gPaginationVariant.Default
+)`}
+>
+  <div className="flex flex-col items-center justify-center py-2">
+    <img
+      src="/images/components/pagination-right-align.png"
+      alt="UX4G Without Capsule with Right-Aligned Arrows Preview"
       className="max-w-full rounded-xl border border-border/60 shadow-sm"
     />
   </div>
@@ -35,19 +165,47 @@ Import from `com.ux4g.designsystemv1.components.Ux4gPaginationIndicator`.
 
 <h2><MIcon name="code" /> Kotlin Usage</h2>
 
-```kotlin title="Compose Example"
+```kotlin title="Citizen Scheme Carousel Pagination Example"
+import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.*
-import com.ux4g.designsystemv1.components.Ux4gPaginationIndicator
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
+import com.ux4g.designsystemv1.components.Ux4gPaginationDotted
+import com.ux4g.designsystemv1.components.Ux4gPaginationSize
+import com.ux4g.designsystemv1.components.Ux4gPaginationVariant
 
 @Composable
-fun PaginationExample() {
-    var page by remember { mutableStateOf(1) }
+fun SchemeCarouselPaginationExample() {
+    var activePage by remember { mutableStateOf(0) }
+    val pageCount = 5
 
-    Ux4gPaginationIndicator(
-        currentPage = page,
-        totalPages = 10,
-        onPageChange = { page = it }
-    )
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(20.dp)
+    ) {
+        // Standard Dotted Indicator
+        Ux4gPaginationDotted(
+            totalPageCount = pageCount,
+            currentPageIndex = activePage,
+            onPageChange = { activePage = it },
+            variant = Ux4gPaginationVariant.Default,
+            size = Ux4gPaginationSize.Small
+        )
+
+        // Capsule Indicator with Right-Aligned Controls
+        Ux4gPaginationDotted(
+            totalPageCount = pageCount,
+            currentPageIndex = activePage,
+            onPageChange = { activePage = it },
+            arrowsOnRight = true,
+            variant = Ux4gPaginationVariant.Capsule,
+            size = Ux4gPaginationSize.Medium
+        )
+    }
 }
 ```
 
@@ -55,11 +213,37 @@ fun PaginationExample() {
 
 <h2><MIcon name="settings" /> Parameters</h2>
 
+### `Ux4gPaginationDotted` Props
+
 | Prop | Type | Description | Default |
 | :--- | :--- | :--- | :--- |
-| `currentPage` <span className="text-red-500 font-bold">*</span> | `Int` | Active 1-indexed page pointer. | `—` |
-| `totalPages` <span className="text-red-500 font-bold">*</span> | `Int` | Total number of pages available. | `—` |
-| `onPageChange` <span className="text-red-500 font-bold">*</span> | `(Int) -> Unit` | Callback triggered when page button is clicked. | `—` |
-| `modifier` | `Modifier` | Compose layout modifier. | `Modifier` |
-| `maxVisiblePages` | `Int` | Maximum visible number buttons before ellipsis. | `5` |
+| `totalPageCount` <span className="text-red-500 font-bold">*</span> | `Int` | Total number of pages / steps in the progression sequence. | — |
+| `currentPageIndex` <span className="text-red-500 font-bold">*</span> | `Int` | Zero-based index of the currently active page. | — |
+| `onPageChange` <span className="text-red-500 font-bold">*</span> | `(Int) -> Unit` | Callback invoked when a user clicks a dot or navigation arrow button. | — |
+| `modifier` | `Modifier` | Compose layout modifier applied to outer container. | `Modifier` |
+| `showArrows` | `Boolean` | Controls whether previous and next arrow buttons are displayed. | `true` |
+| `arrowsOnRight` | `Boolean` | When true, groups navigation chevrons together on the right side. | `false` |
+| `variant` | `Ux4gPaginationVariant` | Visual style of the indicator: `Default` or `Capsule`. | `Ux4gPaginationVariant.Default` |
+| `size` | `Ux4gPaginationSize` | Size preset: `Small` (10dp dot, 24dp arrow) or `Medium` (12dp dot, 32dp arrow). | `Ux4gPaginationSize.Small` |
+| `enabled` | `Boolean` | Interactive state for dot clicks and chevron triggers. | `true` |
+| `activeColor` | `Color?` | Background color of the active elongated pill dot. | `Ux4gColors.primary` |
+| `inactiveColor` | `Color?` | Background color of inactive dots and circular arrow buttons. | `Ux4gColors.primary100` |
+| `inactiveBorderColor` | `Color?` | Optional border color for inactive dots. | `Color.Transparent` |
+| `width` | `Dp?` | Optional explicit fixed width constraint. | `null` |
+| `height` | `Dp?` | Optional explicit fixed height constraint. | `null` |
 
+---
+
+### Enums Reference
+
+```kotlin
+enum class Ux4gPaginationVariant {
+    Default,  // Borderless clean indicator
+    Capsule   // Rounded pill background container
+}
+
+enum class Ux4gPaginationSize(val dotSize: Dp, val spacing: Dp, val arrowSize: Dp) {
+    Small(10.dp, 8.dp, 24.dp),    // Compact size
+    Medium(12.dp, 10.dp, 32.dp)  // Standard touch target size
+}
+```
