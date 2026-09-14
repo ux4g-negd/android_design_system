@@ -1,32 +1,49 @@
 ---
 title: Time Picker
-description: Analog clock and digital hour/minute selection dialog for appointment scheduling
+description: Interactive time selection trigger field and scroll-wheel dialog modal supporting 12-hour AM/PM formats, custom minute intervals, and validation states
 ---
 
 # Time Picker (`Ux4gTimePicker`)
 
-Analog clock and digital hour/minute selection dialog for appointment scheduling.
+The UX4G Time Picker component provides a standardized time selection input for citizens scheduling public service appointments, grievance hearings, passport slots, and administrative verification visits.
+
+### Key Capabilities
+
+- **Form Input Trigger**: Clean outlined input container displaying the selected time formatted in 12-hour AM/PM notation with trailing clock icon (`AccessTime`).
+- **Scroll-Wheel Modal Dialog**: Integrated `Ux4gTimePickerDialog` featuring smooth snap-fling vertical wheels for hours (`01` to `12`) and minutes (`00` to `59`), plus an AM/PM toggle selector.
+- **Custom Minute Intervals**: Configurable step increments via `minuteInterval` (e.g., `1`, `5`, `15`, or `30` minute slots).
+- **Labels & Required Indicators**: Form label support with mandatory asterisk (`*`) and descriptive helper captions.
+- **Dual Type Support**: Overloaded composables supporting both `Ux4gTimeOfDay` and standard `java.time.LocalTime`.
 
 Import from `com.ux4g.designsystemv1.components.Ux4gTimePicker`.
 
 ---
 
-<h2><MIcon name="smartphone" /> Interactive Preview</h2>
+<h2><MIcon name="smartphone" /> Interactive Previews</h2>
+
+### 1. Time Picker Input Field (`Ux4gTimePicker`)
+
+Outlined time selection trigger field displaying placeholder or chosen time with trailing clock icon.
 
 <ComponentPreview
   title="Ux4gTimePicker"
   category="Jetpack Compose"
-  code={`Ux4gTimePicker(
-    selectedTime = appointmentTime,
-    onTimeSelected = { time -> appointmentTime = time },
-    label = "Appointment Slot Time",
-    is24Hour = false
+  code={`var selectedTime by remember { mutableStateOf<Ux4gTimeOfDay?>(null) }
+
+Ux4gTimePicker(
+    selectedTime = selectedTime,
+    onTimeSelected = { selectedTime = it },
+    placeholder = "Select time",
+    label = "Preferred Appointment Slot",
+    isRequired = true,
+    minuteInterval = 5,
+    description = "Available slots between 09:00 AM and 05:00 PM"
 )`}
 >
   <div className="flex flex-col items-center justify-center py-2">
     <img
       src="/images/components/time-picker_preview.png"
-      alt="UX4G Time Picker Preview"
+      alt="UX4G Time Picker Input Preview"
       className="max-w-full rounded-xl border border-border/60 shadow-sm"
     />
   </div>
@@ -34,21 +51,73 @@ Import from `com.ux4g.designsystemv1.components.Ux4gTimePicker`.
 
 ---
 
+### 2. Time Picker Dialog Modal (Auto-Opened on Click)
+
+When a citizen clicks on the time picker input field, the interactive scroll-wheel time picker dialog modal opens automatically to allow hour, minute, and AM/PM selection:
+
+<div className="flex flex-col items-center justify-center p-6 bg-muted/20 border border-border/60 rounded-xl my-4">
+  <img
+    src="/images/components/time-picker-dialog.png"
+    alt="UX4G Time Picker Dialog Modal"
+    className="max-w-xs rounded-xl shadow-lg border border-border/60"
+  />
+  <p className="text-xs text-muted-foreground mt-3 font-medium text-center">
+    Modal dialog view with hour (HH) and minute (MM) scroll wheels, AM/PM selector toggle, and Done / Cancel action buttons.
+  </p>
+</div>
+
+---
+
 <h2><MIcon name="code" /> Kotlin Usage</h2>
 
-```kotlin title="Compose Example"
+### 1. Appointment Scheduling with 12-Hour AM/PM Format
+
+```kotlin title="AppointmentTimePicker.kt"
+import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.*
-import java.time.LocalTime
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
+import com.ux4g.designsystemv1.components.Ux4gTimeOfDay
 import com.ux4g.designsystemv1.components.Ux4gTimePicker
 
 @Composable
-fun TimePickerExample() {
-    var time by remember { mutableStateOf<LocalTime?>(null) }
+fun AppointmentSlotBooking() {
+    var appointmentTime by remember { mutableStateOf<Ux4gTimeOfDay?>(Ux4gTimeOfDay(10, 30)) }
+
+    Column(
+        modifier = Modifier.padding(16.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
+        Ux4gTimePicker(
+            selectedTime = appointmentTime,
+            onTimeSelected = { appointmentTime = it },
+            label = "Appointment Time",
+            isRequired = true,
+            minuteInterval = 15,
+            placeholder = "Choose a time slot",
+            description = "Appointments are scheduled in 15-minute intervals"
+        )
+    }
+}
+```
+
+### 2. Using Standard `java.time.LocalTime`
+
+```kotlin title="LocalTimePickerExample.kt"
+import androidx.compose.runtime.*
+import com.ux4g.designsystemv1.components.Ux4gTimePicker
+import java.time.LocalTime
+
+@Composable
+fun HearingSchedulePicker() {
+    var selectedTime by remember { mutableStateOf<LocalTime?>(null) }
 
     Ux4gTimePicker(
-        label = "Preferred Slot",
-        selectedTime = time,
-        onTimeSelected = { time = it }
+        selectedTime = selectedTime,
+        onTimeSelected = { time -> selectedTime = time },
+        label = "Grievance Hearing Time",
+        isRequired = true,
+        placeholder = "Select hearing time"
     )
 }
 ```
@@ -57,12 +126,33 @@ fun TimePickerExample() {
 
 <h2><MIcon name="settings" /> Parameters</h2>
 
+### `Ux4gTimePicker` Props
+
 | Prop | Type | Description | Default |
 | :--- | :--- | :--- | :--- |
-| `label` <span className="text-red-500 font-bold">*</span> | `String` | Field title text. | `—` |
-| `onTimeSelected` <span className="text-red-500 font-bold">*</span> | `(LocalTime) -> Unit` | Callback providing chosen `LocalTime`. | `—` |
-| `selectedTime` | `LocalTime?` | Currently selected time value. | `null` |
-| `is24Hour` | `Boolean` | Toggles between 12-hour AM/PM vs 24-hour military clock. | `false` |
-| `enabled` | `Boolean` | Interactive enabled state. | `true` |
-| `modifier` | `Modifier` | Compose layout modifier. | `Modifier` |
+| `selectedTime` | `Ux4gTimeOfDay?` / `LocalTime?` | Currently selected time value displayed in the input box. | `null` |
+| `onTimeSelected` <span className="text-red-500 font-bold">*</span> | `(Ux4gTimeOfDay) -> Unit` / `(LocalTime) -> Unit` | Callback triggered when the citizen confirms a time in the dialog modal. | `—` |
+| `modifier` | `Modifier` | Compose layout modifier applied to the outer container. | `Modifier` |
+| `placeholder` | `String` | Placeholder text shown when no time is selected. | `"Select time"` |
+| `enabled` | `Boolean` | Controls interactive touch state and disabled opacity. | `true` |
+| `minuteInterval` | `Int` | Step increment for the minute scroll wheel (`1`, `5`, `10`, `15`, `30`). | `1` |
+| `label` | `String?` | Header title displayed above the time input box. | `null` |
+| `description` | `String?` | Supplementary helper or validation message displayed below input. | `null` |
+| `isRequired` | `Boolean` | When `true`, appends a red asterisk (`*`) to the label. | `false` |
+| `colors` | `Ux4gTimePickerColors` | Custom color palette configuration for input and dialog wheel elements. | `Ux4gTimePickerDefaults.colors()` |
 
+---
+
+### `Ux4gTimeOfDay` Data Class Reference
+
+| Property / Method | Type / Signature | Description |
+| :--- | :--- | :--- |
+| `hour` <span className="text-red-500 font-bold">*</span> | `Int` | 24-hour format hour (`0..23`). |
+| `minute` <span className="text-red-500 font-bold">*</span> | `Int` | Minute of the hour (`0..59`). |
+| `hourOfPeriod` | `Int` | 12-hour period hour (`1..12`). |
+| `isAm` | `Boolean` | Returns `true` if before noon (`hour < 12`), `false` for PM. |
+| `format()` | `(placeholder: String) -> String` | Returns formatted string (e.g., `"05:02 PM"`). |
+| `toLocalTime()` | `() -> LocalTime` | Converts to standard `java.time.LocalTime`. |
+| `now()` | `() -> Ux4gTimeOfDay` | Static constructor capturing system local current time. |
+| `fromLocalTime()` | `(LocalTime) -> Ux4gTimeOfDay` | Static helper converting `LocalTime` to `Ux4gTimeOfDay`. |
+| `of()` | `(hour: Int, minute: Int, isAm: Boolean) -> Ux4gTimeOfDay` | Static helper constructing instance from 12-hour values. |
