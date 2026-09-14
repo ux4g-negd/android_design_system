@@ -1,0 +1,260 @@
+---
+title: Popover
+description: Rich contextual floating overlay anchored to trigger controls, supporting custom headers, actions, subtitles, and interactive rich content
+---
+
+# Popover (`Ux4gTooltip`)
+
+The UX4G Popover component displays rich interactive contextual overlay content anchored directly to a button, icon, or card trigger element. Built on top of `Ux4gTooltip`, it provides complete flexibility for custom card bodies, multi-line typography, badge labels, overflow menus, and call-to-action links.
+
+### Key Capabilities
+
+- **Rich Floating Overlays**: Displays multi-level metadata, subtitles, structured descriptions, and action links floating seamlessly above the page.
+- **Directional Pointer Arrows**: Automatic directional pointer arrow (`Ux4gTooltipPlacement`) dynamically pointing towards the triggering UI anchor.
+- **Custom Content Slot**: Full control through the `customContent` Composable slot, allowing custom headers, labels, icons, and buttons.
+- **Persistent & Dismissible**: Managed through `TooltipState(isPersistent = true)` for interactive user workflows that remain open until explicitly tapped outside or dismissed.
+- **Custom Theming**: Customizable background color, border radius, content color tint, and max-width constraints.
+
+Import from `com.ux4g.designsystemv1.components.tooltip.*`.
+
+---
+
+<h2><MIcon name="smartphone" /> Interactive Preview</h2>
+
+<ComponentPreview
+  title="Ux4gPopover (Built using Ux4gTooltip)"
+  category="Jetpack Compose"
+  code={`val tooltipState = rememberTooltipState(isPersistent = true)
+
+Ux4gTooltip(
+    placement = Ux4gTooltipPlacement.Bottom,
+    backgroundColor = Ux4gColors.white,
+    contentColor = Ux4gColors.neutral900,
+    cornerRadius = 8.dp,
+    maxWidth = 320.dp,
+    state = tooltipState,
+    customContent = {
+        Column(
+            modifier = Modifier.padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(10.dp)
+        ) {
+            // Header Row: Icon + Title + Label + Options Menu
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Ux4gIconComponent(
+                    icon = Ux4gIcons.Category,
+                    contentDescription = null,
+                    modifier = Modifier.size(18.dp),
+                    tint = Ux4gColors.neutral900
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+                Text(
+                    text = "Popover Title",
+                    style = defaultTypography.lM_strong,
+                    color = Ux4gColors.neutral900
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+                Text(
+                    text = "Label",
+                    style = defaultTypography.lS_default,
+                    color = Ux4gColors.neutral500
+                )
+                Spacer(modifier = Modifier.weight(1f))
+                Ux4gIconComponent(
+                    icon = Ux4gIcons.more_vert,
+                    contentDescription = "Options",
+                    modifier = Modifier.size(18.dp),
+                    tint = Ux4gColors.primary
+                )
+            }
+
+            // Subtitle
+            Text(
+                text = "This is a subtitle text",
+                style = defaultTypography.bS_default,
+                color = Ux4gColors.neutral900
+            )
+
+            // Paragraph Description
+            Text(
+                text = "A Popover is a small overlay UI component that appears floating above the page content, anchored to a trigger element (like a button).",
+                style = defaultTypography.lS_default,
+                color = Ux4gColors.neutral700
+            )
+
+            // Action Link
+            Text(
+                text = "Link",
+                style = defaultTypography.lM_strong,
+                color = Ux4gColors.primary,
+                modifier = Modifier.clickable { /* Action link clicked */ }
+            )
+        }
+    }
+) {
+    Ux4gButton(
+        text = "Complex Popover",
+        variant = Ux4gButtonVariant.Primary,
+        onClick = { /* Toggles popover */ }
+    )
+}`}
+>
+  <div className="flex flex-col items-center justify-center py-2">
+    <img
+      src="/images/components/popover_preview.png"
+      alt="UX4G Complex Popover Preview"
+      className="max-w-full rounded-xl border border-border/60 shadow-sm"
+    />
+  </div>
+</ComponentPreview>
+
+---
+
+<h2><MIcon name="code" /> Kotlin Usage</h2>
+
+### 1. Complex Popover with Interactive Action Slot
+
+```kotlin title="ComplexPopoverExample.kt"
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.*
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
+import com.ux4g.designsystemv1.components.buttons.Ux4gButton
+import com.ux4g.designsystemv1.components.buttons.Ux4gButtonVariant
+import com.ux4g.designsystemv1.components.tooltip.Ux4gTooltip
+import com.ux4g.designsystemv1.components.tooltip.Ux4gTooltipPlacement
+import com.ux4g.designsystemv1.foundation.Ux4gColors
+import com.ux4g.designsystemv1.foundation.Ux4gIconComponent
+import com.ux4g.designsystemv1.foundation.Ux4gIcons
+import com.ux4g.designsystemv1.foundation.defaultTypography
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun ComplexPopoverDemo() {
+    val popoverState = rememberTooltipState(isPersistent = true)
+
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(32.dp),
+        contentAlignment = Alignment.Center
+    ) {
+        Ux4gTooltip(
+            placement = Ux4gTooltipPlacement.Bottom,
+            backgroundColor = Ux4gColors.white,
+            contentColor = Ux4gColors.neutral900,
+            cornerRadius = 8.dp,
+            maxWidth = 320.dp,
+            state = popoverState,
+            customContent = {
+                Column(
+                    modifier = Modifier.padding(16.dp),
+                    verticalArrangement = Arrangement.spacedBy(10.dp)
+                ) {
+                    // Header Row
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Ux4gIconComponent(
+                            icon = Ux4gIcons.Category,
+                            contentDescription = null,
+                            modifier = Modifier.size(18.dp),
+                            tint = Ux4gColors.neutral900
+                        )
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Text(
+                            text = "Popover Title",
+                            style = defaultTypography.lM_strong,
+                            color = Ux4gColors.neutral900
+                        )
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Text(
+                            text = "Label",
+                            style = defaultTypography.lS_default,
+                            color = Ux4gColors.neutral500
+                        )
+                        Spacer(modifier = Modifier.weight(1f))
+                        Ux4gIconComponent(
+                            icon = Ux4gIcons.more_vert,
+                            contentDescription = "Options",
+                            modifier = Modifier.size(18.dp),
+                            tint = Ux4gColors.primary
+                        )
+                    }
+
+                    // Subtitle
+                    Text(
+                        text = "This is a subtitle text",
+                        style = defaultTypography.bS_default,
+                        color = Ux4gColors.neutral900
+                    )
+
+                    // Description text
+                    Text(
+                        text = "A Popover is a small overlay UI component that appears floating above the page content, anchored to a trigger element (like a button).",
+                        style = defaultTypography.lS_default,
+                        color = Ux4gColors.neutral700
+                    )
+
+                    // Action Link
+                    Text(
+                        text = "Link",
+                        style = defaultTypography.lM_strong,
+                        color = Ux4gColors.primary,
+                        modifier = Modifier.clickable { /* Link click handler */ }
+                    )
+                }
+            }
+        ) {
+            Ux4gButton(
+                text = "Complex Popover",
+                variant = Ux4gButtonVariant.Primary,
+                onClick = { /* Toggle popover */ }
+            )
+        }
+    }
+}
+```
+
+---
+
+<h2><MIcon name="settings" /> Parameters</h2>
+
+### `Ux4gTooltip` Props
+
+| Prop | Type | Description | Default |
+| :--- | :--- | :--- | :--- |
+| `content` <span className="text-red-500 font-bold">*</span> | `@Composable () -> Unit` | Anchor composable (e.g. `Ux4gButton`) that triggers the popover overlay. | `—` |
+| `customContent` | `(@Composable () -> Unit)?` | Composable slot for custom structured body content (titles, subtitles, links). | `null` |
+| `placement` | `Ux4gTooltipPlacement` | Relative bubble placement (`Top`, `Bottom`, `Left`, `Right`, etc.). | `Ux4gTooltipPlacement.Top` |
+| `backgroundColor` | `Color` | Popover bubble background container color. | `Ux4gColors.neutral700` |
+| `contentColor` | `Color` | Default text and icon tint color. | `Ux4gColors.neutral50` |
+| `cornerRadius` | `Dp` | Rounded corner radius of the popover card body. | `Ux4gRadius.Radius4` |
+| `arrowWidth` | `Dp` | Base width of the directional pointer arrow. | `10.dp` |
+| `arrowHeight` | `Dp` | Height/depth of the pointer arrow pointing to the anchor. | `6.dp` |
+| `maxWidth` | `Dp?` | Maximum width constraint for the popover overlay card. | `240.dp` |
+| `isPersistent` | `Boolean` | When `true`, stays visible until explicitly dismissed. | `false` |
+| `enableUserInput` | `Boolean` | Controls whether tapping or clicking the anchor toggles the popover. | `true` |
+| `state` | `TooltipState` | State object controlling popup visibility programmatically. | `rememberTooltipState(...)` |
+| `modifier` | `Modifier` | Compose layout modifier applied to the outer container. | `Modifier` |
+
+---
+
+### `Ux4gTooltipPlacement` Reference
+
+| Placement | Description | Arrow Direction |
+| :--- | :--- | :--- |
+| `Bottom` | Popover appears below anchor (centered). | Arrow points UP towards anchor |
+| `BottomStart` | Popover appears below anchor aligned to left edge. | Arrow points UP towards anchor |
+| `BottomEnd` | Popover appears below anchor aligned to right edge. | Arrow points UP towards anchor |
+| `Top` | Popover appears above anchor (centered). | Arrow points DOWN towards anchor |
+| `TopStart` | Popover appears above anchor aligned to left edge. | Arrow points DOWN towards anchor |
+| `TopEnd` | Popover appears above anchor aligned to right edge. | Arrow points DOWN towards anchor |
+| `Left` | Popover appears to the left of anchor. | Arrow points RIGHT towards anchor |
+| `Right` | Popover appears to the right of anchor. | Arrow points LEFT towards anchor |

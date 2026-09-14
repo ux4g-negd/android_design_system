@@ -1,37 +1,57 @@
 ---
 title: Time Slot
-description: Available and booked appointment grid chips for RTO, Passport Seva, and Sub-Registrar slots
+description: Interactive calendar appointment slot grid with status indicators, public holiday highlights, and compact or expanded booking sheet dialogs
 ---
 
-# Time Slot (`Ux4gTimeSlotGrid`)
+# Time Slot (`Ux4gTimeslot`)
 
-Available and booked appointment grid chips for RTO, Passport Seva, and Sub-Registrar slots.
+The UX4G Time Slot component delivers a full calendar month slot grid for appointment scheduling across government services (e.g., Passport Seva Kendra, RTO Driving License tests, Aadhaar Enrolment Centres, and Sub-Registrar deed registrations).
 
-Import from `com.ux4g.designsystemv1.components.timeslot.Ux4gTimeSlotGrid`.
+### Key Capabilities
+
+- **Monthly Calendar Grid**: Full month calendar displaying dates with real-time slot availability styling, past date locking, today marker dots, and weekday column headers.
+- **Status Indicators & Legend**: Distinct visual markers for `Available` dates, `NoSlots`, `PublicHoliday` (orange warning highlight), and `WeeklyOff` (Saturday/Sunday disabling).
+- **Interactive Time Slot Dialog**: Modal bottom sheet automatically launched on date selection with date navigation arrows (`< Prev Day` / `Next Day >`).
+- **Two Dialog View Modes**:
+  - `SlotPickerViewMode.Compact`: 2-column compact grid with slot capacity badge numbers.
+  - `SlotPickerViewMode.Expanded`: Vertical full-width list of slot cards with availability badges.
+- **Date Constraints & Overrides**: Configurable holiday tapping policies (`allowTapOnPublicHoliday`, `allowTapOnWeeklyOff`) and explicit date status overrides (`SlotDateEntry`).
+
+Import from `com.ux4g.designsystemv1.components.timeslot.*`.
 
 ---
 
-<h2><MIcon name="smartphone" /> Interactive Preview</h2>
+<h2><MIcon name="smartphone" /> Interactive Previews</h2>
+
+### 1. Calendar Slot Grid (`Ux4gTimeslot`)
+
+Calendar month overview showing date availability states, today indicators, and status legend.
 
 <ComponentPreview
-  title="Ux4gTimeSlotGrid"
+  title="Ux4gTimeslot"
   category="Jetpack Compose"
-  code={`val slots = listOf(
-    TimeSlot(time = "09:30 AM", isAvailable = true),
-    TimeSlot(time = "10:00 AM", isAvailable = false),
-    TimeSlot(time = "10:30 AM", isAvailable = true)
+  code={`val timeslotData = Ux4gTimeslotData(
+    year = 2026,
+    month = 9,
+    selectedDate = LocalDate.of(2026, 9, 10),
+    dates = listOf(
+        SlotDateEntry(LocalDate.of(2026, 9, 12), SlotDateStatus.PublicHoliday),
+        SlotDateEntry(LocalDate.of(2026, 9, 14), SlotDateStatus.NoSlots),
+        SlotDateEntry(LocalDate.of(2026, 9, 16), SlotDateStatus.NoSlots)
+    ),
+    viewMode = SlotPickerViewMode.Compact
 )
 
-Ux4gTimeSlotGrid(
-    slots = slots,
-    selectedSlot = selectedSlot,
-    onSlotSelected = { slot -> selectedSlot = slot }
+Ux4gTimeslot(
+    data = timeslotData,
+    onDateSelected = { selectedDate -> /* Handle date selection */ },
+    onMonthChanged = { year, month -> /* Fetch month slot data */ }
 )`}
 >
   <div className="flex flex-col items-center justify-center py-2">
     <img
       src="/images/components/time-slot_preview.png"
-      alt="UX4G Time Slot Preview"
+      alt="UX4G Time Slot Calendar Grid Preview"
       className="max-w-full rounded-xl border border-border/60 shadow-sm"
     />
   </div>
@@ -39,25 +59,95 @@ Ux4gTimeSlotGrid(
 
 ---
 
+### 2. Time Slot Dialog Modals (Auto-Opened on Date Click)
+
+When a citizen clicks an available date cell on the calendar grid, the interactive time slot picker sheet opens automatically to allow slot selection:
+
+<div className="grid grid-cols-1 md:grid-cols-2 gap-6 my-6">
+  {/* Compact View Mode */}
+  <div className="flex flex-col items-center justify-center p-6 bg-muted/20 border border-border/60 rounded-xl">
+    <h4 className="text-sm font-semibold mb-3 text-foreground">Compact View Mode (`SlotPickerViewMode.Compact`)</h4>
+    <img
+      src="/images/components/time-slot-compact-dialog.png"
+      alt="UX4G Time Slot Compact Dialog"
+      className="max-w-xs rounded-xl shadow-lg border border-border/60"
+    />
+    <p className="text-xs text-muted-foreground mt-3 font-medium text-center">
+      2-column compact grid layout displaying time slots with remaining capacity badge counters.
+    </p>
+  </div>
+
+  {/* Expanded View Mode */}
+  <div className="flex flex-col items-center justify-center p-6 bg-muted/20 border border-border/60 rounded-xl">
+    <h4 className="text-sm font-semibold mb-3 text-foreground">Expanded View Mode (`SlotPickerViewMode.Expanded`)</h4>
+    <img
+      src="/images/components/time-slot-expanded-dialog.png"
+      alt="UX4G Time Slot Expanded Dialog"
+      className="max-w-xs rounded-xl shadow-lg border border-border/60"
+    />
+    <p className="text-xs text-muted-foreground mt-3 font-medium text-center">
+      Full-width vertical card list layout showing slot availability badges and bottom status legend.
+    </p>
+  </div>
+</div>
+
+---
+
 <h2><MIcon name="code" /> Kotlin Usage</h2>
 
-```kotlin title="Compose Example"
+### 1. Appointment Booking with Dynamic Slot Provider
+
+```kotlin title="AppointmentBookingScreen.kt"
+import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.*
-import com.ux4g.designsystemv1.components.timeslot.Ux4gTimeSlotGrid
-import com.ux4g.designsystemv1.components.timeslot.TimeSlot
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
+import com.ux4g.designsystemv1.components.timeslot.*
+import java.time.LocalDate
 
 @Composable
-fun AppointmentGridDemo() {
-    var selected by remember { mutableStateOf<TimeSlot?>(null) }
+fun AppointmentScheduler() {
+    var selectedDate by remember { mutableStateOf<LocalDate?>(null) }
+    var confirmedSlot by remember { mutableStateOf<SlotTimeEntry?>(null) }
 
-    Ux4gTimeSlotGrid(
-        slots = listOf(
-            TimeSlot("10:00 AM", isAvailable = true),
-            TimeSlot("11:00 AM", isAvailable = true)
+    val timeslotData = Ux4gTimeslotData(
+        year = 2026,
+        month = 9,
+        selectedDate = selectedDate,
+        weeklyOffWeekdays = listOf(6, 7), // Saturday & Sunday off
+        dates = listOf(
+            SlotDateEntry(LocalDate.of(2026, 9, 12), SlotDateStatus.PublicHoliday),
+            SlotDateEntry(LocalDate.of(2026, 9, 14), SlotDateStatus.NoSlots),
+            SlotDateEntry(LocalDate.of(2026, 9, 16), SlotDateStatus.NoSlots)
         ),
-        selectedSlot = selected,
-        onSlotSelected = { selected = it }
+        viewMode = SlotPickerViewMode.Compact
     )
+
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
+        Ux4gTimeslot(
+            data = timeslotData,
+            onDateSelected = { selectedDate = it },
+            timeSlotProvider = { date ->
+                // Provide available slots for the selected date
+                listOf(
+                    SlotTimeEntry(time = "9:00 AM", slotCount = 4, status = SlotTimeStatus.Available),
+                    SlotTimeEntry(time = "9:30 AM", slotCount = 6, status = SlotTimeStatus.Available),
+                    SlotTimeEntry(time = "10:00 AM", slotCount = 3, status = SlotTimeStatus.Available),
+                    SlotTimeEntry(time = "10:30 AM", slotCount = 0, status = SlotTimeStatus.NoSlots),
+                    SlotTimeEntry(time = "2:30 PM", slotCount = 2, status = SlotTimeStatus.Limited),
+                    SlotTimeEntry(time = "3:30 PM", slotCount = 1, status = SlotTimeStatus.Limited)
+                )
+            },
+            onSlotConfirmed = { date, slot ->
+                confirmedSlot = slot
+            }
+        )
+    }
 }
 ```
 
@@ -65,24 +155,50 @@ fun AppointmentGridDemo() {
 
 <h2><MIcon name="settings" /> Parameters</h2>
 
-### `Ux4gTimeSlotGrid` Props
+### `Ux4gTimeslot` Props
 
 | Prop | Type | Description | Default |
 | :--- | :--- | :--- | :--- |
-| `slots` <span className="text-red-500 font-bold">*</span> | `List<TimeSlot>` | List of available and booked appointment slot objects. | `—` |
-| `onSlotSelected` <span className="text-red-500 font-bold">*</span> | `(TimeSlot) -> Unit` | Callback invoked when citizen picks a slot. | `—` |
-| `selectedSlot` | `TimeSlot?` | Currently selected appointment slot. | `null` |
-| `columns` | `Int` | Number of columns in the slot grid. | `3` |
-| `modifier` | `Modifier` | Compose layout modifier. | `Modifier` |
-
+| `data` <span className="text-red-500 font-bold">*</span> | `Ux4gTimeslotData` | Configuration object containing year, month, date status overrides, and view mode. | `—` |
+| `modifier` | `Modifier` | Compose layout modifier applied to the calendar card container. | `Modifier` |
+| `onDateSelected` | `((LocalDate) -> Unit)?` | Callback triggered when the citizen taps on an active date cell. | `null` |
+| `onMonthChanged` | `((year: Int, month: Int) -> Unit)?` | Callback invoked when navigating between calendar months. | `null` |
+| `timeSlotProvider` | `((LocalDate) -> List<SlotTimeEntry>)?` | Function returning time slot entries for the tapped date to display in the modal sheet. | `null` |
+| `onSlotConfirmed` | `((date: LocalDate, slot: SlotTimeEntry) -> Unit)?` | Callback invoked when the citizen selects a slot and clicks "Confirm". | `null` |
+| `colors` | `Ux4gTimeslotColors` | Custom color palette configuration for calendar grid and dialog states. | `Ux4gTimeslotDefaults.colors()` |
 
 ---
 
-### `TimeSlot` Model
+### `Ux4gTimeslotData` Data Model
 
-| Prop | Type | Description | Default |
+| Field | Type | Description | Default |
 | :--- | :--- | :--- | :--- |
-| `time` <span className="text-red-500 font-bold">*</span> | `String` | Slot time label string (e.g. `09:30 AM`). | `—` |
-| `isAvailable` | `Boolean` | Whether the slot is open for booking or disabled/booked. | `true` |
-| `badge` | `String?` | Optional badge text (e.g. `Fast Filling`, `Premium`). | `null` |
+| `year` <span className="text-red-500 font-bold">*</span> | `Int` | Calendar year to display (e.g. `2026`). | `—` |
+| `month` <span className="text-red-500 font-bold">*</span> | `Int` | Calendar month (`1` = Jan ... `12` = Dec). | `—` |
+| `selectedDate` | `LocalDate?` | Currently highlighted selected date. | `null` |
+| `today` | `LocalDate?` | Reference date for current day (shows primary dot marker). | `LocalDate.now()` |
+| `weeklyOffWeekdays` | `List<Int>` | ISO weekday indices (`1` = Mon ... `7` = Sun) treated as weekly off. | `listOf(6, 7)` |
+| `dates` | `List<SlotDateEntry>` | Explicit list of date status overrides (e.g., public holidays or full dates). | `emptyList()` |
+| `allowTapOnPublicHoliday` | `Boolean` | Whether clicking on a public holiday cell is permitted. | `false` |
+| `allowTapOnWeeklyOff` | `Boolean` | Whether clicking on a weekly-off cell is permitted. | `false` |
+| `viewMode` | `SlotPickerViewMode` | Modal bottom sheet slot layout: `Compact` or `Expanded`. | `SlotPickerViewMode.Expanded` |
 
+---
+
+### `SlotDateStatus` Enum
+
+| Status | Cell Styling | Context |
+| :--- | :--- | :--- |
+| `Available` | Clean clickable numeral | Open booking slots available on this day |
+| `NoSlots` | Grayed background (`neutral900 (5% alpha)`) | All slots booked / unavailable |
+| `PublicHoliday` | Amber/Warning background tint (`warning (10% alpha)`) | Official government gazetted holiday |
+| `WeeklyOff` | Grayed disabled numeral | Non-working weekend day (Saturday / Sunday) |
+
+---
+
+### `SlotPickerViewMode` Enum
+
+| Mode | Dialog Layout | Typical Usage |
+| :--- | :--- | :--- |
+| `Compact` | 2-column grid with circular count badges | Dense mobile screens and quick slot selection |
+| `Expanded` | Full-width vertical cards with availability badges | Detailed appointment schedules and multi-service counters |
