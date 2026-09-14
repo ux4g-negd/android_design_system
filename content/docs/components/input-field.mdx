@@ -1,40 +1,255 @@
 ---
 title: Input Field
-description: Standard Text Input, Aadhaar Number Input, and PAN Input with status states, masking, and validation
+description: Standard Text Input, Password Field, Status States, Prefix/Postfix Affixes, Icons, Read-Only, Aadhaar Number, and PAN Input Field components
 ---
 
 # Input Field (`Ux4gInputField`)
 
-Standard Text Input, Aadhaar Number Input, and PAN Input with status states, masking, and validation.
+The UX4G Input Field component family provides high-accessibility text entry controls with comprehensive support for validation states, password toggles, affixes, leading/trailing icons, read-only mode, and specialized Indian citizen identity inputs (Aadhaar & PAN).
 
-Import from `com.ux4g.designsystemv1.components.inputfield.Ux4gInputField`.
+Import from `com.ux4g.designsystemv1.components.inputfield.*`.
 
 ---
 
-<h2><MIcon name="smartphone" /> Interactive Preview</h2>
+<h2><MIcon name="smartphone" /> Interactive Previews</h2>
+
+### 1. Default Input Field
+
+Standard text entry field with header label, placeholder, and helper caption.
 
 <ComponentPreview
-  title="Ux4gInputField"
+  title="Ux4gInputField (Default)"
   category="Jetpack Compose"
-  code={`// Standard Text Input
-Ux4gInputField(
-    value = fullName,
-    onValueChange = { fullName = it },
-    label = "Full Name (as per Aadhaar)",
-    placeholder = "e.g. Ramesh Kumar"
-)
+  code={`var email by remember { mutableStateOf("") }
 
-// Aadhaar 12-Digit Auto-Formatting Input
-Ux4gAadhaarInputField(
-    value = aadhaarNumber,
-    onValueChange = { aadhaarNumber = it },
-    label = "Aadhaar Number"
+Ux4gInputField(
+    value = email,
+    onValueChange = { email = it },
+    label = "Email",
+    placeholder = "Enter your email",
+    caption = "Helper text description",
+    type = Ux4gInputFieldType.Email
 )`}
 >
   <div className="flex flex-col items-center justify-center py-2">
     <img
       src="/images/components/input-field_preview.png"
-      alt="UX4G Input Field Preview"
+      alt="UX4G Default Input Field Preview"
+      className="max-w-full rounded-xl border border-border/60 shadow-sm"
+    />
+  </div>
+</ComponentPreview>
+
+---
+
+### 2. Validation & Status States (All Statuses)
+
+Dynamic validation states with color-coded borders and status caption icons for **Error**, **Default/Info**, **Success**, **Warning**, and **Disabled** states.
+
+<ComponentPreview
+  title="Ux4gInputField (All Status States)"
+  category="Jetpack Compose"
+  code={`Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
+    // 1. Error State
+    Ux4gInputField(
+        value = "",
+        onValueChange = {},
+        label = "Label",
+        placeholder = "Placeholder",
+        status = Ux4gInputFieldStatus.Error,
+        caption = "Error message"
+    )
+
+    // 2. Default / Info State
+    Ux4gInputField(
+        value = "",
+        onValueChange = {},
+        label = "Label",
+        placeholder = "Placeholder",
+        status = Ux4gInputFieldStatus.Default,
+        caption = "Description"
+    )
+
+    // 3. Success State
+    Ux4gInputField(
+        value = "",
+        onValueChange = {},
+        label = "Label",
+        placeholder = "Placeholder",
+        status = Ux4gInputFieldStatus.Success,
+        caption = "Success message"
+    )
+
+    // 4. Warning State
+    Ux4gInputField(
+        value = "",
+        onValueChange = {},
+        label = "Label",
+        placeholder = "Placeholder",
+        status = Ux4gInputFieldStatus.Warning,
+        caption = "Warning message"
+    )
+
+    // 5. Disabled State
+    Ux4gInputField(
+        value = "",
+        onValueChange = {},
+        label = "Label",
+        placeholder = "Placeholder",
+        enabled = false,
+        caption = "Description"
+    )
+}`}
+>
+  <div className="flex flex-col items-center justify-center py-2">
+    <img
+      src="/images/components/input-field-allstatus_preview.png"
+      alt="UX4G Input Field All Status Preview"
+      className="max-w-full rounded-xl border border-border/60 shadow-sm"
+    />
+  </div>
+</ComponentPreview>
+
+---
+
+### 3. Password Field with Visibility Toggle
+
+Built-in masked password input with automatic eye show/hide icon toggle.
+
+<ComponentPreview
+  title="Ux4gInputField (Password Field)"
+  category="Jetpack Compose"
+  code={`var password by remember { mutableStateOf("") }
+
+Ux4gInputField(
+    value = password,
+    onValueChange = { password = it },
+    label = "Password",
+    placeholder = "Enter your password",
+    type = Ux4gInputFieldType.Password,
+    showPasswordToggle = true
+)`}
+>
+  <div className="flex flex-col items-center justify-center py-2">
+    <img
+      src="/images/components/input-field-password_preview.png"
+      alt="UX4G Password Input Field Preview"
+      className="max-w-full rounded-xl border border-border/60 shadow-sm"
+    />
+  </div>
+</ComponentPreview>
+
+---
+
+### 4. Leading & Trailing Icons
+
+Input fields supporting start icon, end action icon, or both icons simultaneously.
+
+<ComponentPreview
+  title="Ux4gInputField (With Icons)"
+  category="Jetpack Compose"
+  code={`Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
+    // 1. Leading Icon
+    Ux4gInputField(
+        value = searchQuery,
+        onValueChange = { searchQuery = it },
+        label = "Leading icon",
+        placeholder = "Search...",
+        leadingIcon = Icons.Default.Search
+    )
+
+    // 2. Trailing Icon
+    Ux4gInputField(
+        value = amount,
+        onValueChange = { amount = it },
+        label = "Trailing icon",
+        placeholder = "Enter amount",
+        trailingIcon = Ux4gIcons.Rupee,
+        type = Ux4gInputFieldType.Number
+    )
+
+    // 3. Both Leading and Trailing Icons
+    Ux4gInputField(
+        value = location,
+        onValueChange = { location = it },
+        label = "Both icons",
+        placeholder = "Location",
+        leadingIcon = Icons.Default.LocationOn,
+        trailingIcon = Icons.Default.MyLocation,
+        onTrailingIconPressed = { /* Locate citizen */ }
+    )
+}`}
+>
+  <div className="flex flex-col items-center justify-center py-2">
+    <img
+      src="/images/components/input-field-icon_preview.png"
+      alt="UX4G Input Field with Icons Preview"
+      className="max-w-full rounded-xl border border-border/60 shadow-sm"
+    />
+  </div>
+</ComponentPreview>
+
+---
+
+### 5. Prefix & Postfix Affixes
+
+Pre-formatted currency symbols, URL protocols, and domain extensions placed inside the input container.
+
+<ComponentPreview
+  title="Ux4gInputField (Prefix & Postfix)"
+  category="Jetpack Compose"
+  code={`Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
+    // 1. Currency with Prefix and Postfix
+    Ux4gInputField(
+        value = amountValue,
+        onValueChange = { amountValue = it },
+        label = "Amount",
+        placeholder = "0",
+        prefixText = "₹",
+        postfixText = ".00",
+        type = Ux4gInputFieldType.Number
+    )
+
+    // 2. Website URL with Protocol Prefix
+    Ux4gInputField(
+        value = websiteUrl,
+        onValueChange = { websiteUrl = it },
+        label = "Website",
+        placeholder = "example.com",
+        prefixText = "https://"
+    )
+}`}
+>
+  <div className="flex flex-col items-center justify-center py-2">
+    <img
+      src="/images/components/input-field-prefix-postfix_preview.png"
+      alt="UX4G Prefix and Postfix Input Field Preview"
+      className="max-w-full rounded-xl border border-border/60 shadow-sm"
+    />
+  </div>
+</ComponentPreview>
+
+---
+
+### 6. Read-Only Field
+
+Non-editable input field maintaining standard text selection and copy capabilities.
+
+<ComponentPreview
+  title="Ux4gInputField (Read-Only)"
+  category="Jetpack Compose"
+  code={`Ux4gInputField(
+    value = "GOV/2025/001",
+    onValueChange = {},
+    label = "Application ID",
+    readOnly = true,
+    enabled = true
+)`}
+>
+  <div className="flex flex-col items-center justify-center py-2">
+    <img
+      src="/images/components/input-field-readonly_preview.png"
+      alt="UX4G Read Only Input Field Preview"
       className="max-w-full rounded-xl border border-border/60 shadow-sm"
     />
   </div>
@@ -44,24 +259,83 @@ Ux4gAadhaarInputField(
 
 <h2><MIcon name="code" /> Kotlin Usage</h2>
 
-```kotlin title="Compose Example"
+```kotlin title="Citizen Registration Form Example"
+import androidx.compose.foundation.layout.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Badge
+import androidx.compose.material.icons.filled.CreditCard
+import androidx.compose.material.icons.filled.Lock
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.runtime.*
-import com.ux4g.designsystemv1.components.inputfield.Ux4gInputField
-import com.ux4g.designsystemv1.components.inputfield.Ux4gInputFieldStatus
-import com.ux4g.designsystemv1.components.inputfield.Ux4gInputFieldSize
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
+import com.ux4g.designsystemv1.components.inputfield.*
 
 @Composable
-fun InputDemo() {
-    var name by remember { mutableStateOf("") }
+fun CitizenFormExample() {
+    var fullName by remember { mutableStateOf("") }
+    var password by remember { mutableStateOf("") }
+    var aadhaar by remember { mutableStateOf("") }
+    var pan by remember { mutableStateOf("") }
+    var monthlyIncome by remember { mutableStateOf("") }
 
-    Ux4gInputField(
-        value = name,
-        onValueChange = { name = it },
-        label = "Full Name",
-        placeholder = "Enter your full name",
-        size = Ux4gInputFieldSize.Medium,
-        status = Ux4gInputFieldStatus.Default
-    )
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
+        // 1. Text Field with Leading Icon
+        Ux4gInputField(
+            value = fullName,
+            onValueChange = { fullName = it },
+            label = "Full Name",
+            required = true,
+            placeholder = "Enter your full name",
+            leadingIcon = Icons.Default.Person
+        )
+
+        // 2. Password Field
+        Ux4gInputField(
+            value = password,
+            onValueChange = { password = it },
+            label = "Account Password",
+            required = true,
+            placeholder = "Enter password",
+            type = Ux4gInputFieldType.Password,
+            leadingIcon = Icons.Default.Lock,
+            showPasswordToggle = true
+        )
+
+        // 3. Aadhaar Auto-formatting (XXXX XXXX XXXX) with Verhoeff Validation
+        Ux4gAadhaarInputField(
+            value = aadhaar,
+            onValueChange = { aadhaar = it },
+            label = "Aadhaar Number",
+            required = true,
+            leadingIcon = Icons.Default.Badge
+        )
+
+        // 4. PAN Card Auto-uppercase & Regex Validation
+        Ux4gPanInputField(
+            value = pan,
+            onValueChange = { pan = it },
+            label = "PAN Card Number",
+            required = true,
+            leadingIcon = Icons.Default.CreditCard
+        )
+
+        // 5. Income with Currency Prefix
+        Ux4gInputField(
+            value = monthlyIncome,
+            onValueChange = { monthlyIncome = it },
+            label = "Monthly Income",
+            placeholder = "0",
+            prefixText = "₹",
+            postfixText = ".00",
+            type = Ux4gInputFieldType.Number
+        )
+    }
 }
 ```
 
@@ -69,33 +343,113 @@ fun InputDemo() {
 
 <h2><MIcon name="settings" /> Parameters</h2>
 
-### `Ux4gInputField` Props
+### 1. `Ux4gInputField` Props
 
 | Prop | Type | Description | Default |
 | :--- | :--- | :--- | :--- |
-| `value` <span className="text-red-500 font-bold">*</span> | `String` | Current text input value. | `—` |
-| `onValueChange` <span className="text-red-500 font-bold">*</span> | `(String) -> Unit` | Callback invoked when input text changes. | `—` |
-| `label` | `String?` | Header title label above input. | `null` |
-| `placeholder` | `String` | Placeholder text shown when field is empty. | `""` |
-| `modifier` | `Modifier` | Compose layout modifier. | `Modifier` |
-| `size` | `Ux4gInputFieldSize` | Input size: `Small`, `Medium`, `Large`. | `Ux4gInputFieldSize.Medium` |
-| `status` | `Ux4gInputFieldStatus` | Field state: `Default`, `Success`, `Warning`, `Error`, `Disabled`. | `Ux4gInputFieldStatus.Default` |
-| `type` | `Ux4gInputFieldType` | Input type: `Text`, `Password`, `Number`, `Email`, `Phone`. | `Ux4gInputFieldType.Text` |
-| `helperText` | `String?` | Secondary guidance or error text below field. | `null` |
-| `leadingIcon` | `(@Composable () -> Unit)?` | Optional composable icon at start. | `null` |
-| `trailingIcon` | `(@Composable () -> Unit)?` | Optional composable icon at end (e.g. password toggle). | `null` |
-| `enabled` | `Boolean` | Interactive enabled state. | `true` |
-| `readOnly` | `Boolean` | Whether field is read-only non-editable. | `false` |
-
+| `value` <span className="text-red-500 font-bold">*</span> | `String` | Current text value of the input field. | — |
+| `onValueChange` <span className="text-red-500 font-bold">*</span> | `(String) -> Unit` | Callback invoked when citizen types or modifies content. | — |
+| `modifier` | `Modifier` | Compose layout modifier applied to the outer container. | `Modifier` |
+| `size` | `Ux4gInputFieldSize` | Container height variant: `Small` (32dp), `Medium` (40dp), `Large` (48dp), `XL` (56dp). | `Ux4gInputFieldSize.Medium` |
+| `type` | `Ux4gInputFieldType` | Input type & keyboard configuration: `Text`, `Password`, `Number`, `Email`. | `Ux4gInputFieldType.Text` |
+| `status` | `Ux4gInputFieldStatus` | Validation visual state: `Default`, `Success`, `Warning`, `Error`. | `Ux4gInputFieldStatus.Default` |
+| `label` | `String?` | Header title label displayed above the field. | `null` |
+| `required` | `Boolean` | When true, renders a red asterisk (`*`) next to the label. | `false` |
+| `placeholder` | `String?` | Placeholder text shown when the input field is empty. | `null` |
+| `caption` | `String?` | Explanatory helper or error description text below the input field. | `null` |
+| `leadingIcon` | `Any?` | Icon placed at the start (`ImageVector`, `Ux4gIcon`, or drawable resource Int). | `null` |
+| `trailingIcon` | `Any?` | Icon placed at the end (`ImageVector`, `Ux4gIcon`, or drawable resource Int). | `null` |
+| `onTrailingIconPressed` | `(() -> Unit)?` | Optional click callback for the trailing icon. | `null` |
+| `prefixText` | `String?` | Static affix text anchored before the editable text (e.g. `"₹"` or `"https://"`). | `null` |
+| `postfixText` | `String?` | Static affix text anchored after the editable text (e.g. `".00"` or `".com"`). | `null` |
+| `trailingIconLabel` | `Any?` | Optional info icon rendered adjacent to the label. | `null` |
+| `enabled` | `Boolean` | Controls interactive enabled state and disabled styling. | `true` |
+| `readOnly` | `Boolean` | When true, text cannot be edited but remains focusable and copyable. | `false` |
+| `singleLine` | `Boolean` | Whether input is single-line or expandable multiline. | `true` |
+| `maxLines` | `Int` | Maximum lines allowed before vertical scrolling. | `1` |
+| `maxLength` | `Int?` | Maximum character length limit. | `null` |
+| `textAlign` | `TextAlign` | Text alignment within the input area. | `TextAlign.Start` |
+| `showPasswordToggle` | `Boolean` | When type is `Password`, controls rendering of the eye visibility toggle. | `true` |
+| `style` | `TextStyle?` | Custom text style override for the typed text. | `null` |
+| `placeholderStyle` | `TextStyle?` | Custom text style override for placeholder. | `null` |
+| `labelStyle` | `TextStyle?` | Custom text style override for label. | `null` |
+| `captionStyle` | `TextStyle?` | Custom text style override for caption. | `null` |
+| `backgroundColor` | `Color?` | Custom container background color override. | `null` |
+| `borderColor` | `Color?` | Custom border color override. | `null` |
+| `borderWidth` | `Dp` | Custom border width. | `1.dp` |
+| `keyboardOptions` | `KeyboardOptions?` | Custom software keyboard options. | `null` |
+| `keyboardActions` | `KeyboardActions` | Custom software keyboard actions (Done, Next, Search). | `KeyboardActions.Default` |
 
 ---
 
-### `Ux4gAadhaarInputField` Props
+### 2. `Ux4gAadhaarInputField` Props
 
 | Prop | Type | Description | Default |
 | :--- | :--- | :--- | :--- |
-| `value` <span className="text-red-500 font-bold">*</span> | `String` | 12-digit Aadhaar number string. | `—` |
-| `onValueChange` <span className="text-red-500 font-bold">*</span> | `(String) -> Unit` | Change listener formatting in `XXXX XXXX XXXX` chunks. | `—` |
-| `label` | `String?` | Header label. | `"Aadhaar Number"` |
-| `mask` | `Boolean` | Whether to mask first 8 digits for citizen privacy. | `false` |
+| `value` <span className="text-red-500 font-bold">*</span> | `String` | Raw or formatted 12-digit Aadhaar number. | — |
+| `onValueChange` <span className="text-red-500 font-bold">*</span> | `(String) -> Unit` | Formats input into `XXXX XXXX XXXX` chunks and validates checksum. | — |
+| `label` | `String?` | Label heading. | `"Aadhaar Number"` |
+| `placeholder` | `String?` | Placeholder text. | `"XXXX XXXX XXXX"` |
+| `caption` | `String?` | Guidance caption (auto-switches to validation error/success message). | `"Enter your 12-digit Aadhaar number"` |
+| `size` | `Ux4gInputFieldSize` | Input size variant. | `Ux4gInputFieldSize.Medium` |
+| `status` | `Ux4gInputFieldStatus` | Status state override (automatically evaluated with Verhoeff algorithm). | `Ux4gInputFieldStatus.Default` |
+| `required` | `Boolean` | Shows required asterisk. | `false` |
+| `leadingIcon` | `Any?` | Icon at start. | `null` |
+| `trailingIcon` | `Any?` | Icon at end. | `null` |
+| `onTrailingIconPressed` | `(() -> Unit)?` | Trailing icon click handler. | `null` |
+| `enabled` | `Boolean` | Interactive state. | `true` |
+| `readOnly` | `Boolean` | Non-editable state. | `false` |
 
+---
+
+### 3. `Ux4gPanInputField` Props
+
+| Prop | Type | Description | Default |
+| :--- | :--- | :--- | :--- |
+| `value` <span className="text-red-500 font-bold">*</span> | `String` | 10-character alphanumeric PAN string. | — |
+| `onValueChange` <span className="text-red-500 font-bold">*</span> | `(String) -> Unit` | Converts input to uppercase and validates against standard PAN regex (`[A-Z]{5}[0-9]{4}[A-Z]{1}`). | — |
+| `label` | `String?` | Label heading. | `"PAN Card Number"` |
+| `placeholder` | `String?` | Placeholder text. | `"ABCDE1234F"` |
+| `caption` | `String?` | Guidance caption (auto-switches on 10 valid/invalid characters). | `"Enter your 10-character PAN number"` |
+| `size` | `Ux4gInputFieldSize` | Input size variant. | `Ux4gInputFieldSize.Medium` |
+| `status` | `Ux4gInputFieldStatus` | Status state override. | `Ux4gInputFieldStatus.Default` |
+| `required` | `Boolean` | Shows required asterisk. | `false` |
+| `leadingIcon` | `Any?` | Icon at start. | `null` |
+| `trailingIcon` | `Any?` | Icon at end. | `null` |
+| `onTrailingIconPressed` | `(() -> Unit)?` | Trailing icon click handler. | `null` |
+| `enabled` | `Boolean` | Interactive state. | `true` |
+| `readOnly` | `Boolean` | Non-editable state. | `false` |
+
+---
+
+### 4. Enums Reference
+
+#### `Ux4gInputFieldStatus`
+```kotlin
+enum class Ux4gInputFieldStatus {
+    Default,  // Standard neutral state with helper info
+    Success,  // Green border and CheckCircle icon
+    Warning,  // Orange border and Warning icon
+    Error     // Red border and Error icon
+}
+```
+
+#### `Ux4gInputFieldType`
+```kotlin
+enum class Ux4gInputFieldType {
+    Text,      // Standard alphanumeric keyboard
+    Password,  // Masked input with password toggle
+    Number,    // Numeric keypad
+    Email      // Email keypad with @ and domain shortcuts
+}
+```
+
+#### `Ux4gInputFieldSize`
+```kotlin
+enum class Ux4gInputFieldSize(val height: Dp) {
+    Small(32.dp),
+    Medium(40.dp), // Default UX4G container height
+    Large(48.dp),
+    XL(56.dp)
+}
+```
