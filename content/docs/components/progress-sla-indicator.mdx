@@ -1,0 +1,282 @@
+---
+title: Progress SLA Indicator
+description: Service Level Agreement (SLA) status tracking component featuring Linear and Circular countdown indicators across Normal, Warning, Critical, and Completed SLA tiers
+---
+
+# Progress SLA Indicator
+
+The UX4G Progress SLA Indicator visualizes Service Level Agreement (SLA) timelines, countdown deadlines (e.g. days left to process citizen grievance, certificate issuance SLAs), and stage completion statuses.
+
+It provides two specialized form factors:
+1. **Circular SLA Indicator**: 360° ring displaying deadline counters (e.g. `8 days left`), milestone titles, severity descriptions, and SLA status badge tags across Primary (Normal), Warning (Approaching SLA), Critical (Overdue / Immediate Attention), and Success (Resolved) states.
+2. **Linear SLA Indicator**: Horizontal progress track with leading status icon bubbles, service labels, hint texts, and completion percentages.
+
+Import from `com.ux4g.designsystemv1.components.progress.*` and `com.ux4g.designsystemv1.components.*`.
+
+---
+
+<h2><MIcon name="smartphone" /> Interactive Previews</h2>
+
+### 1. Circular SLA Indicator
+
+360-degree circular ring indicator showcasing the 4 SLA severity tiers: **Normal** (Purple), **Warning** (Orange), **Critical** (Red), and **Completed** (Green), featuring center countdown values (`8 days left`), labels, descriptions, and footer status tags.
+
+<ComponentPreview
+  title="Circular SLA Indicator"
+  category="Jetpack Compose"
+  code={`Row(
+    modifier = Modifier.fillMaxWidth(),
+    horizontalArrangement = Arrangement.spacedBy(16.dp),
+    verticalAlignment = Alignment.Top
+) {
+    // 1. Primary / Normal SLA State
+    Ux4gCircularProgress(
+        value = 0.65f,
+        size = Ux4gCircularProgressSize.XXL,
+        progressColor = Ux4gColors.primary,
+        centerValueText = "8",
+        centerDescription = "days left",
+        label = "Label",
+        description = "Description",
+        footer = {
+            Ux4gTag(
+                text = "Label",
+                backgroundColor = Ux4gColors.primary100,
+                contentColor = Ux4gColors.primary
+            )
+        }
+    )
+
+    // 2. Warning SLA State (Approaching Deadline)
+    Ux4gCircularProgress(
+        value = 0.65f,
+        size = Ux4gCircularProgressSize.XXL,
+        progressColor = Ux4gColors.orange500,
+        centerValueText = "8",
+        centerDescription = "days left",
+        label = "Label",
+        description = "Description",
+        footer = {
+            Ux4gTag(
+                text = "Label",
+                backgroundColor = Ux4gColors.orange100,
+                contentColor = Ux4gColors.orange600
+            )
+        }
+    )
+
+    // 3. Critical SLA State (Escalation / Near Breach)
+    Ux4gCircularProgress(
+        value = 0.65f,
+        size = Ux4gCircularProgressSize.XXL,
+        progressColor = Ux4gColors.red500,
+        centerValueText = "8",
+        centerDescription = "days left",
+        label = "Label",
+        description = "Description",
+        descriptionStyle = TextStyle(color = Ux4gColors.red600),
+        footer = {
+            Ux4gTag(
+                text = "Label",
+                backgroundColor = Ux4gColors.red100,
+                contentColor = Ux4gColors.red600
+            )
+        }
+    )
+
+    // 4. Success / Resolved SLA State
+    Ux4gCircularProgress(
+        value = 0.65f,
+        size = Ux4gCircularProgressSize.XXL,
+        progressColor = Ux4gColors.green500,
+        centerValueText = "8",
+        centerDescription = "days left",
+        label = "Label",
+        description = "Description",
+        footer = {
+            Ux4gTag(
+                text = "Label",
+                backgroundColor = Ux4gColors.green100,
+                contentColor = Ux4gColors.green600
+            )
+        }
+    )
+}`}
+>
+  <div className="flex flex-col items-center justify-center py-2">
+    <img
+      src="/images/components/progress-sla-circular_preview.png"
+      alt="UX4G Circular SLA Progress Indicator Preview"
+      className="max-w-full rounded-xl border border-border/60 shadow-sm"
+    />
+  </div>
+</ComponentPreview>
+
+---
+
+### 2. Linear SLA Indicator
+
+Horizontal SLA progress tracks with status icon bubbles, category labels, hint indicators, and percentage metrics across all 4 SLA tiers.
+
+<ComponentPreview
+  title="Linear SLA Indicator"
+  category="Jetpack Compose"
+  code={`Column(
+    modifier = Modifier.fillMaxWidth(),
+    verticalArrangement = Arrangement.spacedBy(16.dp)
+  ) {
+    // 1. Normal State
+    Ux4gLinearProgressBar(
+        value = 0.50f,
+        icon = Ux4gIcons.Hexagon,
+        iconColor = Ux4gColors.primary,
+        iconBackgroundColor = Ux4gColors.primary100,
+        label = "Label",
+        hint = "Hint",
+        showPercentage = true,
+        labelPosition = Ux4gProgressLabelPosition.Outside,
+        color = Ux4gColors.primary
+    )
+
+    // 2. Warning State
+    Ux4gLinearProgressBar(
+        value = 0.50f,
+        icon = Ux4gIcons.Hexagon,
+        iconColor = Ux4gColors.orange500,
+        iconBackgroundColor = Ux4gColors.orange100,
+        label = "Label",
+        hint = "Hint",
+        showPercentage = true,
+        labelPosition = Ux4gProgressLabelPosition.Outside,
+        color = Ux4gColors.orange500
+    )
+
+    // 3. Critical State
+    Ux4gLinearProgressBar(
+        value = 0.50f,
+        icon = Ux4gIcons.Hexagon,
+        iconColor = Ux4gColors.red500,
+        iconBackgroundColor = Ux4gColors.red100,
+        label = "Label",
+        hint = "Hint",
+        showPercentage = true,
+        labelPosition = Ux4gProgressLabelPosition.Outside,
+        color = Ux4gColors.red500
+    )
+
+    // 4. Success State
+    Ux4gLinearProgressBar(
+        value = 0.50f,
+        icon = Ux4gIcons.Hexagon,
+        iconColor = Ux4gColors.green500,
+        iconBackgroundColor = Ux4gColors.green100,
+        label = "Label",
+        hint = "Hint",
+        showPercentage = true,
+        labelPosition = Ux4gProgressLabelPosition.Outside,
+        color = Ux4gColors.green500
+    )
+}`}
+>
+  <div className="flex flex-col items-center justify-center py-2">
+    <img
+      src="/images/components/progress-sla-linear_preview.png"
+      alt="UX4G Linear SLA Progress Indicator Preview"
+      className="max-w-full rounded-xl border border-border/60 shadow-sm"
+    />
+  </div>
+</ComponentPreview>
+
+---
+
+<h2><MIcon name="code" /> Kotlin Usage</h2>
+
+```kotlin title="Citizen Grievance SLA Dashboard Example"
+import androidx.compose.foundation.layout.*
+import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
+import com.ux4g.designsystemv1.components.tag.Ux4gTag
+import com.ux4g.designsystemv1.components.progress.*
+import com.ux4g.designsystemv1.foundation.Ux4gColors
+import com.ux4g.designsystemv1.foundation.Ux4gIcons
+
+@Composable
+fun GrievanceSlaScreen() {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp),
+        verticalArrangement = Arrangement.spacedBy(24.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        // Circular SLA Countdown Widget
+        Ux4gCircularProgress(
+            value = 0.70f,
+            size = Ux4gCircularProgressSize.XXL,
+            progressColor = Ux4gColors.orange500,
+            centerValueText = "3",
+            centerDescription = "days left",
+            label = "Grievance Resolution SLA",
+            description = "Escalation to District Officer in 3 days",
+            footer = {
+                Ux4gTag(
+                    text = "High Priority",
+                    backgroundColor = Ux4gColors.orange100,
+                    contentColor = Ux4gColors.orange600
+                )
+            }
+        )
+
+        // Linear SLA Track
+        Ux4gLinearProgressBar(
+            value = 0.85f,
+            icon = Ux4gIcons.Clock,
+            iconColor = Ux4gColors.red500,
+            iconBackgroundColor = Ux4gColors.red100,
+            label = "Passport Verification SLA",
+            hint = "Police Clearance",
+            showPercentage = true,
+            labelPosition = Ux4gProgressLabelPosition.Outside,
+            color = Ux4gColors.red500
+        )
+    }
+}
+```
+
+---
+
+<h2><MIcon name="settings" /> Parameters</h2>
+
+### 1. Circular SLA Parameters (`Ux4gCircularProgress`)
+
+| Prop | Type | Description | Default |
+| :--- | :--- | :--- | :--- |
+| `value` <span className="text-red-500 font-bold">*</span> | `Float` | Elapsed SLA progress fraction (`0.0f` to `1.0f`). | — |
+| `size` | `Ux4gCircularProgressSize` | Ring size preset: `XS`, `S`, `M`, `L`, `XL`, `XXL` (116dp), `XXXL` (144dp). | `Ux4gCircularProgressSize.L` |
+| `centerValueText` | `String?` | Bold numeric counter displayed in center (e.g. `"8"`). | `null` |
+| `centerDescription` | `String?` | Subtext below the counter (e.g. `"days left"`). | `null` |
+| `label` | `String?` | Primary milestone label text below the ring. | `null` |
+| `description` | `String?` | Secondary explanation or department note below label. | `null` |
+| `progressColor` | `Color?` | SLA tier status color (`primary`, `orange500`, `red500`, `green500`). | `Ux4gColors.primary` |
+| `footer` | `(@Composable () -> Unit)?` | Composable slot for embedding status tags (`Ux4gTag`). | `null` |
+| `descriptionStyle` | `TextStyle?` | Text style override for description (e.g. red font for critical state). | `null` |
+| `trackColor` | `Color?` | Inactive ring background track color. | `Ux4gColors.neutral300` |
+
+---
+
+### 2. Linear SLA Parameters (`Ux4gLinearProgressBar`)
+
+| Prop | Type | Description | Default |
+| :--- | :--- | :--- | :--- |
+| `value` <span className="text-red-500 font-bold">*</span> | `Float` | Progress percentage value between `0.0f` and `1.0f`. | — |
+| `icon` | `Ux4gIcon?` | Circular leading status icon. | `null` |
+| `iconColor` | `Color?` | Tint color of the leading icon. | `Ux4gColors.primary` |
+| `iconBackgroundColor` | `Color?` | Background circle fill color behind leading icon. | `Ux4gColors.primary100` |
+| `label` | `String?` | SLA task headline label. | `null` |
+| `hint` | `String?` | Supporting caption text displayed above-right. | `null` |
+| `showPercentage` | `Boolean` | Whether to display completion percentage text. | `false` |
+| `labelPosition` | `Ux4gProgressLabelPosition` | Location of percentage text (`Outside` or `Inside`). | `Ux4gProgressLabelPosition.Outside` |
+| `color` | `Color?` | Solid progress track color (`primary`, `orange500`, `red500`, `green500`). | `Ux4gColors.primary` |
+| `height` | `Dp` | Vertical thickness of progress track. | `8.dp` |

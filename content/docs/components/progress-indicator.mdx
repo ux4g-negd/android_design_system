@@ -1,37 +1,92 @@
 ---
 title: Progress Indicator
-description: Linear progress bar, circular progress, and half-circle gauges for profile completion and workflow tracking
+description: Comprehensive progress visualization suite featuring Linear Progress Bars, Circular Progress Rings, and Half-Circle Gauge Indicators
 ---
 
-# Progress Indicator (`Ux4gLinearProgressBar`)
+# Progress Indicator Suite
 
-Linear progress bar, circular progress, and half-circle gauges for profile completion and workflow tracking.
+The UX4G Progress Indicator suite provides determinate and animated visual progress representations across three distinct form factors:
+1. **Linear Progress Bar (`Ux4gLinearProgressBar`)**: Horizontal track with optional header icons, labels, outside/inside percentage indicators, gradient fills, and smooth animations.
+2. **Circular Progress Ring (`Ux4gCircularProgress`)**: 360° ring indicator with auto-scaling center values, metadata labels, sweep gradients, and round/butt caps.
+3. **Half-Circle Progress Gauge (`Ux4gHalfCircleProgress`)**: 180° semicircle speedometer gauge with center percentage text, descriptions, and optional 0%–100% boundary scale marks.
 
-Import from `com.ux4g.designsystemv1.components.progress.Ux4gLinearProgressBar`.
+Import from `com.ux4g.designsystemv1.components.progress.*`.
 
 ---
 
-<h2><MIcon name="smartphone" /> Interactive Preview</h2>
+<h2><MIcon name="smartphone" /> Interactive Previews</h2>
+
+### 1. Linear Progress Bar (`Ux4gLinearProgressBar`)
+
+Horizontal progress track displaying real-time task completion with an outside percentage label.
 
 <ComponentPreview
-  title="Ux4gLinearProgressBar"
+  title="Ux4gLinearProgressBar (Linear Variant)"
   category="Jetpack Compose"
-  code={`// Linear Progress
-Ux4gLinearProgressBar(
-    progress = 0.75f,
-    label = "Profile Completion: 75%"
-)
-
-// Circular Progress Gauge
-Ux4gCircularProgress(
-    progress = 0.80f,
-    size = 64.dp
+  code={`Ux4gLinearProgressBar(
+    value = 0.60f,
+    height = 8.dp,
+    showPercentage = true,
+    labelPosition = Ux4gProgressLabelPosition.Outside,
+    shape = Ux4gProgressShape.Rounded
 )`}
 >
   <div className="flex flex-col items-center justify-center py-2">
     <img
       src="/images/components/progress-indicator_preview.png"
-      alt="UX4G Progress Indicator Preview"
+      alt="UX4G Linear Progress Bar Preview"
+      className="max-w-full rounded-xl border border-border/60 shadow-sm"
+    />
+  </div>
+</ComponentPreview>
+
+---
+
+### 2. Circular Progress Ring (`Ux4gCircularProgress`)
+
+Full 360-degree circular ring indicator with centered percentage display and supporting descriptive subtitle.
+
+<ComponentPreview
+  title="Ux4gCircularProgress (Circular Ring Variant)"
+  category="Jetpack Compose"
+  code={`Ux4gCircularProgress(
+    value = 0.50f,
+    size = Ux4gCircularProgressSize.XL,
+    centerValueText = "50%",
+    description = "Description"
+)`}
+>
+  <div className="flex flex-col items-center justify-center py-2">
+    <img
+      src="/images/components/progress-cirlce_preview.png"
+      alt="UX4G Circular Progress Ring Preview"
+      className="max-w-full rounded-xl border border-border/60 shadow-sm"
+    />
+  </div>
+</ComponentPreview>
+
+---
+
+### 3. Half-Circle Progress Gauge (`Ux4gHalfCircleProgress`)
+
+180-degree semicircle speedometer gauge with bold center value, animated caption, and 0% to 100% boundary scale marks.
+
+<ComponentPreview
+  title="Ux4gHalfCircleProgress (Half-Circle Gauge Variant)"
+  category="Jetpack Compose"
+  code={`Ux4gHalfCircleProgress(
+    value = 0.65f,
+    size = Ux4gHalfCircleProgressSize.M,
+    valueText = "65",
+    description = "Animated",
+    showScale = true,
+    strokeCap = StrokeCap.Round
+)`}
+>
+  <div className="flex flex-col items-center justify-center py-2">
+    <img
+      src="/images/components/progress-halfcircle_preview.png"
+      alt="UX4G Half Circle Progress Gauge Preview"
       className="max-w-full rounded-xl border border-border/60 shadow-sm"
     />
   </div>
@@ -41,14 +96,58 @@ Ux4gCircularProgress(
 
 <h2><MIcon name="code" /> Kotlin Usage</h2>
 
-```kotlin title="Compose Example"
-import androidx.compose.runtime.Composable
-import com.ux4g.designsystemv1.components.progress.Ux4gLinearProgressBar
-import com.ux4g.designsystemv1.components.progress.Ux4gCircularProgress
+```kotlin title="Citizen Onboarding Progress Example"
+import androidx.compose.foundation.layout.*
+import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.StrokeCap
+import androidx.compose.ui.unit.dp
+import com.ux4g.designsystemv1.components.progress.*
+import com.ux4g.designsystemv1.foundation.Ux4gColors
+import com.ux4g.designsystemv1.foundation.Ux4gIcons
 
 @Composable
-fun ProgressDemo() {
-    Ux4gLinearProgressBar(progress = 0.6f)
+fun ProgressShowcaseScreen() {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp),
+        verticalArrangement = Arrangement.spacedBy(28.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        // 1. Linear Progress with Header Label
+        Ux4gLinearProgressBar(
+            value = 0.75f,
+            icon = Ux4gIcons.Info,
+            label = "Document Upload Progress",
+            hint = "3 of 4 completed",
+            showPercentage = true,
+            labelPosition = Ux4gProgressLabelPosition.Outside,
+            height = 10.dp
+        )
+
+        // 2. Circular Ring with Center Content
+        Ux4gCircularProgress(
+            value = 0.85f,
+            size = Ux4gCircularProgressSize.XXL,
+            centerValueText = "85%",
+            centerDescription = "Verified",
+            label = "KYC Verification",
+            description = "Aadhaar & PAN matched"
+        )
+
+        // 3. Half-Circle Gauge with Scale
+        Ux4gHalfCircleProgress(
+            value = 0.65f,
+            size = Ux4gHalfCircleProgressSize.L,
+            valueText = "65%",
+            description = "Application Health Score",
+            showScale = true,
+            strokeCap = StrokeCap.Round,
+            progressColor = Ux4gColors.primary
+        )
+    }
 }
 ```
 
@@ -56,25 +155,92 @@ fun ProgressDemo() {
 
 <h2><MIcon name="settings" /> Parameters</h2>
 
-### `Ux4gLinearProgressBar` Props
+### 1. `Ux4gLinearProgressBar` Props
 
 | Prop | Type | Description | Default |
 | :--- | :--- | :--- | :--- |
-| `progress` <span className="text-red-500 font-bold">*</span> | `Float` | Determinate progress float value between `0.0f` and `1.0f`. | `—` |
-| `modifier` | `Modifier` | Compose layout modifier. | `Modifier` |
-| `label` | `String?` | Optional label above progress bar. | `null` |
-| `color` | `Color` | Progress fill bar color. | `Ux4gTheme.colorScheme.primary` |
-| `trackColor` | `Color` | Background track rail color. | `Ux4gTheme.colorScheme.onSurface.copy(alpha = 0.12f)` |
-
+| `value` <span className="text-red-500 font-bold">*</span> | `Float` | Determinate progress value between `0.0f` and `1.0f`. | — |
+| `modifier` | `Modifier` | Compose layout modifier applied to outer container. | `Modifier` |
+| `label` | `String?` | Header title label displayed above-left of the bar. | `null` |
+| `hint` | `String?` | Supporting caption text displayed above-right. | `null` |
+| `icon` | `Ux4gIcon?` | Optional circular leading icon placed left of label. | `null` |
+| `iconColor` | `Color?` | Icon tint color. | `Ux4gColors.primary` |
+| `iconBackgroundColor` | `Color?` | Circular background color behind leading icon. | `Ux4gColors.primary (12% opacity)` |
+| `height` | `Dp` | Vertical thickness / height of the progress track. | `8.dp` |
+| `shape` | `Ux4gProgressShape` | Corner style: `Rounded` (pill shape) or `Sharp` (square ends). | `Ux4gProgressShape.Rounded` |
+| `customBorderRadius` | `Dp?` | Explicit corner radius override. | `null` |
+| `color` | `Color?` | Solid progress fill color. | `Ux4gColors.primary` |
+| `gradientColors` | `List<Color>?` | Two or more colors for horizontal gradient progress fill. | `null` |
+| `trackColor` | `Color?` | Background rail track color. | `Ux4gColors.neutral900 (12% opacity)` |
+| `showPercentage` | `Boolean` | Whether to render the formatted percentage text. | `false` |
+| `labelPosition` | `Ux4gProgressLabelPosition` | Position of percentage label: `Outside` (top-right) or `Inside` (within bar). | `Ux4gProgressLabelPosition.Outside` |
+| `insideLabelStyle` | `TextStyle?` | Text style for percentage text rendered inside the bar. | `null` |
 
 ---
 
-### `Ux4gCircularProgress` Props
+### 2. `Ux4gCircularProgress` Props
 
 | Prop | Type | Description | Default |
 | :--- | :--- | :--- | :--- |
-| `progress` <span className="text-red-500 font-bold">*</span> | `Float` | Progress float value from `0.0f` to `1.0f`. | `—` |
-| `size` | `Dp` | Diameter dimension of circle. | `48.dp` |
-| `strokeWidth` | `Dp` | Thickness of gauge arc. | `4.dp` |
-| `color` | `Color` | Progress arc color. | `Ux4gTheme.colorScheme.primary` |
+| `value` <span className="text-red-500 font-bold">*</span> | `Float` | Progress value between `0.0f` and `1.0f`. | — |
+| `modifier` | `Modifier` | Compose layout modifier. | `Modifier` |
+| `size` | `Ux4gCircularProgressSize` | Ring size preset: `XS` (20dp), `S` (28dp), `M` (36dp), `L` (48dp), `XL` (88dp), `XXL` (116dp), `XXXL` (144dp). | `Ux4gCircularProgressSize.L` |
+| `diameter` | `Dp?` | Custom diameter override. | `null` |
+| `strokeWidth` | `Dp?` | Thickness of the circular ring track. | `Auto-scaled (3dp - 12dp)` |
+| `progressColor` | `Color?` | Solid progress arc color. | `Ux4gColors.primary` |
+| `trackColor` | `Color?` | Background inactive ring color. | `Ux4gColors.neutral300` |
+| `progressGradientColors` | `List<Color>?` | Gradient colors for a 360-degree sweep gradient. | `Sweep gradient palette` |
+| `strokeCap` | `StrokeCap` | Stroke endpoint style: `StrokeCap.Butt` or `StrokeCap.Round`. | `StrokeCap.Butt` |
+| `startAngleDegrees` | `Float` | Angle in degrees where progress starts (`-90f` = 12 o'clock). | `-90f` |
+| `centerValueText` | `String?` | Main headline text rendered in ring center (e.g. `"50%"`). | `null` |
+| `centerDescription` | `String?` | Secondary subtitle text rendered below center value. | `null` |
+| `center` | `(@Composable () -> Unit)?` | Custom composable slot rendered in ring center. | `null` |
+| `label` | `String?` | Title heading placed below the circular ring. | `null` |
+| `description` | `String?` | Explanatory description placed below the label. | `null` |
+| `backgroundColor` | `Color?` | Optional solid circle background fill color. | `null` |
+| `gap` | `Dp` | Spacing between ring and bottom metadata section. | `8.dp` |
 
+---
+
+### 3. `Ux4gHalfCircleProgress` Props
+
+| Prop | Type | Description | Default |
+| :--- | :--- | :--- | :--- |
+| `value` <span className="text-red-500 font-bold">*</span> | `Float` | Progress value between `0.0f` and `1.0f`. | — |
+| `modifier` | `Modifier` | Compose layout modifier. | `Modifier` |
+| `size` | `Ux4gHalfCircleProgressSize` | Semicircle size preset: `S` (80dp), `M` (140dp), `L` (200dp), `XL` (280dp). | `Ux4gHalfCircleProgressSize.L` |
+| `width` | `Dp?` | Custom width constraint override. | `null` |
+| `strokeWidth` | `Dp?` | Arc track thickness. | `Auto-scaled (4dp - 22dp)` |
+| `progressColor` | `Color?` | Solid color for the gauge arc. | `Ux4gColors.primary` |
+| `trackColor` | `Color?` | Inactive background arc color. | `Ux4gColors.neutral900 (16% opacity)` |
+| `gradientColors` | `List<Color>?` | Gradient colors for horizontal sweep. | `Horizontal gradient palette` |
+| `strokeCap` | `StrokeCap` | End cap style (`StrokeCap.Round` or `StrokeCap.Butt`). | `StrokeCap.Round` |
+| `valueText` | `String?` | Main numeric / percentage text centered in semicircle. | `"$percent%"` |
+| `description` | `String?` | Explanatory caption centered below the value. | `null` |
+| `showScale` | `Boolean` | When true, renders `0%` and `100%` labels at arc endpoints. | `false` |
+| `gap` | `Dp` | Spacing between gauge arc and text labels. | `4.dp` |
+
+---
+
+### Enums Reference
+
+```kotlin
+enum class Ux4gProgressShape {
+    Rounded,  // Fully rounded pill ends
+    Sharp     // Square corners
+}
+
+enum class Ux4gProgressLabelPosition {
+    Outside,  // Header top-right outside the bar
+    Inside    // Embedded directly within the filled bar
+}
+
+enum class Ux4gCircularProgressSize(val diameter: Dp) {
+    XS(20.dp), S(28.dp), M(36.dp), L(48.dp),
+    XL(88.dp), XXL(116.dp), XXXL(144.dp)
+}
+
+enum class Ux4gHalfCircleProgressSize(val width: Dp) {
+    S(80.dp), M(140.dp), L(200.dp), XL(280.dp)
+}
+```
