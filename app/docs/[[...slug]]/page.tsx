@@ -26,16 +26,7 @@ export default async function Page(props: PageProps<'/docs/[[...slug]]'>) {
       toc={page.data.toc}
       full={page.data.full}
       footer={page.data.full ? { enabled: false } : undefined}
-      containerProps={
-        page.data.full
-          ? { className: '!p-0 !pt-0 !px-0 !max-w-none w-full' }
-          : undefined
-      }
-      articleProps={
-        page.data.full
-          ? { className: '!p-0 !pt-0 !max-w-none !mx-0 w-full' }
-          : undefined
-      }
+      className={page.data.full ? '!p-0 !pt-0 !px-0 !max-w-none w-full' : undefined}
     >
       {!page.data.full && (
         <>

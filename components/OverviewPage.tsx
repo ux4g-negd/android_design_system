@@ -22,9 +22,14 @@ export function OverviewPage() {
               Android Documentation | UX4G Design System
             </h1>
 
-            {/* Version Tag */}
-            <div className="inline-flex items-center px-3 py-1 rounded-full text-[13px] font-[700] bg-[#EDE9FE] dark:bg-[#312E81]/50 text-[#6D28D9] dark:text-[#C4B5FD] border border-[#DDD6FE] dark:border-[#6366F1]/30 mt-3">
-              3.0
+            {/* Version & Beta Tags */}
+            <div className="flex items-center gap-2 mt-3">
+              <div className="inline-flex items-center px-3.5 py-1 rounded-full text-[13px] font-[700] bg-[#EDE9FE] dark:bg-[#312E81]/50 text-[#6D28D9] dark:text-[#C4B5FD] border border-[#DDD6FE] dark:border-[#6366F1]/30">
+                3.0
+              </div>
+              <div className="inline-flex items-center px-3.5 py-1 rounded-full text-[13px] font-[700] bg-[#EDE9FE] dark:bg-[#312E81]/50 text-[#6D28D9] dark:text-[#C4B5FD] border border-[#DDD6FE] dark:border-[#6366F1]/30">
+                BETA
+              </div>
             </div>
 
             {/* Tagline */}
@@ -57,74 +62,54 @@ export function OverviewPage() {
           {/* Right Column: System Overview Card */}
           <div className="lg:col-span-5 w-full">
             <div className="rounded-[20px] p-7 bg-white dark:bg-[#1E293B] border border-[#E2E8F0] dark:border-white/10 shadow-[0_16px_36px_rgba(79,70,229,0.08)] dark:shadow-[0_16px_36px_rgba(0,0,0,0.3)] transition-all">
-              <span className="text-[12px] font-[700] text-[#4A2BC2] dark:text-[#A5B4FC]">
+              <div className="text-[12px] font-[700] text-[#4A2BC2] dark:text-[#A5B4FC] tracking-[0.5px] uppercase leading-none mb-0">
                 System overview
-              </span>
+              </div>
 
-              <h2 className="text-[22px] font-[800] text-slate-900 dark:text-white leading-[1.25] mt-4 mb-0">
-                One platform for consistent public service journeys.
-              </h2>
+              <h3 className="text-[22px] font-[800] text-[#0F172A] dark:text-white leading-[1.25] mt-4 mb-2">
+                One platform for<br />consistent public<br />service journeys.
+              </h3>
 
-              <p className="text-[13.5px] text-[#4B5563] dark:text-[#94A3B8] leading-[1.5] mt-3 mb-0">
+              <p className="text-[13.5px] text-[#4B5563] dark:text-[#94A3B8] leading-[1.55] mb-5">
                 Start from shared tokens, move into reusable components, and document delivery paths in one place.
               </p>
 
-              {/* Stats Box */}
-              <div className="mt-6 py-5 border-y border-[#F1F5F9] dark:border-white/10 grid grid-cols-4 items-center">
-                {/* Stat 1 */}
-                <div className="flex flex-col">
-                  <span className="text-[22px] font-[800] text-slate-900 dark:text-white leading-tight">
-                    45+
-                  </span>
-                  <span className="text-[11px] text-[#4B5563] dark:text-[#94A3B8] leading-[1.3] mt-1">
-                    Reusable<br />components
-                  </span>
+              {/* Stats Grid */}
+              <div className="flex items-center py-4 border-y border-[#F1F5F9] dark:border-white/10 mb-4 max-md:grid max-md:grid-cols-2 max-md:gap-4">
+                <div className="flex-1 text-left">
+                  <div className="text-[22px] font-[800] text-[#0F172A] dark:text-white leading-tight">45+</div>
+                  <div className="text-[11px] text-[#64748B] dark:text-[#94A3B8] leading-[1.3] mt-1">Reusable<br />components</div>
                 </div>
-
-                {/* Stat 2 */}
-                <div className="flex flex-col border-l border-[#E2E8F0] dark:border-white/10 pl-2 sm:pl-3">
-                  <span className="text-[22px] font-[800] text-slate-900 dark:text-white leading-tight">
-                    1K+
-                  </span>
-                  <span className="text-[11px] text-[#4B5563] dark:text-[#94A3B8] leading-[1.3] mt-1">
-                    Design<br />tokens
-                  </span>
+                <div className="w-px h-[42px] bg-[#E2E8F0] dark:bg-white/10 mx-3 shrink-0 max-md:hidden" />
+                <div className="flex-1 text-left">
+                  <div className="text-[22px] font-[800] text-[#0F172A] dark:text-white leading-tight">1K+</div>
+                  <div className="text-[11px] text-[#64748B] dark:text-[#94A3B8] leading-[1.3] mt-1">Design<br />tokens</div>
                 </div>
-
-                {/* Stat 3 */}
-                <div className="flex flex-col border-l border-[#E2E8F0] dark:border-white/10 pl-2 sm:pl-3">
-                  <span className="text-[22px] font-[800] text-slate-900 dark:text-white leading-tight">
-                    10+
-                  </span>
-                  <span className="text-[11px] text-[#4B5563] dark:text-[#94A3B8] leading-[1.3] mt-1">
-                    Patterns
-                  </span>
+                <div className="w-px h-[42px] bg-[#E2E8F0] dark:bg-white/10 mx-3 shrink-0 max-md:hidden" />
+                <div className="flex-1 text-left">
+                  <div className="text-[22px] font-[800] text-[#0F172A] dark:text-white leading-tight">10+</div>
+                  <div className="text-[11px] text-[#64748B] dark:text-[#94A3B8] leading-[1.3] mt-1">Patterns</div>
                 </div>
-
-                {/* Stat 4 */}
-                <div className="flex flex-col border-l border-[#E2E8F0] dark:border-white/10 pl-2 sm:pl-3">
-                  <span className="text-[22px] font-[800] text-slate-900 dark:text-white leading-tight">
-                    AA
-                  </span>
-                  <span className="text-[11px] text-[#4B5563] dark:text-[#94A3B8] leading-[1.3] mt-1">
-                    Accessibility<br />target
-                  </span>
+                <div className="w-px h-[42px] bg-[#E2E8F0] dark:bg-white/10 mx-3 shrink-0 max-md:hidden" />
+                <div className="flex-1 text-left">
+                  <div className="text-[22px] font-[800] text-[#0F172A] dark:text-white leading-tight">AA</div>
+                  <div className="text-[11px] text-[#64748B] dark:text-[#94A3B8] leading-[1.3] mt-1">Accessibility<br />target</div>
                 </div>
               </div>
 
-              {/* Table Details */}
-              <div className="mt-5 space-y-3.5">
-                <div className="flex items-center justify-between gap-4">
-                  <span className="text-[13.5px] font-[700] text-slate-900 dark:text-white shrink-0">Tokens</span>
-                  <span className="text-[13px] text-[#4B5563] dark:text-[#94A3B8] text-right">Spacing, Radius, Colors</span>
+              {/* Table Rows */}
+              <div className="flex flex-col gap-2">
+                <div className="flex justify-between items-center">
+                  <span className="text-[13.5px] font-[700] text-[#0F172A] dark:text-white">Tokens</span>
+                  <span className="text-[13px] text-[#4B5563] dark:text-[#94A3B8]">Spacing, Radius, Colors</span>
                 </div>
-                <div className="flex items-center justify-between gap-4">
-                  <span className="text-[13.5px] font-[700] text-slate-900 dark:text-white shrink-0">Components</span>
-                  <span className="text-[13px] text-[#4B5563] dark:text-[#94A3B8] text-right">Inputs, buttons, cards</span>
+                <div className="flex justify-between items-center">
+                  <span className="text-[13.5px] font-[700] text-[#0F172A] dark:text-white">Components</span>
+                  <span className="text-[13px] text-[#4B5563] dark:text-[#94A3B8]">Inputs, buttons, cards</span>
                 </div>
-                <div className="flex items-center justify-between gap-4">
-                  <span className="text-[13.5px] font-[700] text-slate-900 dark:text-white shrink-0">Patterns</span>
-                  <span className="text-[13px] text-[#4B5563] dark:text-[#94A3B8] text-right">Headers, footers, forms</span>
+                <div className="flex justify-between items-center">
+                  <span className="text-[13.5px] font-[700] text-[#0F172A] dark:text-white">Patterns</span>
+                  <span className="text-[13px] text-[#4B5563] dark:text-[#94A3B8]">Headers, footers, forms</span>
                 </div>
               </div>
             </div>
@@ -214,116 +199,86 @@ export function OverviewPage() {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
             {/* Card 1: Components */}
-            <div className="min-h-[255px] p-6 rounded-[16px] bg-white dark:bg-[#1E293B] border border-[#E2E8F0] dark:border-white/10 shadow-[0_4px_16px_rgba(0,0,0,0.03)] dark:shadow-none flex flex-col justify-between">
-              <div>
-                <div className="inline-flex p-[10px] rounded-[8px] bg-[#F3F0FF] dark:bg-[#4F46E5]/20 text-[#6D28D9] dark:text-[#A5B4FC]">
-                  <span className="material-symbols-outlined text-[20px]">widgets</span>
-                </div>
-                <h3 className="text-[18px] font-[700] text-slate-900 dark:text-white mt-4 mb-0">
-                  Components
-                </h3>
-                <p className="text-[13.5px] text-[#4B5563] dark:text-[#94A3B8] leading-[1.55] mt-2 mb-4">
-                  Form controls, navigation, feedback, and layout primitives designed for real government workflows.
-                </p>
-                <ul className="space-y-2 text-[13.5px] text-slate-900 dark:text-white pl-0 list-none mb-0 leading-[1.4]">
-                  <li className="flex items-start">
-                    <span className="text-[#4F46E5] dark:text-[#A5B4FC] font-[800] mr-2">•</span>
-                    <span>Production-ready Jetpack Compose building blocks</span>
-                  </li>
-                  <li className="flex items-start">
-                    <span className="text-[#4F46E5] dark:text-[#A5B4FC] font-[800] mr-2">•</span>
-                    <span>Interactive states documented with Kotlin code snippets</span>
-                  </li>
-                  <li className="flex items-start">
-                    <span className="text-[#4F46E5] dark:text-[#A5B4FC] font-[800] mr-2">•</span>
-                    <span>Consistent anatomy across Android surfaces</span>
-                  </li>
-                </ul>
+            <div className="p-6 rounded-[16px] bg-white dark:bg-[#1E293B] border border-[#E2E8F0] dark:border-white/10 shadow-[0_4px_16px_rgba(0,0,0,0.03)] dark:shadow-none flex flex-col">
+              <div className="inline-flex p-[10px] rounded-[8px] bg-[#F3F0FF] dark:bg-[#4F46E5]/20 text-[#6D28D9] dark:text-[#A5B4FC] w-fit">
+                <span className="material-symbols-outlined text-[20px]">widgets</span>
               </div>
-              <div className="pt-4 mt-4 border-t border-[#F1F5F9] dark:border-white/10">
-                <Link
-                  href="/docs/components/button"
-                  className="text-[13.5px] font-semibold text-[#4F46E5] dark:text-[#A5B4FC] hover:underline inline-flex items-center"
-                >
-                  Browse Components →
-                </Link>
-              </div>
+              <h3 className="text-[18px] font-[700] text-slate-900 dark:text-white mt-4 mb-0">
+                Components
+              </h3>
+              <p className="text-[13.5px] text-[#4B5563] dark:text-[#94A3B8] leading-[1.55] mt-2 mb-4">
+                Form controls, navigation, feedback, and layout primitives designed for real government workflows.
+              </p>
+              <ul className="space-y-2 text-[13.5px] text-slate-900 dark:text-white pl-0 list-none mb-0 leading-[1.4]">
+                <li className="flex items-start">
+                  <span className="text-[#4F46E5] dark:text-[#A5B4FC] font-[800] mr-2">•</span>
+                  <span>Production-ready Jetpack Compose building blocks</span>
+                </li>
+                <li className="flex items-start">
+                  <span className="text-[#4F46E5] dark:text-[#A5B4FC] font-[800] mr-2">•</span>
+                  <span>Interactive states documented with Kotlin code snippets</span>
+                </li>
+                <li className="flex items-start">
+                  <span className="text-[#4F46E5] dark:text-[#A5B4FC] font-[800] mr-2">•</span>
+                  <span>Consistent anatomy across Android surfaces</span>
+                </li>
+              </ul>
             </div>
 
             {/* Card 2: Tokens */}
-            <div className="min-h-[255px] p-6 rounded-[16px] bg-white dark:bg-[#1E293B] border border-[#E2E8F0] dark:border-white/10 shadow-[0_4px_16px_rgba(0,0,0,0.03)] dark:shadow-none flex flex-col justify-between">
-              <div>
-                <div className="inline-flex p-[10px] rounded-[8px] bg-[#F3F0FF] dark:bg-[#4F46E5]/20 text-[#6D28D9] dark:text-[#A5B4FC]">
-                  <span className="material-symbols-outlined text-[20px]">style</span>
-                </div>
-                <h3 className="text-[18px] font-[700] text-slate-900 dark:text-white mt-4 mb-0">
-                  Tokens
-                </h3>
-                <p className="text-[13.5px] text-[#4B5563] dark:text-[#94A3B8] leading-[1.55] mt-2 mb-4">
-                  Core design decisions captured as reusable color, typography, spacing, and semantic values.
-                </p>
-                <ul className="space-y-2 text-[13.5px] text-slate-900 dark:text-white pl-0 list-none mb-0 leading-[1.4]">
-                  <li className="flex items-start">
-                    <span className="text-[#4F46E5] dark:text-[#A5B4FC] font-[800] mr-2">•</span>
-                    <span>Brand and neutral palettes</span>
-                  </li>
-                  <li className="flex items-start">
-                    <span className="text-[#4F46E5] dark:text-[#A5B4FC] font-[800] mr-2">•</span>
-                    <span>Semantic mappings for surfaces and states</span>
-                  </li>
-                  <li className="flex items-start">
-                    <span className="text-[#4F46E5] dark:text-[#A5B4FC] font-[800] mr-2">•</span>
-                    <span>A shared source of truth for scale</span>
-                  </li>
-                </ul>
+            <div className="p-6 rounded-[16px] bg-white dark:bg-[#1E293B] border border-[#E2E8F0] dark:border-white/10 shadow-[0_4px_16px_rgba(0,0,0,0.03)] dark:shadow-none flex flex-col">
+              <div className="inline-flex p-[10px] rounded-[8px] bg-[#F3F0FF] dark:bg-[#4F46E5]/20 text-[#6D28D9] dark:text-[#A5B4FC] w-fit">
+                <span className="material-symbols-outlined text-[20px]">style</span>
               </div>
-              <div className="pt-4 mt-4 border-t border-[#F1F5F9] dark:border-white/10">
-                <Link
-                  href="/docs/tokens/colors"
-                  className="text-[13.5px] font-semibold text-[#4F46E5] dark:text-[#A5B4FC] hover:underline inline-flex items-center"
-                >
-                  Explore Tokens →
-                </Link>
-              </div>
+              <h3 className="text-[18px] font-[700] text-slate-900 dark:text-white mt-4 mb-0">
+                Tokens
+              </h3>
+              <p className="text-[13.5px] text-[#4B5563] dark:text-[#94A3B8] leading-[1.55] mt-2 mb-4">
+                Core design decisions captured as reusable color, typography, spacing, and semantic values.
+              </p>
+              <ul className="space-y-2 text-[13.5px] text-slate-900 dark:text-white pl-0 list-none mb-0 leading-[1.4]">
+                <li className="flex items-start">
+                  <span className="text-[#4F46E5] dark:text-[#A5B4FC] font-[800] mr-2">•</span>
+                  <span>Brand and neutral palettes</span>
+                </li>
+                <li className="flex items-start">
+                  <span className="text-[#4F46E5] dark:text-[#A5B4FC] font-[800] mr-2">•</span>
+                  <span>Semantic mappings for surfaces and states</span>
+                </li>
+                <li className="flex items-start">
+                  <span className="text-[#4F46E5] dark:text-[#A5B4FC] font-[800] mr-2">•</span>
+                  <span>A shared source of truth for scale</span>
+                </li>
+              </ul>
             </div>
 
             {/* Card 3: Patterns */}
-            <div className="min-h-[255px] p-6 rounded-[16px] bg-white dark:bg-[#1E293B] border border-[#E2E8F0] dark:border-white/10 shadow-[0_4px_16px_rgba(0,0,0,0.03)] dark:shadow-none flex flex-col justify-between">
-              <div>
-                <div className="inline-flex p-[10px] rounded-[8px] bg-[#F3F0FF] dark:bg-[#4F46E5]/20 text-[#6D28D9] dark:text-[#A5B4FC]">
-                  <span className="material-symbols-outlined text-[20px]">dashboard_customize</span>
-                </div>
-                <h3 className="text-[18px] font-[700] text-slate-900 dark:text-white mt-4 mb-0">
-                  Patterns
-                </h3>
-                <p className="text-[13.5px] text-[#4B5563] dark:text-[#94A3B8] leading-[1.55] mt-2 mb-4">
-                  Reusable block-level compositions like headers, footers, and complex forms used across applications.
-                </p>
-                <ul className="space-y-2 text-[13.5px] text-slate-900 dark:text-white pl-0 list-none mb-0 leading-[1.4]">
-                  <li className="flex items-start">
-                    <span className="text-[#4F46E5] dark:text-[#A5B4FC] font-[800] mr-2">•</span>
-                    <span>Pre-built structural blocks</span>
-                  </li>
-                  <li className="flex items-start">
-                    <span className="text-[#4F46E5] dark:text-[#A5B4FC] font-[800] mr-2">•</span>
-                    <span>Streamlined composition</span>
-                  </li>
-                  <li className="flex items-start">
-                    <span className="text-[#4F46E5] dark:text-[#A5B4FC] font-[800] mr-2">•</span>
-                    <span>Accelerated feature delivery</span>
-                  </li>
-                </ul>
+            <div className="p-6 rounded-[16px] bg-white dark:bg-[#1E293B] border border-[#E2E8F0] dark:border-white/10 shadow-[0_4px_16px_rgba(0,0,0,0.03)] dark:shadow-none flex flex-col">
+              <div className="inline-flex p-[10px] rounded-[8px] bg-[#F3F0FF] dark:bg-[#4F46E5]/20 text-[#6D28D9] dark:text-[#A5B4FC] w-fit">
+                <span className="material-symbols-outlined text-[20px]">dashboard_customize</span>
               </div>
-              <div className="pt-4 mt-4 border-t border-[#F1F5F9] dark:border-white/10">
-                <Link
-                  href="/docs/patterns/identity-and-access"
-                  className="text-[13.5px] font-semibold text-[#4F46E5] dark:text-[#A5B4FC] hover:underline inline-flex items-center"
-                >
-                  View Patterns →
-                </Link>
-              </div>
+              <h3 className="text-[18px] font-[700] text-slate-900 dark:text-white mt-4 mb-0">
+                Patterns
+              </h3>
+              <p className="text-[13.5px] text-[#4B5563] dark:text-[#94A3B8] leading-[1.55] mt-2 mb-4">
+                Reusable block-level compositions like headers, footers, and complex forms used across applications.
+              </p>
+              <ul className="space-y-2 text-[13.5px] text-slate-900 dark:text-white pl-0 list-none mb-0 leading-[1.4]">
+                <li className="flex items-start">
+                  <span className="text-[#4F46E5] dark:text-[#A5B4FC] font-[800] mr-2">•</span>
+                  <span>Pre-built structural blocks</span>
+                </li>
+                <li className="flex items-start">
+                  <span className="text-[#4F46E5] dark:text-[#A5B4FC] font-[800] mr-2">•</span>
+                  <span>Streamlined composition</span>
+                </li>
+                <li className="flex items-start">
+                  <span className="text-[#4F46E5] dark:text-[#A5B4FC] font-[800] mr-2">•</span>
+                  <span>Accelerated feature delivery</span>
+                </li>
+              </ul>
             </div>
           </div>
         </div>
