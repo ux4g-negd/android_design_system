@@ -78,29 +78,12 @@ html > body[data-scroll-locked] {
   --removed-body-scroll-bar-size: 0px !important;
 }
 
-/* ── Prevent Invisible Dialog/Drawer/Search Overlays from Blocking Clicks ── */
-[hidden],
-[hidden="until-found"],
-[data-closed],
-[data-state="closed"],
-[data-open="false"],
-div[data-closed],
-div[data-state="closed"],
-div[hidden] {
-  pointer-events: none !important;
-}
-
-[hidden] {
-  display: none !important;
-}
-
-body {
-  pointer-events: auto !important;
-}
-
-[role="presentation"][data-closed],
+/* ── Prevent Invisible Search & Drawer Dialog Backdrops from Blocking Clicks ── */
 .bg-fd-overlay[data-closed],
-.bg-fd-overlay[data-state="closed"] {
+.bg-fd-overlay[data-state="closed"],
+.bg-fd-overlay[hidden],
+div[role="presentation"].fixed.inset-0[data-closed],
+div[role="presentation"].fixed.inset-0[data-state="closed"] {
   display: none !important;
   pointer-events: none !important;
 }
