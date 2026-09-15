@@ -10,6 +10,16 @@ const inter = Inter({
 export const metadata: Metadata = {
   title: 'Android Documentation | UX4G Design System',
   description: 'Government-grade UI foundations for trusted public digital experiences on Android',
+  robots: {
+    index: false,
+    follow: false,
+    nocache: true,
+    googleBot: {
+      index: false,
+      follow: false,
+      noimageindex: true,
+    },
+  },
   icons: {
     icon: '/meity-emblem.svg',
     shortcut: '/meity-emblem.svg',

@@ -93,9 +93,7 @@ pages.forEach(p => {
 
 // 1. robots.txt
 const robotsTxt = `User-agent: *
-Allow: /
-
-Sitemap: ${BASE_URL}/sitemap.xml
+Disallow: /
 `;
 
 fs.writeFileSync(path.join(PUBLIC_DIR, 'robots.txt'), robotsTxt, 'utf-8');
