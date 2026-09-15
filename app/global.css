@@ -78,6 +78,33 @@ html > body[data-scroll-locked] {
   --removed-body-scroll-bar-size: 0px !important;
 }
 
+/* ── Prevent Invisible Dialog/Drawer/Search Overlays from Blocking Clicks ── */
+[hidden],
+[hidden="until-found"],
+[data-closed],
+[data-state="closed"],
+[data-open="false"],
+div[data-closed],
+div[data-state="closed"],
+div[hidden] {
+  pointer-events: none !important;
+}
+
+[hidden] {
+  display: none !important;
+}
+
+body {
+  pointer-events: auto !important;
+}
+
+[role="presentation"][data-closed],
+.bg-fd-overlay[data-closed],
+.bg-fd-overlay[data-state="closed"] {
+  display: none !important;
+  pointer-events: none !important;
+}
+
 /* ── Flutter Welcome Page Background Gradient ────────────────────────── */
 .flutter-welcome-bg {
   background: linear-gradient(145deg, #FFFFFF 0%, #FFFFFF 52%, #E4E1F3 82%, #DAD5F0 100%);
