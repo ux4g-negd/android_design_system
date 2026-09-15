@@ -2,7 +2,6 @@ import type { Metadata } from 'next';
 import { RootProvider } from 'fumadocs-ui/provider/next';
 import './global.css';
 import { Inter } from 'next/font/google';
-import { OverlayGuard } from '@/components/OverlayGuard';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -39,7 +38,6 @@ export default function Layout({ children }: LayoutProps<'/'>) {
         />
       </head>
       <body className="flex flex-col min-h-screen" suppressHydrationWarning>
-        <OverlayGuard />
         <RootProvider>{children}</RootProvider>
       </body>
     </html>

@@ -78,35 +78,42 @@ html > body[data-scroll-locked] {
   --removed-body-scroll-bar-size: 0px !important;
 }
 
-/* ── Fix: Prevent closed/hidden overlays from blocking clicks ────────────── */
-/* Root cause: Tailwind v4 transitions include `display` and `pointer-events` */
-/* with `transition-behavior: allow-discrete`. This keeps closed backdrops    */
-/* interactive during exit animations. If interrupted, the fullscreen z-50    */
-/* overlay gets stuck blocking ALL pointer events.                            */
+/* ── Fix: Prevent closed/hidden overlays and drawer backdrops from blocking clicks ── */
+/* Root cause: Tailwind v4 transitions include `display` and `pointer-events`          */
+/* with `transition-behavior: allow-discrete`. Also Fumadocs mobile drawer and search  */
+/* dialogs can leave closed overlays active at z-40/z-50 if animations are cancelled.  */
 
-/* Dialog backdrops (search dialog, popovers) — uses role="presentation" */
+/* Dialog backdrops & Base UI Presentation overlays */
 [role="presentation"][hidden],
 [role="presentation"][data-closed],
-[role="presentation"][data-state="closed"] {
-  display: none !important;
-  pointer-events: none !important;
-  visibility: hidden !important;
-  transition: none !important;
-  animation: none !important;
-}
-
-/* Fumadocs overlay backdrop class */
+[role="presentation"][data-state="closed"],
 .bg-fd-overlay[hidden],
 .bg-fd-overlay[data-closed],
 .bg-fd-overlay[data-state="closed"] {
   display: none !important;
   pointer-events: none !important;
   visibility: hidden !important;
+  opacity: 0 !important;
   transition: none !important;
   animation: none !important;
 }
 
-/* Ensure body always accepts pointer events */
+/* Fumadocs SidebarDrawerOverlay & any full-screen backdrop when closed */
+div[data-state="closed"].fixed,
+div[data-state="closed"][class*="fixed"],
+div[data-state="closed"][class*="backdrop-blur"],
+div[data-state="closed"].z-40,
+div[data-state="closed"].z-50 {
+  display: none !important;
+  pointer-events: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  transition: none !important;
+  animation: none !important;
+}
+
+/* Ensure document and body always accept pointer events */
+html,
 body {
   pointer-events: auto !important;
 }
