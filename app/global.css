@@ -73,9 +73,21 @@ html {
   scrollbar-gutter: stable;
 }
 
+/* Universal hidden attribute rule */
+[hidden],
+[hidden="true"],
+[aria-hidden="true"][data-closed],
+[aria-hidden="true"][data-state="closed"] {
+  display: none !important;
+  pointer-events: none !important;
+}
+
+html[data-base-ui-scroll-locked],
 html > body[data-scroll-locked] {
   margin-right: 0px !important;
   --removed-body-scroll-bar-size: 0px !important;
+  overflow-y: auto !important;
+  height: auto !important;
 }
 
 /* ── Fix: Prevent closed/hidden overlays and drawer backdrops from blocking clicks ── */
