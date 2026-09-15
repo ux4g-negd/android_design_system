@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://android.ux4g.gov.in/sitemap.xml

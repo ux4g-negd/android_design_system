@@ -1,0 +1,13 @@
+# UX4G Android Design System Documentation
+
+This is the Documentation for the UX4G Android Design System built with Jetpack Compose. It showcases the various Android UI components, widgets, and design tokens used across government applications.
+
+## Overview
+UX4G provides a comprehensive suite of UI components and patterns to build scalable, accessible, and high-performance citizen-facing Android applications.
+
+## Categories
+1. **Tokens**: Theme Color, Typography, Dimensions, Shadows.
+2. **Components**: Foundational UI elements like Buttons, Inputs, Avatars, Cards, Modals, Sliders, Steppers, and Loaders.
+3. **Patterns**: Composable UX patterns including Identity and Access, Application Submission, and Service Discovery.
+
+For a full list of all components and patterns, please refer to [llms-full.txt](llms-full.txt).

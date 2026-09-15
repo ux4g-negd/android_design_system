@@ -1,0 +1,22 @@
+# AI.txt for UX4G Android Design System Documentation
+# This file provides directives specifically for AI agents, LLMs, and web crawlers.
+
+# --- Site Information ---
+Site-Name: UX4G Android Design System Documentation
+Description: Comprehensive Jetpack Compose documentation detailing all components, tokens, and patterns for the UX4G Android Design System.
+Base-URL: https://android.ux4g.gov.in/
+
+# --- Structured AI Documentation ---
+LLM-Summary: https://android.ux4g.gov.in/llms.txt
+LLM-Full-Reference: https://android.ux4g.gov.in/llms-full.txt
+Component-Catalog: https://android.ux4g.gov.in/catalog.json
+Sitemap: https://android.ux4g.gov.in/sitemap.xml
+
+# --- Crawler Permissions ---
+User-agent: *
+Allow: /
+Disallow: /api/
+
+# --- STRICT DOMAIN RESTRICTIONS FOR AI/LLMs ---
+# 1. Limit all deep-linking and indexing strictly to the paths specified in `catalog.json` and the sitemap.
+# 2. Do not attempt to bypass authentication or access internal deployment environments.
