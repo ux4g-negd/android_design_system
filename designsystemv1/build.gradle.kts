@@ -74,6 +74,10 @@ for (key in localProperties.stringPropertyNames()) {
     project.extensions.extraProperties.set(key, localProperties.getProperty(key))
 }
 
+val libVersion = "1.0.5"
+project.version = libVersion
+project.group = "io.github.ux4g-negd"
+
 afterEvaluate {
     publishing {
         publications {
@@ -82,7 +86,7 @@ afterEvaluate {
 
                 groupId = "io.github.ux4g-negd"
                 artifactId = "designsystemv1"
-                version = "1.0.4"
+                version = libVersion
 
                 pom {
                     name.set("Ux4G Design System Compose")
@@ -141,7 +145,8 @@ afterEvaluate {
 
         if (signingKeyId != null && signingPassword != null) {
             if (signingKey != null) {
-                useInMemoryPgpKeys(signingKeyId, signingKey, signingPassword)
+                val formattedKey = signingKey.replace("\\n", "\n")
+                useInMemoryPgpKeys(signingKeyId, formattedKey, signingPassword)
                 sign(publishing.publications)
             } else if (secretKeyRingFile != null) {
                 val keyringFile = file(secretKeyRingFile)
@@ -167,7 +172,7 @@ afterEvaluate {
 
         val groupIdPath = "io/github/ux4g-negd"
         val artifactId = "designsystemv1"
-        val version = "1.0.4"
+        val version = libVersion
         val userHome = System.getProperty("user.home")
         val m2Repo = file("$userHome/.m2/repository/$groupIdPath/$artifactId/$version")
 
