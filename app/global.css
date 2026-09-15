@@ -78,14 +78,37 @@ html > body[data-scroll-locked] {
   --removed-body-scroll-bar-size: 0px !important;
 }
 
-/* ── Prevent Invisible Search & Drawer Dialog Backdrops from Blocking Clicks ── */
-.bg-fd-overlay[data-closed],
-.bg-fd-overlay[data-state="closed"],
-.bg-fd-overlay[hidden],
-div[role="presentation"].fixed.inset-0[data-closed],
-div[role="presentation"].fixed.inset-0[data-state="closed"] {
+/* ── Fix: Prevent closed/hidden overlays from blocking clicks ────────────── */
+/* Root cause: Tailwind v4 transitions include `display` and `pointer-events` */
+/* with `transition-behavior: allow-discrete`. This keeps closed backdrops    */
+/* interactive during exit animations. If interrupted, the fullscreen z-50    */
+/* overlay gets stuck blocking ALL pointer events.                            */
+
+/* Dialog backdrops (search dialog, popovers) — uses role="presentation" */
+[role="presentation"][hidden],
+[role="presentation"][data-closed],
+[role="presentation"][data-state="closed"] {
   display: none !important;
   pointer-events: none !important;
+  visibility: hidden !important;
+  transition: none !important;
+  animation: none !important;
+}
+
+/* Fumadocs overlay backdrop class */
+.bg-fd-overlay[hidden],
+.bg-fd-overlay[data-closed],
+.bg-fd-overlay[data-state="closed"] {
+  display: none !important;
+  pointer-events: none !important;
+  visibility: hidden !important;
+  transition: none !important;
+  animation: none !important;
+}
+
+/* Ensure body always accepts pointer events */
+body {
+  pointer-events: auto !important;
 }
 
 /* ── Flutter Welcome Page Background Gradient ────────────────────────── */
