@@ -87,23 +87,21 @@ html > body[data-scroll-locked] {
 [role="presentation"][hidden],
 [role="presentation"][data-closed],
 [role="presentation"][data-state="closed"],
+[role="presentation"][data-ending-style],
 .bg-fd-overlay[hidden],
 .bg-fd-overlay[data-closed],
-.bg-fd-overlay[data-state="closed"] {
-  display: none !important;
-  pointer-events: none !important;
-  visibility: hidden !important;
-  opacity: 0 !important;
-  transition: none !important;
-  animation: none !important;
-}
-
-/* Fumadocs SidebarDrawerOverlay & any full-screen backdrop when closed */
+.bg-fd-overlay[data-state="closed"],
+.bg-fd-overlay[data-ending-style],
 div[data-state="closed"].fixed,
 div[data-state="closed"][class*="fixed"],
-div[data-state="closed"][class*="backdrop-blur"],
+div[data-state="closed"][class*="backdrop"],
+div[data-closed].fixed,
+div[data-closed][class*="fixed"],
+div[data-closed][class*="backdrop"],
 div[data-state="closed"].z-40,
-div[data-state="closed"].z-50 {
+div[data-state="closed"].z-50,
+div[data-closed].z-40,
+div[data-closed].z-50 {
   display: none !important;
   pointer-events: none !important;
   visibility: hidden !important;
@@ -112,9 +110,17 @@ div[data-state="closed"].z-50 {
   animation: none !important;
 }
 
-/* Ensure document and body always accept pointer events */
+/* Ensure document, body, and all main containers always accept pointer events */
 html,
-body {
+body,
+#nd-docs-layout,
+.fd-layout-docs,
+#nd-page,
+main#nd-page,
+main,
+article,
+aside#nd-sidebar,
+.fd-sidebar {
   pointer-events: auto !important;
 }
 
