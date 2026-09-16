@@ -1,5 +1,4 @@
 import type { BaseLayoutProps } from 'fumadocs-ui/layouts/shared';
-import { gitConfig } from './shared';
 
 export function baseOptions(): BaseLayoutProps {
   return {
@@ -17,6 +16,5 @@ export function baseOptions(): BaseLayoutProps {
       transparentMode: 'top',
     },
     links: [],
-    githubUrl: `https://github.com/${gitConfig.user}/${gitConfig.repo}`,
   };
 }
