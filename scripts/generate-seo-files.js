@@ -13,6 +13,7 @@ const pages = [
   // Overview / Getting Started
   { name: 'Introduction', url: `${BASE_URL}/docs`, path: '/docs', category: 'Overview' },
   { name: 'Quick Start Guide', url: `${BASE_URL}/docs/getting-started`, path: '/docs/getting-started', category: 'Overview' },
+  { name: 'Migration & Parity', url: `${BASE_URL}/docs/migration`, path: '/docs/migration', category: 'Overview' },
 
   // Tokens
   { name: 'Theme', url: `${BASE_URL}/docs/tokens/theme`, path: '/docs/tokens/theme', category: 'Tokens' },

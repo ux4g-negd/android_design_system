@@ -9,6 +9,7 @@ This is the complete documentation reference for the UX4G Android Design System 
 ### Overview
 - **Introduction**: [https://android.ux4g.gov.in/docs](https://android.ux4g.gov.in/docs)
 - **Quick Start Guide**: [https://android.ux4g.gov.in/docs/getting-started](https://android.ux4g.gov.in/docs/getting-started)
+- **Migration & Parity**: [https://android.ux4g.gov.in/docs/migration](https://android.ux4g.gov.in/docs/migration)
 
 ### Tokens
 - **Theme**: [https://android.ux4g.gov.in/docs/tokens/theme](https://android.ux4g.gov.in/docs/tokens/theme)

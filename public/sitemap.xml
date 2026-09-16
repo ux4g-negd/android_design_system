@@ -16,6 +16,11 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://android.ux4g.gov.in/docs/migration</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://android.ux4g.gov.in/docs/tokens/theme</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>

@@ -4,6 +4,7 @@ import { ComponentPreview } from '@/components/ComponentPreview';
 import { ColorPalette } from '@/components/ColorPalette';
 import { MIcon } from '@/components/MIcon';
 import { OverviewPage } from '@/components/OverviewPage';
+import { MigrationPage } from '@/components/migration/MigrationPage';
 
 import { TokenGrid } from '@/components/TokenGrid';
 import { TypographyGrid } from '@/components/TypographyCard';
@@ -21,6 +22,7 @@ export function getMDXComponents(components?: MDXComponents) {
     InfoCallout,
     MIcon,
     OverviewPage,
+    MigrationPage,
     ...components,
   } satisfies MDXComponents;
 }
