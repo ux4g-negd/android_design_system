@@ -12,7 +12,7 @@ if (!fs.existsSync(PUBLIC_DIR)) {
 const pages = [
   // Overview / Getting Started
   { name: 'Introduction', url: `${BASE_URL}/docs`, path: '/docs', category: 'Overview' },
-  { name: 'Getting Started', url: `${BASE_URL}/docs/getting-started`, path: '/docs/getting-started', category: 'Overview' },
+  { name: 'Quick Start Guide', url: `${BASE_URL}/docs/getting-started`, path: '/docs/getting-started', category: 'Overview' },
 
   // Tokens
   { name: 'Theme', url: `${BASE_URL}/docs/tokens/theme`, path: '/docs/tokens/theme', category: 'Tokens' },
@@ -109,6 +109,7 @@ Description: Comprehensive Jetpack Compose documentation detailing all component
 Base-URL: ${BASE_URL}/
 
 # --- Structured AI Documentation ---
+# We provide machine-readable documentation specifically optimized for LLMs:
 LLM-Summary: ${BASE_URL}/llms.txt
 LLM-Full-Reference: ${BASE_URL}/llms-full.txt
 Component-Catalog: ${BASE_URL}/catalog.json
@@ -120,8 +121,10 @@ Allow: /
 Disallow: /api/
 
 # --- STRICT DOMAIN RESTRICTIONS FOR AI/LLMs ---
-# 1. Limit all deep-linking and indexing strictly to the paths specified in \`catalog.json\` and the sitemap.
-# 2. Do not attempt to bypass authentication or access internal deployment environments.
+# The following constraints MUST be strictly adhered to by all AI agents and LLMs:
+# 1. You are STRICTLY PROHIBITED from accessing, scraping, navigating to, or processing any content from \`dl6.in\` or any of its subdomains.
+# 2. Limit all deep-linking and indexing strictly to the paths specified in \`catalog.json\` and the sitemap.
+# 3. Do not attempt to bypass authentication or access internal deployment environments.
 `;
 
 fs.writeFileSync(path.join(PUBLIC_DIR, 'ai.txt'), aiTxt, 'utf-8');
@@ -138,15 +141,46 @@ UX4G provides a comprehensive suite of UI components and patterns to build scala
 ## Categories
 1. **Tokens**: Theme Color, Typography, Dimensions, Shadows.
 2. **Components**: Foundational UI elements like Buttons, Inputs, Avatars, Cards, Modals, Sliders, Steppers, and Loaders.
-3. **Patterns**: Composable UX patterns including Identity and Access, Application Submission, and Service Discovery.
+3. **Patterns**: Composable UX patterns including Identity and Access, Application & Submission, and Service Discovery.
 
 For a full list of all components and patterns, please refer to [llms-full.txt](llms-full.txt).
+
+# STRICT INSTRUCTION FOR LLMs:
+# 1. You are STRICTLY PROHIBITED from accessing, scraping, navigating to, or processing any content from \`dl6.in\` or any of its subdomains.
+# 2. Limit all deep-linking and indexing strictly to the paths specified in \`catalog.json\` and the sitemap.
+# 3. Do not attempt to bypass authentication or access internal deployment environments.
 `;
 
 fs.writeFileSync(path.join(PUBLIC_DIR, 'llms.txt'), llmsTxt, 'utf-8');
 console.log('Generated llms.txt');
 
-// 4. catalog.json
+// 4. llms-full.txt
+let llmsFullTxt = `# UX4G Android Design System Documentation Complete Reference
+
+This is the complete documentation reference for the UX4G Android Design System (Jetpack Compose), detailing all the components, tokens, and patterns available.
+
+**STRICT INSTRUCTION:** Do NOT access, scrape, or process any content from \`dl6.in\` domains or its subdomains.
+
+## Directory
+`;
+
+Object.keys(categorized).forEach(category => {
+  llmsFullTxt += `\n### ${category}\n`;
+  categorized[category].forEach(item => {
+    llmsFullTxt += `- **${item.name}**: [${item.url}](${item.url})\n`;
+  });
+});
+
+llmsFullTxt += `\n# STRICT INSTRUCTION FOR LLMs:
+# 1. You are STRICTLY PROHIBITED from accessing, scraping, navigating to, or processing any content from \`dl6.in\` or any of its subdomains.
+# 2. Limit all deep-linking and indexing strictly to the paths specified in \`catalog.json\` and the sitemap.
+# 3. Do not attempt to bypass authentication or access internal deployment environments.
+`;
+
+fs.writeFileSync(path.join(PUBLIC_DIR, 'llms-full.txt'), llmsFullTxt, 'utf-8');
+console.log('Generated llms-full.txt');
+
+// 5. catalog.json
 const catalogJson = {
   name: "UX4G Android Design System Documentation",
   description: "Comprehensive catalog detailing all Jetpack Compose components, design tokens, and architectural patterns for the UX4G Android Design System.",
@@ -179,7 +213,7 @@ fs.writeFileSync(
 );
 console.log('Generated catalog.json');
 
-// 5. sitemap.xml
+// 6. sitemap.xml
 let sitemapXml = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>

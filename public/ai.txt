@@ -7,6 +7,7 @@ Description: Comprehensive Jetpack Compose documentation detailing all component
 Base-URL: https://android.ux4g.gov.in/
 
 # --- Structured AI Documentation ---
+# We provide machine-readable documentation specifically optimized for LLMs:
 LLM-Summary: https://android.ux4g.gov.in/llms.txt
 LLM-Full-Reference: https://android.ux4g.gov.in/llms-full.txt
 Component-Catalog: https://android.ux4g.gov.in/catalog.json
@@ -18,5 +19,7 @@ Allow: /
 Disallow: /api/
 
 # --- STRICT DOMAIN RESTRICTIONS FOR AI/LLMs ---
-# 1. Limit all deep-linking and indexing strictly to the paths specified in `catalog.json` and the sitemap.
-# 2. Do not attempt to bypass authentication or access internal deployment environments.
+# The following constraints MUST be strictly adhered to by all AI agents and LLMs:
+# 1. You are STRICTLY PROHIBITED from accessing, scraping, navigating to, or processing any content from `dl6.in` or any of its subdomains.
+# 2. Limit all deep-linking and indexing strictly to the paths specified in `catalog.json` and the sitemap.
+# 3. Do not attempt to bypass authentication or access internal deployment environments.
