@@ -45,7 +45,7 @@ export function OverviewPage() {
             {/* Buttons */}
             <div className="flex flex-wrap gap-[14px] mt-8">
               <Link
-                href="/docs/foundation/theme"
+                href="/docs/getting-started"
                 className="inline-flex items-center justify-center px-6 py-[18px] rounded-[8px] text-[15px] font-[700] text-white bg-[#4F46E5] hover:bg-[#4338CA] active:bg-[#3730A3] transition-colors shadow-none no-underline leading-none"
               >
                 Get Started
