@@ -1,4 +1,5 @@
 @import 'tailwindcss';
+@custom-variant dark (&:where(.dark, .dark *));
 @import 'fumadocs-ui/css/neutral.css';
 @import 'fumadocs-ui/css/preset.css';
 
@@ -28,15 +29,15 @@
   --fd-accent-foreground: 109 40 217; /* #6D28D9 */
 }
 
-body,
-#nd-docs-layout,
-.fd-layout-docs,
-#nd-page,
-main#nd-page,
-main,
-article,
-.fd-docs-page,
-[data-fd-layout] {
+html:not(.dark) body,
+html:not(.dark) #nd-docs-layout,
+html:not(.dark) .fd-layout-docs,
+html:not(.dark) #nd-page,
+html:not(.dark) main#nd-page,
+html:not(.dark) main,
+html:not(.dark) article,
+html:not(.dark) .fd-docs-page,
+html:not(.dark) [data-fd-layout] {
   background-color: #FFFFFF !important;
 }
 
@@ -57,15 +58,15 @@ article,
   --fd-accent-foreground: 165 180 252;/* #A5B4FC */
 }
 
-.dark body,
-.dark #nd-docs-layout,
-.dark .fd-layout-docs,
-.dark #nd-page,
-.dark main#nd-page,
-.dark main,
-.dark article,
-.dark .fd-docs-page,
-.dark [data-fd-layout] {
+html.dark body,
+html.dark #nd-docs-layout,
+html.dark .fd-layout-docs,
+html.dark #nd-page,
+html.dark main#nd-page,
+html.dark main,
+html.dark article,
+html.dark .fd-docs-page,
+html.dark [data-fd-layout] {
   background-color: #0F172A !important;
 }
 
@@ -262,6 +263,47 @@ aside[data-fd-sidebar] a[data-active="true"],
   font-weight: 600 !important;
 }
 
+/* ── Mobile Responsive Text & Code Wrapping ── */
+article,
+main,
+.prose,
+.fd-docs-page,
+#nd-page,
+#nd-docs-layout {
+  min-width: 0 !important;
+  max-width: 100% !important;
+  overflow-wrap: anywhere !important;
+  word-break: normal;
+}
 
+.prose p,
+.prose li,
+.prose span,
+.prose h1,
+.prose h2,
+.prose h3,
+.prose h4,
+.prose h5,
+.prose h6 {
+  min-width: 0;
+  max-width: 100%;
+  overflow-wrap: anywhere;
+  word-break: normal;
+}
 
+/* Ensure inline code blocks wrap gracefully on small mobile screens */
+code:not(pre code),
+.prose code:not(pre code) {
+  overflow-wrap: anywhere !important;
+  word-break: break-word !important;
+  white-space: normal !important;
+  display: inline !important;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+  max-width: 100%;
+}
 
+pre {
+  max-width: 100% !important;
+  overflow-x: auto !important;
+}

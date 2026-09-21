@@ -83,10 +83,10 @@ export function ColorPalette({ colors }: { colors: ColorItem[] }) {
             </div>
 
             {/* Bottom Content Area */}
-            <div className="p-3.5 flex flex-col gap-2.5 bg-card">
+            <div className="p-3.5 flex flex-col gap-2.5 bg-card min-w-0">
               {/* Row 1: Name and Hex */}
-              <div className="flex items-center justify-between gap-2">
-                <span className="text-sm font-bold text-foreground truncate" title={c.name}>
+              <div className="flex items-center justify-between gap-2 min-w-0">
+                <span className="text-sm font-bold text-foreground truncate min-w-0" title={c.name}>
                   {c.name}
                 </span>
                 <span className="text-xs font-mono font-medium text-muted-foreground bg-muted/50 px-1.5 py-0.5 rounded border border-border/40 shrink-0">
@@ -98,10 +98,10 @@ export function ColorPalette({ colors }: { colors: ColorItem[] }) {
               <div
                 onClick={(e) => handleCopy(c.composeRef, refKey, e)}
                 title={`Copy code: ${c.composeRef}`}
-                className="flex items-center justify-between gap-2 bg-muted/40 hover:bg-muted/80 dark:bg-slate-800/50 dark:hover:bg-slate-800/90 border border-border/60 rounded-xl px-2.5 py-2 cursor-pointer transition-all group/pill"
+                className="flex items-center justify-between gap-1.5 bg-muted/40 hover:bg-muted/80 dark:bg-slate-800/50 dark:hover:bg-slate-800/90 border border-border/60 rounded-xl px-2.5 py-2 cursor-pointer transition-all group/pill min-w-0"
               >
                 <span
-                  className="text-[11px] font-mono font-medium text-indigo-600 dark:text-indigo-400 truncate"
+                  className="text-[11px] font-mono font-medium text-indigo-600 dark:text-indigo-400 truncate min-w-0 flex-1"
                   title={c.composeRef}
                 >
                   {c.composeRef}
