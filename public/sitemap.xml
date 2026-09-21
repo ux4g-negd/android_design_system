@@ -6,297 +6,297 @@
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://android.ux4g.gov.in/docs</loc>
+    <loc>https://android.ux4g.gov.in/</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://android.ux4g.gov.in/docs/getting-started</loc>
+    <loc>https://android.ux4g.gov.in/getting-started</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://android.ux4g.gov.in/docs/migration</loc>
+    <loc>https://android.ux4g.gov.in/migration</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://android.ux4g.gov.in/docs/tokens/theme</loc>
+    <loc>https://android.ux4g.gov.in/tokens/theme</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://android.ux4g.gov.in/docs/tokens/colors</loc>
+    <loc>https://android.ux4g.gov.in/tokens/colors</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://android.ux4g.gov.in/docs/tokens/dimensions</loc>
+    <loc>https://android.ux4g.gov.in/tokens/dimensions</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://android.ux4g.gov.in/docs/tokens/shadows</loc>
+    <loc>https://android.ux4g.gov.in/tokens/shadows</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://android.ux4g.gov.in/docs/tokens/typography</loc>
+    <loc>https://android.ux4g.gov.in/tokens/typography</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://android.ux4g.gov.in/docs/tokens/typography/display</loc>
+    <loc>https://android.ux4g.gov.in/tokens/typography/display</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://android.ux4g.gov.in/docs/tokens/typography/header</loc>
+    <loc>https://android.ux4g.gov.in/tokens/typography/header</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://android.ux4g.gov.in/docs/tokens/typography/title</loc>
+    <loc>https://android.ux4g.gov.in/tokens/typography/title</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://android.ux4g.gov.in/docs/tokens/typography/body</loc>
+    <loc>https://android.ux4g.gov.in/tokens/typography/body</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://android.ux4g.gov.in/docs/tokens/typography/label</loc>
+    <loc>https://android.ux4g.gov.in/tokens/typography/label</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://android.ux4g.gov.in/docs/tokens/typography/how-to-use</loc>
+    <loc>https://android.ux4g.gov.in/tokens/typography/how-to-use</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://android.ux4g.gov.in/docs/components/aadhaar-input</loc>
+    <loc>https://android.ux4g.gov.in/components/aadhaar-input</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://android.ux4g.gov.in/docs/components/accordion</loc>
+    <loc>https://android.ux4g.gov.in/components/accordion</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://android.ux4g.gov.in/docs/components/app-header</loc>
+    <loc>https://android.ux4g.gov.in/components/app-header</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://android.ux4g.gov.in/docs/components/avatar</loc>
+    <loc>https://android.ux4g.gov.in/components/avatar</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://android.ux4g.gov.in/docs/components/badge</loc>
+    <loc>https://android.ux4g.gov.in/components/badge</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://android.ux4g.gov.in/docs/components/biometric</loc>
+    <loc>https://android.ux4g.gov.in/components/biometric</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://android.ux4g.gov.in/docs/components/button</loc>
+    <loc>https://android.ux4g.gov.in/components/button</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://android.ux4g.gov.in/docs/components/card</loc>
+    <loc>https://android.ux4g.gov.in/components/card</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://android.ux4g.gov.in/docs/components/carousel</loc>
+    <loc>https://android.ux4g.gov.in/components/carousel</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://android.ux4g.gov.in/docs/components/checkbox</loc>
+    <loc>https://android.ux4g.gov.in/components/checkbox</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://android.ux4g.gov.in/docs/components/chips</loc>
+    <loc>https://android.ux4g.gov.in/components/chips</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://android.ux4g.gov.in/docs/components/date-picker</loc>
+    <loc>https://android.ux4g.gov.in/components/date-picker</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://android.ux4g.gov.in/docs/components/divider</loc>
+    <loc>https://android.ux4g.gov.in/components/divider</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://android.ux4g.gov.in/docs/components/dropdown</loc>
+    <loc>https://android.ux4g.gov.in/components/dropdown</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://android.ux4g.gov.in/docs/components/empty-state</loc>
+    <loc>https://android.ux4g.gov.in/components/empty-state</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://android.ux4g.gov.in/docs/components/feedback-form</loc>
+    <loc>https://android.ux4g.gov.in/components/feedback-form</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://android.ux4g.gov.in/docs/components/file-upload</loc>
+    <loc>https://android.ux4g.gov.in/components/file-upload</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://android.ux4g.gov.in/docs/components/input-field</loc>
+    <loc>https://android.ux4g.gov.in/components/input-field</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://android.ux4g.gov.in/docs/components/journey-timeline</loc>
+    <loc>https://android.ux4g.gov.in/components/journey-timeline</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://android.ux4g.gov.in/docs/components/link</loc>
+    <loc>https://android.ux4g.gov.in/components/link</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://android.ux4g.gov.in/docs/components/loader</loc>
+    <loc>https://android.ux4g.gov.in/components/loader</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://android.ux4g.gov.in/docs/components/modal</loc>
+    <loc>https://android.ux4g.gov.in/components/modal</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://android.ux4g.gov.in/docs/components/otp-input</loc>
+    <loc>https://android.ux4g.gov.in/components/otp-input</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://android.ux4g.gov.in/docs/components/pagination</loc>
+    <loc>https://android.ux4g.gov.in/components/pagination</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://android.ux4g.gov.in/docs/components/pan-input</loc>
+    <loc>https://android.ux4g.gov.in/components/pan-input</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://android.ux4g.gov.in/docs/components/popover</loc>
+    <loc>https://android.ux4g.gov.in/components/popover</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://android.ux4g.gov.in/docs/components/progress-indicator</loc>
+    <loc>https://android.ux4g.gov.in/components/progress-indicator</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://android.ux4g.gov.in/docs/components/progress-sla-indicator</loc>
+    <loc>https://android.ux4g.gov.in/components/progress-sla-indicator</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://android.ux4g.gov.in/docs/components/radio-button</loc>
+    <loc>https://android.ux4g.gov.in/components/radio-button</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://android.ux4g.gov.in/docs/components/result-list</loc>
+    <loc>https://android.ux4g.gov.in/components/result-list</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://android.ux4g.gov.in/docs/components/search-field</loc>
+    <loc>https://android.ux4g.gov.in/components/search-field</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://android.ux4g.gov.in/docs/components/slider</loc>
+    <loc>https://android.ux4g.gov.in/components/slider</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://android.ux4g.gov.in/docs/components/status-banner</loc>
+    <loc>https://android.ux4g.gov.in/components/status-banner</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://android.ux4g.gov.in/docs/components/status-pipeline</loc>
+    <loc>https://android.ux4g.gov.in/components/status-pipeline</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://android.ux4g.gov.in/docs/components/stepper</loc>
+    <loc>https://android.ux4g.gov.in/components/stepper</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://android.ux4g.gov.in/docs/components/tag</loc>
+    <loc>https://android.ux4g.gov.in/components/tag</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://android.ux4g.gov.in/docs/components/text-area</loc>
+    <loc>https://android.ux4g.gov.in/components/text-area</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://android.ux4g.gov.in/docs/components/time-picker</loc>
+    <loc>https://android.ux4g.gov.in/components/time-picker</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://android.ux4g.gov.in/docs/components/time-slot</loc>
+    <loc>https://android.ux4g.gov.in/components/time-slot</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://android.ux4g.gov.in/docs/components/toast</loc>
+    <loc>https://android.ux4g.gov.in/components/toast</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://android.ux4g.gov.in/docs/components/toggle</loc>
+    <loc>https://android.ux4g.gov.in/components/toggle</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://android.ux4g.gov.in/docs/components/tooltip</loc>
+    <loc>https://android.ux4g.gov.in/components/tooltip</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://android.ux4g.gov.in/docs/patterns/application-submission</loc>
+    <loc>https://android.ux4g.gov.in/patterns/application-submission</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://android.ux4g.gov.in/docs/patterns/identity-and-access</loc>
+    <loc>https://android.ux4g.gov.in/patterns/identity-and-access</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://android.ux4g.gov.in/docs/patterns/service-discovery</loc>
+    <loc>https://android.ux4g.gov.in/patterns/service-discovery</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>

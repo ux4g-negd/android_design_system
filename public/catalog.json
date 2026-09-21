@@ -9,18 +9,18 @@
       "items": [
         {
           "name": "Introduction",
-          "url": "https://android.ux4g.gov.in/docs",
-          "path": "/docs"
+          "url": "https://android.ux4g.gov.in/",
+          "path": "/"
         },
         {
           "name": "Quick Start Guide",
-          "url": "https://android.ux4g.gov.in/docs/getting-started",
-          "path": "/docs/getting-started"
+          "url": "https://android.ux4g.gov.in/getting-started",
+          "path": "/getting-started"
         },
         {
           "name": "Migration & Parity",
-          "url": "https://android.ux4g.gov.in/docs/migration",
-          "path": "/docs/migration"
+          "url": "https://android.ux4g.gov.in/migration",
+          "path": "/migration"
         }
       ]
     },
@@ -29,58 +29,58 @@
       "items": [
         {
           "name": "Theme",
-          "url": "https://android.ux4g.gov.in/docs/tokens/theme",
-          "path": "/docs/tokens/theme"
+          "url": "https://android.ux4g.gov.in/tokens/theme",
+          "path": "/tokens/theme"
         },
         {
           "name": "Colors",
-          "url": "https://android.ux4g.gov.in/docs/tokens/colors",
-          "path": "/docs/tokens/colors"
+          "url": "https://android.ux4g.gov.in/tokens/colors",
+          "path": "/tokens/colors"
         },
         {
           "name": "Dimensions",
-          "url": "https://android.ux4g.gov.in/docs/tokens/dimensions",
-          "path": "/docs/tokens/dimensions"
+          "url": "https://android.ux4g.gov.in/tokens/dimensions",
+          "path": "/tokens/dimensions"
         },
         {
           "name": "Shadows",
-          "url": "https://android.ux4g.gov.in/docs/tokens/shadows",
-          "path": "/docs/tokens/shadows"
+          "url": "https://android.ux4g.gov.in/tokens/shadows",
+          "path": "/tokens/shadows"
         },
         {
           "name": "Typography",
-          "url": "https://android.ux4g.gov.in/docs/tokens/typography",
-          "path": "/docs/tokens/typography"
+          "url": "https://android.ux4g.gov.in/tokens/typography",
+          "path": "/tokens/typography"
         },
         {
           "name": "Typography - Display",
-          "url": "https://android.ux4g.gov.in/docs/tokens/typography/display",
-          "path": "/docs/tokens/typography/display"
+          "url": "https://android.ux4g.gov.in/tokens/typography/display",
+          "path": "/tokens/typography/display"
         },
         {
           "name": "Typography - Header",
-          "url": "https://android.ux4g.gov.in/docs/tokens/typography/header",
-          "path": "/docs/tokens/typography/header"
+          "url": "https://android.ux4g.gov.in/tokens/typography/header",
+          "path": "/tokens/typography/header"
         },
         {
           "name": "Typography - Title",
-          "url": "https://android.ux4g.gov.in/docs/tokens/typography/title",
-          "path": "/docs/tokens/typography/title"
+          "url": "https://android.ux4g.gov.in/tokens/typography/title",
+          "path": "/tokens/typography/title"
         },
         {
           "name": "Typography - Body",
-          "url": "https://android.ux4g.gov.in/docs/tokens/typography/body",
-          "path": "/docs/tokens/typography/body"
+          "url": "https://android.ux4g.gov.in/tokens/typography/body",
+          "path": "/tokens/typography/body"
         },
         {
           "name": "Typography - Label",
-          "url": "https://android.ux4g.gov.in/docs/tokens/typography/label",
-          "path": "/docs/tokens/typography/label"
+          "url": "https://android.ux4g.gov.in/tokens/typography/label",
+          "path": "/tokens/typography/label"
         },
         {
           "name": "Typography - How to Use",
-          "url": "https://android.ux4g.gov.in/docs/tokens/typography/how-to-use",
-          "path": "/docs/tokens/typography/how-to-use"
+          "url": "https://android.ux4g.gov.in/tokens/typography/how-to-use",
+          "path": "/tokens/typography/how-to-use"
         }
       ]
     },
@@ -89,213 +89,213 @@
       "items": [
         {
           "name": "Aadhaar Input",
-          "url": "https://android.ux4g.gov.in/docs/components/aadhaar-input",
-          "path": "/docs/components/aadhaar-input"
+          "url": "https://android.ux4g.gov.in/components/aadhaar-input",
+          "path": "/components/aadhaar-input"
         },
         {
           "name": "Accordion",
-          "url": "https://android.ux4g.gov.in/docs/components/accordion",
-          "path": "/docs/components/accordion"
+          "url": "https://android.ux4g.gov.in/components/accordion",
+          "path": "/components/accordion"
         },
         {
           "name": "App Header",
-          "url": "https://android.ux4g.gov.in/docs/components/app-header",
-          "path": "/docs/components/app-header"
+          "url": "https://android.ux4g.gov.in/components/app-header",
+          "path": "/components/app-header"
         },
         {
           "name": "Avatar",
-          "url": "https://android.ux4g.gov.in/docs/components/avatar",
-          "path": "/docs/components/avatar"
+          "url": "https://android.ux4g.gov.in/components/avatar",
+          "path": "/components/avatar"
         },
         {
           "name": "Badge",
-          "url": "https://android.ux4g.gov.in/docs/components/badge",
-          "path": "/docs/components/badge"
+          "url": "https://android.ux4g.gov.in/components/badge",
+          "path": "/components/badge"
         },
         {
           "name": "Biometric",
-          "url": "https://android.ux4g.gov.in/docs/components/biometric",
-          "path": "/docs/components/biometric"
+          "url": "https://android.ux4g.gov.in/components/biometric",
+          "path": "/components/biometric"
         },
         {
           "name": "Button",
-          "url": "https://android.ux4g.gov.in/docs/components/button",
-          "path": "/docs/components/button"
+          "url": "https://android.ux4g.gov.in/components/button",
+          "path": "/components/button"
         },
         {
           "name": "Card",
-          "url": "https://android.ux4g.gov.in/docs/components/card",
-          "path": "/docs/components/card"
+          "url": "https://android.ux4g.gov.in/components/card",
+          "path": "/components/card"
         },
         {
           "name": "Carousel",
-          "url": "https://android.ux4g.gov.in/docs/components/carousel",
-          "path": "/docs/components/carousel"
+          "url": "https://android.ux4g.gov.in/components/carousel",
+          "path": "/components/carousel"
         },
         {
           "name": "Checkbox",
-          "url": "https://android.ux4g.gov.in/docs/components/checkbox",
-          "path": "/docs/components/checkbox"
+          "url": "https://android.ux4g.gov.in/components/checkbox",
+          "path": "/components/checkbox"
         },
         {
           "name": "Chips",
-          "url": "https://android.ux4g.gov.in/docs/components/chips",
-          "path": "/docs/components/chips"
+          "url": "https://android.ux4g.gov.in/components/chips",
+          "path": "/components/chips"
         },
         {
           "name": "Date Picker",
-          "url": "https://android.ux4g.gov.in/docs/components/date-picker",
-          "path": "/docs/components/date-picker"
+          "url": "https://android.ux4g.gov.in/components/date-picker",
+          "path": "/components/date-picker"
         },
         {
           "name": "Divider",
-          "url": "https://android.ux4g.gov.in/docs/components/divider",
-          "path": "/docs/components/divider"
+          "url": "https://android.ux4g.gov.in/components/divider",
+          "path": "/components/divider"
         },
         {
           "name": "Dropdown",
-          "url": "https://android.ux4g.gov.in/docs/components/dropdown",
-          "path": "/docs/components/dropdown"
+          "url": "https://android.ux4g.gov.in/components/dropdown",
+          "path": "/components/dropdown"
         },
         {
           "name": "Empty State",
-          "url": "https://android.ux4g.gov.in/docs/components/empty-state",
-          "path": "/docs/components/empty-state"
+          "url": "https://android.ux4g.gov.in/components/empty-state",
+          "path": "/components/empty-state"
         },
         {
           "name": "Feedback Form",
-          "url": "https://android.ux4g.gov.in/docs/components/feedback-form",
-          "path": "/docs/components/feedback-form"
+          "url": "https://android.ux4g.gov.in/components/feedback-form",
+          "path": "/components/feedback-form"
         },
         {
           "name": "File Upload",
-          "url": "https://android.ux4g.gov.in/docs/components/file-upload",
-          "path": "/docs/components/file-upload"
+          "url": "https://android.ux4g.gov.in/components/file-upload",
+          "path": "/components/file-upload"
         },
         {
           "name": "Input Field",
-          "url": "https://android.ux4g.gov.in/docs/components/input-field",
-          "path": "/docs/components/input-field"
+          "url": "https://android.ux4g.gov.in/components/input-field",
+          "path": "/components/input-field"
         },
         {
           "name": "Journey Timeline",
-          "url": "https://android.ux4g.gov.in/docs/components/journey-timeline",
-          "path": "/docs/components/journey-timeline"
+          "url": "https://android.ux4g.gov.in/components/journey-timeline",
+          "path": "/components/journey-timeline"
         },
         {
           "name": "Link",
-          "url": "https://android.ux4g.gov.in/docs/components/link",
-          "path": "/docs/components/link"
+          "url": "https://android.ux4g.gov.in/components/link",
+          "path": "/components/link"
         },
         {
           "name": "Loader",
-          "url": "https://android.ux4g.gov.in/docs/components/loader",
-          "path": "/docs/components/loader"
+          "url": "https://android.ux4g.gov.in/components/loader",
+          "path": "/components/loader"
         },
         {
           "name": "Modal",
-          "url": "https://android.ux4g.gov.in/docs/components/modal",
-          "path": "/docs/components/modal"
+          "url": "https://android.ux4g.gov.in/components/modal",
+          "path": "/components/modal"
         },
         {
           "name": "OTP Input",
-          "url": "https://android.ux4g.gov.in/docs/components/otp-input",
-          "path": "/docs/components/otp-input"
+          "url": "https://android.ux4g.gov.in/components/otp-input",
+          "path": "/components/otp-input"
         },
         {
           "name": "Pagination",
-          "url": "https://android.ux4g.gov.in/docs/components/pagination",
-          "path": "/docs/components/pagination"
+          "url": "https://android.ux4g.gov.in/components/pagination",
+          "path": "/components/pagination"
         },
         {
           "name": "PAN Input",
-          "url": "https://android.ux4g.gov.in/docs/components/pan-input",
-          "path": "/docs/components/pan-input"
+          "url": "https://android.ux4g.gov.in/components/pan-input",
+          "path": "/components/pan-input"
         },
         {
           "name": "Popover",
-          "url": "https://android.ux4g.gov.in/docs/components/popover",
-          "path": "/docs/components/popover"
+          "url": "https://android.ux4g.gov.in/components/popover",
+          "path": "/components/popover"
         },
         {
           "name": "Progress Indicator",
-          "url": "https://android.ux4g.gov.in/docs/components/progress-indicator",
-          "path": "/docs/components/progress-indicator"
+          "url": "https://android.ux4g.gov.in/components/progress-indicator",
+          "path": "/components/progress-indicator"
         },
         {
           "name": "Progress SLA Indicator",
-          "url": "https://android.ux4g.gov.in/docs/components/progress-sla-indicator",
-          "path": "/docs/components/progress-sla-indicator"
+          "url": "https://android.ux4g.gov.in/components/progress-sla-indicator",
+          "path": "/components/progress-sla-indicator"
         },
         {
           "name": "Radio Button",
-          "url": "https://android.ux4g.gov.in/docs/components/radio-button",
-          "path": "/docs/components/radio-button"
+          "url": "https://android.ux4g.gov.in/components/radio-button",
+          "path": "/components/radio-button"
         },
         {
           "name": "Result List",
-          "url": "https://android.ux4g.gov.in/docs/components/result-list",
-          "path": "/docs/components/result-list"
+          "url": "https://android.ux4g.gov.in/components/result-list",
+          "path": "/components/result-list"
         },
         {
           "name": "Search Field",
-          "url": "https://android.ux4g.gov.in/docs/components/search-field",
-          "path": "/docs/components/search-field"
+          "url": "https://android.ux4g.gov.in/components/search-field",
+          "path": "/components/search-field"
         },
         {
           "name": "Slider",
-          "url": "https://android.ux4g.gov.in/docs/components/slider",
-          "path": "/docs/components/slider"
+          "url": "https://android.ux4g.gov.in/components/slider",
+          "path": "/components/slider"
         },
         {
           "name": "Status Banner",
-          "url": "https://android.ux4g.gov.in/docs/components/status-banner",
-          "path": "/docs/components/status-banner"
+          "url": "https://android.ux4g.gov.in/components/status-banner",
+          "path": "/components/status-banner"
         },
         {
           "name": "Status Pipeline",
-          "url": "https://android.ux4g.gov.in/docs/components/status-pipeline",
-          "path": "/docs/components/status-pipeline"
+          "url": "https://android.ux4g.gov.in/components/status-pipeline",
+          "path": "/components/status-pipeline"
         },
         {
           "name": "Stepper",
-          "url": "https://android.ux4g.gov.in/docs/components/stepper",
-          "path": "/docs/components/stepper"
+          "url": "https://android.ux4g.gov.in/components/stepper",
+          "path": "/components/stepper"
         },
         {
           "name": "Tag",
-          "url": "https://android.ux4g.gov.in/docs/components/tag",
-          "path": "/docs/components/tag"
+          "url": "https://android.ux4g.gov.in/components/tag",
+          "path": "/components/tag"
         },
         {
           "name": "Text Area",
-          "url": "https://android.ux4g.gov.in/docs/components/text-area",
-          "path": "/docs/components/text-area"
+          "url": "https://android.ux4g.gov.in/components/text-area",
+          "path": "/components/text-area"
         },
         {
           "name": "Time Picker",
-          "url": "https://android.ux4g.gov.in/docs/components/time-picker",
-          "path": "/docs/components/time-picker"
+          "url": "https://android.ux4g.gov.in/components/time-picker",
+          "path": "/components/time-picker"
         },
         {
           "name": "Time Slot",
-          "url": "https://android.ux4g.gov.in/docs/components/time-slot",
-          "path": "/docs/components/time-slot"
+          "url": "https://android.ux4g.gov.in/components/time-slot",
+          "path": "/components/time-slot"
         },
         {
           "name": "Toast",
-          "url": "https://android.ux4g.gov.in/docs/components/toast",
-          "path": "/docs/components/toast"
+          "url": "https://android.ux4g.gov.in/components/toast",
+          "path": "/components/toast"
         },
         {
           "name": "Toggle",
-          "url": "https://android.ux4g.gov.in/docs/components/toggle",
-          "path": "/docs/components/toggle"
+          "url": "https://android.ux4g.gov.in/components/toggle",
+          "path": "/components/toggle"
         },
         {
           "name": "Tooltip",
-          "url": "https://android.ux4g.gov.in/docs/components/tooltip",
-          "path": "/docs/components/tooltip"
+          "url": "https://android.ux4g.gov.in/components/tooltip",
+          "path": "/components/tooltip"
         }
       ]
     },
@@ -304,18 +304,18 @@
       "items": [
         {
           "name": "Application & Submission",
-          "url": "https://android.ux4g.gov.in/docs/patterns/application-submission",
-          "path": "/docs/patterns/application-submission"
+          "url": "https://android.ux4g.gov.in/patterns/application-submission",
+          "path": "/patterns/application-submission"
         },
         {
           "name": "Identity & Access",
-          "url": "https://android.ux4g.gov.in/docs/patterns/identity-and-access",
-          "path": "/docs/patterns/identity-and-access"
+          "url": "https://android.ux4g.gov.in/patterns/identity-and-access",
+          "path": "/patterns/identity-and-access"
         },
         {
           "name": "Service Discovery",
-          "url": "https://android.ux4g.gov.in/docs/patterns/service-discovery",
-          "path": "/docs/patterns/service-discovery"
+          "url": "https://android.ux4g.gov.in/patterns/service-discovery",
+          "path": "/patterns/service-discovery"
         }
       ]
     }
