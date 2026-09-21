@@ -26,7 +26,7 @@ export const ANDROID_COMPONENTS_DATA: AndroidComponentItem[] = [
     m3Text: "No (Requires custom expandable column)",
     notes: "Accessible expandable card with smooth chevron animated transitions and multi-expand support.",
     match: "has-ux4g",
-    docPath: "/docs/components/accordion"
+    docPath: "/components/accordion"
   },
   {
     id: 2,
@@ -38,7 +38,7 @@ export const ANDROID_COMPONENTS_DATA: AndroidComponentItem[] = [
     m3Text: "Yes: TopAppBar, CenterAlignedTopAppBar",
     notes: "Government app bar with national emblem slot, citizen profile action, and multilingual toggle.",
     match: "both",
-    docPath: "/docs/components/app-header"
+    docPath: "/components/app-header"
   },
   {
     id: 3,
@@ -50,7 +50,7 @@ export const ANDROID_COMPONENTS_DATA: AndroidComponentItem[] = [
     m3Text: "No (Requires manual Surface & AsyncImage)",
     notes: "Supports profile images, initials fallback, verification checkmarks, and 5 size scales.",
     match: "has-ux4g",
-    docPath: "/docs/components/avatar"
+    docPath: "/components/avatar"
   },
   {
     id: 4,
@@ -62,7 +62,7 @@ export const ANDROID_COMPONENTS_DATA: AndroidComponentItem[] = [
     m3Text: "No (Requires custom overlapping offset layout)",
     notes: "Stacked avatar clusters with overflow count pill (+N) and customizable overlap offsets.",
     match: "ux4g-only",
-    docPath: "/docs/components/avatar"
+    docPath: "/components/avatar"
   },
   {
     id: 5,
@@ -74,7 +74,7 @@ export const ANDROID_COMPONENTS_DATA: AndroidComponentItem[] = [
     m3Text: "Yes: Badge, BadgedBox",
     notes: "Semantic pill badges (Success, Warning, Error, Info, Neutral) for status display and notification counters.",
     match: "both",
-    docPath: "/docs/components/badge"
+    docPath: "/components/badge"
   },
   {
     id: 6,
@@ -86,7 +86,7 @@ export const ANDROID_COMPONENTS_DATA: AndroidComponentItem[] = [
     m3Text: "No (Requires BiometricManager integration)",
     notes: "Aadhaar e-KYC face liveness, iris scan, and fingerprint verification flow with camera overlay.",
     match: "ux4g-only",
-    docPath: "/docs/components/biometric"
+    docPath: "/components/biometric"
   },
   {
     id: 7,
@@ -98,7 +98,7 @@ export const ANDROID_COMPONENTS_DATA: AndroidComponentItem[] = [
     m3Text: "Yes: NavigationBar, NavigationBarItem",
     notes: "Bottom destination bar for mobile navigation with active indicator pills and badge counters.",
     match: "only-m3",
-    docPath: "/docs/components/app-header"
+    docPath: "/components/app-header"
   },
   {
     id: 8,
@@ -110,7 +110,7 @@ export const ANDROID_COMPONENTS_DATA: AndroidComponentItem[] = [
     m3Text: "Yes: ModalBottomSheet, BottomSheetScaffold",
     notes: "Slide-up interactive sheet container with drag handle for contextual secondary flows and filters.",
     match: "only-m3",
-    docPath: "/docs/components/modal"
+    docPath: "/components/modal"
   },
   {
     id: 9,
@@ -122,7 +122,7 @@ export const ANDROID_COMPONENTS_DATA: AndroidComponentItem[] = [
     m3Text: "Yes: Button, FilledTonalButton, OutlinedButton",
     notes: "Primary, Secondary, Outline, Ghost, and Destructive variants with leading/trailing icons and loading state.",
     match: "both",
-    docPath: "/docs/components/button"
+    docPath: "/components/button"
   },
   {
     id: 10,
@@ -134,7 +134,7 @@ export const ANDROID_COMPONENTS_DATA: AndroidComponentItem[] = [
     m3Text: "Yes: IconButton, FilledIconButton",
     notes: "Standardized circular and rounded-square icon action buttons with 48dp minimum touch bounds.",
     match: "both",
-    docPath: "/docs/components/button"
+    docPath: "/components/button"
   },
   {
     id: 11,
@@ -146,7 +146,7 @@ export const ANDROID_COMPONENTS_DATA: AndroidComponentItem[] = [
     m3Text: "Yes: Card, ElevatedCard, OutlinedCard",
     notes: "Elevated, outlined, and interactive card containers with standardized border tokens and footer buttons.",
     match: "both",
-    docPath: "/docs/components/card"
+    docPath: "/components/card"
   },
   {
     id: 12,
@@ -158,7 +158,7 @@ export const ANDROID_COMPONENTS_DATA: AndroidComponentItem[] = [
     m3Text: "Yes: HorizontalPager",
     notes: "Smooth touch paging, dot indicators, autoplay timer, and hero banner promotion support.",
     match: "both",
-    docPath: "/docs/components/carousel"
+    docPath: "/components/carousel"
   },
   {
     id: 13,
@@ -170,7 +170,7 @@ export const ANDROID_COMPONENTS_DATA: AndroidComponentItem[] = [
     m3Text: "Yes: Checkbox, TriStateCheckbox",
     notes: "Integrated label, helper text, error styling, and 48dp touch-target compliance.",
     match: "both",
-    docPath: "/docs/components/checkbox"
+    docPath: "/components/checkbox"
   },
   {
     id: 14,
@@ -182,7 +182,7 @@ export const ANDROID_COMPONENTS_DATA: AndroidComponentItem[] = [
     m3Text: "Yes: AssistChip, FilterChip, InputChip",
     notes: "Choice, filter, input, and chip group variations with selection states and dismiss actions.",
     match: "both",
-    docPath: "/docs/components/chips"
+    docPath: "/components/chips"
   },
   {
     id: 15,
@@ -194,7 +194,7 @@ export const ANDROID_COMPONENTS_DATA: AndroidComponentItem[] = [
     m3Text: "Yes: CircularProgressIndicator",
     notes: "360° circular progress ring with auto-scaling center values, metadata labels, and sweep gradient strokes.",
     match: "both",
-    docPath: "/docs/components/progress-indicator"
+    docPath: "/components/progress-indicator"
   },
   {
     id: 16,
@@ -206,7 +206,7 @@ export const ANDROID_COMPONENTS_DATA: AndroidComponentItem[] = [
     m3Text: "Yes: DatePicker, DatePickerDialog",
     notes: "Gregorian calendar date selection with min/max bounds and Indian fiscal year presets.",
     match: "both",
-    docPath: "/docs/components/date-picker"
+    docPath: "/components/date-picker"
   },
   {
     id: 17,
@@ -218,7 +218,7 @@ export const ANDROID_COMPONENTS_DATA: AndroidComponentItem[] = [
     m3Text: "Yes: HorizontalDivider, VerticalDivider",
     notes: "Subtle boundary separators adhering to UX4G semantic border color tokens.",
     match: "both",
-    docPath: "/docs/components/divider"
+    docPath: "/components/divider"
   },
   {
     id: 18,
@@ -230,7 +230,7 @@ export const ANDROID_COMPONENTS_DATA: AndroidComponentItem[] = [
     m3Text: "No (Requires manual banner styling)",
     notes: "Government service status alerts (Draft saved, Under review, Action required).",
     match: "has-ux4g",
-    docPath: "/docs/components/status-banner"
+    docPath: "/components/status-banner"
   },
   {
     id: 19,
@@ -242,7 +242,7 @@ export const ANDROID_COMPONENTS_DATA: AndroidComponentItem[] = [
     m3Text: "Yes: ModalNavigationDrawer, NavigationDrawerItem",
     notes: "Slide-out navigation drawer with citizen profile slot, section dividers, and active item indicators.",
     match: "only-m3",
-    docPath: "/docs/components/app-header"
+    docPath: "/components/app-header"
   },
   {
     id: 20,
@@ -254,7 +254,7 @@ export const ANDROID_COMPONENTS_DATA: AndroidComponentItem[] = [
     m3Text: "Yes: ExposedDropdownMenuBox",
     notes: "Action dropdown menus and single/multi-selection dropdown fields with search filtering.",
     match: "both",
-    docPath: "/docs/components/dropdown"
+    docPath: "/components/dropdown"
   },
   {
     id: 21,
@@ -266,7 +266,7 @@ export const ANDROID_COMPONENTS_DATA: AndroidComponentItem[] = [
     m3Text: "No (Requires manual layout composable)",
     notes: "Standardized empty views (No Applications, No Results, Error) with CTA.",
     match: "has-ux4g",
-    docPath: "/docs/components/empty-state"
+    docPath: "/components/empty-state"
   },
   {
     id: 22,
@@ -278,7 +278,7 @@ export const ANDROID_COMPONENTS_DATA: AndroidComponentItem[] = [
     m3Text: "No (Requires manual rating bar)",
     notes: "Official citizen 5-Star rating form, CSAT (1-5 sentiment face scale), and NPS (0-10) scoring forms.",
     match: "has-ux4g",
-    docPath: "/docs/components/feedback-form"
+    docPath: "/components/feedback-form"
   },
   {
     id: 23,
@@ -290,7 +290,7 @@ export const ANDROID_COMPONENTS_DATA: AndroidComponentItem[] = [
     m3Text: "No (Requires ActivityResultContracts integration)",
     notes: "Document scanner and upload UI with file size validation & progress bars.",
     match: "has-ux4g",
-    docPath: "/docs/components/file-upload"
+    docPath: "/components/file-upload"
   },
   {
     id: 24,
@@ -302,7 +302,7 @@ export const ANDROID_COMPONENTS_DATA: AndroidComponentItem[] = [
     m3Text: "Yes: FloatingActionButton, ExtendedFloatingActionButton",
     notes: "Primary floating trigger with elevation shadow, circular container, and extended text+icon variants.",
     match: "only-m3",
-    docPath: "/docs/components/button"
+    docPath: "/components/button"
   },
   {
     id: 25,
@@ -314,7 +314,7 @@ export const ANDROID_COMPONENTS_DATA: AndroidComponentItem[] = [
     m3Text: "No (Requires custom arc canvas)",
     notes: "180° semicircle speedometer gauge with center percentage text, descriptions, and optional 0%–100% scale marks.",
     match: "ux4g-only",
-    docPath: "/docs/components/progress-indicator"
+    docPath: "/components/progress-indicator"
   },
   {
     id: 26,
@@ -326,7 +326,7 @@ export const ANDROID_COMPONENTS_DATA: AndroidComponentItem[] = [
     m3Text: "Yes: OutlinedTextField, TextField",
     notes: "Outlined & filled, floating labels, left/right icons, helper & error text.",
     match: "both",
-    docPath: "/docs/components/input-field"
+    docPath: "/components/input-field"
   },
   {
     id: 27,
@@ -338,7 +338,7 @@ export const ANDROID_COMPONENTS_DATA: AndroidComponentItem[] = [
     m3Text: "No (Requires custom formatting & Verhoeff algorithm)",
     notes: "Auto-formatted 12 digits (XXXX XXXX XXXX) with Verhoeff checksum & mask peek.",
     match: "ux4g-only",
-    docPath: "/docs/components/aadhaar-input"
+    docPath: "/components/aadhaar-input"
   },
   {
     id: 28,
@@ -350,7 +350,7 @@ export const ANDROID_COMPONENTS_DATA: AndroidComponentItem[] = [
     m3Text: "No (Requires custom regex & capitalizer)",
     notes: "Auto-capitalizes and validates 10-character PAN format (5 letters, 4 digits, 1 letter).",
     match: "ux4g-only",
-    docPath: "/docs/components/pan-input"
+    docPath: "/components/pan-input"
   },
   {
     id: 29,
@@ -362,7 +362,7 @@ export const ANDROID_COMPONENTS_DATA: AndroidComponentItem[] = [
     m3Text: "No (Requires custom box row & focus manager)",
     notes: "4-digit & 6-digit secure box inputs, auto-focus next digit, SMS autofill.",
     match: "ux4g-only",
-    docPath: "/docs/components/otp-input"
+    docPath: "/components/otp-input"
   },
   {
     id: 30,
@@ -374,7 +374,7 @@ export const ANDROID_COMPONENTS_DATA: AndroidComponentItem[] = [
     m3Text: "No (Requires custom canvas rendering)",
     notes: "Multi-stage tracking (Submitted -> Verified -> Approved) with actor timestamps.",
     match: "ux4g-only",
-    docPath: "/docs/components/journey-timeline"
+    docPath: "/components/journey-timeline"
   },
   {
     id: 31,
@@ -386,7 +386,7 @@ export const ANDROID_COMPONENTS_DATA: AndroidComponentItem[] = [
     m3Text: "Yes: LinearProgressIndicator",
     notes: "Horizontal linear progress track with outside/inside percentage labels, icons, and animated gradient fills.",
     match: "both",
-    docPath: "/docs/components/progress-indicator"
+    docPath: "/components/progress-indicator"
   },
   {
     id: 32,
@@ -398,7 +398,7 @@ export const ANDROID_COMPONENTS_DATA: AndroidComponentItem[] = [
     m3Text: "Yes: Text with Clickable modifier",
     notes: "External link icon, underline styles, accessible role='link', color variations.",
     match: "both",
-    docPath: "/docs/components/link"
+    docPath: "/components/link"
   },
   {
     id: 33,
@@ -410,7 +410,7 @@ export const ANDROID_COMPONENTS_DATA: AndroidComponentItem[] = [
     m3Text: "Yes: AlertDialog, BasicAlertDialog",
     notes: "Centered dialog, hero image banner, and custom footer action buttons.",
     match: "both",
-    docPath: "/docs/components/modal"
+    docPath: "/components/modal"
   },
   {
     id: 34,
@@ -422,7 +422,7 @@ export const ANDROID_COMPONENTS_DATA: AndroidComponentItem[] = [
     m3Text: "No (Requires manual pagination math)",
     notes: "Animated pill dot pagination indicators with capsule containers and navigation chevrons.",
     match: "has-ux4g",
-    docPath: "/docs/components/pagination"
+    docPath: "/components/pagination"
   },
   {
     id: 35,
@@ -434,7 +434,7 @@ export const ANDROID_COMPONENTS_DATA: AndroidComponentItem[] = [
     m3Text: "Partial: Popup / DropdownMenu",
     notes: "UX4G achieves popover functionality via Ux4gTooltip with custom content, action triggers, and directional pointer overlays.",
     match: "partial",
-    docPath: "/docs/components/tooltip"
+    docPath: "/components/tooltip"
   },
   {
     id: 36,
@@ -446,7 +446,7 @@ export const ANDROID_COMPONENTS_DATA: AndroidComponentItem[] = [
     m3Text: "Yes: RadioButton",
     notes: "Single-choice selection with label, descriptive subtitle, and accessible touch target.",
     match: "both",
-    docPath: "/docs/components/radio-button"
+    docPath: "/components/radio-button"
   },
   {
     id: 37,
@@ -458,7 +458,7 @@ export const ANDROID_COMPONENTS_DATA: AndroidComponentItem[] = [
     m3Text: "Yes: ListItem, LazyColumn",
     notes: "Expandable search results with metadata tags, application IDs, and action buttons.",
     match: "both",
-    docPath: "/docs/components/result-list"
+    docPath: "/components/result-list"
   },
   {
     id: 38,
@@ -470,7 +470,7 @@ export const ANDROID_COMPONENTS_DATA: AndroidComponentItem[] = [
     m3Text: "Yes: SearchBar, DockedSearchBar",
     notes: "Clear button, voice input trigger, live auto-complete dropdown, submit trigger.",
     match: "both",
-    docPath: "/docs/components/search-field"
+    docPath: "/components/search-field"
   },
   {
     id: 39,
@@ -482,7 +482,7 @@ export const ANDROID_COMPONENTS_DATA: AndroidComponentItem[] = [
     m3Text: "Yes: Slider, RangeSlider",
     notes: "Discrete steps, range slider, value tooltip, custom formatters (₹ Currency).",
     match: "both",
-    docPath: "/docs/components/slider"
+    docPath: "/components/slider"
   },
   {
     id: 40,
@@ -494,7 +494,7 @@ export const ANDROID_COMPONENTS_DATA: AndroidComponentItem[] = [
     m3Text: "Yes: CircularProgressIndicator",
     notes: "Circular sweep gradient animated spinner for asynchronous loading operations.",
     match: "both",
-    docPath: "/docs/components/loader"
+    docPath: "/components/loader"
   },
   {
     id: 41,
@@ -506,7 +506,7 @@ export const ANDROID_COMPONENTS_DATA: AndroidComponentItem[] = [
     m3Text: "No (Requires custom step pipeline)",
     notes: "Horizontal and vertical workflow pipelines showing completed, current, and pending steps.",
     match: "ux4g-only",
-    docPath: "/docs/components/status-pipeline"
+    docPath: "/components/status-pipeline"
   },
   {
     id: 42,
@@ -518,7 +518,7 @@ export const ANDROID_COMPONENTS_DATA: AndroidComponentItem[] = [
     m3Text: "No (Requires custom wizard composition)",
     notes: "Form wizard navigation, compact capsule steppers, error states, linear & non-linear.",
     match: "has-ux4g",
-    docPath: "/docs/components/stepper"
+    docPath: "/components/stepper"
   },
   {
     id: 43,
@@ -530,7 +530,7 @@ export const ANDROID_COMPONENTS_DATA: AndroidComponentItem[] = [
     m3Text: "Yes: Switch",
     notes: "Android Material 3 style switches with inline labels, disabled states, and accessibility roles.",
     match: "both",
-    docPath: "/docs/components/toggle"
+    docPath: "/components/toggle"
   },
   {
     id: 44,
@@ -542,7 +542,7 @@ export const ANDROID_COMPONENTS_DATA: AndroidComponentItem[] = [
     m3Text: "Yes: SuggestionChip",
     notes: "Pill & rectangular, dismissable, leading icons, and unified multi-segment status badges.",
     match: "both",
-    docPath: "/docs/components/tag"
+    docPath: "/components/tag"
   },
   {
     id: 45,
@@ -554,7 +554,7 @@ export const ANDROID_COMPONENTS_DATA: AndroidComponentItem[] = [
     m3Text: "Yes: OutlinedTextField with minLines",
     notes: "Multiline text entry, auto-resizing, character count indicator, max length validation.",
     match: "both",
-    docPath: "/docs/components/text-area"
+    docPath: "/components/text-area"
   },
   {
     id: 46,
@@ -566,7 +566,7 @@ export const ANDROID_COMPONENTS_DATA: AndroidComponentItem[] = [
     m3Text: "Yes: TimePicker, TimePickerDialog",
     notes: "12-hour AM/PM trigger field and snap-fling scroll wheel modal dialog.",
     match: "both",
-    docPath: "/docs/components/time-picker"
+    docPath: "/components/time-picker"
   },
   {
     id: 47,
@@ -578,7 +578,7 @@ export const ANDROID_COMPONENTS_DATA: AndroidComponentItem[] = [
     m3Text: "No (Requires custom slot manager)",
     notes: "Appointment booking slot grid (Available, Selected, Booked, Past) for Seva Kendras.",
     match: "ux4g-only",
-    docPath: "/docs/components/time-slot"
+    docPath: "/components/time-slot"
   },
   {
     id: 48,
@@ -590,7 +590,7 @@ export const ANDROID_COMPONENTS_DATA: AndroidComponentItem[] = [
     m3Text: "Yes: Snackbar, SnackbarHost",
     notes: "Floating feedback toasts with Success, Error, Warning, and Info categories and auto-close timer.",
     match: "both",
-    docPath: "/docs/components/toast"
+    docPath: "/components/toast"
   },
   {
     id: 49,
@@ -602,6 +602,6 @@ export const ANDROID_COMPONENTS_DATA: AndroidComponentItem[] = [
     m3Text: "Yes: TooltipBox, PlainTooltip, RichTooltip",
     notes: "Help tip icon triggers, hover & long-press triggers, top/bottom/left/right placements.",
     match: "both",
-    docPath: "/docs/components/tooltip"
+    docPath: "/components/tooltip"
   }
 ];

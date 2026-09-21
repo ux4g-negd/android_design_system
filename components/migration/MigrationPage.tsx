@@ -287,11 +287,10 @@ export function MigrationPage() {
               <table className="mg-table">
                 <thead>
                   <tr>
-                    <th style={{ width: '5%' }}>#</th>
-                    <th style={{ width: '25%' }}>Component Name</th>
-                    <th className="mg-th-ux4g" style={{ width: '32%' }}>UX4G Android (Compose)</th>
-                    <th className="mg-th-bs" style={{ width: '28%' }}>Material 3 (M3 Compose)</th>
-                    <th style={{ width: '10%' }}>Docs</th>
+                    <th style={{ width: '6%' }}>#</th>
+                    <th style={{ width: '28%' }}>Component Name</th>
+                    <th className="mg-th-ux4g" style={{ width: '33%' }}>UX4G Android (Compose)</th>
+                    <th className="mg-th-bs" style={{ width: '33%' }}>Material 3 (M3 Compose)</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -306,16 +305,6 @@ export function MigrationPage() {
                       </td>
                       <td dangerouslySetInnerHTML={{ __html: item.ux4gHtml }} />
                       <td dangerouslySetInnerHTML={{ __html: item.m3Html }} />
-                      <td>
-                        <Link
-                          href={item.docPath}
-                          className="mg-page-btn"
-                          style={{ padding: '2px 8px', fontSize: '11px', height: 'auto' }}
-                          title={`View ${item.name} documentation`}
-                        >
-                          View &rarr;
-                        </Link>
-                      </td>
                     </tr>
                   ))}
                 </tbody>
@@ -632,7 +621,7 @@ export function MigrationPage() {
                 <p className="mg-stat-card__desc" style={{ marginTop: '0.75rem' }}>
                   Auto-formatting 12-digit input with built-in Verhoeff checksum algorithm and masked peek toggle.
                 </p>
-                <Link href="/docs/components/aadhaar-input" className="mg-page-btn" style={{ marginTop: '1rem', width: 'max-content' }}>
+                <Link href="/components/aadhaar-input" className="mg-page-btn" style={{ marginTop: '1rem', width: 'max-content' }}>
                   Explore Aadhaar Input &rarr;
                 </Link>
               </div>
@@ -645,7 +634,7 @@ export function MigrationPage() {
                 <p className="mg-stat-card__desc" style={{ marginTop: '0.75rem' }}>
                   10-character alphanumeric PAN validator with uppercase formatting and structural syntax checks.
                 </p>
-                <Link href="/docs/components/pan-input" className="mg-page-btn" style={{ marginTop: '1rem', width: 'max-content' }}>
+                <Link href="/components/pan-input" className="mg-page-btn" style={{ marginTop: '1rem', width: 'max-content' }}>
                   Explore PAN Input &rarr;
                 </Link>
               </div>
@@ -658,7 +647,7 @@ export function MigrationPage() {
                 <p className="mg-stat-card__desc" style={{ marginTop: '0.75rem' }}>
                   4/6-digit secure PIN inputs with auto-focus, SMS User Consent auto-fill, and resend timer.
                 </p>
-                <Link href="/docs/components/otp-input" className="mg-page-btn" style={{ marginTop: '1rem', width: 'max-content' }}>
+                <Link href="/components/otp-input" className="mg-page-btn" style={{ marginTop: '1rem', width: 'max-content' }}>
                   Explore OTP Input &rarr;
                 </Link>
               </div>
@@ -671,7 +660,7 @@ export function MigrationPage() {
                 <p className="mg-stat-card__desc" style={{ marginTop: '0.75rem' }}>
                   Multi-stage citizen application tracker (Submitted &rarr; In Review &rarr; Approved) with timestamps.
                 </p>
-                <Link href="/docs/components/journey-timeline" className="mg-page-btn" style={{ marginTop: '1rem', width: 'max-content' }}>
+                <Link href="/components/journey-timeline" className="mg-page-btn" style={{ marginTop: '1rem', width: 'max-content' }}>
                   Explore Journey Timeline &rarr;
                 </Link>
               </div>
@@ -684,7 +673,7 @@ export function MigrationPage() {
                 <p className="mg-stat-card__desc" style={{ marginTop: '0.75rem' }}>
                   Linear workflow stage pipeline showing Department Verification and Payment Disbursal.
                 </p>
-                <Link href="/docs/components/status-pipeline" className="mg-page-btn" style={{ marginTop: '1rem', width: 'max-content' }}>
+                <Link href="/components/status-pipeline" className="mg-page-btn" style={{ marginTop: '1rem', width: 'max-content' }}>
                   Explore Status Pipeline &rarr;
                 </Link>
               </div>
@@ -697,7 +686,7 @@ export function MigrationPage() {
                 <p className="mg-stat-card__desc" style={{ marginTop: '0.75rem' }}>
                   SLA timeline dial displaying on-track, due-soon, and breached service SLA status.
                 </p>
-                <Link href="/docs/components/progress-sla-indicator" className="mg-page-btn" style={{ marginTop: '1rem', width: 'max-content' }}>
+                <Link href="/components/progress-sla-indicator" className="mg-page-btn" style={{ marginTop: '1rem', width: 'max-content' }}>
                   Explore SLA Indicator &rarr;
                 </Link>
               </div>
@@ -710,7 +699,7 @@ export function MigrationPage() {
                 <p className="mg-stat-card__desc" style={{ marginTop: '0.75rem' }}>
                   Ready-to-use BiometricPrompt dialog with fingerprint & face unlock sensor integration.
                 </p>
-                <Link href="/docs/components/biometric" className="mg-page-btn" style={{ marginTop: '1rem', width: 'max-content' }}>
+                <Link href="/components/biometric" className="mg-page-btn" style={{ marginTop: '1rem', width: 'max-content' }}>
                   Explore Biometric Auth &rarr;
                 </Link>
               </div>
@@ -723,7 +712,7 @@ export function MigrationPage() {
                 <p className="mg-stat-card__desc" style={{ marginTop: '0.75rem' }}>
                   Citizen appointment slot booking grid with Available, Fast-filling, and Booked states.
                 </p>
-                <Link href="/docs/components/time-slot" className="mg-page-btn" style={{ marginTop: '1rem', width: 'max-content' }}>
+                <Link href="/components/time-slot" className="mg-page-btn" style={{ marginTop: '1rem', width: 'max-content' }}>
                   Explore Time Slot &rarr;
                 </Link>
               </div>
