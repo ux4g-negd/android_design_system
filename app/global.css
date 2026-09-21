@@ -72,6 +72,12 @@ html.dark [data-fd-layout] {
 
 html {
   scrollbar-gutter: stable;
+  scroll-behavior: smooth;
+  scroll-padding-top: 4.5rem;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  scroll-margin-top: 4.5rem;
 }
 
 /* Universal hidden attribute rule */
