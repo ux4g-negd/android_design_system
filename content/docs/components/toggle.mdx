@@ -26,22 +26,22 @@ Import from `com.ux4g.designsystemv1.components.toggle.*`.
 Standalone binary switch without accompanying label text.
 
 <ComponentPreview
-  title="Ux4gToggle - Default Standalone"
+  title="Ux4gSwitch - Default Standalone"
   category="Jetpack Compose"
   code={`var isChecked by remember { mutableStateOf(false) }
 
-Ux4gToggle(
+Ux4gSwitch(
     checked = isChecked,
     onCheckedChange = { isChecked = it },
     labelPosition = Ux4gSwitchLabelPosition.NoLabel,
     size = Ux4gSwitchSize.M
 )`}
 >
-  <div className="flex flex-col items-center justify-center py-2">
+  <div className="flex flex-col items-center justify-center py-4">
     <img
-      src="/images/components/toggle_preview.png"
+      src="/images/components/toggle_default.svg"
       alt="UX4G Default Standalone Toggle Switch Preview"
-      className="max-w-full rounded-xl border border-border/60 shadow-sm"
+      className="max-w-full h-auto"
     />
   </div>
 </ComponentPreview>
@@ -53,11 +53,11 @@ Ux4gToggle(
 Toggle switch paired with field label text, required asterisk (`*`), and informative trailing icon.
 
 <ComponentPreview
-  title="Ux4gToggle - With Label"
+  title="Ux4gSwitch - With Label"
   category="Jetpack Compose"
   code={`var isChecked by remember { mutableStateOf(false) }
 
-Ux4gToggle(
+Ux4gSwitch(
     checked = isChecked,
     onCheckedChange = { isChecked = it },
     label = "Label text",
@@ -67,11 +67,11 @@ Ux4gToggle(
     labelPosition = Ux4gSwitchLabelPosition.Right
 )`}
 >
-  <div className="flex flex-col items-center justify-center py-2">
+  <div className="flex flex-col items-center justify-center py-4">
     <img
-      src="/images/components/toggle-label_preview.png"
+      src="/images/components/toggle_with_label.svg"
       alt="UX4G Toggle Switch with Label Preview"
-      className="max-w-full rounded-xl border border-border/60 shadow-sm"
+      className="max-w-full h-auto"
     />
   </div>
 </ComponentPreview>
@@ -160,7 +160,7 @@ fun SchemeTenureSelector() {
 
 <h2><MIcon name="settings" /> Parameters</h2>
 
-### `Ux4gToggle` / `Ux4gSwitch` Props
+### `Ux4gSwitch` Props
 
 | Prop | Type | Description | Default |
 | :--- | :--- | :--- | :--- |

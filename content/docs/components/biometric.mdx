@@ -1,13 +1,24 @@
 ---
 title: Biometric Verification
-description: Aadhaar e-KYC face liveness, iris scan, and fingerprint verification flow with camera overlay and device checks
+description: Aadhaar e-KYC face liveness, iris scan, and fingerprint verification flow with camera overlay, passive liveness checks, and RD Service integration
 ---
 
 # Biometric Verification (`Ux4gBiometricVerificationFlow`)
 
-Aadhaar e-KYC face liveness, iris scan, and fingerprint verification flow with camera overlay and device checks.
+The **UX4G Biometric Verification Flow** provides a standardized, secure biometric authentication interface for Indian government mobile applications (Aadhaar e-KYC, Face RD, fingerprint, and iris scans). It guides citizens through passive liveness detection, lighting checks, and seamless backend identity verification with automatic fallback options.
 
-Import from `com.ux4g.designsystemv1.components.biometric.Ux4gBiometricVerificationFlow`.
+### Key Capabilities
+
+- **Aadhaar Face RD & e-KYC Support**: Direct integration hooks for UIDAI-compliant Registered Device (RD) face and biometric services.
+- **Automated Quality Checks**: Built-in validation for ambient lighting (`enableLightingCheck`), eye-blink detection (`enableBlinkCheck`), and face oval alignment.
+- **Anti-Spoof Passive Liveness**: Built-in 3D depth and facial motion liveness verification (`enableLiveness`) preventing photo and video playback spoofing.
+- **Retry & Lockout Management**: Configurable maximum attempts (`maxAttempts`) with automatic fallback to OTP-based alternate verification (`onAlternateVerify`).
+- **Standardized Result Models**: Returns structured `BiometricVerificationResult` payloads and granular `BiometricFailureReason` error codes.
+
+Import from:
+```kotlin
+import com.ux4g.designsystemv1.components.biometric.*
+```
 
 ---
 
@@ -22,16 +33,26 @@ Import from `com.ux4g.designsystemv1.components.biometric.Ux4gBiometricVerificat
         BiometricVerificationResult(
             success = true,
             userId = "GOV-UID-9842",
-            maskedName = "Aarav Sharma"
+            maskedName = "Aarav Sharma",
+            confidenceScore = 0.98f
         )
     },
     enableBlinkCheck = true,
     enableLightingCheck = true,
     enableLiveness = true,
     maxAttempts = 3,
-    onSuccess = { result -> /* Handle auth success */ },
-    onFailure = { reason, message -> /* Handle auth error */ },
-    onDismiss = { /* Dismiss modal */ }
+    onSuccess = { result ->
+        println("Identity verified: \${result.maskedName}")
+    },
+    onFailure = { reason, message ->
+        println("Verification failed: \$reason - \$message")
+    },
+    onAlternateVerify = {
+        // Fallback to Aadhaar OTP verification
+    },
+    onDismiss = {
+        // Handle flow cancellation
+    }
 )`}
 >
   <div className="flex flex-col items-center justify-center py-2">
@@ -45,46 +66,167 @@ Import from `com.ux4g.designsystemv1.components.biometric.Ux4gBiometricVerificat
 
 ---
 
-<h2><MIcon name="code" /> Kotlin Usage</h2>
+<h2><MIcon name="code" /> Complete Kotlin Implementation</h2>
 
-```kotlin title="Compose Example"
-import androidx.compose.runtime.Composable
-import com.ux4g.designsystemv1.components.biometric.Ux4gBiometricVerificationFlow
+### 1. Production Aadhaar e-KYC Verification Flow
+
+This example demonstrates how to integrate `Ux4gBiometricVerificationFlow` into a citizen onboarding or pension disbursement screen with coroutine-based RD service authentication and OTP fallback:
+
+```kotlin title="BiometricAuthenticationScreen.kt"
+import androidx.compose.foundation.layout.*
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
+import com.ux4g.designsystemv1.components.biometric.*
+import com.ux4g.designsystemv1.components.buttons.Ux4gButton
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 @Composable
-fun BiometricAuthScreen() {
-    Ux4gBiometricVerificationFlow(
-        onVerify = { bytes ->
-            // Authenticate with RD service backend
-            verifyWithUidai(bytes)
-        },
-        onSuccess = { result ->
-            navigateToDashboard(result.userId)
-        },
-        onFailure = { reason, msg ->
-            showErrorToast(msg)
-        },
-        onDismiss = {
-            finishActivity()
+fun CitizenKycVerificationScreen(
+    onVerificationComplete: (String) -> Unit,
+    onFallbackToOtp: () -> Unit
+) {
+    var isFlowActive by remember { mutableStateOf(false) }
+    var errorMessage by remember { mutableStateOf<String?>(null) }
+
+    Box(
+        modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center
+    ) {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(16.dp),
+            modifier = Modifier.padding(24.dp)
+        ) {
+            Text(
+                text = "Pension Life Certificate (Jeevan Pramaan)",
+                style = MaterialTheme.typography.titleLarge
+            )
+            Text(
+                text = "Complete your annual biometric face verification to continue receiving monthly pension credits.",
+                style = MaterialTheme.typography.bodyMedium
+            )
+
+            errorMessage?.let { error ->
+                Text(
+                    text = error,
+                    color = MaterialTheme.colorScheme.error,
+                    style = MaterialTheme.typography.bodySmall
+                )
+            }
+
+            Ux4gButton(
+                text = "Start Face Verification",
+                onClick = {
+                    errorMessage = null
+                    isFlowActive = true
+                }
+            )
         }
+
+        // Biometric Face Capture Modal Overlay
+        if (isFlowActive) {
+            Ux4gBiometricVerificationFlow(
+                onVerify = { capturedFrameBytes ->
+                    // Perform async network verification against Aadhaar RD backend
+                    withContext(Dispatchers.IO) {
+                        callAadhaarFaceAuthApi(capturedFrameBytes)
+                    }
+                },
+                enableBlinkCheck = true,
+                enableLightingCheck = true,
+                enableLiveness = true,
+                maxAttempts = 3,
+                onSuccess = { result ->
+                    isFlowActive = false
+                    result.userId?.let { uid -> onVerificationComplete(uid) }
+                },
+                onFailure = { failureReason, description ->
+                    when (failureReason) {
+                        BiometricFailureReason.MaxAttemptsExceeded -> {
+                            isFlowActive = false
+                            errorMessage = "Maximum attempts exceeded. Please verify using Aadhaar OTP."
+                        }
+                        BiometricFailureReason.PoorLighting -> {
+                            errorMessage = "Lighting is too low. Please move to a brighter area."
+                        }
+                        else -> {
+                            errorMessage = description ?: "Verification failed. Please try again."
+                        }
+                    }
+                },
+                onAlternateVerify = {
+                    isFlowActive = false
+                    onFallbackToOtp()
+                },
+                onDismiss = {
+                    isFlowActive = false
+                }
+            )
+        }
+    }
+}
+
+// Simulated backend API call
+suspend fun callAadhaarFaceAuthApi(payload: ByteArray): BiometricVerificationResult {
+    // Replace with actual UIDAI / Face RD service SDK invocation
+    return BiometricVerificationResult(
+        success = true,
+        userId = "UIDAI-9842-8841-2041",
+        maskedName = "Aarav Sharma",
+        confidenceScore = 0.96f,
+        timestamp = System.currentTimeMillis()
     )
 }
 ```
 
 ---
 
-<h2><MIcon name="settings" /> Parameters</h2>
+<h2><MIcon name="settings" /> Parameters & API Reference</h2>
+
+### 1. `Ux4gBiometricVerificationFlow` Composable
 
 | Prop | Type | Description | Default |
 | :--- | :--- | :--- | :--- |
-| `onVerify` <span className="text-red-500 font-bold">*</span> | `suspend (ByteArray) -> BiometricVerificationResult` | Async API callback invoked with captured biometric payload. | `—` |
+| `onVerify` <span className="text-red-500 font-bold">*</span> | `suspend (ByteArray) -> BiometricVerificationResult` | Async suspension callback invoked with captured camera biometric byte payload for backend matching. | `—` |
 | `onSuccess` <span className="text-red-500 font-bold">*</span> | `(BiometricVerificationResult) -> Unit` | Callback executed upon successful biometric identity confirmation. | `—` |
-| `onFailure` <span className="text-red-500 font-bold">*</span> | `(BiometricFailureReason, String?) -> Unit` | Callback executed when verification fails or max attempts are exceeded. | `—` |
-| `onDismiss` | `(() -> Unit)?` | Callback when citizen closes or cancels the verification flow. | `null` |
-| `onAlternateVerify` | `(() -> Unit)?` | Callback when citizen opts for fallback verification (e.g. OTP). | `null` |
-| `enableBlinkCheck` | `Boolean` | Enforces eye-blink detection for passive liveness verification. | `true` |
-| `enableLightingCheck` | `Boolean` | Validates ambient illumination threshold before capture. | `true` |
-| `enableLiveness` | `Boolean` | Enables full facial liveness anti-spoof analysis. | `true` |
-| `maxAttempts` | `Int` | Maximum permitted capture attempts before lockout. | `3` |
-| `modifier` | `Modifier` | Compose layout modifier. | `Modifier` |
+| `onFailure` <span className="text-red-500 font-bold">*</span> | `(BiometricFailureReason, String?) -> Unit` | Callback executed when a capture attempt fails or maximum attempts are exceeded. | `—` |
+| `modifier` | `Modifier` | Compose layout modifier applied to the camera viewport container. | `Modifier` |
+| `onDismiss` | `(() -> Unit)?` | Callback triggered when the citizen taps the close/cancel button. | `null` |
+| `onAlternateVerify` | `(() -> Unit)?` | Callback triggered when the citizen chooses an alternate method (e.g., OTP authentication). | `null` |
+| `enableBlinkCheck` | `Boolean` | Enforces active eye-blink detection during facial capture for liveness proof. | `true` |
+| `enableLightingCheck` | `Boolean` | Validates ambient lighting threshold and shows visual guidance if too dark. | `true` |
+| `enableLiveness` | `Boolean` | Enables full 3D facial motion and depth anti-spoof verification. | `true` |
+| `maxAttempts` | `Int` | Maximum permitted failed capture attempts before triggering lockout. | `3` |
 
+---
+
+### 2. `BiometricVerificationResult` Data Model
+
+Returned by `onVerify` and passed into `onSuccess` upon identity validation.
+
+| Field | Type | Description | Default |
+| :--- | :--- | :--- | :--- |
+| `success` <span className="text-red-500 font-bold">*</span> | `Boolean` | `true` if identity matching succeeded against the RD backend, `false` otherwise. | `—` |
+| `userId` | `String?` | Unique government citizen identifier token (e.g., `"GOV-UID-9842"`). | `null` |
+| `maskedName` | `String?` | Masked citizen name returned from e-KYC (e.g., `"Aarav Sharma"`). | `null` |
+| `confidenceScore` | `Float?` | Biometric match accuracy confidence score (`0.0f` to `1.0f`). | `null` |
+| `timestamp` | `Long` | Unix timestamp in milliseconds when the verification succeeded. | `System.currentTimeMillis()` |
+
+---
+
+### 3. `BiometricFailureReason` Enum
+
+Categorized error states passed to `onFailure(reason, message)` for granular user guidance.
+
+| Reason | Error Code | Description | Recommended Citizen Guidance |
+| :--- | :--- | :--- | :--- |
+| `FaceNotDetected` | `FACE_OUT_OF_BOUNDS` | Face is not centered inside the oval guide overlay. | *"Please center your face inside the green oval frame."* |
+| `PoorLighting` | `INSUFFICIENT_LIGHT` | Ambient illumination is below the minimum threshold. | *"Move to a brighter area and avoid backlighting."* |
+| `LivenessFailed` | `LIVENESS_CHECK_FAILED` | Eye blink or depth movement was not detected. | *"Hold the camera steady and blink naturally when prompted."* |
+| `MatchMismatch` | `BIOMETRIC_MISMATCH` | Captured biometrics do not match Aadhaar registry records. | *"Biometrics do not match. Please retry or verify via OTP."* |
+| `Timeout` | `CAPTURE_TIMEOUT` | Capture session exceeded the permissible response time. | *"Session timed out. Tap retry to start again."* |
+| `MaxAttemptsExceeded` | `LOCKOUT_LIMIT` | Citizen reached `maxAttempts` consecutive failures. | *"Maximum attempts exceeded. Please authenticate with OTP."* |

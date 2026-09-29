@@ -28,7 +28,7 @@ Ux4gButton(
     text = "Submit Application",
     onClick = { /* Handle submit */ },
     variant = Ux4gButtonVariant.Primary,
-    size = Ux4gButtonSize.Medium
+    size = Ux4gButtonSize.XL
 )
 
 // 2. Secondary Action Button
@@ -36,29 +36,58 @@ Ux4gButton(
     text = "Save as Draft",
     onClick = { /* Handle draft */ },
     variant = Ux4gButtonVariant.Secondary,
-    size = Ux4gButtonSize.Medium
+    size = Ux4gButtonSize.XL
 )
 
 // 3. Loading State
 Ux4gButton(
     text = "Processing...",
     onClick = {},
-    isLoading = true
+    isLoading = true,
+    size = Ux4gButtonSize.XL
 )
 
 // 4. Disabled State
 Ux4gButton(
     text = "Proceed",
     onClick = {},
-    enabled = false
+    enabled = false,
+    size = Ux4gButtonSize.XL
 )`}
 >
-  <div className="flex flex-col items-center justify-center py-2">
-    <img
-      src="/images/components/button_primary.png"
-      alt="UX4G Fill Button Preview"
-      className="max-w-full rounded-xl border border-border/60 shadow-sm"
-    />
+  <div className="flex flex-wrap items-center justify-center gap-6 py-4">
+    <div className="flex flex-col items-center gap-2">
+      <span className="text-xs text-muted-foreground font-medium">Primary</span>
+      <img
+        src="/images/components/button_primary_xl.svg"
+        alt="UX4G Primary Button"
+        className="rounded-lg shadow-sm"
+      />
+    </div>
+    <div className="flex flex-col items-center gap-2">
+      <span className="text-xs text-muted-foreground font-medium">Secondary</span>
+      <img
+        src="/images/components/button_secondary_xl.svg"
+        alt="UX4G Secondary Button"
+        className="rounded-lg shadow-sm"
+      />
+    </div>
+    <div className="flex flex-col items-center gap-2">
+      <span className="text-xs text-muted-foreground font-medium">Loading</span>
+      <img
+        src="/images/components/button_loading_xl.svg"
+        alt="UX4G Loading Button"
+        className="rounded-lg shadow-sm"
+      />
+    </div>
+    <div className="flex flex-col items-center gap-2">
+      <span className="text-xs text-muted-foreground font-medium">Disabled</span>
+      <img
+        src="/images/components/button_disable_xl.svg"
+        alt="UX4G Disabled Button"
+        className="rounded-lg shadow-sm"
+      />
+    </div>
   </div>
 </ComponentPreview>
 
@@ -69,33 +98,17 @@ Ux4gButton(
 <ComponentPreview
   title="Ux4gOutlineButton (Bordered Actions)"
   category="Jetpack Compose"
-  code={`// 1. Standard Outline Button
-Ux4gOutlineButton(
+  code={`Ux4gOutlineButton(
     text = "Cancel Transaction",
     onClick = { /* Handle cancel */ },
-    size = Ux4gButtonSize.Medium
-)
-
-// 2. Outline Button via Ux4gButton Variant
-Ux4gButton(
-    text = "Back to Home",
-    onClick = { /* Navigate back */ },
-    variant = Ux4gButtonVariant.Outline,
-    size = Ux4gButtonSize.Large
-)
-
-// 3. Disabled Outline
-Ux4gOutlineButton(
-    text = "Cannot Proceed",
-    onClick = {},
-    enabled = false
+    size = Ux4gButtonSize.XL
 )`}
 >
-  <div className="flex flex-col items-center justify-center py-2">
+  <div className="flex flex-col items-center justify-center py-4">
     <img
-      src="/images/components/button_outline_preview.png"
+      src="/images/components/outline_button_xl.svg"
       alt="UX4G Outline Button Preview"
-      className="max-w-full rounded-xl border border-border/60 shadow-sm"
+      className="rounded-lg shadow-sm"
     />
   </div>
 </ComponentPreview>
@@ -107,32 +120,18 @@ Ux4gOutlineButton(
 <ComponentPreview
   title="Ux4gButton - Tonal (Soft Tinted Fill)"
   category="Jetpack Compose"
-  code={`// 1. Tonal Action Button
-Ux4gButton(
+  code={`Ux4gButton(
     text = "Explore Services",
     onClick = { /* Navigate to directory */ },
     variant = Ux4gButtonVariant.Tonal,
-    size = Ux4gButtonSize.Medium
-)
-
-// 2. Tonal with Leading Icon
-Ux4gButton(
-    text = "Download Certificate",
-    onClick = { /* Download PDF */ },
-    variant = Ux4gButtonVariant.Tonal,
-    leadingIcon = {
-        Image(
-            painter = painterResource(id = R.drawable.ic_download),
-            contentDescription = "Download"
-        )
-    }
+    size = Ux4gButtonSize.XL
 )`}
 >
-  <div className="flex flex-col items-center justify-center py-2">
+  <div className="flex flex-col items-center justify-center py-4">
     <img
-      src="/images/components/button_tonal_preview.png"
+      src="/images/components/tonal_button_xl.svg"
       alt="UX4G Tonal Button Preview"
-      className="max-w-full rounded-xl border border-border/60 shadow-sm"
+      className="rounded-lg shadow-sm"
     />
   </div>
 </ComponentPreview>
@@ -144,37 +143,17 @@ Ux4gButton(
 <ComponentPreview
   title="Ux4gTextButton (Clean Ghost Style)"
   category="Jetpack Compose"
-  code={`// 1. Standard Text Button
-Ux4gTextButton(
+  code={`Ux4gTextButton(
     text = "Skip for Now",
     onClick = { /* Handle skip */ },
-    size = Ux4gButtonSize.Medium
-)
-
-// 2. Text Button via Ux4gButton Variant
-Ux4gButton(
-    text = "View Privacy Policy",
-    onClick = { /* Open web view */ },
-    variant = Ux4gButtonVariant.Text
-)
-
-// 3. Text Button with Trailing Arrow Icon
-Ux4gTextButton(
-    text = "Learn More",
-    onClick = { /* Expand info */ },
-    trailingIcon = {
-        Image(
-            painter = painterResource(id = R.drawable.ic_arrow_forward),
-            contentDescription = null
-        )
-    }
+    size = Ux4gButtonSize.XL
 )`}
 >
-  <div className="flex flex-col items-center justify-center py-2">
+  <div className="flex flex-col items-center justify-center py-4">
     <img
-      src="/images/components/button_text_preview.png"
+      src="/images/components/text_button_xl.svg"
       alt="UX4G Text Button Preview"
-      className="max-w-full rounded-xl border border-border/60 shadow-sm"
+      className="rounded-lg shadow-sm"
     />
   </div>
 </ComponentPreview>

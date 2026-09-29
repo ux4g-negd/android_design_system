@@ -3,9 +3,9 @@ title: Draft Status
 description: Real-time draft auto-save banners, expiration countdown alerts, and application resume cards for multi-step government forms
 ---
 
-# Draft Status (`Ux4gStatusBanner`)
+# Draft Status & Status Banner (`Ux4gStatusBanner`)
 
-The UX4G Draft Status and Status Banner components communicate live draft state, auto-save synchronization progress, and expiration countdown warnings during multi-step citizen application flows.
+The **UX4G Draft Status and Status Banner** components communicate live draft state, auto-save synchronization progress, and expiration countdown warnings during multi-step citizen application flows.
 
 ### Key Capabilities
 
@@ -14,7 +14,10 @@ The UX4G Draft Status and Status Banner components communicate live draft state,
 - **Application Draft Cards**: High-density expandable draft cards featuring stage step tags, timestamps, and quick action CTAs ("Resume", "Discard").
 - **Banner Host Overlay**: Built-in animated floating banner host (`Ux4gBannerHost`) with auto-dismiss timers.
 
-Import from `com.ux4g.designsystemv1.components.statusbanner.*`.
+Import from:
+```kotlin
+import com.ux4g.designsystemv1.components.statusbanner.*
+```
 
 ---
 
@@ -158,7 +161,7 @@ Ux4gStatusBanner(
 
 ---
 
-<h2><MIcon name="code" /> Kotlin Usage</h2>
+<h2><MIcon name="code" /> Complete Kotlin Implementation</h2>
 
 ### 1. Form Auto-Save State Controller
 
@@ -239,9 +242,9 @@ fun ApplicationScreenWithDraftAlert(bannerHostState: Ux4gBannerHostState) {
 
 ---
 
-<h2><MIcon name="settings" /> Parameters</h2>
+<h2><MIcon name="settings" /> Parameters & API Reference</h2>
 
-### `Ux4gStatusBanner` Props
+### 1. `Ux4gStatusBanner` Composable (Inline Banner)
 
 | Prop | Type | Description | Default |
 | :--- | :--- | :--- | :--- |
@@ -267,15 +270,39 @@ fun ApplicationScreenWithDraftAlert(bannerHostState: Ux4gBannerHostState) {
 
 ---
 
-### `Ux4gBannerVariant` Reference
+### 2. `Ux4gBannerHost` Composable (Floating Container)
 
-| Variant | Background Color | Text / Icon Color | Context |
+| Prop | Type | Description | Default |
 | :--- | :--- | :--- | :--- |
-| `WarningLight` | Light Amber (`12% orange600`) | `neutral900` / `orange600` | Expiration countdowns, soft prerequisites |
-| `WarningSolid` | Solid Orange (`orange600`) | White (`neutral0`) | Imminent deadline alerts, urgent 24h warnings |
-| `ErrorLight` | Light Red (`12% red600`) | `neutral900` / `red600` | Expired drafts, failed auto-save |
-| `SuccessLight` | Light Green (`12% green600`) | `neutral900` / `green600` | Successful draft saved confirmations |
-| `SavingLight` | Light Primary (`12% primary`) | `neutral900` / `primary` | Live background synchronization |
-| `InfoLight` | Light Blue (`12% blue600`) | `neutral900` / `blue600` | General guidelines and information |
-| `NeutralLight` | Translucent Gray (`5% neutral900`) | `neutral900` | Non-urgent system notes and cookie notices |
+| `hostState` <span className="text-red-500 font-bold">*</span> | `Ux4gBannerHostState` | State controller managing floating banner display, transitions, and dismissal. | `—` |
+| `modifier` | `Modifier` | Compose layout modifier applied to the banner host overlay container. | `Modifier` |
+
+---
+
+### 3. `Ux4gBannerData` Data Model
+
+Passed into `bannerHostState.show(Ux4gBannerData(...))` to display a dynamic overlay banner.
+
+| Field | Type | Description | Default |
+| :--- | :--- | :--- | :--- |
+| `variant` <span className="text-red-500 font-bold">*</span> | `Ux4gBannerVariant` | Visual semantic tone (`WarningLight`, `WarningSolid`, `ErrorLight`, `SuccessLight`, etc.). | `—` |
+| `title` <span className="text-red-500 font-bold">*</span> | `String` | Primary headline text for the floating banner. | `—` |
+| `subtitle` | `String?` | Optional body description text providing further context. | `null` |
+| `autoDismiss` | `Boolean` | When `true`, automatically dismisses the banner after `durationMillis`. | `false` |
+| `durationMillis` | `Long` | Display duration before auto-dismissal when `autoDismiss = true`. | `4000L` |
+| `onDismiss` | `(() -> Unit)?` | Callback triggered when the banner is dismissed or closed. | `null` |
+
+---
+
+### 4. `Ux4gBannerVariant` Reference Guide
+
+| Variant | Background Color | Text / Icon Color | Context & Best Practice |
+| :--- | :--- | :--- | :--- |
+| `WarningLight` | Light Amber (`12% orange600`) | `neutral900` / `orange600` | Expiration countdowns, draft warnings, soft prerequisites |
+| `WarningSolid` | Solid Orange (`orange600`) | White (`neutral0`) | Imminent deadline alerts, urgent 24h expiration warnings |
+| `ErrorLight` | Light Red (`12% red600`) | `neutral900` / `red600` | Expired drafts, failed auto-save sync, validation blocks |
+| `SuccessLight` | Light Green (`12% green600`) | `neutral900` / `green600` | Successful draft saved confirmations, upload sync success |
+| `SavingLight` | Light Primary (`12% primary`) | `neutral900` / `primary` | Live background auto-save synchronization spinner |
+| `InfoLight` | Light Blue (`12% blue600`) | `neutral900` / `blue600` | General guidelines, document checklist reminders |
+| `NeutralLight` | Translucent Gray (`5% neutral900`) | `neutral900` | Non-urgent system notes, informational banners |
 | `PrimaryLight` | Light Primary (`12% primary`) | `neutral900` / `primary` | Feature updates and account confirmations |
