@@ -18,27 +18,71 @@ Import from `com.ux4g.designsystemv1.components.searchfield.*`.
 
 ---
 
-<h2><MIcon name="smartphone" /> Interactive Preview</h2>
+<h2><MIcon name="smartphone" /> Interactive Previews</h2>
+
+### 1. Default State with Submit Button
+
+Search bar with label, placeholder, integrated voice search, clear button, and filled search submit CTA.
 
 <ComponentPreview
-  title="Ux4gSearchField"
+  title="Ux4gSearchField (Search with Submit Button)"
   category="Jetpack Compose"
   code={`var searchQuery by remember { mutableStateOf("") }
 
 Ux4gSearchField(
     value = searchQuery,
     onValueChange = { searchQuery = it },
+    label = "Label",
     placeholder = "Search...",
+    variant = Ux4gSearchFieldVariant.SearchWithSubmit,
     showVoiceIcon = true,
     showClearIcon = true,
-    onVoiceClick = { /* Launch voice recognition */ },
-    onClearClick = { searchQuery = "" }
+    onVoiceClick = { /* Launch voice search */ },
+    onClearClick = { searchQuery = "" },
+    onSubmitClick = { query -> /* Execute search */ }
 )`}
 >
   <div className="flex flex-col items-center justify-center py-2">
     <img
-      src="/images/components/search-field_preview.png"
-      alt="UX4G Default Search Field Preview"
+      src="/images/components/searchfield_default.svg"
+      alt="UX4G Default Search Field with Submit Button"
+      className="max-w-full rounded-xl border border-border/60 shadow-sm"
+    />
+  </div>
+</ComponentPreview>
+
+---
+
+### 2. Expanded State with Autocomplete Suggestions
+
+Search bar with entered query and an expanded dropdown list of matching suggestion items.
+
+<ComponentPreview
+  title="Ux4gSearchField (Expanded Autocomplete Suggestions)"
+  category="Jetpack Compose"
+  code={`var searchQuery by remember { mutableStateOf("Input text") }
+val suggestions = listOf(
+    "Label for item 1",
+    "Label for item 2",
+    "Label for item 3"
+)
+
+Ux4gSearchField(
+    value = searchQuery,
+    onValueChange = { searchQuery = it },
+    label = "Label",
+    variant = Ux4gSearchFieldVariant.Autocomplete,
+    options = suggestions,
+    showVoiceIcon = true,
+    showClearIcon = true,
+    onOptionSelected = { selected -> searchQuery = selected },
+    onSubmitClick = { query -> /* Execute search */ }
+)`}
+>
+  <div className="flex flex-col items-center justify-center py-2">
+    <img
+      src="/images/components/searchfield_expand.svg"
+      alt="UX4G Expanded Autocomplete Search Field"
       className="max-w-full rounded-xl border border-border/60 shadow-sm"
     />
   </div>
