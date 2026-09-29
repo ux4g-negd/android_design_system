@@ -14,6 +14,7 @@ import androidx.compose.foundation.selection.toggleable
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.minimumInteractiveComponentSize
 import androidx.compose.material3.ripple
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -177,8 +178,7 @@ fun Ux4gSwitch(
     val toggleControl: @Composable () -> Unit = {
         Box(
             modifier = Modifier
-                .size(width = size.width, height = size.height)
-                .background(color = animatedTrackColor, shape = CircleShape)
+                .minimumInteractiveComponentSize()
                 .clickable(
                     interactionSource = interactionSource,
                     indication = null,
@@ -187,22 +187,29 @@ fun Ux4gSwitch(
                 ) {
                     onCheckedChange?.invoke(!checked)
                 },
-            contentAlignment = Alignment.CenterStart
+            contentAlignment = Alignment.Center
         ) {
             Box(
                 modifier = Modifier
-                    .offset(x = thumbOffset)
-                    .size(size.thumbSize)
-                    .indication(
-                        interactionSource = interactionSource,
-                        indication = ripple(bounded = false, radius = 24.dp)
-                    )
-                    .shadow(
-                        elevation = if (enabled) 2.dp else 0.dp,
-                        shape = CircleShape
-                    )
-                    .background(color = animatedThumbColor, shape = CircleShape)
-            )
+                    .size(width = size.width, height = size.height)
+                    .background(color = animatedTrackColor, shape = CircleShape),
+                contentAlignment = Alignment.CenterStart
+            ) {
+                Box(
+                    modifier = Modifier
+                        .offset(x = thumbOffset)
+                        .size(size.thumbSize)
+                        .indication(
+                            interactionSource = interactionSource,
+                            indication = ripple(bounded = false, radius = 24.dp)
+                        )
+                        .shadow(
+                            elevation = if (enabled) 2.dp else 0.dp,
+                            shape = CircleShape
+                        )
+                        .background(color = animatedThumbColor, shape = CircleShape)
+                )
+            }
         }
     }
 
@@ -295,15 +302,17 @@ fun Ux4gSwitch(
         }
 
     val toggleModifier = if (onCheckedChange != null) {
-        Modifier.toggleable(
-            value = checked,
-            onValueChange = onCheckedChange,
-            enabled = enabled,
-            role = Role.Switch,
-            interactionSource = interactionSource,
-            indication = null
-        )
-    } else Modifier
+        Modifier
+            .defaultMinSize(minHeight = 48.dp)
+            .toggleable(
+                value = checked,
+                onValueChange = onCheckedChange,
+                enabled = enabled,
+                role = Role.Switch,
+                interactionSource = interactionSource,
+                indication = null
+            )
+    } else Modifier.defaultMinSize(minHeight = 48.dp)
 
     when (labelPosition) {
         Ux4gSwitchLabelPosition.NoLabel -> {

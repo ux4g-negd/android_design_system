@@ -88,7 +88,7 @@ fun Ux4gPanInputField(
         onTrailingIconPressed = onTrailingIconPressed,
         enabled = enabled,
         readOnly = readOnly,
-        maxLength = 10,
+        maxLength = null, // Formatted and length-capped by formatPan (10 alphanumeric chars)
         keyboardOptions = KeyboardOptions(
             capitalization = KeyboardCapitalization.Characters,
             keyboardType = KeyboardType.Text

@@ -23,6 +23,7 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.Text
+import androidx.compose.material3.minimumInteractiveComponentSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.remember
@@ -187,7 +188,9 @@ fun Ux4gButton(
 
         Button(
                 onClick = onClick,
-                modifier = modifier.height(size.defaultHeight),
+                modifier = modifier
+                        .minimumInteractiveComponentSize()
+                        .height(size.defaultHeight),
                 enabled = enabled && !isLoading,
                 shape = shape,
                 colors =

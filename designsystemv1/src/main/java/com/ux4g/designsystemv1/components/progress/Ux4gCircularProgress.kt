@@ -144,7 +144,7 @@ fun Ux4gCircularProgress(
     gap: Dp = Ux4gSpace.Space8,
     backgroundColor: Color? = null,
 ) {
-    require(value in 0f..1f) { "value must be between 0 and 1" }
+    val clampedValue = value.coerceIn(0f, 1f)
 
     val isDark = isSystemInDarkTheme()
 
@@ -239,7 +239,7 @@ fun Ux4gCircularProgress(
         ) {
             Canvas(modifier = Modifier.size(ringSize)) {
                 drawCircularProgress(
-                    value = value,
+                    value = clampedValue,
                     strokeWidth = resolvedStrokeWidth.toPx(),
                     progressBrush = resolvedBrush,
                     progressColor = resolvedProgressColor,

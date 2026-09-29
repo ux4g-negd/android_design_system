@@ -30,6 +30,7 @@ import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
+import androidx.compose.material3.minimumInteractiveComponentSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -122,6 +123,7 @@ fun Ux4gChoiceChip(
 
     Box(
         modifier = modifier
+            .minimumInteractiveComponentSize()
             .alpha(if (enabled) 1f else 0.5f)
             .clip(shape)
             .background(bgColor, shape)
@@ -218,6 +220,7 @@ fun Ux4gFilterChip(
 
     Box(
         modifier = modifier
+            .minimumInteractiveComponentSize()
             .height(chipHeight)
             .alpha(if (enabled) 1f else 0.5f)
             .clip(shape)
@@ -293,6 +296,7 @@ fun Ux4gInputChip(
 
     Box(
         modifier = modifier
+            .minimumInteractiveComponentSize()
             .height(chipHeight)
             .alpha(if (enabled) 1f else 0.5f)
             .clip(shape)
@@ -315,14 +319,19 @@ fun Ux4gInputChip(
                 overflow = TextOverflow.Ellipsis
             )
             Spacer(modifier = Modifier.width(8.dp))
-            Icon(
-                imageVector = Icons.Default.Close,
-                contentDescription = "Dismiss",
-                tint = finalTextColor.copy(alpha = 0.8f),
+            Box(
                 modifier = Modifier
-                    .size(iconSize)
-                    .clickable(enabled = enabled, onClick = onDismiss)
-            )
+                    .minimumInteractiveComponentSize()
+                    .clickable(enabled = enabled, onClick = onDismiss),
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Close,
+                    contentDescription = "Dismiss",
+                    tint = finalTextColor.copy(alpha = 0.8f),
+                    modifier = Modifier.size(iconSize)
+                )
+            }
         }
     }
 }

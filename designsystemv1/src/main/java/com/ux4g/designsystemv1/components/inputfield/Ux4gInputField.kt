@@ -30,9 +30,9 @@ import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Error
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.icons.filled.Visibility
-import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material.icons.filled.Warning
+import androidx.compose.material.icons.outlined.Visibility
+import androidx.compose.material.icons.outlined.VisibilityOff
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -106,6 +106,7 @@ fun Ux4gInputField(
     borderWidth: Dp = 1.dp,
     disabledBorderWidth: Dp = 0.dp,
     showPasswordToggle: Boolean = true,
+    visualTransformation: VisualTransformation? = null,
     keyboardOptions: KeyboardOptions? = null,
     keyboardActions: KeyboardActions = KeyboardActions.Default
 ) {
@@ -185,7 +186,7 @@ fun Ux4gInputField(
 
     val effectiveKeyboardOptions = keyboardOptions ?: KeyboardOptions(keyboardType = defaultKeyboardType)
 
-    val visualTransformation = if (type == Ux4gInputFieldType.Password && !passwordVisible) {
+    val effectiveVisualTransformation = visualTransformation ?: if (type == Ux4gInputFieldType.Password && !passwordVisible) {
         PasswordVisualTransformation()
     } else {
         VisualTransformation.None
@@ -288,9 +289,12 @@ fun Ux4gInputField(
                     BasicTextField(
                         value = value,
                         onValueChange = { newValue ->
-                            if (maxLength == null || newValue.length <= maxLength) {
-                                onValueChange(newValue)
+                            val truncated = if (maxLength != null && newValue.length > maxLength) {
+                                newValue.take(maxLength)
+                            } else {
+                                newValue
                             }
+                            onValueChange(truncated)
                         },
                         modifier = Modifier
                             .fillMaxWidth()
@@ -303,7 +307,7 @@ fun Ux4gInputField(
                         keyboardOptions = effectiveKeyboardOptions,
                         keyboardActions = keyboardActions,
                         interactionSource = interactionSource,
-                        visualTransformation = visualTransformation,
+                        visualTransformation = effectiveVisualTransformation,
                         cursorBrush = SolidColor(primary),
                         decorationBox = { innerTextField -> innerTextField() }
                     )
@@ -337,7 +341,7 @@ fun Ux4gInputField(
                 if (type == Ux4gInputFieldType.Password && showPasswordToggle) {
                     Spacer(modifier = Modifier.width(8.dp))
                     Icon(
-                        imageVector = if (passwordVisible) Icons.Default.VisibilityOff else Icons.Default.Visibility,
+                        imageVector = if (passwordVisible) Icons.Outlined.Visibility else Icons.Outlined.VisibilityOff,
                         contentDescription = if (passwordVisible) "Hide Password" else "Show Password",
                         tint = onSurface.copy(alpha = 0.5f),
                         modifier = Modifier

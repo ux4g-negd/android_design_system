@@ -7,15 +7,45 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Badge
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.outlined.Visibility
+import androidx.compose.material.icons.outlined.VisibilityOff
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.input.OffsetMapping
+import androidx.compose.ui.text.input.TransformedText
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+
+/**
+ * Visual transformation that masks Aadhaar number digits with a mask character ('X' or '•').
+ * Spaces and formatting separators are preserved as-is.
+ */
+class AadhaarMaskVisualTransformation(
+    private val maskChar: Char = 'X'
+) : VisualTransformation {
+    override fun filter(text: AnnotatedString): TransformedText {
+        val transformed = buildString {
+            for (char in text.text) {
+                if (char.isDigit()) {
+                    append(maskChar)
+                } else {
+                    append(char)
+                }
+            }
+        }
+        return TransformedText(
+            text = AnnotatedString(transformed),
+            offsetMapping = OffsetMapping.Identity
+        )
+    }
+}
 
 /**
  * A specialized input field for Indian Aadhaar numbers (12 digits).
@@ -23,6 +53,7 @@ import androidx.compose.ui.unit.dp
  * Features:
  * - Auto-formatting: formats raw digits as `XXXX XXXX XXXX` (space every 4 digits).
  * - Numeric-only input filter.
+ * - Masking toggle: show/hide Aadhaar digits with Material Outlined Eye icons (`Visibility` / `VisibilityOff`).
  * - Built-in validation using the official **Verhoeff algorithm**.
  * - Dynamic status updates (switches to [Ux4gInputFieldStatus.Success] or [Ux4gInputFieldStatus.Error] on complete entry).
  *
@@ -42,6 +73,10 @@ fun Ux4gAadhaarInputField(
     leadingIcon: Any? = null,
     trailingIcon: Any? = null,
     onTrailingIconPressed: (() -> Unit)? = null,
+    showMaskToggle: Boolean = false,
+    isMasked: Boolean? = null,
+    onMaskChange: ((Boolean) -> Unit)? = null,
+    maskChar: Char = 'X',
     enabled: Boolean = true,
     readOnly: Boolean = false,
     placeholderStyle: TextStyle? = null,
@@ -66,6 +101,36 @@ fun Ux4gAadhaarInputField(
         }
     }
 
+    var internalMasked by remember { mutableStateOf(true) }
+    val effectiveMasked = isMasked ?: internalMasked
+
+    val effectiveVisualTransformation = if (showMaskToggle && effectiveMasked) {
+        AadhaarMaskVisualTransformation(maskChar = maskChar)
+    } else {
+        VisualTransformation.None
+    }
+
+    val effectiveTrailingIcon = if (trailingIcon != null) {
+        trailingIcon
+    } else if (showMaskToggle) {
+        if (effectiveMasked) Icons.Outlined.VisibilityOff else Icons.Outlined.Visibility
+    } else {
+        null
+    }
+
+    val effectiveOnTrailingIconPressed: (() -> Unit)? = if (onTrailingIconPressed != null) {
+        onTrailingIconPressed
+    } else if (showMaskToggle && trailingIcon == null) {
+        {
+            val newMaskState = !effectiveMasked
+            internalMasked = newMaskState
+            onMaskChange?.invoke(newMaskState)
+            Unit
+        }
+    } else {
+        null
+    }
+
     Ux4gInputField(
         value = value,
         onValueChange = { input ->
@@ -81,11 +146,12 @@ fun Ux4gAadhaarInputField(
         placeholder = placeholder,
         caption = currentCaption,
         leadingIcon = leadingIcon,
-        trailingIcon = trailingIcon,
-        onTrailingIconPressed = onTrailingIconPressed,
+        trailingIcon = effectiveTrailingIcon,
+        onTrailingIconPressed = effectiveOnTrailingIconPressed,
         enabled = enabled,
         readOnly = readOnly,
-        maxLength = 14, // 12 digits + 2 spaces
+        maxLength = null, // Formatted and length-capped by formatAadhaar (14 chars: 12 digits + 2 spaces)
+        visualTransformation = effectiveVisualTransformation,
         style = style,
         labelStyle = labelStyle,
         placeholderStyle = placeholderStyle,
@@ -202,13 +268,13 @@ private fun Ux4gAadhaarInputFieldPreview() {
             onTrailingIconPressed = { aadhaar2 = "" }
         )
 
+        var aadhaar4 by remember { mutableStateOf("9999 4105 7058") }
         Ux4gAadhaarInputField(
-            value = aadhaar3,
-            onValueChange = { aadhaar3 = it },
-            label = "Invalid Aadhaar Number (Auto Error)",
-            leadingIcon = Icons.Default.Badge,
-            trailingIcon = Icons.Default.Close,
-            onTrailingIconPressed = { aadhaar3 = "" }
+            value = aadhaar4,
+            onValueChange = { aadhaar4 = it },
+            label = "Label",
+            caption = "Description",
+            showMaskToggle = true
         )
     }
 }
