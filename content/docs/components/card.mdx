@@ -26,11 +26,9 @@ Import from `com.ux4g.designsystemv1.components.Ux4gCard`.
   code={`// Standard Informational Card
 Ux4gCard(
     modifier = Modifier.fillMaxWidth(),
-    title = "Scheme Information",
-    subtitle = "Department of Agriculture",
-    body = "Direct benefit transfer scheme providing financial assistance to cultivating farmer families across the country.",
-    isClickable = true,
-    onClick = { /* Open scheme details */ }
+    title = "Card Title",
+    subtitle = "Card subtitle",
+    body = "This is the card body."
 )`}
 >
   <div className="flex flex-col items-center justify-center py-2">
@@ -52,14 +50,13 @@ Ux4gCard(
   code={`// Card with Primary & Secondary Footer Buttons
 Ux4gCard(
     modifier = Modifier.fillMaxWidth(),
-    title = "Application Verification",
-    subtitle = "Pending Citizen Approval",
-    body = "Review your submitted documents and verify biometric authentication to proceed with certificate dispatch.",
+    title = "Card with Actions",
+    body = "This card has primary and secondary action buttons.",
     footerType = Ux4gCardFooterType.PrimaryAndSecondary,
-    primaryButtonText = "Approve & Sign",
-    secondaryButtonText = "Reject",
-    onPrimaryClick = { /* Handle approval */ },
-    onSecondaryClick = { /* Handle rejection */ }
+    primaryButtonText = "Confirm",
+    secondaryButtonText = "Cancel",
+    onPrimaryClick = { /* Handle confirm */ },
+    onSecondaryClick = { /* Handle cancel */ }
 )`}
 >
   <div className="flex flex-col items-center justify-center py-2">
@@ -82,14 +79,11 @@ Ux4gCard(
 Ux4gCard(
     modifier = Modifier.fillMaxWidth(),
     direction = Ux4gCardDirection.Horizontal,
-    mediaImageUrl = "https://picsum.photos/seed/digilocker/300/300",
+    mediaImageUrl = "https://picsum.photos/seed/subway/300/300",
     mediaWidth = 120.dp,
-    title = "Digital Locker",
-    subtitle = "Government of India",
-    body = "Secure cloud-based platform for storage, sharing and verification of citizen documents & digital certificates.",
-    footerType = Ux4gCardFooterType.SecondaryOnly,
-    secondaryButtonText = "View Files",
-    onSecondaryClick = { /* Open DigiLocker */ }
+    title = "Horizontal Card",
+    subtitle = "Side-by-side layout",
+    body = "The media thumbnail appears on the left in horizontal mode."
 )`}
 >
   <div className="flex flex-col items-center justify-center py-2">
@@ -112,59 +106,27 @@ Ux4gCard(
 Ux4gCard(
     modifier = Modifier.fillMaxWidth(),
     direction = Ux4gCardDirection.Vertical,
-    mediaImageUrl = "https://picsum.photos/seed/pmkisan/600/300",
+    mediaImageUrl = "https://picsum.photos/seed/canyon/600/300",
     mediaHeight = 180.dp,
-    mediaLabelText = "Agriculture & Rural",
-    mediaLabelLeading = {
-        Icon(
-            imageVector = Icons.Filled.Category,
-            contentDescription = null,
-            tint = Color.White,
-            modifier = Modifier.size(12.dp)
-        )
-    },
-    mediaTopEndAction = {
-        Box(
-            modifier = Modifier
-                .size(32.dp)
-                .clip(CircleShape)
-                .background(Color(0x66000000)),
-            contentAlignment = Alignment.Center
-        ) {
-            Icon(
-                imageVector = Icons.Filled.BookmarkBorder,
-                contentDescription = "Bookmark",
-                tint = Color.White,
-                modifier = Modifier.size(16.dp)
-            )
-        }
-    },
+    mediaLabelText = "Label",
     avatar = {
         Ux4gAvatar(
             size = Ux4gAvatarSize.M,
-            initials = "PM",
+            initials = "JD",
             containerColor = Ux4gColors.primary100,
             contentColor = Ux4gColors.primary700
         )
     },
-    title = "PM Kisan Samman Nidhi",
-    subtitle = "Direct Benefit Transfer (DBT)",
-    headerTrailing = {
-        Icon(
-            imageVector = Icons.Filled.Share,
-            contentDescription = "Share",
-            tint = Ux4gColors.primary,
-            modifier = Modifier.size(22.dp)
-        )
-    },
-    statusChips = listOf("Active Scheme", "Central Sector", "100% Funded"),
-    body = "Income support of ₹6,000 per year in three equal installments to all land holding farmer families.",
-    bottomChips = listOf("DBT", "Farmers", "Annual Support", "Aadhaar Linked"),
+    title = "Title",
+    subtitle = "Subtitle",
+    statusChips = listOf("Label", "Label", "Label"),
+    body = "Lorem ipsum is a dummy or placeholder text commonly used in graphic design, publishing, and web development.",
+    bottomChips = listOf("Label", "Label", "Label", "Label"),
     footerType = Ux4gCardFooterType.PrimaryAndSecondary,
-    primaryButtonText = "Apply Now",
-    secondaryButtonText = "Guidelines",
-    onPrimaryClick = { /* Launch application */ },
-    onSecondaryClick = { /* Open guidelines */ }
+    primaryButtonText = "+ Button",
+    secondaryButtonText = "+ Button",
+    onPrimaryClick = { /* Handle primary click */ },
+    onSecondaryClick = { /* Handle secondary click */ }
 )`}
 >
   <div className="flex flex-col items-center justify-center py-2">
@@ -187,25 +149,24 @@ Ux4gCard(
 Ux4gCard(
     modifier = Modifier.fillMaxWidth(),
     direction = Ux4gCardDirection.Horizontal,
-    mediaImageUrl = "https://picsum.photos/seed/ayushman/400/400",
+    mediaImageUrl = "https://picsum.photos/seed/mountains/400/400",
     mediaWidth = 140.dp,
-    mediaLabelText = "Health Scheme",
+    mediaLabelText = "Label",
     avatar = {
         Ux4gAvatar(
             size = Ux4gAvatarSize.S,
-            initials = "AB",
-            containerColor = Ux4gColors.secondary100,
-            contentColor = Ux4gColors.secondary700
+            initials = "JD"
         )
     },
-    title = "Ayushman Bharat PM-JAY",
-    subtitle = "National Health Authority",
-    statusChips = listOf("₹5 Lakh Cover", "Cashless"),
-    body = "World's largest health assurance scheme providing secondary and tertiary care hospitalization coverage.",
-    bottomChips = listOf("Healthcare", "Hospitals"),
-    footerType = Ux4gCardFooterType.PrimaryOnly,
-    primaryButtonText = "Check Eligibility",
-    onPrimaryClick = { /* Check citizen eligibility */ }
+    title = "Title",
+    subtitle = "Subtitle",
+    statusChips = listOf("Label", "Label", "Label"),
+    body = "Lorem ipsum is a dummy or placeholder text commonly used in graphic design, publishing, and web development.",
+    bottomChips = listOf("Label", "Label", "Label", "Label"),
+    footerType = Ux4gCardFooterType.PrimaryAndSecondary,
+    primaryButtonText = "Button",
+    secondaryButtonText = "Button",
+    onPrimaryClick = { /* Handle click */ }
 )`}
 >
   <div className="flex flex-col items-center justify-center py-2">
