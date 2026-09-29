@@ -15,7 +15,7 @@ The UX4G Toggle Switch component provides an accessible binary on/off control fo
 - **Standardized Size Hierarchy**: Three carefully calibrated sizes — `S` (32×18dp), `M` (40×22dp), and `L` (48×28dp).
 - **Smooth Interaction & Dark Mode**: Smooth animated thumb transitions (150ms tween) with integrated ripple indications and automatic dark theme track/thumb color adaptation.
 
-Import from `com.ux4g.designsystemv1.components.*`.
+Import from `com.ux4g.designsystemv1.components.toggle.*`.
 
 ---
 
@@ -87,9 +87,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.ux4g.designsystemv1.components.Ux4gSwitch
-import com.ux4g.designsystemv1.components.Ux4gSwitchLabelPosition
-import com.ux4g.designsystemv1.components.Ux4gSwitchSize
+import com.ux4g.designsystemv1.components.toggle.*
 import com.ux4g.designsystemv1.foundation.Ux4gIcons
 
 @Composable
@@ -141,9 +139,7 @@ fun NotificationPreferencesSection() {
 
 ```kotlin title="DualSidedBillingToggle.kt"
 import androidx.compose.runtime.*
-import com.ux4g.designsystemv1.components.Ux4gSwitch
-import com.ux4g.designsystemv1.components.Ux4gSwitchLabelPosition
-import com.ux4g.designsystemv1.components.Ux4gSwitchSize
+import com.ux4g.designsystemv1.components.toggle.*
 
 @Composable
 fun SchemeTenureSelector() {

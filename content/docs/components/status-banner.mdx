@@ -14,7 +14,7 @@ The UX4G Draft Status and Status Banner components communicate live draft state,
 - **Application Draft Cards**: High-density expandable draft cards featuring stage step tags, timestamps, and quick action CTAs ("Resume", "Discard").
 - **Banner Host Overlay**: Built-in animated floating banner host (`Ux4gBannerHost`) with auto-dismiss timers.
 
-Import from `com.ux4g.designsystemv1.components.*`.
+Import from `com.ux4g.designsystemv1.components.statusbanner.*`.
 
 ---
 
@@ -170,7 +170,8 @@ import androidx.compose.material3.Icon
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.ux4g.designsystemv1.components.*
+import com.ux4g.designsystemv1.components.statusbanner.*
+import com.ux4g.designsystemv1.components.loader.Ux4gLoader
 import com.ux4g.designsystemv1.foundation.Ux4gColors
 
 enum class AutoSaveStatus {
@@ -217,7 +218,7 @@ fun AutoSaveIndicator(status: AutoSaveStatus, lastSavedTime: String) {
 
 ```kotlin title="DraftExpirationAlert.kt"
 import androidx.compose.runtime.*
-import com.ux4g.designsystemv1.components.*
+import com.ux4g.designsystemv1.components.statusbanner.*
 
 @Composable
 fun ApplicationScreenWithDraftAlert(bannerHostState: Ux4gBannerHostState) {
