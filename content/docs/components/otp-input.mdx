@@ -1,30 +1,30 @@
 ---
 title: OTP Input
-description: Auto-advancing 4/6-digit verification code input boxes with timer, paste handling, and resend action
+description: Auto-advancing 4/6-digit verification code input boxes with in-built countdown timer, auto-resend state machine, attempt counters, and locked states
 ---
 
 # OTP Input (`Ux4gOtpInput`)
 
-Auto-advancing 4/6-digit verification code input boxes with label, validation status states (Default, Success, Error, Disabled), timer countdown, paste handling, and resend action.
+The `Ux4gOtpInput` is a high-accessibility citizen identity verification component designed for entering one-time passwords (OTP). It features individual digit boxes, auto-focus transitions, animated blinking cursor, paste handling, built-in countdown timers, attempt counters, and status states (`Default`, `Success`, `Error`, `Warning`, `Locked`).
 
-Import from `com.ux4g.designsystemv1.components.Ux4gOtpInput`.
+Import from `com.ux4g.designsystemv1.components.inputfield.Ux4gOtpInput`.
 
 ---
 
 <h2><MIcon name="smartphone" /> Interactive Previews</h2>
 
-### 1. Default OTP Input
+### 1. Default OTP Input (Standalone Boxes)
 
-Standard standalone 6-digit OTP verification boxes.
+Clean 6-digit verification code boxes without outer label for simple embedded or modal flows.
 
 <ComponentPreview
-  title="Ux4gOtpInput (Default)"
+  title="Ux4gOtpInput (Default Standalone)"
   category="Jetpack Compose"
-  code={`var otpValue by remember { mutableStateOf("") }
+  code={`var otp by remember { mutableStateOf("") }
 
 Ux4gOtpInput(
-    value = otpValue,
-    onValueChange = { otpValue = it },
+    value = otp,
+    onValueChange = { otp = it },
     length = 6,
     onComplete = { code -> /* Trigger OTP verify API */ }
 )`}
@@ -32,7 +32,7 @@ Ux4gOtpInput(
   <div className="flex flex-col items-center justify-center py-4">
     <img
       src="/images/components/otp_boxes_wrapper.svg"
-      alt="UX4G OTP Input Preview"
+      alt="UX4G Standalone OTP Boxes Preview"
       className="max-w-full h-auto"
     />
   </div>
@@ -40,28 +40,28 @@ Ux4gOtpInput(
 
 ---
 
-### 2. OTP with Label
+### 2. In-Progress with Focused Cursor & Resend Timer
 
-OTP input with header label, active box focus, and resend countdown caption.
+Standard OTP input with header label, active box focus cursor, and automatic countdown timer.
 
 <ComponentPreview
-  title="Ux4gOtpInput (With Label)"
+  title="Ux4gOtpInput (In-Progress with Timer)"
   category="Jetpack Compose"
-  code={`var otpValue by remember { mutableStateOf("") }
+  code={`var otp1 by remember { mutableStateOf("") }
 
 Ux4gOtpInput(
-    value = otpValue,
-    onValueChange = { otpValue = it },
+    value = otp1,
+    onValueChange = { otp1 = it },
     label = "Label",
     length = 6,
-    caption = "Didn't receive OTP? Resend in 00:17",
-    onResendClick = { /* Handle Resend */ }
+    captionVariant = Ux4gOtpCaptionVariant.ResendTimer,
+    autoCountdownSeconds = 17 // Automatically counts down 00:17 -> 00:16...
 )`}
 >
   <div className="flex flex-col items-center justify-center py-4">
     <img
       src="/images/components/otp_status_default.svg"
-      alt="UX4G OTP Input with Label Preview"
+      alt="UX4G OTP Input In-Progress State Preview"
       className="max-w-full h-auto"
     />
   </div>
@@ -69,20 +69,23 @@ Ux4gOtpInput(
 
 ---
 
-### 3. Success State
+### 3. Verification Successful (Green State)
 
-Valid OTP input showing success green indicators and confirmation message.
+Valid OTP input showing success green indicators, filled digits, and checkmark confirmation.
 
 <ComponentPreview
-  title="Ux4gOtpInput (Success State)"
+  title="Ux4gOtpInput (Verification Successful)"
   category="Jetpack Compose"
-  code={`Ux4gOtpInput(
-    value = "555555",
-    onValueChange = {},
+  code={`var otp3 by remember { mutableStateOf("555555") }
+
+Ux4gOtpInput(
+    value = otp3,
+    onValueChange = { otp3 = it },
     label = "Label",
     length = 6,
-    status = Ux4gInputFieldStatus.Success,
-    caption = "OTP Verified Successfully"
+    status = Ux4gOtpInputStatus.Success, // Green borders
+    captionVariant = Ux4gOtpCaptionVariant.Success, // ✅ Green check icon
+    captionText = "Verification successful"
 )`}
 >
   <div className="flex flex-col items-center justify-center py-4">
@@ -96,21 +99,24 @@ Valid OTP input showing success green indicators and confirmation message.
 
 ---
 
-### 4. Error State
+### 4. Attempt Counter with Error Border & Timer (Red State)
 
-Error state displaying validation warning outline, alert icon, attempt count, and resend action.
+Error state displaying validation warning outline, attempt count badge, and resend action.
 
 <ComponentPreview
-  title="Ux4gOtpInput (Error State)"
+  title="Ux4gOtpInput (Error with Attempt Counter)"
   category="Jetpack Compose"
-  code={`Ux4gOtpInput(
-    value = "555555",
-    onValueChange = {},
+  code={`var otp4 by remember { mutableStateOf("555555") }
+
+Ux4gOtpInput(
+    value = otp4,
+    onValueChange = { otp4 = it },
     label = "Label",
     length = 6,
-    status = Ux4gInputFieldStatus.Error,
-    caption = "Attempt 03 of 03. Resend OTP in 00:17",
-    onResendClick = { /* Resend OTP API */ }
+    status = Ux4gOtpInputStatus.Error, // Red borders
+    captionVariant = Ux4gOtpCaptionVariant.AttemptWithTimer,
+    captionLeadingText = "Attempt 2 of 3", // 🔴 Error icon + label on left
+    captionTrailingText = "Resend OTP in 00:17" // Timer text on right
 )`}
 >
   <div className="flex flex-col items-center justify-center py-4">
@@ -124,26 +130,33 @@ Error state displaying validation warning outline, alert icon, attempt count, an
 
 ---
 
-### 5. Disabled State
+### 5. Locked State with Lock Icon (Disabled State)
 
-Disabled OTP input with locked state indicator preventing user interaction.
+Disabled OTP input with locked state indicator preventing user interaction when max attempts are exceeded.
 
 <ComponentPreview
-  title="Ux4gOtpInput (Disabled State)"
+  title="Ux4gOtpInput (Locked State)"
   category="Jetpack Compose"
-  code={`Ux4gOtpInput(
-    value = "",
-    onValueChange = {},
+  code={`var otp5 by remember { mutableStateOf("") }
+
+Ux4gOtpInput(
+    value = otp5,
+    onValueChange = { otp5 = it },
     label = "Label",
     length = 6,
-    enabled = false,
-    caption = "Enter 6-digit OTP sent to your registered mobile"
+    status = Ux4gOtpInputStatus.Locked, // Gray/Disabled background & disabled touch
+    captionVariant = Ux4gOtpCaptionVariant.Locked,
+    captionLeadingText = "Locked for 28:43", // 🔒 Lock icon on left
+    captionTrailingText = "Resend OTP", // Action link on right
+    onCaptionTrailingTap = {
+        // Handle Resend action
+    }
 )`}
 >
   <div className="flex flex-col items-center justify-center py-4">
     <img
       src="/images/components/otp_status_disable.svg"
-      alt="UX4G OTP Input Disabled State Preview"
+      alt="UX4G OTP Input Locked State Preview"
       className="max-w-full h-auto"
     />
   </div>
@@ -158,13 +171,15 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.ux4g.designsystemv1.components.Ux4gOtpInput
-import com.ux4g.designsystemv1.components.inputfield.Ux4gInputFieldStatus
+import com.ux4g.designsystemv1.components.inputfield.Ux4gOtpInput
+import com.ux4g.designsystemv1.components.inputfield.Ux4gOtpInputStatus
+import com.ux4g.designsystemv1.components.inputfield.Ux4gOtpCaptionVariant
 
 @Composable
 fun OtpVerificationScreen() {
     var otp by remember { mutableStateOf("") }
-    var status by remember { mutableStateOf(Ux4gInputFieldStatus.Default) }
+    var status by remember { mutableStateOf(Ux4gOtpInputStatus.Default) }
+    var attemptCount by remember { mutableStateOf(1) }
 
     Column(
         modifier = Modifier
@@ -174,20 +189,34 @@ fun OtpVerificationScreen() {
     ) {
         Ux4gOtpInput(
             value = otp,
-            onValueChange = { 
-                otp = it 
-                if (it.length == 6) {
-                    // Trigger verify API
+            onValueChange = { newOtp ->
+                otp = newOtp
+                if (newOtp.length == 6) {
+                    // Verify OTP via API
+                    if (newOtp == "123456") {
+                        status = Ux4gOtpInputStatus.Success
+                    } else {
+                        status = Ux4gOtpInputStatus.Error
+                        attemptCount++
+                    }
                 }
             },
-            label = "Enter Verification Code",
+            label = "Enter 6-Digit Verification Code",
             length = 6,
             status = status,
-            onComplete = { fullOtp ->
-                verifyOtpApi(fullOtp)
+            captionVariant = when (status) {
+                Ux4gOtpInputStatus.Success -> Ux4gOtpCaptionVariant.Success
+                Ux4gOtpInputStatus.Error -> Ux4gOtpCaptionVariant.AttemptWithTimer
+                Ux4gOtpInputStatus.Locked -> Ux4gOtpCaptionVariant.Locked
+                else -> Ux4gOtpCaptionVariant.ResendTimer
             },
-            onResendClick = {
-                resendOtpApi()
+            captionLeadingText = if (status == Ux4gOtpInputStatus.Error) "Attempt $attemptCount of 3" else null,
+            autoCountdownSeconds = 30,
+            onCaptionTrailingTap = {
+                // Resend OTP API Trigger
+            },
+            onComplete = { fullOtp ->
+                // Complete callback
             }
         )
     }
@@ -198,16 +227,22 @@ fun OtpVerificationScreen() {
 
 <h2><MIcon name="settings" /> Parameters</h2>
 
+### `Ux4gOtpInput` Props
+
 | Prop | Type | Description | Default |
 | :--- | :--- | :--- | :--- |
-| `value` <span className="text-red-500 font-bold">*</span> | `String` | Current OTP string value. | `—` |
-| `onValueChange` <span className="text-red-500 font-bold">*</span> | `(String) -> Unit` | Callback invoked on each digit change. | `—` |
-| `label` | `String?` | Header title label above OTP boxes. | `null` |
-| `length` | `Int` | Number of OTP digit boxes (typically 4 or 6). | `6` |
-| `status` | `Ux4gInputFieldStatus` | Status state (`Default`, `Success`, `Error`, `Warning`). | `Ux4gInputFieldStatus.Default` |
-| `caption` | `String?` | Helper, error, or timer caption text below boxes. | `null` |
-| `onComplete` | `((String) -> Unit)?` | Fires automatically when citizen enters all digits. | `null` |
-| `onResendClick` | `(() -> Unit)?` | Resend OTP action trigger callback. | `null` |
-| `enabled` | `Boolean` | Interactive enabled state. | `true` |
-| `modifier` | `Modifier` | Compose layout modifier. | `Modifier` |
-
+| `value` <span className="text-red-500 font-bold">*</span> | `String` | Current OTP string entered by the citizen. | `—` |
+| `onValueChange` <span className="text-red-500 font-bold">*</span> | `(String) -> Unit` | Callback invoked on each digit input or deletion. | `—` |
+| `label` | `String?` | Header title label displayed above the digit boxes. | `null` |
+| `length` | `Int` | Number of OTP digit boxes (typically `4` or `6`). | `6` |
+| `status` | `Ux4gOtpInputStatus` | Border and surface validation status: `Default`, `Focused`, `Success`, `Warning`, `Error`, `Locked`. | `Ux4gOtpInputStatus.Default` |
+| `captionVariant` | `Ux4gOtpCaptionVariant` | Pre-built caption footer variant: `ResendTimer`, `ResendAction`, `AttemptWithTimer`, `Locked`, `Success`, `Warning`, `Plain`. | `Ux4gOtpCaptionVariant.Plain` |
+| `captionText` | `String?` | Custom plain caption text string (for `.Plain` or `.Success` variants). | `null` |
+| `captionLeadingText` | `String?` | Left-aligned caption text (e.g. `"Attempt 2 of 3"` or `"Locked for 28:43"`). | `null` |
+| `captionTrailingText` | `String?` | Right-aligned caption text (e.g. `"Resend in 00:17"` or `"Resend OTP"`). | `null` |
+| `autoCountdownSeconds` | `Int?` | Built-in auto-decrementing timer seconds (e.g. `17` -> `00:17`). | `null` |
+| `onCaptionTrailingTap` | `(() -> Unit)?` | Tap action trigger for the trailing resend button or link. | `null` |
+| `onComplete` | `((String) -> Unit)?` | Callback triggered automatically when all digits are filled. | `null` |
+| `obscure` | `Boolean` | Obscures entered digits with bullets (`•`) for password/PIN modes. | `false` |
+| `enabled` | `Boolean` | Interactive state. Disables digit editing and touch events when `false`. | `true` |
+| `modifier` | `Modifier` | Compose layout modifier applied to the outer container. | `Modifier` |
