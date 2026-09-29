@@ -5,30 +5,146 @@ description: Auto-advancing 4/6-digit verification code input boxes with timer, 
 
 # OTP Input (`Ux4gOtpInput`)
 
-Auto-advancing 4/6-digit verification code input boxes with timer, paste handling, and resend action.
+Auto-advancing 4/6-digit verification code input boxes with label, validation status states (Default, Success, Error, Disabled), timer countdown, paste handling, and resend action.
 
 Import from `com.ux4g.designsystemv1.components.Ux4gOtpInput`.
 
 ---
 
-<h2><MIcon name="smartphone" /> Interactive Preview</h2>
+<h2><MIcon name="smartphone" /> Interactive Previews</h2>
+
+### 1. Default OTP Input
+
+Standard standalone 6-digit OTP verification boxes.
 
 <ComponentPreview
-  title="Ux4gOtpInput"
+  title="Ux4gOtpInput (Default)"
   category="Jetpack Compose"
-  code={`Ux4gOtpInput(
+  code={`var otpValue by remember { mutableStateOf("") }
+
+Ux4gOtpInput(
+    value = otpValue,
+    onValueChange = { otpValue = it },
     length = 6,
-    otpValue = otp,
-    onOtpChange = { otp = it },
-    onComplete = { code -> /* Trigger OTP verify API */ },
-    onResendClick = { /* Send new SMS OTP */ }
+    onComplete = { code -> /* Trigger OTP verify API */ }
 )`}
 >
-  <div className="flex flex-col items-center justify-center py-2">
+  <div className="flex flex-col items-center justify-center py-4">
     <img
-      src="/images/components/otp-input_preview.png"
+      src="/images/components/otp_boxes_wrapper.svg"
       alt="UX4G OTP Input Preview"
-      className="max-w-full rounded-xl border border-border/60 shadow-sm"
+      className="max-w-full h-auto"
+    />
+  </div>
+</ComponentPreview>
+
+---
+
+### 2. OTP with Label
+
+OTP input with header label, active box focus, and resend countdown caption.
+
+<ComponentPreview
+  title="Ux4gOtpInput (With Label)"
+  category="Jetpack Compose"
+  code={`var otpValue by remember { mutableStateOf("") }
+
+Ux4gOtpInput(
+    value = otpValue,
+    onValueChange = { otpValue = it },
+    label = "Label",
+    length = 6,
+    caption = "Didn't receive OTP? Resend in 00:17",
+    onResendClick = { /* Handle Resend */ }
+)`}
+>
+  <div className="flex flex-col items-center justify-center py-4">
+    <img
+      src="/images/components/otp_status_default.svg"
+      alt="UX4G OTP Input with Label Preview"
+      className="max-w-full h-auto"
+    />
+  </div>
+</ComponentPreview>
+
+---
+
+### 3. Success State
+
+Valid OTP input showing success green indicators and confirmation message.
+
+<ComponentPreview
+  title="Ux4gOtpInput (Success State)"
+  category="Jetpack Compose"
+  code={`Ux4gOtpInput(
+    value = "555555",
+    onValueChange = {},
+    label = "Label",
+    length = 6,
+    status = Ux4gInputFieldStatus.Success,
+    caption = "OTP Verified Successfully"
+)`}
+>
+  <div className="flex flex-col items-center justify-center py-4">
+    <img
+      src="/images/components/otp_status_success.svg"
+      alt="UX4G OTP Input Success State Preview"
+      className="max-w-full h-auto"
+    />
+  </div>
+</ComponentPreview>
+
+---
+
+### 4. Error State
+
+Error state displaying validation warning outline, alert icon, attempt count, and resend action.
+
+<ComponentPreview
+  title="Ux4gOtpInput (Error State)"
+  category="Jetpack Compose"
+  code={`Ux4gOtpInput(
+    value = "555555",
+    onValueChange = {},
+    label = "Label",
+    length = 6,
+    status = Ux4gInputFieldStatus.Error,
+    caption = "Attempt 03 of 03. Resend OTP in 00:17",
+    onResendClick = { /* Resend OTP API */ }
+)`}
+>
+  <div className="flex flex-col items-center justify-center py-4">
+    <img
+      src="/images/components/otp_status_error.svg"
+      alt="UX4G OTP Input Error State Preview"
+      className="max-w-full h-auto"
+    />
+  </div>
+</ComponentPreview>
+
+---
+
+### 5. Disabled State
+
+Disabled OTP input with locked state indicator preventing user interaction.
+
+<ComponentPreview
+  title="Ux4gOtpInput (Disabled State)"
+  category="Jetpack Compose"
+  code={`Ux4gOtpInput(
+    value = "",
+    onValueChange = {},
+    label = "Label",
+    length = 6,
+    enabled = false,
+    caption = "Enter 6-digit OTP sent to your registered mobile"
+)`}
+>
+  <div className="flex flex-col items-center justify-center py-4">
+    <img
+      src="/images/components/otp_status_disable.svg"
+      alt="UX4G OTP Input Disabled State Preview"
+      className="max-w-full h-auto"
     />
   </div>
 </ComponentPreview>
@@ -38,21 +154,43 @@ Import from `com.ux4g.designsystemv1.components.Ux4gOtpInput`.
 <h2><MIcon name="code" /> Kotlin Usage</h2>
 
 ```kotlin title="Compose Example"
+import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import com.ux4g.designsystemv1.components.Ux4gOtpInput
+import com.ux4g.designsystemv1.components.inputfield.Ux4gInputFieldStatus
 
 @Composable
 fun OtpVerificationScreen() {
     var otp by remember { mutableStateOf("") }
+    var status by remember { mutableStateOf(Ux4gInputFieldStatus.Default) }
 
-    Ux4gOtpInput(
-        length = 6,
-        otpValue = otp,
-        onOtpChange = { otp = it },
-        onComplete = { fullOtp ->
-            verifyOtpApi(fullOtp)
-        }
-    )
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
+        Ux4gOtpInput(
+            value = otp,
+            onValueChange = { 
+                otp = it 
+                if (it.length == 6) {
+                    // Trigger verify API
+                }
+            },
+            label = "Enter Verification Code",
+            length = 6,
+            status = status,
+            onComplete = { fullOtp ->
+                verifyOtpApi(fullOtp)
+            },
+            onResendClick = {
+                resendOtpApi()
+            }
+        )
+    }
 }
 ```
 
@@ -62,13 +200,14 @@ fun OtpVerificationScreen() {
 
 | Prop | Type | Description | Default |
 | :--- | :--- | :--- | :--- |
-| `otpValue` <span className="text-red-500 font-bold">*</span> | `String` | Current OTP string value. | `—` |
-| `onOtpChange` <span className="text-red-500 font-bold">*</span> | `(String) -> Unit` | Callback invoked on each digit change. | `—` |
+| `value` <span className="text-red-500 font-bold">*</span> | `String` | Current OTP string value. | `—` |
+| `onValueChange` <span className="text-red-500 font-bold">*</span> | `(String) -> Unit` | Callback invoked on each digit change. | `—` |
+| `label` | `String?` | Header title label above OTP boxes. | `null` |
 | `length` | `Int` | Number of OTP digit boxes (typically 4 or 6). | `6` |
+| `status` | `Ux4gInputFieldStatus` | Status state (`Default`, `Success`, `Error`, `Warning`). | `Ux4gInputFieldStatus.Default` |
+| `caption` | `String?` | Helper, error, or timer caption text below boxes. | `null` |
 | `onComplete` | `((String) -> Unit)?` | Fires automatically when citizen enters all digits. | `null` |
 | `onResendClick` | `(() -> Unit)?` | Resend OTP action trigger callback. | `null` |
-| `isError` | `Boolean` | Highlights digit boxes in error red outline. | `false` |
-| `errorMessage` | `String?` | Error description text below boxes. | `null` |
 | `enabled` | `Boolean` | Interactive enabled state. | `true` |
 | `modifier` | `Modifier` | Compose layout modifier. | `Modifier` |
 
