@@ -53,7 +53,40 @@ Ux4gStepper(
 
 ---
 
-### 2. Horizontal Stepper (Bottom Line)
+### 2. Horizontal Stepper (Error State)
+
+Horizontal stepper displaying a validation error state on a previously completed step with an exclamation indicator and red review prompt.
+
+<ComponentPreview
+  title="Ux4gStepper (Horizontal with Error State)"
+  category="Jetpack Compose"
+  code={`val steps = listOf(
+    Ux4gStepItem(title = "Personal", statusLabel = "Completed"),
+    Ux4gStepItem(title = "Address", description = "Needs review", isError = true),
+    Ux4gStepItem(title = "Documents"),
+    Ux4gStepItem(title = "Review")
+)
+
+Ux4gStepper(
+    totalSteps = 4,
+    currentStep = 3,
+    steps = steps,
+    orientation = StepperOrientation.Horizontal,
+    linePlacement = StepperLinePlacement.Center
+)`}
+>
+  <div className="flex flex-col items-center justify-center py-2">
+    <img
+      src="/images/components/stepper_horizontal_error_preview.png"
+      alt="UX4G Horizontal Stepper with Error State Preview"
+      className="max-w-full rounded-xl border border-border/60 shadow-sm"
+    />
+  </div>
+</ComponentPreview>
+
+---
+
+### 3. Horizontal Stepper (Bottom Line)
 
 Horizontal stepper variant where the continuous progress indicator line runs beneath the step labels and descriptions.
 
@@ -86,7 +119,7 @@ Ux4gStepper(
 
 ---
 
-### 3. Vertical Stepper
+### 4. Vertical Stepper
 
 Vertical layout ideal for side navigation rails, long multi-section citizen applications, and mobile forms.
 
@@ -119,7 +152,7 @@ Ux4gStepper(
 
 ---
 
-### 4. Compact Stepper (Linear)
+### 5. Compact Stepper (Linear)
 
 Compact capsule stepper with previous/next navigation buttons flanking the top pill row, and left-aligned step counter and descriptions.
 
@@ -149,7 +182,7 @@ Ux4gCompactStepper(
 
 ---
 
-### 5. Compact Stepper (Right Aligned)
+### 6. Compact Stepper (Right Aligned)
 
 Compact capsule stepper variant where the step title and description are aligned to the right, balanced against the step count on the left.
 
@@ -179,7 +212,7 @@ Ux4gCompactStepper(
 
 ---
 
-### 6. Compact Stepper (Centered Split)
+### 7. Compact Stepper (Centered Split)
 
 Centered compact stepper with top progress capsules, middle step count, and centered title/description flanked by circular navigation buttons.
 
