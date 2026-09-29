@@ -48,7 +48,34 @@ Ux4gSwitch(
 
 ---
 
-### 2. Toggle Switch with Label
+### 2. Enabled Toggle Switch (On / Checked)
+
+Standalone switch in the active/checked state with colored track and right-aligned thumb.
+
+<ComponentPreview
+  title="Ux4gSwitch - Enabled Standalone"
+  category="Jetpack Compose"
+  code={`var isChecked by remember { mutableStateOf(true) }
+
+Ux4gSwitch(
+    checked = isChecked,
+    onCheckedChange = { isChecked = it },
+    labelPosition = Ux4gSwitchLabelPosition.NoLabel,
+    size = Ux4gSwitchSize.M
+)`}
+>
+  <div className="flex flex-col items-center justify-center py-4">
+    <img
+      src="/images/components/toggle_enable.svg"
+      alt="UX4G Enabled Standalone Toggle Switch Preview"
+      className="max-w-full h-auto"
+    />
+  </div>
+</ComponentPreview>
+
+---
+
+### 3. Toggle Switch with Label
 
 Toggle switch paired with field label text, required asterisk (`*`), and informative trailing icon.
 
