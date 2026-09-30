@@ -21,6 +21,7 @@ function Table(props: React.ComponentProps<'table'>) {
 export function getMDXComponents(components?: MDXComponents) {
   return {
     ...defaultMdxComponents,
+    h1: () => null,
     table: Table,
     ComponentPreview,
     ColorPalette,

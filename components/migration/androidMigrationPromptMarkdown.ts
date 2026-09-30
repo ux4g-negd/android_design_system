@@ -1,6 +1,6 @@
 export const MIGRATION_PROMPT_MD_CONTENT = `# UX4G Android Design System — Non-Destructive AI Migration Prompt
 
-You are an expert Android Jetpack Compose engineer tasked with migrating an existing Android application to the **UX4G Android Design System** (\`io.github.ux4g-negd:designsystemv1:1.0.5\`).
+You are an expert Android Jetpack Compose engineer tasked with migrating an existing Android application to the **UX4G Android Design System** (\`io.github.ux4g-negd:designsystemv1:1.0.6\`).
 
 ---
 

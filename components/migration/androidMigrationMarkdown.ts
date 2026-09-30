@@ -39,7 +39,7 @@ Add the official UX4G Android Compose artifact to your \`app/build.gradle.kts\`:
 \`\`\`kotlin
 dependencies {
     // UX4G Android Design System
-    implementation("io.github.ux4g-negd:designsystemv1:1.0.5")
+    implementation("io.github.ux4g-negd:designsystemv1:1.0.6")
     
     // Jetpack Compose BOM
     implementation(platform("androidx.compose:compose-bom:2024.09.00"))

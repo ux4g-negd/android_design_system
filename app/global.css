@@ -469,3 +469,13 @@ table th code {
   margin: 0.1rem 0 !important;
 }
 
+/* ── Accessible Code Comment Text Contrast in Dark Mode (WCAG AA 5.7:1) ── */
+.dark pre code span[style*="--shiki-dark:#6A737D"],
+.dark pre code span[style*="--shiki-dark: #6A737D"],
+.dark [data-theme="dark"] pre code span[style*="--shiki-dark:#6A737D"],
+.dark pre span[style*="--shiki-dark:#6A737D"],
+.dark figure pre code span[style*="#6A737D"] {
+  color: #9CA3AF !important;
+}
+
+
