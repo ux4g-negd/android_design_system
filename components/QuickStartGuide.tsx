@@ -40,17 +40,21 @@ export function StepCard({
   return (
     <div className="relative rounded-2xl border border-border/60 bg-card overflow-hidden shadow-xs hover:shadow-md hover:border-indigo-400/30 dark:hover:border-indigo-500/30 transition-all duration-200 my-4">
       {/* Header strip */}
-      <div className="px-5 py-4 bg-gradient-to-r from-slate-50/80 via-white to-indigo-50/30 dark:from-slate-900/60 dark:via-slate-900/40 dark:to-indigo-950/20 border-b border-border/40 flex items-center gap-3.5">
+      <div className="px-5 py-4 bg-gradient-to-r from-slate-50/80 via-white to-indigo-50/30 dark:from-slate-900/60 dark:via-slate-900/40 dark:to-indigo-950/20 border-b border-border/40 flex items-center gap-3.5 not-prose">
         <div className="flex items-center justify-center w-9 h-9 rounded-xl bg-indigo-600 dark:bg-indigo-500 text-white font-bold text-sm shadow-sm shrink-0">
           {step}
         </div>
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2">
-            <Icon className="w-4 h-4 text-indigo-600 dark:text-indigo-400 shrink-0" />
-            <h3 className="text-base font-bold text-foreground m-0">{title}</h3>
+            <span className="flex items-center justify-center shrink-0">
+              <Icon className="w-4 h-4 text-indigo-600 dark:text-indigo-400" />
+            </span>
+            <span className="text-base font-bold text-foreground leading-snug !m-0 !p-0">
+              {title}
+            </span>
           </div>
           {description && (
-            <p className="text-xs text-muted-foreground mt-0.5 m-0">{description}</p>
+            <p className="text-xs text-muted-foreground mt-0.5 !mb-0 leading-normal">{description}</p>
           )}
         </div>
       </div>
@@ -65,7 +69,7 @@ export function StepCard({
 /* ─── Prerequisites grid ─── */
 export function PrerequisitesGrid() {
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 not-prose">
       <PrereqPill icon={Terminal} label="Android Studio" value="Ladybug / Meerkat+" />
       <PrereqPill icon={Box} label="Min SDK" value="26 (Android 8.0 Oreo)" />
       <PrereqPill icon={Layers} label="Target / Compile SDK" value="35" />
@@ -78,11 +82,13 @@ export function PrerequisitesGrid() {
 /* ─── Info callout ─── */
 export function InfoCallout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="flex items-start gap-2 px-3 py-2.5 rounded-xl bg-indigo-50/60 dark:bg-indigo-950/30 border border-indigo-200/40 dark:border-indigo-800/30 my-3">
-      <Sparkles className="w-4 h-4 text-indigo-500 dark:text-indigo-400 mt-0.5 shrink-0" />
-      <p className="text-xs text-indigo-700 dark:text-indigo-300 m-0">
+    <div className="flex items-center gap-2.5 px-3.5 py-2.5 rounded-xl bg-indigo-50/60 dark:bg-indigo-950/30 border border-indigo-200/40 dark:border-indigo-800/30 my-3 not-prose">
+      <span className="flex items-center justify-center shrink-0">
+        <Sparkles className="w-4 h-4 text-indigo-500 dark:text-indigo-400" />
+      </span>
+      <div className="text-xs text-indigo-700 dark:text-indigo-300 [&>p]:!m-0 leading-normal">
         {children}
-      </p>
+      </div>
     </div>
   );
 }

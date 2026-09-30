@@ -1,5 +1,5 @@
 import type { BaseLayoutProps } from 'fumadocs-ui/layouts/shared';
-import { gitConfig } from './shared';
+import { ThemeToggle } from '@/components/ThemeToggle';
 
 export function baseOptions(): BaseLayoutProps {
   return {
@@ -15,8 +15,16 @@ export function baseOptions(): BaseLayoutProps {
         </div>
       ),
       transparentMode: 'top',
+      children: (
+        <div className="flex items-center justify-end gap-1.5 ml-auto">
+          <ThemeToggle />
+        </div>
+      ),
+    },
+    themeSwitch: {
+      enabled: false,
     },
     links: [],
-    githubUrl: `https://github.com/${gitConfig.user}/${gitConfig.repo}`,
   };
 }
+

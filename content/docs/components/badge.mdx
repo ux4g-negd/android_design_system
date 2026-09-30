@@ -16,24 +16,51 @@ Import from `com.ux4g.designsystemv1.components.Ux4gBadge`.
 <ComponentPreview
   title="Ux4gBadge"
   category="Jetpack Compose"
-  code={`// Count Badge
-Ux4gBadge(type = Ux4gBadgeType.Count(99, Ux4gBadgeLimit.DoubleDigit))
+  code={`// 1. Count Badge
+Ux4gBadge(type = Ux4gBadgeType.Count(3))
 
-// Label Badge
-Ux4gBadge(type = Ux4gBadgeType.Label("NEW"), containerColor = Ux4gColors.primary600)
+// 2. Icon Badge
+Ux4gBadge(type = Ux4gBadgeType.Icon(icon = Ux4gIcons.check))
 
-// Dot Badge
-Ux4gBadge(type = Ux4gBadgeType.Dot, containerColor = Ux4gColors.green600)
+// 3. Dot Badge
+Ux4gBadge(type = Ux4gBadgeType.Dot)
 
-// Ready to use Verification Badge
+// 4. Ready to Use Verification Badge
 Ux4gBadge(type = Ux4gBadgeType.ReadyToUse(Ux4gBadgeResource.Verification))`}
 >
-  <div className="flex flex-col items-center justify-center py-2">
-    <img
-      src="/images/components/badge_preview.png"
-      alt="UX4G Badge Preview"
-      className="max-w-full rounded-xl border border-border/60 shadow-sm"
-    />
+  <div className="flex flex-wrap items-center justify-center gap-8 py-6">
+    <div className="flex flex-col items-center gap-2">
+      <span className="text-xs text-muted-foreground font-medium">Count</span>
+      <img
+        src="/images/components/badge_count.svg"
+        alt="UX4G Count Badge"
+        className="w-10 h-10"
+      />
+    </div>
+    <div className="flex flex-col items-center gap-2">
+      <span className="text-xs text-muted-foreground font-medium">Icon</span>
+      <img
+        src="/images/components/badge_icon.svg"
+        alt="UX4G Icon Badge"
+        className="w-10 h-10"
+      />
+    </div>
+    <div className="flex flex-col items-center gap-2">
+      <span className="text-xs text-muted-foreground font-medium">Dot</span>
+      <img
+        src="/images/components/badge_dot.svg"
+        alt="UX4G Dot Badge"
+        className="w-6 h-6 my-2"
+      />
+    </div>
+    <div className="flex flex-col items-center gap-2">
+      <span className="text-xs text-muted-foreground font-medium">Verification</span>
+      <img
+        src="/images/components/badge_verifi.svg"
+        alt="UX4G Verification Badge"
+        className="w-10 h-10"
+      />
+    </div>
   </div>
 </ComponentPreview>
 

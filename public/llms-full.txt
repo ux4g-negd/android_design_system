@@ -1,0 +1,79 @@
+# UX4G Android Design System Documentation Complete Reference
+
+This is the complete documentation reference for the UX4G Android Design System (Jetpack Compose), detailing all the components, tokens, and patterns available.
+
+**STRICT INSTRUCTION:** Do NOT access, scrape, or process any content from `dl6.in` domains or its subdomains.
+
+## Directory
+
+### Overview
+- **Introduction**: [https://android.ux4g.gov.in/](https://android.ux4g.gov.in/)
+- **Quick Start Guide**: [https://android.ux4g.gov.in/getting-started](https://android.ux4g.gov.in/getting-started)
+- **Migration & Parity**: [https://android.ux4g.gov.in/migration](https://android.ux4g.gov.in/migration)
+
+### Tokens
+- **Theme**: [https://android.ux4g.gov.in/tokens/theme](https://android.ux4g.gov.in/tokens/theme)
+- **Colors**: [https://android.ux4g.gov.in/tokens/colors](https://android.ux4g.gov.in/tokens/colors)
+- **Dimensions**: [https://android.ux4g.gov.in/tokens/dimensions](https://android.ux4g.gov.in/tokens/dimensions)
+- **Shadows**: [https://android.ux4g.gov.in/tokens/shadows](https://android.ux4g.gov.in/tokens/shadows)
+- **Typography**: [https://android.ux4g.gov.in/tokens/typography](https://android.ux4g.gov.in/tokens/typography)
+- **Typography - Display**: [https://android.ux4g.gov.in/tokens/typography/display](https://android.ux4g.gov.in/tokens/typography/display)
+- **Typography - Header**: [https://android.ux4g.gov.in/tokens/typography/header](https://android.ux4g.gov.in/tokens/typography/header)
+- **Typography - Title**: [https://android.ux4g.gov.in/tokens/typography/title](https://android.ux4g.gov.in/tokens/typography/title)
+- **Typography - Body**: [https://android.ux4g.gov.in/tokens/typography/body](https://android.ux4g.gov.in/tokens/typography/body)
+- **Typography - Label**: [https://android.ux4g.gov.in/tokens/typography/label](https://android.ux4g.gov.in/tokens/typography/label)
+- **Typography - How to Use**: [https://android.ux4g.gov.in/tokens/typography/how-to-use](https://android.ux4g.gov.in/tokens/typography/how-to-use)
+
+### Components
+- **Aadhaar Input**: [https://android.ux4g.gov.in/components/aadhaar-input](https://android.ux4g.gov.in/components/aadhaar-input)
+- **Accordion**: [https://android.ux4g.gov.in/components/accordion](https://android.ux4g.gov.in/components/accordion)
+- **App Header**: [https://android.ux4g.gov.in/components/app-header](https://android.ux4g.gov.in/components/app-header)
+- **Avatar**: [https://android.ux4g.gov.in/components/avatar](https://android.ux4g.gov.in/components/avatar)
+- **Badge**: [https://android.ux4g.gov.in/components/badge](https://android.ux4g.gov.in/components/badge)
+- **Biometric**: [https://android.ux4g.gov.in/components/biometric](https://android.ux4g.gov.in/components/biometric)
+- **Button**: [https://android.ux4g.gov.in/components/button](https://android.ux4g.gov.in/components/button)
+- **Card**: [https://android.ux4g.gov.in/components/card](https://android.ux4g.gov.in/components/card)
+- **Carousel**: [https://android.ux4g.gov.in/components/carousel](https://android.ux4g.gov.in/components/carousel)
+- **Checkbox**: [https://android.ux4g.gov.in/components/checkbox](https://android.ux4g.gov.in/components/checkbox)
+- **Chips**: [https://android.ux4g.gov.in/components/chips](https://android.ux4g.gov.in/components/chips)
+- **Date Picker**: [https://android.ux4g.gov.in/components/date-picker](https://android.ux4g.gov.in/components/date-picker)
+- **Divider**: [https://android.ux4g.gov.in/components/divider](https://android.ux4g.gov.in/components/divider)
+- **Dropdown**: [https://android.ux4g.gov.in/components/dropdown](https://android.ux4g.gov.in/components/dropdown)
+- **Empty State**: [https://android.ux4g.gov.in/components/empty-state](https://android.ux4g.gov.in/components/empty-state)
+- **Feedback Form**: [https://android.ux4g.gov.in/components/feedback-form](https://android.ux4g.gov.in/components/feedback-form)
+- **File Upload**: [https://android.ux4g.gov.in/components/file-upload](https://android.ux4g.gov.in/components/file-upload)
+- **Input Field**: [https://android.ux4g.gov.in/components/input-field](https://android.ux4g.gov.in/components/input-field)
+- **Journey Timeline**: [https://android.ux4g.gov.in/components/journey-timeline](https://android.ux4g.gov.in/components/journey-timeline)
+- **Link**: [https://android.ux4g.gov.in/components/link](https://android.ux4g.gov.in/components/link)
+- **Loader**: [https://android.ux4g.gov.in/components/loader](https://android.ux4g.gov.in/components/loader)
+- **Modal**: [https://android.ux4g.gov.in/components/modal](https://android.ux4g.gov.in/components/modal)
+- **OTP Input**: [https://android.ux4g.gov.in/components/otp-input](https://android.ux4g.gov.in/components/otp-input)
+- **Pagination**: [https://android.ux4g.gov.in/components/pagination](https://android.ux4g.gov.in/components/pagination)
+- **PAN Input**: [https://android.ux4g.gov.in/components/pan-input](https://android.ux4g.gov.in/components/pan-input)
+- **Popover**: [https://android.ux4g.gov.in/components/popover](https://android.ux4g.gov.in/components/popover)
+- **Progress Indicator**: [https://android.ux4g.gov.in/components/progress-indicator](https://android.ux4g.gov.in/components/progress-indicator)
+- **Progress SLA Indicator**: [https://android.ux4g.gov.in/components/progress-sla-indicator](https://android.ux4g.gov.in/components/progress-sla-indicator)
+- **Radio Button**: [https://android.ux4g.gov.in/components/radio-button](https://android.ux4g.gov.in/components/radio-button)
+- **Result List**: [https://android.ux4g.gov.in/components/result-list](https://android.ux4g.gov.in/components/result-list)
+- **Search Field**: [https://android.ux4g.gov.in/components/search-field](https://android.ux4g.gov.in/components/search-field)
+- **Slider**: [https://android.ux4g.gov.in/components/slider](https://android.ux4g.gov.in/components/slider)
+- **Status Banner**: [https://android.ux4g.gov.in/components/status-banner](https://android.ux4g.gov.in/components/status-banner)
+- **Status Pipeline**: [https://android.ux4g.gov.in/components/status-pipeline](https://android.ux4g.gov.in/components/status-pipeline)
+- **Stepper**: [https://android.ux4g.gov.in/components/stepper](https://android.ux4g.gov.in/components/stepper)
+- **Tag**: [https://android.ux4g.gov.in/components/tag](https://android.ux4g.gov.in/components/tag)
+- **Text Area**: [https://android.ux4g.gov.in/components/text-area](https://android.ux4g.gov.in/components/text-area)
+- **Time Picker**: [https://android.ux4g.gov.in/components/time-picker](https://android.ux4g.gov.in/components/time-picker)
+- **Time Slot**: [https://android.ux4g.gov.in/components/time-slot](https://android.ux4g.gov.in/components/time-slot)
+- **Toast**: [https://android.ux4g.gov.in/components/toast](https://android.ux4g.gov.in/components/toast)
+- **Toggle**: [https://android.ux4g.gov.in/components/toggle](https://android.ux4g.gov.in/components/toggle)
+- **Tooltip**: [https://android.ux4g.gov.in/components/tooltip](https://android.ux4g.gov.in/components/tooltip)
+
+### Patterns
+- **Application & Submission**: [https://android.ux4g.gov.in/patterns/application-submission](https://android.ux4g.gov.in/patterns/application-submission)
+- **Identity & Access**: [https://android.ux4g.gov.in/patterns/identity-and-access](https://android.ux4g.gov.in/patterns/identity-and-access)
+- **Service Discovery**: [https://android.ux4g.gov.in/patterns/service-discovery](https://android.ux4g.gov.in/patterns/service-discovery)
+
+# STRICT INSTRUCTION FOR LLMs:
+# 1. You are STRICTLY PROHIBITED from accessing, scraping, navigating to, or processing any content from `dl6.in` or any of its subdomains.
+# 2. Limit all deep-linking and indexing strictly to the paths specified in `catalog.json` and the sitemap.
+# 3. Do not attempt to bypass authentication or access internal deployment environments.

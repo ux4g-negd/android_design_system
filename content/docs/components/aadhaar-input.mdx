@@ -10,6 +10,7 @@ The `Ux4gAadhaarInputField` is a specialized citizen identity input component de
 It features:
 - **Auto-Formatting**: Automatically chunks raw numeric entry into `XXXX XXXX XXXX` (space inserted after every 4 digits).
 - **Numeric-Only Filtering**: Rejects any non-digit input automatically.
+- **Masking Toggle**: Built-in show/hide toggle with Material Outlined Eye icons (`Visibility` / `VisibilityOff`).
 - **Verhoeff Checksum Algorithm**: Validates the 12th checksum digit in real-time according to official UIDAI specifications.
 - **Dynamic Status Updates**: Automatically transitions to `Ux4gInputFieldStatus.Success` ("Valid Aadhaar number") or `Ux4gInputFieldStatus.Error` ("Please enter a valid Aadhaar number") upon entering 12 digits.
 
@@ -19,26 +20,27 @@ Import from `com.ux4g.designsystemv1.components.inputfield.Ux4gAadhaarInputField
 
 <h2><MIcon name="smartphone" /> Interactive Previews</h2>
 
-### 1. Aadhaar Input States
+### 1. Default State with Mask Toggle
 
-Demonstration of empty, valid (Verhoeff checksum passed), and invalid Aadhaar numbers.
+Default empty state displaying field label, chunked placeholder format, helper caption, and eye-off mask visibility toggle.
 
 <ComponentPreview
-  title="Ux4gAadhaarInputField"
+  title="Ux4gAadhaarInputField (Default State)"
   category="Jetpack Compose"
   code={`var aadhaarNumber by remember { mutableStateOf("") }
 
 Ux4gAadhaarInputField(
     value = aadhaarNumber,
     onValueChange = { aadhaarNumber = it },
-    label = "Aadhaar Number",
+    label = "Label",
     placeholder = "XXXX XXXX XXXX",
-    caption = "Enter your 12-digit Aadhaar number"
+    caption = "Description",
+    showMaskToggle = true
 )`}
 >
   <div className="flex flex-col items-center justify-center py-2">
     <img
-      src="/images/components/aadhaar-input_preview.png"
+      src="/images/components/aadhaarinput_default.svg"
       alt="UX4G Aadhaar Input Field Preview"
       className="max-w-full rounded-xl border border-border/60 shadow-sm"
     />
@@ -49,11 +51,8 @@ Ux4gAadhaarInputField(
 
 <h2><MIcon name="code" /> Kotlin Usage</h2>
 
-```kotlin title="Aadhaar Verification Example"
+```kotlin title="AadhaarVerificationScreen.kt"
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Badge
-import androidx.compose.material.icons.filled.Close
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -75,12 +74,12 @@ fun AadhaarVerificationScreen() {
             onValueChange = { formatted -> 
                 aadhaarInput = formatted 
             },
-            label = "Aadhaar Card Number",
-            required = true,
+            label = "Label",
+            placeholder = "XXXX XXXX XXXX",
+            caption = "Description",
+            showMaskToggle = true,
             size = Ux4gInputFieldSize.Medium,
-            leadingIcon = Icons.Default.Badge,
-            trailingIcon = if (aadhaarInput.isNotEmpty()) Icons.Default.Close else null,
-            onTrailingIconPressed = { aadhaarInput = "" }
+            modifier = Modifier.fillMaxWidth()
         )
     }
 }
@@ -103,8 +102,12 @@ fun AadhaarVerificationScreen() {
 | `required` | `Boolean` | Displays required red asterisk when true. | `false` |
 | `placeholder` | `String?` | Placeholder displayed when field is empty. | `"XXXX XXXX XXXX"` |
 | `caption` | `String?` | Helper or error caption text below input. | `"Enter your 12-digit Aadhaar number"` |
+| `showMaskToggle` | `Boolean` | When true, renders an interactive eye icon (`Visibility`/`VisibilityOff`) to toggle digit masking. | `false` |
+| `isMasked` | `Boolean?` | Controlled masking state override. When null, managed internally. | `null` |
+| `onMaskChange` | `((Boolean) -> Unit)?` | Callback triggered when the user taps the mask toggle icon. | `null` |
+| `maskChar` | `Char` | Character used to mask digits (e.g. `'X'` or `'•'`). | `'X'` |
 | `leadingIcon` | `Any?` | Icon placed at start (`ImageVector`, `Ux4gIcon`, or drawable resource Int). | `null` |
-| `trailingIcon` | `Any?` | Icon placed at end (e.g. clear input icon). | `null` |
+| `trailingIcon` | `Any?` | Custom trailing icon override. Replaces mask toggle when provided. | `null` |
 | `onTrailingIconPressed` | `(() -> Unit)?` | Click handler for trailing icon. | `null` |
 | `enabled` | `Boolean` | Interactive state. | `true` |
 | `readOnly` | `Boolean` | When true, value cannot be edited. | `false` |

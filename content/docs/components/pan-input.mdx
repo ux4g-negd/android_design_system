@@ -19,27 +19,139 @@ Import from `com.ux4g.designsystemv1.components.inputfield.Ux4gPanInputField`.
 
 <h2><MIcon name="smartphone" /> Interactive Previews</h2>
 
-### 1. PAN Card Input States
+### 1. Default State
 
-Demonstration of empty, valid PAN (e.g. `ABCDE1234F`), and invalid PAN entries.
+Standard PAN card input with placeholder, label, and helper caption.
 
 <ComponentPreview
-  title="Ux4gPanInputField"
+  title="Ux4gPanInputField (Default)"
   category="Jetpack Compose"
   code={`var panNumber by remember { mutableStateOf("") }
 
 Ux4gPanInputField(
     value = panNumber,
     onValueChange = { panNumber = it },
-    label = "PAN Card Number",
+    label = "Label",
     placeholder = "ABCDE1234F",
-    caption = "Enter your 10-character PAN number"
+    caption = "Description"
 )`}
 >
   <div className="flex flex-col items-center justify-center py-2">
     <img
-      src="/images/components/pancard-input_preview.png"
-      alt="UX4G PAN Card Input Field Preview"
+      src="/images/components/pancard_default.svg"
+      alt="UX4G PAN Card Input Default State"
+      className="max-w-full rounded-xl border border-border/60 shadow-sm"
+    />
+  </div>
+</ComponentPreview>
+
+---
+
+### 2. Success State
+
+Displays valid 10-character PAN number with green success indicator.
+
+<ComponentPreview
+  title="Ux4gPanInputField (Success)"
+  category="Jetpack Compose"
+  code={`var panNumber by remember { mutableStateOf("ABCDE1234F") }
+
+Ux4gPanInputField(
+    value = panNumber,
+    onValueChange = { panNumber = it },
+    label = "Label",
+    status = Ux4gInputFieldStatus.Success,
+    caption = "Success message"
+)`}
+>
+  <div className="flex flex-col items-center justify-center py-2">
+    <img
+      src="/images/components/pancard_success.svg"
+      alt="UX4G PAN Card Input Success State"
+      className="max-w-full rounded-xl border border-border/60 shadow-sm"
+    />
+  </div>
+</ComponentPreview>
+
+---
+
+### 3. Error State
+
+Displays invalid format alert with red border and error message caption.
+
+<ComponentPreview
+  title="Ux4gPanInputField (Error)"
+  category="Jetpack Compose"
+  code={`var panNumber by remember { mutableStateOf("ABCDE1234F") }
+
+Ux4gPanInputField(
+    value = panNumber,
+    onValueChange = { panNumber = it },
+    label = "Label",
+    status = Ux4gInputFieldStatus.Error,
+    caption = "Error message"
+)`}
+>
+  <div className="flex flex-col items-center justify-center py-2">
+    <img
+      src="/images/components/pancard_error.svg"
+      alt="UX4G PAN Card Input Error State"
+      className="max-w-full rounded-xl border border-border/60 shadow-sm"
+    />
+  </div>
+</ComponentPreview>
+
+---
+
+### 4. Warning State
+
+Displays warning indicator with amber border and warning message caption.
+
+<ComponentPreview
+  title="Ux4gPanInputField (Warning)"
+  category="Jetpack Compose"
+  code={`var panNumber by remember { mutableStateOf("ABCDE1234F") }
+
+Ux4gPanInputField(
+    value = panNumber,
+    onValueChange = { panNumber = it },
+    label = "Label",
+    status = Ux4gInputFieldStatus.Warning,
+    caption = "Warning message"
+)`}
+>
+  <div className="flex flex-col items-center justify-center py-2">
+    <img
+      src="/images/components/pancard_warning.svg"
+      alt="UX4G PAN Card Input Warning State"
+      className="max-w-full rounded-xl border border-border/60 shadow-sm"
+    />
+  </div>
+</ComponentPreview>
+
+---
+
+### 5. Disabled State
+
+Read-only disabled container preventing citizen interaction.
+
+<ComponentPreview
+  title="Ux4gPanInputField (Disabled)"
+  category="Jetpack Compose"
+  code={`var panNumber by remember { mutableStateOf("ABCDE1234F") }
+
+Ux4gPanInputField(
+    value = panNumber,
+    onValueChange = { panNumber = it },
+    label = "Label",
+    caption = "Description",
+    enabled = false
+)`}
+>
+  <div className="flex flex-col items-center justify-center py-2">
+    <img
+      src="/images/components/pancard_disable.svg"
+      alt="UX4G PAN Card Input Disabled State"
       className="max-w-full rounded-xl border border-border/60 shadow-sm"
     />
   </div>

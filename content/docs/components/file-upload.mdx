@@ -5,28 +5,40 @@ description: Document attachment drag/picker zone with file extension checking, 
 
 # File Upload (`Ux4gFileUpload`)
 
-Document attachment drag/picker zone with file extension checking, max file size enforcement, and upload progress.
+The UX4G File Upload component provides an intuitive document attachment dropzone and file management interface for uploading application forms, identity proofs, certificates, and attachments across citizen portals and mobile workflows.
 
-Import from `com.ux4g.designsystemv1.components.Ux4gFileUpload`.
+### Key Capabilities
+
+- **Dual Interaction Modes**: Support for standard file browsing (`Upload`) and camera-based document capture (`Scan`).
+- **File Validation**: Built-in enforcement for permitted file extensions (`PDF`, `JPG`, `PNG`) and maximum file size thresholds (e.g. `5 MB`).
+- **Status & Progress Indicators**: Real-time visual feedback for in-progress uploads with percentage tracking, verified uploads with success badges, and failed uploads with retry actions.
+- **Dynamic List Management**: Seamless handling of single and multi-file attachments with one-tap removal and dynamic "Add More files" actions.
+
+Import from `com.ux4g.designsystemv1.components.fileupload.*`.
 
 ---
 
-<h2><MIcon name="smartphone" /> Interactive Preview</h2>
+<h2><MIcon name="smartphone" /> Interactive Previews</h2>
+
+### 1. Default Dropzone State
+
+Initial upload zone prompting the user to upload or scan documents with allowed formats and file size limits.
 
 <ComponentPreview
-  title="Ux4gFileUpload"
+  title="Ux4gFileUpload (Default Dropzone)"
   category="Jetpack Compose"
   code={`Ux4gFileUpload(
-    label = "Upload Income Certificate",
-    allowedExtensions = listOf("pdf", "jpg", "png"),
+    title = "Upload or scan document",
+    allowedExtensions = listOf("PDF", "JPG", "PNG"),
     maxSizeMb = 5,
-    onFileSelected = { uri -> /* Upload document */ }
+    onUploadClick = { /* Open file picker */ },
+    onScanClick = { /* Launch camera scanner */ }
 )`}
 >
   <div className="flex flex-col items-center justify-center py-2">
     <img
-      src="/images/components/file-upload_preview.png"
-      alt="UX4G File Upload Preview"
+      src="/images/components/fileupload_default.svg"
+      alt="UX4G File Upload Default State"
       className="max-w-full rounded-xl border border-border/60 shadow-sm"
     />
   </div>
@@ -34,21 +46,135 @@ Import from `com.ux4g.designsystemv1.components.Ux4gFileUpload`.
 
 ---
 
+### 2. Single File Uploaded State
+
+Dropzone with an uploaded document card showing the file icon, name, description, verification badge, and an option to add more files.
+
+<ComponentPreview
+  title="Ux4gFileUpload (Single File Uploaded)"
+  category="Jetpack Compose"
+  code={`var uploadedFiles by remember {
+    mutableStateOf(
+        listOf(
+            Ux4gUploadedFile(
+                fileName = "Document_name.pdf",
+                description = "Description",
+                fileType = Ux4gFileType.PDF,
+                status = Ux4gUploadStatus.Success
+            )
+        )
+    )
+}
+
+Ux4gFileUpload(
+    title = "Upload or scan document",
+    allowedExtensions = listOf("PDF", "JPG", "PNG"),
+    maxSizeMb = 5,
+    uploadedFiles = uploadedFiles,
+    onUploadClick = { /* Open file picker */ },
+    onScanClick = { /* Add More files or scan */ },
+    onRemoveFile = { file ->
+        uploadedFiles = uploadedFiles.filter { it != file }
+    }
+)`}
+>
+  <div className="flex flex-col items-center justify-center py-2">
+    <img
+      src="/images/components/fileupload_singlefile_upload.svg"
+      alt="UX4G File Upload Single File State"
+      className="max-w-full rounded-xl border border-border/60 shadow-sm"
+    />
+  </div>
+</ComponentPreview>
+
+---
+
+### 3. Uploaded File Item Statuses Showcase
+
+Visual showcase displaying the different lifecycle states for uploaded documents: in-progress upload with progress indicator, verified success state, and error state with retry action.
+
+<div className="flex flex-col items-center justify-center py-4 my-4 rounded-xl border border-border/60 bg-card p-6 shadow-sm">
+  <img
+    src="/images/components/uploaded_file_type.svg"
+    alt="UX4G Uploaded File Types Showcase"
+    className="max-w-full rounded-xl shadow-sm"
+  />
+</div>
+
+---
+
 <h2><MIcon name="code" /> Kotlin Usage</h2>
 
-```kotlin title="Compose Example"
-import androidx.compose.runtime.Composable
-import com.ux4g.designsystemv1.components.Ux4gFileUpload
+### 1. Document Upload Dropzone with Scanner Integration
+
+```kotlin title="DocumentUploadScreen.kt"
+import androidx.compose.foundation.layout.*
+import androidx.compose.runtime.*
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
+import com.ux4g.designsystemv1.components.fileupload.Ux4gFileUpload
 
 @Composable
-fun DocumentUploadExample() {
+fun DocumentUploadScreen() {
     Ux4gFileUpload(
-        label = "Proof of Residence (PDF / JPG up to 5MB)",
-        allowedExtensions = listOf("pdf", "jpg", "png"),
+        title = "Upload or scan document",
+        allowedExtensions = listOf("PDF", "JPG", "PNG"),
         maxSizeMb = 5,
-        onFileSelected = { fileUri ->
-            // Upload to server
-        }
+        onUploadClick = {
+            // Launch document / media picker
+        },
+        onScanClick = {
+            // Launch scanner activity or camera capture
+        },
+        modifier = Modifier.fillMaxWidth().padding(16.dp)
+    )
+}
+```
+
+---
+
+### 2. Managing Multiple Uploaded Attachments
+
+```kotlin title="MultiDocumentAttachment.kt"
+import androidx.compose.foundation.layout.*
+import androidx.compose.runtime.*
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
+import com.ux4g.designsystemv1.components.fileupload.Ux4gFileUpload
+import com.ux4g.designsystemv1.components.fileupload.Ux4gUploadedFile
+import com.ux4g.designsystemv1.components.fileupload.Ux4gFileType
+import com.ux4g.designsystemv1.components.fileupload.Ux4gUploadStatus
+
+@Composable
+fun MultiDocumentAttachment() {
+    var fileList by remember {
+        mutableStateOf(
+            listOf(
+                Ux4gUploadedFile(
+                    fileName = "Document_name.pdf",
+                    description = "Description",
+                    fileType = Ux4gFileType.PDF,
+                    status = Ux4gUploadStatus.Success
+                )
+            )
+        )
+    }
+
+    Ux4gFileUpload(
+        title = "Upload or scan document",
+        allowedExtensions = listOf("PDF", "JPG", "PNG"),
+        maxSizeMb = 5,
+        uploadedFiles = fileList,
+        onUploadClick = {
+            // Pick and attach additional documents
+        },
+        onScanClick = {
+            // Add more files via camera scan
+        },
+        onRemoveFile = { removedFile ->
+            fileList = fileList.filter { it != removedFile }
+        },
+        modifier = Modifier.fillMaxWidth().padding(16.dp)
     )
 }
 ```
@@ -57,14 +183,16 @@ fun DocumentUploadExample() {
 
 <h2><MIcon name="settings" /> Parameters</h2>
 
-| Prop | Type | Description | Default |
+| Parameter | Type | Description | Default |
 | :--- | :--- | :--- | :--- |
-| `label` <span className="text-red-500 font-bold">*</span> | `String` | Attachment title prompt. | `—` |
-| `onFileSelected` <span className="text-red-500 font-bold">*</span> | `(Uri) -> Unit` | Callback returning picked document Uri. | `—` |
-| `allowedExtensions` | `List<String>` | Permitted file extensions. | `listOf("pdf", "jpg", "png")` |
-| `maxSizeMb` | `Int` | Maximum permissible file size in Megabytes. | `5` |
-| `enabled` | `Boolean` | Interactive enabled state. | `true` |
-| `isError` | `Boolean` | Error state highlighting. | `false` |
-| `errorMessage` | `String?` | Error helper message. | `null` |
-| `modifier` | `Modifier` | Compose layout modifier. | `Modifier` |
+| `title` <span className="text-red-500 font-bold">*</span> | `String` | Header title displayed inside the upload zone. | `"Upload or scan document"` |
+| `allowedExtensions` | `List<String>` | Permitted file format extensions. | `listOf("PDF", "JPG", "PNG")` |
+| `maxSizeMb` | `Int` | Maximum allowable file size per attachment in MB. | `5` |
+| `uploadedFiles` | `List<Ux4gUploadedFile>` | List of currently attached documents with their statuses. | `emptyList()` |
+| `onUploadClick` | `() -> Unit` | Callback triggered when the Upload button is pressed. | `{}` |
+| `onScanClick` | `() -> Unit` | Callback triggered when the Scan / Add More button is pressed. | `{}` |
+| `onRemoveFile` | `((Ux4gUploadedFile) -> Unit)?` | Callback triggered when the remove (X) button is pressed on a file item. | `null` |
+| `onRetryFile` | `((Ux4gUploadedFile) -> Unit)?` | Callback triggered when the retry link is clicked on a failed file item. | `null` |
+| `enabled` | `Boolean` | Controls interactive enabled state of the dropzone. | `true` |
+| `modifier` | `Modifier` | Compose layout modifier applied to the container. | `Modifier` |
 

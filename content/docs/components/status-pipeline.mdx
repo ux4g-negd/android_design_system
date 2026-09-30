@@ -14,7 +14,7 @@ The UX4G Status Pipeline component visualizes sequential checkpoints in administ
 - **Custom States & Colors**: Explicit step overriding for `Error` (failed inspection), `Warning` (clarification requested), custom icons, or tailored status colors.
 - **Preset Sizes**: Three standardized sizes: `S` (20dp circle, 2dp line), `M` (32dp circle, 3dp line), and `L` (40dp circle, 3dp line).
 
-Import from `com.ux4g.designsystemv1.components.*`.
+Import from `com.ux4g.designsystemv1.components.statuspipeline.*`.
 
 ---
 
@@ -95,7 +95,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.ux4g.designsystemv1.components.*
+import com.ux4g.designsystemv1.components.statuspipeline.*
 
 @Composable
 fun ApplicationTrackingPipeline(currentStage: Int) {
@@ -141,7 +141,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.ux4g.designsystemv1.components.*
+import com.ux4g.designsystemv1.components.statuspipeline.*
 
 @Composable
 fun PipelineWithValidationIssues() {

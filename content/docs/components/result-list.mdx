@@ -5,7 +5,7 @@ description: High-density expandable search results, application tracking cards,
 
 # Result List (`Ux4gResultList`)
 
-The UX4G Result List (and its companion alias `Ux4gResultRow`) provides an expandable list item component designed for government service portals, application tracking dashboards, search listings, and grievance monitoring systems.
+The **UX4G Result List** (and its companion alias `Ux4gResultRow`) provides an expandable list item component designed for government service portals, application tracking dashboards, search listings, and grievance monitoring systems.
 
 ### Key Capabilities
 
@@ -14,7 +14,10 @@ The UX4G Result List (and its companion alias `Ux4gResultRow`) provides an expan
 - **Action Buttons**: Built-in outline CTA button with optional leading icons (e.g., "View Details", "Download", "Track Status").
 - **Customizable Layout**: Configurable detail columns, custom trailing icons, title badges, and bottom dividers.
 
-Import from `com.ux4g.designsystemv1.components.*`.
+Import from:
+```kotlin
+import com.ux4g.designsystemv1.components.resultlist.*
+```
 
 ---
 
@@ -63,16 +66,18 @@ The preview below illustrates both the compact **Collapsed** row state and the d
 
 ---
 
-<h2><MIcon name="code" /> Kotlin Usage</h2>
+<h2><MIcon name="code" /> Complete Kotlin Implementation</h2>
 
-### 1. Application Tracking Card
+### 1. Application Tracking Card with Status Tag
 
 ```kotlin title="ApplicationTrackingCard.kt"
 import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.ux4g.designsystemv1.components.*
+import com.ux4g.designsystemv1.components.card.Ux4gCard
+import com.ux4g.designsystemv1.components.resultlist.*
+import com.ux4g.designsystemv1.components.tag.Ux4gTagColor
 import com.ux4g.designsystemv1.foundation.Ux4gColors
 
 @Composable
@@ -101,14 +106,14 @@ fun ApplicationTrackingExample() {
 }
 ```
 
-### 2. Document Download with Verified Badge
+### 2. Document Download Row with Trailing Icon
 
 ```kotlin title="CertificateResultRow.kt"
 import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.ux4g.designsystemv1.components.*
+import com.ux4g.designsystemv1.components.resultlist.*
 import com.ux4g.designsystemv1.foundation.Ux4gColors
 import com.ux4g.designsystemv1.foundation.Ux4gIconComponent
 import com.ux4g.designsystemv1.foundation.Ux4gIcons
@@ -140,17 +145,17 @@ fun VerifiedCertificateRow() {
 
 ---
 
-<h2><MIcon name="settings" /> Parameters</h2>
+<h2><MIcon name="settings" /> Parameters & API Reference</h2>
 
-### `Ux4gResultList` / `Ux4gResultRow` Props
+### 1. `Ux4gResultList` / `Ux4gResultRow` Composable
 
 | Prop | Type | Description | Default |
 | :--- | :--- | :--- | :--- |
 | `title` <span className="text-red-500 font-bold">*</span> | `String` | Primary heading title of the result row item. | `—` |
 | `modifier` | `Modifier` | Compose modifier applied to the outer container. | `Modifier` |
-| `titleTrailing` | `(@Composable () -> Unit)?` | Optional composable trailing the title (e.g. verified icon). | `null` |
+| `titleTrailing` | `(@Composable () -> Unit)?` | Optional composable trailing the title (e.g. verified icon badge). | `null` |
 | `statusTag` | `String?` | Optional status text displayed inside a rectangular tonal `Ux4gTag`. | `null` |
-| `tagColorScheme` | `Ux4gTagColor` | Color scheme for the status tag. | `Ux4gTagColor.Neutral` |
+| `tagColorScheme` | `Ux4gTagColor` | Color scheme for the status tag (`Neutral`, `Success`, `Warning`, `Error`, `Primary`). | `Ux4gTagColor.Neutral` |
 | `metadataSegments` | `List<Ux4gPillSegment>?` | List of metadata pill segments displayed in a unified pill tag. | `null` |
 | `customMetadata` | `(@Composable () -> Unit)?` | Custom composable replacement for metadata tags. | `null` |
 | `actionButtonText` | `String?` | Label text for the outline action button on the right. | `null` |
@@ -158,10 +163,10 @@ fun VerifiedCertificateRow() {
 | `onActionPressed` | `(() -> Unit)?` | Callback invoked when the action button is clicked. | `null` |
 | `actionButtonIcon` | `Ux4gIcon?` | Optional leading icon rendered inside the action button. | `null` |
 | `actionButtonColor` | `Color?` | Custom color override for the action button border and content. | `null` |
-| `details` | `List<Ux4gResultDetail>` | List of detail items rendered in a grid when expanded. | `emptyList()` |
+| `details` | `List<Ux4gResultDetail>` | List of detail key-value items rendered in a grid when expanded. | `emptyList()` |
 | `expandedChild` | `(@Composable () -> Unit)?` | Custom composable placed below the details grid when expanded. | `null` |
 | `detailsColumns` | `Int` | Number of columns for laying out the details grid. | `2` |
-| `initialExpanded` | `Boolean` | Whether the item is expanded by default. | `false` |
+| `initialExpanded` | `Boolean` | Whether the item starts expanded by default. | `false` |
 | `onToggle` | `((Boolean) -> Unit)?` | Callback triggered when the expanded/collapsed state changes. | `null` |
 | `showBottomDivider` | `Boolean` | Whether to render a horizontal divider below the row. | `true` |
 | `contentPadding` | `PaddingValues` | Inner padding for the header and expanded content. | `PaddingValues(16.dp)` |
@@ -169,20 +174,35 @@ fun VerifiedCertificateRow() {
 
 ---
 
-### `Ux4gResultDetail` Props
+### 2. `Ux4gResultDetail` Data Model
 
-| Prop | Type | Description | Default |
+Represents a single metadata cell displayed within the expanded grid.
+
+| Field | Type | Description | Default |
 | :--- | :--- | :--- | :--- |
-| `label` <span className="text-red-500 font-bold">*</span> | `String` | Descriptor title (e.g., `"Application No"`, `"Date"`). | `—` |
-| `value` <span className="text-red-500 font-bold">*</span> | `String` | Value string to display. | `—` |
+| `label` <span className="text-red-500 font-bold">*</span> | `String` | Descriptor title (e.g., `"Application No"`, `"Sanctioned Date"`). | `—` |
+| `value` <span className="text-red-500 font-bold">*</span> | `String` | Value string displayed beneath the label. | `—` |
 | `icon` | `Ux4gIcon?` | Optional icon preceding the value string. | `null` |
-| `valueColor` | `Color?` | Custom text and icon color for this value. | `null` |
+| `valueColor` | `Color?` | Custom text and icon color override for this value. | `null` |
 | `isBold` | `Boolean` | Whether the value text is rendered with bold typography. | `false` |
 | `customValueWidget` | `(@Composable () -> Unit)?` | Custom composable override for the value content. | `null` |
 
 ---
 
-### `Ux4gResultListColors` Reference
+### 3. `Ux4gPillSegment` Data Model
+
+Used inside `metadataSegments` to build composite pill badges.
+
+| Field | Type | Description | Default |
+| :--- | :--- | :--- | :--- |
+| `text` <span className="text-red-500 font-bold">*</span> | `String` | Text content of the individual metadata segment (e.g. `"2 days remaining"`). | `—` |
+| `textColor` | `Color?` | Custom text color override for this segment. | `null` |
+| `bold` | `Boolean` | Renders segment text with bold font weight when `true`. | `false` |
+| `icon` | `Ux4gIcon?` | Optional leading icon preceding the segment text. | `null` |
+
+---
+
+### 4. `Ux4gResultListColors` Reference Guide
 
 | Color Token | Default Light Color | Description |
 | :--- | :--- | :--- |

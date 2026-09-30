@@ -23,12 +23,12 @@ function getWeightTag(fw: string): { label: string; colorClass: string } {
   const lower = fw.toLowerCase();
   // Check SemiBold BEFORE Bold — 'semibold' contains 'bold' as a substring
   if (fw.includes('600') || lower.includes('semibold'))
-    return { label: 'SemiBold', colorClass: 'bg-indigo-50 text-indigo-700 border-indigo-200/60 dark:bg-indigo-950/40 dark:text-indigo-300 dark:border-indigo-800/40' };
+    return { label: 'SemiBold', colorClass: 'bg-indigo-100/90 text-indigo-950 border-indigo-300 dark:bg-indigo-950/60 dark:text-indigo-200 dark:border-indigo-700/60' };
   if (fw.includes('700') || lower.includes('bold'))
-    return { label: 'Bold', colorClass: 'bg-amber-50 text-amber-700 border-amber-200/60 dark:bg-amber-950/40 dark:text-amber-300 dark:border-amber-800/40' };
+    return { label: 'Bold', colorClass: 'bg-amber-100/90 text-amber-950 border-amber-300 dark:bg-amber-950/60 dark:text-amber-200 dark:border-amber-700/60' };
   if (fw.includes('500') || lower.includes('medium'))
-    return { label: 'Medium', colorClass: 'bg-sky-50 text-sky-700 border-sky-200/60 dark:bg-sky-950/40 dark:text-sky-300 dark:border-sky-800/40' };
-  return { label: 'Regular', colorClass: 'bg-slate-50 text-slate-600 border-slate-200/60 dark:bg-slate-900/60 dark:text-slate-400 dark:border-slate-700/40' };
+    return { label: 'Medium', colorClass: 'bg-sky-100/90 text-sky-950 border-sky-300 dark:bg-sky-950/60 dark:text-sky-200 dark:border-sky-700/60' };
+  return { label: 'Regular', colorClass: 'bg-slate-200/90 text-slate-900 border-slate-300 dark:bg-slate-800 dark:text-slate-100 dark:border-slate-600' };
 }
 
 export function TypographyGrid({ items }: { items: TypographyItem[] }) {
@@ -60,12 +60,12 @@ export function TypographyGrid({ items }: { items: TypographyItem[] }) {
             {/* ─── Top: Preview Strip ─── */}
             <div className="relative px-5 pt-5 pb-4 bg-gradient-to-br from-slate-50/80 via-white to-indigo-50/30 dark:from-slate-900/60 dark:via-slate-900/40 dark:to-indigo-950/20 border-b border-border/40">
               {/* Type icon */}
-              <div className="absolute top-3.5 right-3.5 p-1.5 rounded-lg bg-indigo-100/60 dark:bg-indigo-900/30 text-indigo-500 dark:text-indigo-400">
+              <div className="absolute top-3.5 right-3.5 p-1.5 rounded-lg bg-indigo-100/80 dark:bg-indigo-900/40 text-indigo-700 dark:text-indigo-300">
                 <Type className="w-3.5 h-3.5" />
               </div>
 
               <p
-                className="text-foreground tracking-tight pr-8 break-words"
+                className="text-slate-900 dark:text-slate-50 tracking-tight pr-8 break-words"
                 style={{
                   fontSize: `${previewFontSize}px`,
                   fontWeight: cssWeight,
@@ -80,7 +80,7 @@ export function TypographyGrid({ items }: { items: TypographyItem[] }) {
             <div className="px-5 py-4 flex flex-col gap-3">
               {/* Row 1: Token name + weight tag */}
               <div className="flex flex-wrap items-center gap-2">
-                <span className="text-sm font-bold text-foreground">
+                <span className="text-sm font-bold text-slate-900 dark:text-slate-100">
                   {item.label}
                 </span>
                 <span className={`inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-bold uppercase tracking-wider border ${weightTag.colorClass}`}>
@@ -90,16 +90,16 @@ export function TypographyGrid({ items }: { items: TypographyItem[] }) {
 
               {/* Row 2: Specs pills */}
               <div className="flex flex-wrap items-center gap-1.5">
-                <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-[11px] font-semibold bg-slate-100/80 text-slate-600 dark:bg-slate-800/60 dark:text-slate-400 border border-slate-200/50 dark:border-slate-700/40">
-                  <span className="text-slate-400 dark:text-slate-500">Size</span>
+                <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-[11px] font-semibold bg-slate-100 text-slate-900 dark:bg-slate-800 dark:text-slate-100 border border-slate-300 dark:border-slate-700">
+                  <span className="text-slate-600 dark:text-slate-300 font-bold">Size</span>
                   {item.fontSize}sp
                 </span>
-                <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-[11px] font-semibold bg-slate-100/80 text-slate-600 dark:bg-slate-800/60 dark:text-slate-400 border border-slate-200/50 dark:border-slate-700/40">
-                  <span className="text-slate-400 dark:text-slate-500">Line</span>
+                <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-[11px] font-semibold bg-slate-100 text-slate-900 dark:bg-slate-800 dark:text-slate-100 border border-slate-300 dark:border-slate-700">
+                  <span className="text-slate-600 dark:text-slate-300 font-bold">Line</span>
                   {item.lineHeight}sp
                 </span>
-                <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-[11px] font-semibold bg-slate-100/80 text-slate-600 dark:bg-slate-800/60 dark:text-slate-400 border border-slate-200/50 dark:border-slate-700/40">
-                  <span className="text-slate-400 dark:text-slate-500">Weight</span>
+                <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-[11px] font-semibold bg-slate-100 text-slate-900 dark:bg-slate-800 dark:text-slate-100 border border-slate-300 dark:border-slate-700">
+                  <span className="text-slate-600 dark:text-slate-300 font-bold">Weight</span>
                   {item.fontWeight}
                 </span>
               </div>
@@ -108,19 +108,19 @@ export function TypographyGrid({ items }: { items: TypographyItem[] }) {
               <div
                 onClick={(e) => handleCopy(codeRef, `${item.tokenName}-code`, e)}
                 title={`Copy: ${codeRef}`}
-                className="flex items-center justify-between gap-2 bg-slate-50/80 hover:bg-indigo-50/60 dark:bg-slate-800/50 dark:hover:bg-indigo-950/40 border border-border/50 rounded-xl px-3.5 py-2.5 cursor-pointer transition-all group/code"
+                className="flex items-center justify-between gap-2 bg-slate-50/90 hover:bg-slate-100/90 dark:bg-slate-800/60 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-700/80 rounded-xl px-3.5 py-2.5 cursor-pointer transition-all group/code"
               >
-                <code className="text-xs sm:text-[13px] font-mono font-medium text-indigo-600 dark:text-indigo-400 truncate">
+                <code className="text-xs sm:text-[13px] font-mono font-semibold text-indigo-700 dark:text-indigo-300 truncate">
                   {codeRef}
                 </code>
                 <button
                   type="button"
-                  className="shrink-0 p-1.5 rounded-lg text-muted-foreground group-hover/code:text-indigo-600 dark:group-hover/code:text-indigo-400 transition-colors flex items-center gap-1.5 hover:bg-indigo-100/50 dark:hover:bg-indigo-900/30"
+                  className="shrink-0 p-1.5 rounded-lg text-slate-600 dark:text-slate-300 group-hover/code:text-indigo-700 dark:group-hover/code:text-indigo-300 transition-colors flex items-center gap-1.5 hover:bg-indigo-100/50 dark:hover:bg-indigo-900/30"
                 >
                   {isCodeCopied ? (
                     <>
-                      <Check className="w-3.5 h-3.5 text-emerald-500" />
-                      <span className="text-[11px] font-semibold text-emerald-500 hidden sm:inline">Copied!</span>
+                      <Check className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
+                      <span className="text-[11px] font-semibold text-emerald-600 dark:text-emerald-400 hidden sm:inline">Copied!</span>
                     </>
                   ) : (
                     <Copy className="w-3.5 h-3.5" />

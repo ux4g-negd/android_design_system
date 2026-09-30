@@ -5,17 +5,20 @@ description: Transient feedback messages with category icons, titles, subtitles,
 
 # Toast & Snackbars (`Ux4gToast`)
 
-The UX4G Toast and Snackbar component displays non-intrusive, transient feedback messages to inform citizens about application submissions, system status updates, validation warnings, and background process results.
+The **UX4G Toast and Snackbar** component displays non-intrusive, transient feedback messages to inform citizens about application submissions, system status updates, validation warnings, and background process results.
 
 ### Key Capabilities
 
 - **Semantic Feedback Categories**: Pre-styled visual indicators for `Info`, `Success`, `Warning`, `Error`, and `Slot` states.
 - **Title & Supporting Description**: Emphasized bold heading with an optional secondary subtitle describing the status or error details.
-- **Adaptive Layouts**: Supports `Full` layout (one-line format for tablet/desktop) and `Stacked` layout (multi-line indented format for mobile devices).
+- **Adaptive Layout Modes**: Supports `Full` layout (one-line format for tablet/desktop) and `Stacked` layout (multi-line indented format for mobile devices).
 - **Interactive Action Buttons & Dismiss**: Integrated call-to-action link button (`actionText`, `onActionClick`) and optional dismiss close button (`onCloseClick`).
 - **Animated Toast Host**: `Ux4gToastHost` and `Ux4gToastHostState` for coordinated top or bottom animated slide and fade overlays with auto-close timers.
 
-Import from `com.ux4g.designsystemv1.components.Ux4gToast`.
+Import from:
+```kotlin
+import com.ux4g.designsystemv1.components.toast.*
+```
 
 ---
 
@@ -32,11 +35,13 @@ Import from `com.ux4g.designsystemv1.components.Ux4gToast`.
         subtitle = "Supporting description text."
     )
 
-    // 2. Success Message
+    // 2. Success Message with Action Button
     Ux4gToast(
         category = Ux4gToastCategory.Success,
         title = "Success message",
-        subtitle = "Supporting description text."
+        subtitle = "Supporting description text.",
+        actionText = "View",
+        onActionClick = { /* Navigate to details */ }
     )
 
     // 3. Warning Message
@@ -65,66 +70,59 @@ Import from `com.ux4g.designsystemv1.components.Ux4gToast`.
 
 ---
 
-<h2><MIcon name="code" /> Kotlin Usage</h2>
+<h2><MIcon name="code" /> Complete Kotlin Implementation</h2>
 
-### 1. Direct Toast Component Placement
+### 1. Static Inline Toast Messages
+
+Use `Ux4gToast` directly inside form layouts or dialogs when you need persistent feedback banners:
 
 ```kotlin title="StaticToastShowcase.kt"
 import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.ux4g.designsystemv1.components.Ux4gToast
-import com.ux4g.designsystemv1.components.Ux4gToastCategory
+import com.ux4g.designsystemv1.components.toast.*
 
 @Composable
-fun ToastShowcase() {
+fun FormFeedbackSection() {
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
-        Ux4gToast(
-            category = Ux4gToastCategory.Info,
-            title = "Info message",
-            subtitle = "Supporting description text."
-        )
-
+        // Successful Document Upload Toast
         Ux4gToast(
             category = Ux4gToastCategory.Success,
-            title = "Success message",
-            subtitle = "Supporting description text.",
-            actionText = "View",
-            onActionClick = { /* Navigate to details */ }
+            title = "Aadhaar Card Uploaded",
+            subtitle = "File verified successfully. Size: 1.4 MB",
+            actionText = "Preview",
+            onActionClick = { /* Open preview */ },
+            onCloseClick = { /* Dismiss */ }
         )
 
+        // Connectivity Warning Toast
         Ux4gToast(
             category = Ux4gToastCategory.Warning,
-            title = "Warning message",
-            subtitle = "Supporting description text."
-        )
-
-        Ux4gToast(
-            category = Ux4gToastCategory.Error,
-            title = "Error message",
-            subtitle = "Supporting description text."
+            title = "Slow Connection Detected",
+            subtitle = "Uploads may take longer than usual."
         )
     }
 }
 ```
 
-### 2. Animated Toast Host with State Management
+### 2. Floating Animated Toast Host in `Scaffold`
 
-```kotlin title="ToastHostExample.kt"
+Use `Ux4gToastHost` combined with `Ux4gToastHostState` to trigger floating notifications anywhere in your application:
+
+```kotlin title="ApplicationSubmissionScreen.kt"
 import androidx.compose.foundation.layout.*
+import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.ux4g.designsystemv1.components.Ux4gToastCategory
-import com.ux4g.designsystemv1.components.Ux4gToastHost
-import com.ux4g.designsystemv1.components.Ux4gToastHostState
 import com.ux4g.designsystemv1.components.buttons.Ux4gButton
+import com.ux4g.designsystemv1.components.toast.*
 import kotlinx.coroutines.launch
 
 @Composable
@@ -132,48 +130,53 @@ fun ApplicationSubmissionScreen() {
     val coroutineScope = rememberCoroutineScope()
     val toastHostState = remember { Ux4gToastHostState() }
 
-    Box(modifier = Modifier.fillMaxSize()) {
+    Scaffold(
+        topBar = {
+            // Animated Top Toast Host Overlay
+            Ux4gToastHost(
+                hostState = toastHostState,
+                isBottom = false
+            )
+        }
+    ) { paddingValues ->
         Column(
-            modifier = Modifier.padding(16.dp),
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues)
+                .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             Ux4gButton(
-                text = "Submit Application",
+                text = "Submit Certificate Request",
                 onClick = {
                     coroutineScope.launch {
                         toastHostState.showToast(
                             category = Ux4gToastCategory.Success,
-                            title = "Success message",
-                            subtitle = "Supporting description text.",
+                            title = "Application Submitted Successfully",
+                            subtitle = "Reference ID: APP-2026-9821 has been generated.",
                             actionText = "Track",
-                            onActionClick = { /* Track Application */ },
-                            durationMillis = 3000
+                            onActionClick = { /* Navigate to status tracking */ },
+                            durationMillis = 4000L
                         )
                     }
                 }
             )
         }
-
-        // Top-floating animated toast overlay
-        Ux4gToastHost(
-            hostState = toastHostState,
-            isBottom = false
-        )
     }
 }
 ```
 
 ---
 
-<h2><MIcon name="settings" /> Parameters</h2>
+<h2><MIcon name="settings" /> Parameters & API Reference</h2>
 
-### `Ux4gToast` Props
+### 1. `Ux4gToast` Composable (Card Component)
 
 | Prop | Type | Description | Default |
 | :--- | :--- | :--- | :--- |
 | `category` <span className="text-red-500 font-bold">*</span> | `Ux4gToastCategory` | Semantic tone determining icon, background tint, and action colors (`Info`, `Success`, `Warning`, `Error`, `Slot`). | `—` |
 | `title` <span className="text-red-500 font-bold">*</span> | `String` | Primary bold notification heading text. | `—` |
-| `modifier` | `Modifier` | Compose layout modifier applied to the toast card. | `Modifier` |
+| `modifier` | `Modifier` | Compose layout modifier applied to the toast card container. | `Modifier` |
 | `subtitle` | `String?` | Optional secondary description text providing supporting context. | `null` |
 | `actionText` | `String?` | Optional text label for the right-aligned action trigger button. | `null` |
 | `onActionClick` | `(() -> Unit)?` | Callback invoked when the citizen taps the action text. | `null` |
@@ -183,17 +186,48 @@ fun ApplicationSubmissionScreen() {
 
 ---
 
-### `Ux4gToastHost` Props
+### 2. `Ux4gToastHost` Composable (Floating Container)
 
 | Prop | Type | Description | Default |
 | :--- | :--- | :--- | :--- |
-| `hostState` <span className="text-red-500 font-bold">*</span> | `Ux4gToastHostState` | State object controlling current active toast display and dismissal. | `—` |
+| `hostState` <span className="text-red-500 font-bold">*</span> | `Ux4gToastHostState` | State object controlling current active toast display, animations, and dismissal. | `—` |
 | `modifier` | `Modifier` | Compose modifier applied to the toast host container. | `Modifier` |
-| `isBottom` | `Boolean` | When `true`, slides up from bottom; when `false`, slides down from top. | `false` |
+| `isBottom` | `Boolean` | Position flag: When `true`, slides up from bottom; when `false`, slides down from top. | `false` |
 
 ---
 
-### `Ux4gToastCategory` Reference
+### 3. `Ux4gToastHostState.showToast(...)` Method
+
+Method called on `toastHostState` inside a coroutine scope to display a temporary notification.
+
+| Parameter | Type | Description | Default |
+| :--- | :--- | :--- | :--- |
+| `category` <span className="text-red-500 font-bold">*</span> | `Ux4gToastCategory` | Semantic tone determining theme styling (`Info`, `Success`, `Warning`, `Error`, `Slot`). | `Ux4gToastCategory.Info` |
+| `title` <span className="text-red-500 font-bold">*</span> | `String` | Primary bold notification heading text. | `—` |
+| `subtitle` | `String?` | Optional supporting description text. | `null` |
+| `actionText` | `String?` | Text label for the trailing action trigger button (e.g. `"View"`, `"Track"`). | `null` |
+| `onActionClick` | `(() -> Unit)?` | Callback invoked when the citizen taps the action text button. | `null` |
+| `durationMillis` | `Long` | Automatic dismissal countdown duration in milliseconds. | `4000L` |
+
+---
+
+### 4. `Ux4gToastData` Data Model
+
+Immutable data model representing the active toast payload managed inside `Ux4gToastHostState`.
+
+| Field | Type | Description | Default |
+| :--- | :--- | :--- | :--- |
+| `category` | `Ux4gToastCategory` | Semantic category tone for the toast instance. | `Ux4gToastCategory.Info` |
+| `title` | `String` | Bold notification title headline. | `""` |
+| `subtitle` | `String?` | Supporting text message. | `null` |
+| `actionText` | `String?` | Optional right-side CTA button text. | `null` |
+| `onActionClick` | `(() -> Unit)?` | Action button click callback. | `null` |
+| `onCloseClick` | `(() -> Unit)?` | Close button dismiss callback. | `null` |
+| `durationMillis` | `Long` | Toast duration on screen. | `4000L` |
+
+---
+
+### 5. `Ux4gToastCategory` Reference Guide
 
 | Category | Background Color | Icon Tint | Standard Icon | Purpose |
 | :--- | :--- | :--- | :--- | :--- |

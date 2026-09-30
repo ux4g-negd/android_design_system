@@ -1,45 +1,23 @@
-# ux4g-android-docs
+# UX4G Android Documentation
 
-This is a Next.js application generated with
-[Create Fumadocs](https://github.com/fuma-nama/fumadocs).
+Official documentation portal for the **UX4G Android Design System** — Government-grade UI foundations, design tokens, and production-ready Jetpack Compose components built for trusted public digital experiences.
 
-Run development server:
+---
 
-```bash
-npm run dev
-# or
-pnpm dev
-# or
-yarn dev
-```
+## 🌟 Overview
 
-Open http://localhost:3000 with your browser to see the result.
+**UX4G (User Experience for Government)** provides product, design, and engineering teams with a coherent system for building accessible, consistent, and scalable citizen-facing digital services on Android.
 
-## Explore
+- **45+ Reusable Compose Components**: Form controls, navigation, feedback, and layout primitives.
+- **Design Tokens**: Standardized color palettes, typography scales, spacing, radius, and elevation tokens.
+- **Accessibility Target (AA)**: Designed with focus on contrast, touch targets, and assistive tech support.
+- **Kotlin & Jetpack Compose Native**: Ready-to-use Compose building blocks published to Maven Central.
 
-In the project, you can see:
+---
 
-- `lib/source.ts`: Code for content source adapter, [`loader()`](https://fumadocs.dev/docs/headless/source-api) provides the interface to access your content.
-- `lib/layout.shared.tsx`: Shared options for layouts, optional but preferred to keep.
 
-| Route                     | Description                                            |
-| ------------------------- | ------------------------------------------------------ |
-| `app/(home)`              | The route group for your landing page and other pages. |
-| `app/docs`                | The documentation layout and pages.                    |
-| `app/api/search/route.ts` | The Route Handler for search.                          |
+## 🏛️ About UX4G
 
-### Fumadocs MDX
+UX4G is an initiative to standardize and elevate design across Government of India digital applications and websites.
 
-Collections are defined with the [Macro API](https://fumadocs.dev/docs/mdx/macro) in `lib/source.ts`.
-
-Read the [Introduction](https://fumadocs.dev/docs/mdx) for further details.
-
-## Learn More
-
-To learn more about Next.js and Fumadocs, take a look at the following
-resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js
-  features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-- [Fumadocs](https://fumadocs.dev) - learn about Fumadocs
+- **Website**: [https://www.ux4g.gov.in](https://www.ux4g.gov.in)
