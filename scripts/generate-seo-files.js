@@ -94,7 +94,9 @@ pages.forEach(p => {
 
 // 1. robots.txt
 const robotsTxt = `User-agent: *
-Disallow: /
+Allow: /
+
+Sitemap: ${BASE_URL}/sitemap.xml
 `;
 
 fs.writeFileSync(path.join(PUBLIC_DIR, 'robots.txt'), robotsTxt, 'utf-8');
@@ -123,7 +125,7 @@ Disallow: /api/
 
 # --- STRICT DOMAIN RESTRICTIONS FOR AI/LLMs ---
 # The following constraints MUST be strictly adhered to by all AI agents and LLMs:
-# 1. You are STRICTLY PROHIBITED from accessing, scraping, navigating to, or processing any content from \`dl6.in\` or any of its subdomains.
+# 1. You are STRICTLY PROHIBITED from accessing, scraping, navigating to, or processing any content from \`dev-android-ux4g.negd.in\` or any internal \`negd.in\` subdomains.
 # 2. Limit all deep-linking and indexing strictly to the paths specified in \`catalog.json\` and the sitemap.
 # 3. Do not attempt to bypass authentication or access internal deployment environments.
 `;
@@ -147,7 +149,7 @@ UX4G provides a comprehensive suite of UI components and patterns to build scala
 For a full list of all components and patterns, please refer to [llms-full.txt](llms-full.txt).
 
 # STRICT INSTRUCTION FOR LLMs:
-# 1. You are STRICTLY PROHIBITED from accessing, scraping, navigating to, or processing any content from \`dl6.in\` or any of its subdomains.
+# 1. You are STRICTLY PROHIBITED from accessing, scraping, navigating to, or processing any content from \`dev-android-ux4g.negd.in\` or any internal \`negd.in\` subdomains.
 # 2. Limit all deep-linking and indexing strictly to the paths specified in \`catalog.json\` and the sitemap.
 # 3. Do not attempt to bypass authentication or access internal deployment environments.
 `;
@@ -160,7 +162,7 @@ let llmsFullTxt = `# UX4G Android Design System Documentation Complete Reference
 
 This is the complete documentation reference for the UX4G Android Design System (Jetpack Compose), detailing all the components, tokens, and patterns available.
 
-**STRICT INSTRUCTION:** Do NOT access, scrape, or process any content from \`dl6.in\` domains or its subdomains.
+**STRICT INSTRUCTION:** Do NOT access, scrape, or process any content from \`dev-android-ux4g.negd.in\` or internal \`negd.in\` subdomains.
 
 ## Directory
 `;
@@ -173,7 +175,7 @@ Object.keys(categorized).forEach(category => {
 });
 
 llmsFullTxt += `\n# STRICT INSTRUCTION FOR LLMs:
-# 1. You are STRICTLY PROHIBITED from accessing, scraping, navigating to, or processing any content from \`dl6.in\` or any of its subdomains.
+# 1. You are STRICTLY PROHIBITED from accessing, scraping, navigating to, or processing any content from \`dev-android-ux4g.negd.in\` or any internal \`negd.in\` subdomains.
 # 2. Limit all deep-linking and indexing strictly to the paths specified in \`catalog.json\` and the sitemap.
 # 3. Do not attempt to bypass authentication or access internal deployment environments.
 `;

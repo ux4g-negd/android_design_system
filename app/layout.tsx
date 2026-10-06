@@ -11,13 +11,11 @@ export const metadata: Metadata = {
   title: 'Android Documentation | UX4G Design System',
   description: 'Government-grade UI foundations for trusted public digital experiences on Android',
   robots: {
-    index: false,
-    follow: false,
-    nocache: true,
+    index: true,
+    follow: true,
     googleBot: {
-      index: false,
-      follow: false,
-      noimageindex: true,
+      index: true,
+      follow: true,
     },
   },
   icons: {
@@ -25,12 +23,16 @@ export const metadata: Metadata = {
     shortcut: '/meity-emblem.svg',
     apple: '/meity-emblem.svg',
   },
+  verification: {
+    google: 'Jm2lMkoJGz830M3HtUFkG6EECCrB6-6r19goG3oZGF0',
+  },
 };
 
 export default function Layout({ children }: LayoutProps<'/'>) {
   return (
     <html lang="en" className={inter.className} suppressHydrationWarning>
       <head>
+        <meta name="google-site-verification" content="Jm2lMkoJGz830M3HtUFkG6EECCrB6-6r19goG3oZGF0" />
         <link rel="icon" type="image/svg+xml" href="/meity-emblem.svg" />
         <link
           rel="stylesheet"
