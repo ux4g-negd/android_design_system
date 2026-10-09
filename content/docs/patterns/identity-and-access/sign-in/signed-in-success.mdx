@@ -1,0 +1,573 @@
+---
+title: Signed in success
+description: Citizen login completion screen with animated success indicator, countdown timer, dynamic redirection status, and Card-Style variant
+---
+
+# Signed in success
+
+A clean, reassuring sign-in success state for citizen mobile services. The screen provides instant positive visual feedback through a concentric green checkmark badge, confirmation typography (*"Signed in successfully!"*), service redirection messaging, a 3-dot animated loading indicator, a dynamic countdown timer (*"Redirecting in 3 seconds..."*), and a pinned Digital India brand footer.
+
+---
+
+<h2><MIcon name="smartphone" /> Interactive Previews</h2>
+
+### 1. Default Style (Full Screen)
+
+Standard full-screen success confirmation flow with centered feedback badge and automatic redirection countdown.
+
+<ComponentPreview
+  title="Signed in success - Default"
+  category="Pattern · Jetpack Compose"
+  code={`package com.example.ux4g.patterns.identity.signin
+
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.example.ux4g.R as AppR
+import com.ux4g.designsystemv1.R as Ux4gR
+import com.ux4g.designsystemv1.components.Ux4gAppHeader
+import com.ux4g.designsystemv1.components.Ux4gAppHeaderAction
+import com.ux4g.designsystemv1.components.Ux4gAppHeaderVariant
+import com.ux4g.designsystemv1.components.Ux4gDivider
+import com.ux4g.designsystemv1.components.Ux4gDividerOrientation
+import com.ux4g.designsystemv1.foundation.Ux4gColors
+import com.ux4g.designsystemv1.foundation.Ux4gSpace
+import com.ux4g.designsystemv1.theme.Ux4gTheme
+import kotlinx.coroutines.delay
+
+data class SignedInSuccessColors(
+    val screenBackground: Color,
+    val border: Color,
+    val title: Color,
+    val subtleText: Color,
+    val mutedText: Color,
+    val headerDivider: Color,
+    val brandLogoTint: Color,
+    val emblemTint: Color?,
+    val menuButtonBackground: Color,
+    val menuButtonBorder: Color,
+    val menuButtonIcon: Color,
+    val successOuterCircle: Color,
+    val successInnerCircle: Color,
+    val successTitle: Color,
+    val footerLogoTint: Color?
+)
+
+val LightSignedInSuccessColors = SignedInSuccessColors(
+    screenBackground = Ux4gColors.neutral50,
+    border = Ux4gColors.neutral200,
+    title = Ux4gColors.gray900,
+    subtleText = Ux4gColors.neutral500,
+    mutedText = Ux4gColors.neutral400,
+    headerDivider = Ux4gColors.neutral300,
+    brandLogoTint = Ux4gColors.primary600,
+    emblemTint = null,
+    menuButtonBackground = Ux4gColors.neutral0,
+    menuButtonBorder = Ux4gColors.primary300,
+    menuButtonIcon = Ux4gColors.primary600,
+    successOuterCircle = Ux4gColors.green100,
+    successInnerCircle = Ux4gColors.green,
+    successTitle = Ux4gColors.green700,
+    footerLogoTint = null
+)
+
+val DarkSignedInSuccessColors = SignedInSuccessColors(
+    screenBackground = Ux4gColors.neutral950,
+    border = Ux4gColors.neutral800,
+    title = Ux4gColors.neutral50,
+    subtleText = Ux4gColors.neutral400,
+    mutedText = Ux4gColors.neutral500,
+    headerDivider = Ux4gColors.neutral700,
+    brandLogoTint = Ux4gColors.primary300,
+    emblemTint = Color.White,
+    menuButtonBackground = Ux4gColors.neutral800,
+    menuButtonBorder = Ux4gColors.primary600,
+    menuButtonIcon = Ux4gColors.primary300,
+    successOuterCircle = Ux4gColors.green900,
+    successInnerCircle = Ux4gColors.green,
+    successTitle = Ux4gColors.green300,
+    footerLogoTint = Color.White
+)
+
+@Composable
+fun SignedInSuccessScreen(
+    modifier: Modifier = Modifier,
+    isDarkTheme: Boolean = isSystemInDarkTheme(),
+    initialSeconds: Int = 3,
+    onMenuClick: () -> Unit = {},
+    onRedirect: () -> Unit = {}
+) {
+    val colors = if (isDarkTheme) DarkSignedInSuccessColors else LightSignedInSuccessColors
+
+    var secondsLeft by remember { mutableIntStateOf(initialSeconds) }
+
+    LaunchedEffect(Unit) {
+        while (secondsLeft > 0) {
+            delay(1000L)
+            secondsLeft--
+        }
+        onRedirect()
+    }
+
+    Column(
+        modifier = modifier
+            .fillMaxSize()
+            .background(colors.screenBackground)
+    ) {
+        BrandHeader(colors = colors, onMenuClick = onMenuClick)
+
+        Column(
+            modifier = Modifier
+                .weight(1f)
+                .verticalScroll(rememberScrollState())
+                .padding(start = 20.dp, top = 40.dp, end = 20.dp, bottom = 0.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            // Concentric circle success badge with checkmark icon
+            Box(
+                modifier = Modifier
+                    .size(64.dp)
+                    .clip(CircleShape)
+                    .background(colors.successOuterCircle),
+                contentAlignment = Alignment.Center
+            ) {
+                Box(
+                    modifier = Modifier
+                        .size(36.dp)
+                        .clip(CircleShape)
+                        .background(colors.successInnerCircle),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(
+                        imageVector = Icons.Filled.Check,
+                        contentDescription = "Success",
+                        tint = Color.White,
+                        modifier = Modifier.size(22.dp)
+                    )
+                }
+            }
+            Spacer(Modifier.height(24.dp))
+
+            Text(
+                text = "Signed in successfully!",
+                style = TextStyle(
+                    fontSize = 24.sp,
+                    fontWeight = FontWeight.ExtraBold,
+                    color = colors.successTitle,
+                    lineHeight = 28.sp,
+                    letterSpacing = (-0.3).sp
+                ),
+                textAlign = TextAlign.Center
+            )
+            Spacer(Modifier.height(8.dp))
+
+            Text(
+                text = "You are being redirected to your service",
+                style = TextStyle(
+                    fontSize = 14.sp,
+                    color = colors.subtleText,
+                    lineHeight = 18.sp
+                ),
+                textAlign = TextAlign.Center
+            )
+            Spacer(Modifier.height(28.dp))
+
+            // 3-dot animated loading status
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Box(
+                    modifier = Modifier
+                        .size(8.dp)
+                        .clip(CircleShape)
+                        .background(Ux4gColors.primary600)
+                )
+                Box(
+                    modifier = Modifier
+                        .size(8.dp)
+                        .clip(CircleShape)
+                        .background(Ux4gColors.primary600)
+                )
+                Box(
+                    modifier = Modifier
+                        .size(8.dp)
+                        .clip(CircleShape)
+                        .background(Ux4gColors.primary600.copy(alpha = 0.4f))
+                )
+            }
+            Spacer(Modifier.height(14.dp))
+
+            Text(
+                text = "Redirecting in $secondsLeft seconds...",
+                style = TextStyle(
+                    fontSize = 13.sp,
+                    color = colors.mutedText,
+                    lineHeight = 17.sp
+                ),
+                textAlign = TextAlign.Center
+            )
+        }
+
+        BrandFooter(colors = colors)
+    }
+}
+
+@Composable
+private fun BrandHeader(colors: SignedInSuccessColors, onMenuClick: () -> Unit) {
+    Column {
+        Ux4gAppHeader(
+            title = "",
+            variant = Ux4gAppHeaderVariant.Light,
+            height = 64.dp,
+            horizontalPadding = Ux4gSpace.Space16,
+            leadingSpacing = Ux4gSpace.Space8,
+            leadingWidgets = listOf(
+                {
+                    Image(
+                        painter = painterResource(Ux4gR.drawable.ic_national_emblem),
+                        contentDescription = "National Emblem of India",
+                        colorFilter = colors.emblemTint?.let { ColorFilter.tint(it) },
+                        modifier = Modifier.height(32.dp)
+                    )
+                },
+                {
+                    Ux4gDivider(
+                        orientation = Ux4gDividerOrientation.Vertical,
+                        color = colors.headerDivider,
+                        height = 28.dp
+                    )
+                },
+                {
+                    Image(
+                        painter = painterResource(Ux4gR.drawable.ic_union),
+                        contentDescription = "Government of India",
+                        colorFilter = ColorFilter.tint(colors.brandLogoTint),
+                        modifier = Modifier.height(32.dp)
+                    )
+                }
+            ),
+            actions = listOf(
+                Ux4gAppHeaderAction(
+                    customWidget = {
+                        Box(
+                            modifier = Modifier
+                                .size(40.dp)
+                                .clip(RoundedCornerShape(10.dp))
+                                .background(colors.menuButtonBackground)
+                                .border(1.5.dp, colors.menuButtonBorder, RoundedCornerShape(10.dp))
+                                .clickable(onClick = onMenuClick),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Icon(
+                                imageVector = Icons.Filled.Menu,
+                                contentDescription = "Open menu",
+                                tint = colors.menuButtonIcon,
+                                modifier = Modifier.size(20.dp)
+                            )
+                        }
+                    }
+                )
+            )
+        )
+        Ux4gDivider(color = colors.border)
+    }
+}
+
+@Composable
+private fun BrandFooter(colors: SignedInSuccessColors) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = Ux4gSpace.Space8, bottom = Ux4gSpace.Space20),
+        horizontalArrangement = Arrangement.Center,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(
+            text = "Powered by -",
+            style = Ux4gTheme.typography.lS_default.copy(color = colors.mutedText)
+        )
+        Spacer(Modifier.width(Ux4gSpace.Space8))
+        Image(
+            painter = painterResource(AppR.drawable.ic_digital_india),
+            contentDescription = "Digital India",
+            colorFilter = colors.footerLogoTint?.let { ColorFilter.tint(it) },
+            modifier = Modifier.height(22.dp)
+        )
+    }
+}`}
+>
+  <img
+    src="/images/patterns/signed_in_success/signed_in_success.svg"
+    alt="Signed in success - Default style"
+    className="w-full max-w-[360px] rounded-2xl border border-border shadow-sm"
+  />
+</ComponentPreview>
+
+---
+
+### 2. Card Style Variant
+
+Elevated card container on a soft purple tinted canvas (`Ux4gColors.primary100` / `primary800`) with smooth shadows, centered confirmation elements, and pinned footer branding.
+
+<ComponentPreview
+  title="Signed in success - Card Style"
+  category="Pattern · Jetpack Compose"
+  code={`package com.example.ux4g.patterns.identity.signin
+
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.example.ux4g.R as AppR
+import com.ux4g.designsystemv1.R as Ux4gR
+import com.ux4g.designsystemv1.components.Ux4gAppHeader
+import com.ux4g.designsystemv1.components.Ux4gAppHeaderAction
+import com.ux4g.designsystemv1.components.Ux4gAppHeaderVariant
+import com.ux4g.designsystemv1.components.Ux4gDivider
+import com.ux4g.designsystemv1.components.Ux4gDividerOrientation
+import com.ux4g.designsystemv1.foundation.Ux4gColors
+import com.ux4g.designsystemv1.foundation.Ux4gSpace
+import com.ux4g.designsystemv1.theme.Ux4gTheme
+import kotlinx.coroutines.delay
+
+@Composable
+fun SignedInSuccessCardScreen(
+    modifier: Modifier = Modifier,
+    isDarkTheme: Boolean = isSystemInDarkTheme(),
+    initialSeconds: Int = 3,
+    onMenuClick: () -> Unit = {},
+    onRedirect: () -> Unit = {}
+) {
+    val colors = if (isDarkTheme) DarkSignedInSuccessColors else LightSignedInSuccessColors
+
+    val cardSectionBg = if (isDarkTheme) Ux4gColors.primary800 else Ux4gColors.primary100
+    val cardSurfaceBg = if (isDarkTheme) Ux4gColors.neutral900 else Ux4gColors.neutral0
+
+    var secondsLeft by remember { mutableIntStateOf(initialSeconds) }
+
+    LaunchedEffect(Unit) {
+        while (secondsLeft > 0) {
+            delay(1000L)
+            secondsLeft--
+        }
+        onRedirect()
+    }
+
+    Column(
+        modifier = modifier
+            .fillMaxSize()
+            .background(colors.screenBackground)
+    ) {
+        BrandHeader(colors = colors, onMenuClick = onMenuClick)
+
+        // Soft-purple body container with top elevated card & bottom pinned footer
+        Column(
+            modifier = Modifier
+                .weight(1f)
+                .fillMaxWidth()
+                .background(cardSectionBg)
+        ) {
+            Column(
+                modifier = Modifier
+                    .weight(1f)
+                    .fillMaxWidth()
+                    .verticalScroll(rememberScrollState())
+                    .padding(start = 16.dp, top = 20.dp, end = 16.dp, bottom = 16.dp)
+            ) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .shadow(
+                            elevation = 4.dp,
+                            shape = RoundedCornerShape(16.dp),
+                            spotColor = Color.Black.copy(alpha = 0.04f)
+                        )
+                        .clip(RoundedCornerShape(16.dp))
+                        .background(cardSurfaceBg)
+                        .padding(start = 20.dp, top = 28.dp, end = 20.dp, bottom = 28.dp)
+                ) {
+                    Column(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        // Concentric circle success badge
+                        Box(
+                            modifier = Modifier
+                                .size(64.dp)
+                                .clip(CircleShape)
+                                .background(colors.successOuterCircle),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Box(
+                                modifier = Modifier
+                                    .size(36.dp)
+                                    .clip(CircleShape)
+                                    .background(colors.successInnerCircle),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Filled.Check,
+                                    contentDescription = "Success",
+                                    tint = Color.White,
+                                    modifier = Modifier.size(22.dp)
+                                )
+                            }
+                        }
+                        Spacer(Modifier.height(24.dp))
+
+                        Text(
+                            text = "Signed in successfully!",
+                            style = TextStyle(
+                                fontSize = 24.sp,
+                                fontWeight = FontWeight.ExtraBold,
+                                color = colors.successTitle,
+                                lineHeight = 28.sp,
+                                letterSpacing = (-0.3).sp
+                            ),
+                            textAlign = TextAlign.Center
+                        )
+                        Spacer(Modifier.height(8.dp))
+
+                        Text(
+                            text = "You are being redirected to your service",
+                            style = TextStyle(
+                                fontSize = 14.sp,
+                                color = colors.subtleText,
+                                lineHeight = 18.sp
+                            ),
+                            textAlign = TextAlign.Center
+                        )
+                        Spacer(Modifier.height(24.dp))
+
+                        // 3-dot loading status
+                        Row(
+                            horizontalArrangement = Arrangement.spacedBy(8.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Box(
+                                modifier = Modifier
+                                    .size(8.dp)
+                                    .clip(CircleShape)
+                                    .background(Ux4gColors.primary600)
+                            )
+                            Box(
+                                modifier = Modifier
+                                    .size(8.dp)
+                                    .clip(CircleShape)
+                                    .background(Ux4gColors.primary600)
+                            )
+                            Box(
+                                modifier = Modifier
+                                    .size(8.dp)
+                                    .clip(CircleShape)
+                                    .background(Ux4gColors.primary600.copy(alpha = 0.4f))
+                            )
+                        }
+                        Spacer(Modifier.height(18.dp))
+
+                        Text(
+                            text = "Redirecting in $secondsLeft seconds...",
+                            style = TextStyle(
+                                fontSize = 13.sp,
+                                color = colors.mutedText,
+                                lineHeight = 17.sp
+                            ),
+                            textAlign = TextAlign.Center
+                        )
+                    }
+                }
+            }
+
+            BrandFooter(colors = colors)
+        }
+    }
+}
+`}
+>
+  <img
+    src="/images/patterns/signed_in_success/signed_in_success_cardstyle.svg"
+    alt="Signed in success - Card style"
+    className="w-full max-w-[360px] rounded-2xl border border-border shadow-sm"
+  />
+</ComponentPreview>
