@@ -1,6 +1,11 @@
 {
   "title": "OTP Verification",
   "pages": [
-    "verify-your-mobile-number"
+    "verify-your-mobile-number",
+    "verify-mobile-with-voice-fallback",
+    "verify-mobile-with-attempt-warning",
+    "verify-mobile-with-last-attempt-warning",
+    "verify-mobile-account-locked",
+    "otp-verified-success"
   ]
 }
