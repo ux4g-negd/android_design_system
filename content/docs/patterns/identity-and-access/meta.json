@@ -1,6 +1,7 @@
 {
   "title": "Identity and Access",
   "pages": [
-    "sign-in"
+    "sign-in",
+    "otp-verification"
   ]
 }
