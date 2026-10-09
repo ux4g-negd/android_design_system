@@ -1,0 +1,497 @@
+---
+title: Your session is expiring
+description: Modal dialog shown after a period of citizen inactivity featuring three lifecycle states (Expiring, Expiring soon, and Session ended)
+---
+
+# Your session is expiring
+
+A security modal dialog displayed when a citizen remains inactive during a sensitive session or authenticated workflow. Built on the design system's `Ux4gModal` component, the pattern protects user data and prevents unauthorized access across three distinct lifecycle states:
+
+1. **Expiring (Early Warning)**: Purple lock badge, prominent countdown timer (*"04:47"*), session explanation, animated linear progress bar, and dual actions (**Stay signed in** / **Sign out now**).
+2. **Expiring soon (Final-Minute Warning)**: Orange warning badge, rapid countdown timer (*"00:57"*), urgent sign-out notification, orange progress indicator, and dual actions.
+3. **Session ended (Terminal State)**: Neutral clock badge, saved-progress confirmation (*"Your form progress has been saved. Sign in again to continue where you left off."*), and a single full-width primary action (**Sign in to continue**).
+
+---
+
+<h2><MIcon name="timer" /> Interactive Previews</h2>
+
+### 1. Expiring (Early Warning State)
+
+Early warning dialog with purple lock badge, live multi-minute countdown timer, linear progress track, and dual action buttons utilizing `Ux4gModal`.
+
+<ComponentPreview
+  title="Your session is expiring - Expiring"
+  category="Pattern · Jetpack Compose"
+  code={`package com.example.ux4g.patterns.identity.session
+
+import androidx.compose.foundation.background
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Lock
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.ux4g.designsystemv1.components.modal.Ux4gModal
+import com.ux4g.designsystemv1.components.modal.Ux4gModalFooterAlign
+import com.ux4g.designsystemv1.components.modal.Ux4gModalFooterButtons
+import com.ux4g.designsystemv1.foundation.Ux4gColors
+import kotlinx.coroutines.delay
+
+@Composable
+fun SessionExpiringDialog(
+    isOpen: Boolean = true,
+    totalSeconds: Int = 300,
+    initialSecondsLeft: Int = 287,
+    isDarkTheme: Boolean = isSystemInDarkTheme(),
+    onStaySignedIn: () -> Unit = {},
+    onSignOut: () -> Unit = {},
+    onDismiss: () -> Unit = {}
+) {
+    if (!isOpen) return
+
+    var secondsLeft by remember { mutableIntStateOf(initialSecondsLeft) }
+
+    LaunchedEffect(Unit) {
+        while (secondsLeft > 0) {
+            delay(1000L)
+            secondsLeft--
+        }
+    }
+
+    val minutes = (secondsLeft / 60).toString().padStart(2, '0')
+    val seconds = (secondsLeft % 60).toString().padStart(2, '0')
+    val formattedTime = "$minutes:$seconds"
+    val progress = if (totalSeconds > 0) (secondsLeft.toFloat() / totalSeconds).coerceIn(0f, 1f) else 0f
+
+    val iconBgColor = if (isDarkTheme) Ux4gColors.primary800 else Ux4gColors.primary100
+    val iconColor = if (isDarkTheme) Ux4gColors.primary300 else Ux4gColors.primary600
+    val countColor = iconColor
+    val progressColor = iconColor
+    val progressTrack = if (isDarkTheme) Ux4gColors.neutral700 else Ux4gColors.neutral200
+    val descColor = if (isDarkTheme) Ux4gColors.neutral300 else Ux4gColors.neutral700
+
+    Ux4gModal(
+        onDismiss = onDismiss,
+        showHeader = false,
+        showCloseButton = false,
+        showDividers = false,
+        showBody = true,
+        bodyContent = {
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                // Purple Lock badge icon
+                Box(
+                    modifier = Modifier
+                        .size(56.dp)
+                        .clip(CircleShape)
+                        .background(iconBgColor),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(
+                        imageVector = Icons.Filled.Lock,
+                        contentDescription = "Session Expiring",
+                        tint = iconColor,
+                        modifier = Modifier.size(28.dp)
+                    )
+                }
+                Spacer(Modifier.height(20.dp))
+
+                Text(
+                    text = "Your session is expiring",
+                    style = TextStyle(
+                        fontSize = 18.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = if (isDarkTheme) Ux4gColors.neutral50 else Ux4gColors.neutral900
+                    ),
+                    textAlign = TextAlign.Center
+                )
+                Spacer(Modifier.height(8.dp))
+
+                Text(
+                    text = formattedTime,
+                    style = TextStyle(
+                        fontSize = 40.sp,
+                        fontWeight = FontWeight.ExtraBold,
+                        color = countColor,
+                        letterSpacing = (-0.5).sp,
+                        lineHeight = 44.sp
+                    ),
+                    textAlign = TextAlign.Center
+                )
+                Spacer(Modifier.height(16.dp))
+
+                Text(
+                    text = "You've been inactive for a while. For your security, we'll sign you out automatically.",
+                    style = TextStyle(
+                        fontSize = 14.sp,
+                        fontWeight = FontWeight.Normal,
+                        color = descColor,
+                        lineHeight = 20.sp
+                    ),
+                    textAlign = TextAlign.Center
+                )
+                Spacer(Modifier.height(20.dp))
+
+                // Progress Bar
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(6.dp)
+                        .clip(RoundedCornerShape(3.dp))
+                        .background(progressTrack)
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth(fraction = progress)
+                            .fillMaxHeight()
+                            .clip(RoundedCornerShape(3.dp))
+                            .background(progressColor)
+                    )
+                }
+            }
+        },
+        showFooter = true,
+        footerButtons = Ux4gModalFooterButtons.TwoButtons,
+        footerAlign = Ux4gModalFooterAlign.Split,
+        primaryButtonText = "Stay signed in",
+        secondaryButtonText = "Sign out now",
+        onPrimaryClick = onStaySignedIn,
+        onSecondaryClick = onSignOut
+    )
+}`}
+>
+  <div className="flex justify-center p-4">
+    <img
+      src="/images/patterns/your_session_is_expiring/your_session_is_expiring.svg"
+      alt="Your session is expiring - Expiring state"
+      className="w-full max-w-[390px] rounded-2xl border border-border shadow-md"
+    />
+  </div>
+</ComponentPreview>
+
+---
+
+### 2. Expiring Soon (Final-Minute Warning State)
+
+Escalated warning dialog with orange alert badge, urgent countdown timer, orange progress track, and dual action buttons utilizing `Ux4gModal`.
+
+<ComponentPreview
+  title="Your session is expiring - Expiring soon"
+  category="Pattern · Jetpack Compose"
+  code={`package com.example.ux4g.patterns.identity.session
+
+import androidx.compose.foundation.background
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Warning
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.ux4g.designsystemv1.components.modal.Ux4gModal
+import com.ux4g.designsystemv1.components.modal.Ux4gModalFooterAlign
+import com.ux4g.designsystemv1.components.modal.Ux4gModalFooterButtons
+import com.ux4g.designsystemv1.foundation.Ux4gColors
+import kotlinx.coroutines.delay
+
+@Composable
+fun SessionExpiringSoonDialog(
+    isOpen: Boolean = true,
+    totalSeconds: Int = 300,
+    initialSecondsLeft: Int = 57,
+    isDarkTheme: Boolean = isSystemInDarkTheme(),
+    onStaySignedIn: () -> Unit = {},
+    onSignOut: () -> Unit = {},
+    onDismiss: () -> Unit = {}
+) {
+    if (!isOpen) return
+
+    var secondsLeft by remember { mutableIntStateOf(initialSecondsLeft) }
+
+    LaunchedEffect(Unit) {
+        while (secondsLeft > 0) {
+            delay(1000L)
+            secondsLeft--
+        }
+    }
+
+    val minutes = (secondsLeft / 60).toString().padStart(2, '0')
+    val seconds = (secondsLeft % 60).toString().padStart(2, '0')
+    val formattedTime = "$minutes:$seconds"
+    val progress = if (totalSeconds > 0) (secondsLeft.toFloat() / totalSeconds).coerceIn(0f, 1f) else 0f
+
+    val iconBgColor = if (isDarkTheme) Ux4gColors.orange800 else Ux4gColors.orange100
+    val iconColor = if (isDarkTheme) Ux4gColors.orange500 else Ux4gColors.orange600
+    val countColor = if (isDarkTheme) Ux4gColors.orange300 else Ux4gColors.orange800
+    val progressColor = if (isDarkTheme) Ux4gColors.orange300 else Ux4gColors.orange600
+    val progressTrack = if (isDarkTheme) Ux4gColors.neutral700 else Ux4gColors.neutral200
+    val descColor = if (isDarkTheme) Ux4gColors.neutral300 else Ux4gColors.neutral700
+
+    Ux4gModal(
+        onDismiss = onDismiss,
+        showHeader = false,
+        showCloseButton = false,
+        showDividers = false,
+        showBody = true,
+        bodyContent = {
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                // Orange Warning badge icon
+                Box(
+                    modifier = Modifier
+                        .size(56.dp)
+                        .clip(CircleShape)
+                        .background(iconBgColor),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(
+                        imageVector = Icons.Filled.Warning,
+                        contentDescription = "Expiring Soon",
+                        tint = iconColor,
+                        modifier = Modifier.size(28.dp)
+                    )
+                }
+                Spacer(Modifier.height(20.dp))
+
+                Text(
+                    text = "Your session is expiring soon",
+                    style = TextStyle(
+                        fontSize = 18.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = if (isDarkTheme) Ux4gColors.neutral50 else Ux4gColors.neutral900
+                    ),
+                    textAlign = TextAlign.Center
+                )
+                Spacer(Modifier.height(8.dp))
+
+                Text(
+                    text = formattedTime,
+                    style = TextStyle(
+                        fontSize = 40.sp,
+                        fontWeight = FontWeight.ExtraBold,
+                        color = countColor,
+                        letterSpacing = (-0.5).sp,
+                        lineHeight = 44.sp
+                    ),
+                    textAlign = TextAlign.Center
+                )
+                Spacer(Modifier.height(16.dp))
+
+                Text(
+                    text = "You'll be signed out in less than a minute",
+                    style = TextStyle(
+                        fontSize = 14.sp,
+                        fontWeight = FontWeight.Normal,
+                        color = descColor,
+                        lineHeight = 20.sp
+                    ),
+                    textAlign = TextAlign.Center
+                )
+                Spacer(Modifier.height(20.dp))
+
+                // Progress Bar
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(6.dp)
+                        .clip(RoundedCornerShape(3.dp))
+                        .background(progressTrack)
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth(fraction = progress)
+                            .fillMaxHeight()
+                            .clip(RoundedCornerShape(3.dp))
+                            .background(progressColor)
+                    )
+                }
+            }
+        },
+        showFooter = true,
+        footerButtons = Ux4gModalFooterButtons.TwoButtons,
+        footerAlign = Ux4gModalFooterAlign.Split,
+        primaryButtonText = "Stay signed in",
+        secondaryButtonText = "Sign out now",
+        onPrimaryClick = onStaySignedIn,
+        onSecondaryClick = onSignOut
+    )
+}`}
+>
+  <div className="flex justify-center p-4">
+    <img
+      src="/images/patterns/your_session_is_expiring/your_session_is_expiring_soon.svg"
+      alt="Your session is expiring - Expiring soon state"
+      className="w-full max-w-[390px] rounded-2xl border border-border shadow-md"
+    />
+  </div>
+</ComponentPreview>
+
+---
+
+### 3. Session Ended (Terminal State)
+
+Terminal session lockout dialog with neutral clock badge, saved progress confirmation, and a single full-width primary button utilizing `Ux4gModal`.
+
+<ComponentPreview
+  title="Your session is expiring - Session ended"
+  category="Pattern · Jetpack Compose"
+  code={`package com.example.ux4g.patterns.identity.session
+
+import androidx.compose.foundation.background
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Schedule
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.ux4g.designsystemv1.components.modal.Ux4gModal
+import com.ux4g.designsystemv1.components.modal.Ux4gModalFooterAlign
+import com.ux4g.designsystemv1.components.modal.Ux4gModalFooterButtons
+import com.ux4g.designsystemv1.foundation.Ux4gColors
+
+@Composable
+fun SessionEndedDialog(
+    isOpen: Boolean = true,
+    isDarkTheme: Boolean = isSystemInDarkTheme(),
+    onSignInAgain: () -> Unit = {},
+    onDismiss: () -> Unit = {}
+) {
+    if (!isOpen) return
+
+    val iconBgColor = if (isDarkTheme) Ux4gColors.neutral800 else Ux4gColors.neutral100
+    val iconColor = if (isDarkTheme) Ux4gColors.neutral200 else Ux4gColors.neutral700
+    val descColor = if (isDarkTheme) Ux4gColors.neutral300 else Ux4gColors.neutral700
+
+    Ux4gModal(
+        onDismiss = onDismiss,
+        showHeader = false,
+        showCloseButton = false,
+        showDividers = false,
+        showBody = true,
+        bodyContent = {
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                // Neutral Clock badge icon
+                Box(
+                    modifier = Modifier
+                        .size(56.dp)
+                        .clip(CircleShape)
+                        .background(iconBgColor),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(
+                        imageVector = Icons.Filled.Schedule,
+                        contentDescription = "Session Ended",
+                        tint = iconColor,
+                        modifier = Modifier.size(28.dp)
+                    )
+                }
+                Spacer(Modifier.height(20.dp))
+
+                Text(
+                    text = "Session ended",
+                    style = TextStyle(
+                        fontSize = 18.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = if (isDarkTheme) Ux4gColors.neutral50 else Ux4gColors.neutral900
+                    ),
+                    textAlign = TextAlign.Center
+                )
+                Spacer(Modifier.height(8.dp))
+
+                Text(
+                    text = "Your form progress has been saved. Sign in again to continue where you left off.",
+                    style = TextStyle(
+                        fontSize = 14.sp,
+                        fontWeight = FontWeight.Normal,
+                        color = descColor,
+                        lineHeight = 20.sp
+                    ),
+                    textAlign = TextAlign.Center
+                )
+            }
+        },
+        showFooter = true,
+        footerButtons = Ux4gModalFooterButtons.OneButton,
+        footerAlign = Ux4gModalFooterAlign.Center,
+        primaryButtonText = "Sign in to continue",
+        onPrimaryClick = onSignInAgain
+    )
+}`}
+>
+  <div className="flex justify-center p-4">
+    <img
+      src="/images/patterns/your_session_is_expiring/your_session_is_expiring_session_ended.svg"
+      alt="Your session is expiring - Session ended state"
+      className="w-full max-w-[390px] rounded-2xl border border-border shadow-md"
+    />
+  </div>
+</ComponentPreview>

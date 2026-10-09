@@ -2,6 +2,7 @@
   "title": "Identity and Access",
   "pages": [
     "sign-in",
-    "otp-verification"
+    "otp-verification",
+    "session-time-out-dialog"
   ]
 }
