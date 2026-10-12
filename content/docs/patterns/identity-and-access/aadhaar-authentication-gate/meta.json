@@ -1,0 +1,12 @@
+{
+  "title": "Aadhaar Authentication Gate",
+  "pages": [
+    "verify-with-aadhaar-choose-method",
+    "aadhaar-otp-enter-code",
+    "aadhaar-face-auth-camera-permission",
+    "aadhaar-verified-success",
+    "aadhaar-verification-failed",
+    "aadhaar-account-locked",
+    "operator-assisted-authentication"
+  ]
+}

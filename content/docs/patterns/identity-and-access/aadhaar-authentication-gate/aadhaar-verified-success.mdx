@@ -1,0 +1,610 @@
+---
+title: Aadhaar verified - success
+description: Confirmation completion screen validating successful citizen Aadhaar biometric or OTP verification with transaction details
+---
+
+# Aadhaar verified - success
+
+A positive completion state pattern presented when a citizen successfully authenticates through the Aadhaar gate (via either Aadhaar OTP or Face Authentication). The screen features a green confirmation banner (*"Aadhaar identity verified successfully"*), clear celebratory heading (*"Authentication Successful"*), reassurance advisory, an audit transaction ID summary box, a primary **Continue to Service** action button, and a pinned Digital India brand footer.
+
+---
+
+<h2><MIcon name="smartphone" /> Interactive Previews</h2>
+
+### 1. Default Style (Full Screen)
+
+Standard full-screen Aadhaar authentication success layout with status banner, transaction confirmation details, and primary continuation action.
+
+<ComponentPreview
+  title="Aadhaar verified - success - Default"
+  category="Pattern · Jetpack Compose"
+  code={`package com.example.ux4g.patterns.identity.aadhaar
+
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.CheckCircle
+import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.example.ux4g.R as AppR
+import com.ux4g.designsystemv1.R as Ux4gR
+import com.ux4g.designsystemv1.components.Ux4gAppHeader
+import com.ux4g.designsystemv1.components.Ux4gAppHeaderAction
+import com.ux4g.designsystemv1.components.Ux4gAppHeaderVariant
+import com.ux4g.designsystemv1.components.Ux4gBannerVariant
+import com.ux4g.designsystemv1.components.Ux4gDivider
+import com.ux4g.designsystemv1.components.Ux4gDividerOrientation
+import com.ux4g.designsystemv1.components.Ux4gStatusBanner
+import com.ux4g.designsystemv1.components.buttons.Ux4gButton
+import com.ux4g.designsystemv1.components.buttons.Ux4gButtonSize
+import com.ux4g.designsystemv1.components.buttons.Ux4gButtonVariant
+import com.ux4g.designsystemv1.foundation.Ux4gColors
+import com.ux4g.designsystemv1.foundation.Ux4gSpace
+import com.ux4g.designsystemv1.theme.Ux4gTheme
+
+data class AadhaarVerifiedSuccessColors(
+    val screenBackground: Color,
+    val border: Color,
+    val title: Color,
+    val subtleText: Color,
+    val mutedText: Color,
+    val headerDivider: Color,
+    val brandLogoTint: Color,
+    val emblemTint: Color?,
+    val menuButtonBackground: Color,
+    val menuButtonBorder: Color,
+    val menuButtonIcon: Color,
+    val successBackground: Color,
+    val successBorder: Color,
+    val successText: Color,
+    val successIcon: Color,
+    val infoCardBackground: Color,
+    val infoCardBorder: Color,
+    val infoCardValue: Color,
+    val footerLogoTint: Color?
+)
+
+val LightAadhaarVerifiedSuccessColors = AadhaarVerifiedSuccessColors(
+    screenBackground = Ux4gColors.neutral50,
+    border = Ux4gColors.neutral200,
+    title = Ux4gColors.gray900,
+    subtleText = Ux4gColors.neutral500,
+    mutedText = Ux4gColors.neutral400,
+    headerDivider = Ux4gColors.neutral300,
+    brandLogoTint = Ux4gColors.primary600,
+    emblemTint = null,
+    menuButtonBackground = Ux4gColors.neutral0,
+    menuButtonBorder = Ux4gColors.primary300,
+    menuButtonIcon = Ux4gColors.primary600,
+    successBackground = Ux4gColors.green50,
+    successBorder = Ux4gColors.green300,
+    successText = Ux4gColors.green900,
+    successIcon = Ux4gColors.green600,
+    infoCardBackground = Color(0xFFF2EFFF),
+    infoCardBorder = Ux4gColors.primary200,
+    infoCardValue = Ux4gColors.primary600,
+    footerLogoTint = null
+)
+
+val DarkAadhaarVerifiedSuccessColors = AadhaarVerifiedSuccessColors(
+    screenBackground = Ux4gColors.neutral950,
+    border = Ux4gColors.neutral800,
+    title = Ux4gColors.neutral50,
+    subtleText = Ux4gColors.neutral400,
+    mutedText = Ux4gColors.neutral500,
+    headerDivider = Ux4gColors.neutral700,
+    brandLogoTint = Ux4gColors.primary300,
+    emblemTint = Color.White,
+    menuButtonBackground = Ux4gColors.neutral800,
+    menuButtonBorder = Ux4gColors.primary600,
+    menuButtonIcon = Ux4gColors.primary300,
+    successBackground = Ux4gColors.green900,
+    successBorder = Ux4gColors.green600,
+    successText = Ux4gColors.green300,
+    successIcon = Ux4gColors.green400,
+    infoCardBackground = Ux4gColors.primary900,
+    infoCardBorder = Ux4gColors.primary700,
+    infoCardValue = Ux4gColors.primary300,
+    footerLogoTint = Color.White
+)
+
+@Composable
+fun AadhaarVerifiedSuccessScreen(
+    modifier: Modifier = Modifier,
+    isDarkTheme: Boolean = isSystemInDarkTheme(),
+    successBannerText: String = "Aadhaar identity verified successfully",
+    transactionId: String = "TXN-2024-AAD-78432",
+    onBackClick: () -> Unit = {},
+    onMenuClick: () -> Unit = {},
+    onContinue: () -> Unit = {}
+) {
+    val colors = if (isDarkTheme) DarkAadhaarVerifiedSuccessColors else LightAadhaarVerifiedSuccessColors
+
+    Column(
+        modifier = modifier
+            .fillMaxSize()
+            .background(colors.screenBackground)
+    ) {
+        BrandHeader(colors = colors, onMenuClick = onMenuClick)
+
+        Column(
+            modifier = Modifier
+                .weight(1f)
+                .verticalScroll(rememberScrollState())
+                .padding(start = 20.dp, top = 24.dp, end = 20.dp, bottom = 0.dp)
+        ) {
+            BackButton(onClick = onBackClick)
+            Spacer(Modifier.height(16.dp))
+
+            // Green confirmation banner
+            Ux4gStatusBanner(
+                variant = Ux4gBannerVariant.SuccessLight,
+                title = successBannerText,
+                titleStyle = TextStyle(
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.Medium,
+                    color = colors.successText,
+                    lineHeight = 18.sp
+                ),
+                leadingIcon = {
+                    Icon(
+                        imageVector = Icons.Filled.CheckCircle,
+                        contentDescription = null,
+                        tint = colors.successIcon,
+                        modifier = Modifier.size(20.dp)
+                    )
+                },
+                backgroundColor = colors.successBackground,
+                borderColor = colors.successBorder,
+                margin = PaddingValues(0.dp),
+                padding = PaddingValues(12.dp)
+            )
+            Spacer(Modifier.height(24.dp))
+
+            Text(
+                text = "Authentication Successful",
+                style = TextStyle(
+                    fontSize = 24.sp,
+                    fontWeight = FontWeight.ExtraBold,
+                    color = colors.title,
+                    lineHeight = 28.sp,
+                    letterSpacing = (-0.3).sp
+                )
+            )
+            Spacer(Modifier.height(8.dp))
+
+            Text(
+                text = "Your Aadhaar identity has been verified. You may now proceed to the service.",
+                style = TextStyle(
+                    fontSize = 14.sp,
+                    color = colors.subtleText,
+                    lineHeight = 18.sp
+                )
+            )
+            Spacer(Modifier.height(24.dp))
+
+            // Transaction ID summary box
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(12.dp))
+                    .background(colors.infoCardBackground)
+                    .border(1.dp, colors.infoCardBorder, RoundedCornerShape(12.dp))
+                    .padding(horizontal = 16.dp, vertical = 14.dp)
+            ) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = "Transaction ID",
+                        style = TextStyle(
+                            fontSize = 14.sp,
+                            fontWeight = FontWeight.Medium,
+                            color = colors.subtleText,
+                            lineHeight = 18.sp
+                        )
+                    )
+                    Text(
+                        text = transactionId,
+                        style = TextStyle(
+                            fontSize = 14.sp,
+                            fontWeight = FontWeight.SemiBold,
+                            fontFamily = FontFamily.Monospace,
+                            color = colors.infoCardValue,
+                            lineHeight = 18.sp
+                        )
+                    )
+                }
+            }
+            Spacer(Modifier.height(24.dp))
+        }
+
+        // Action button
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 20.dp, vertical = 12.dp)
+        ) {
+            Ux4gButton(
+                text = "Continue to Service",
+                onClick = onContinue,
+                size = Ux4gButtonSize.Large,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(48.dp)
+            )
+        }
+
+        BrandFooter(colors = colors)
+    }
+}
+
+@Composable
+private fun BackButton(onClick: () -> Unit) {
+    Ux4gButton(
+        text = "Back",
+        onClick = onClick,
+        variant = Ux4gButtonVariant.Ghost,
+        size = Ux4gButtonSize.Small,
+        leadingIcon = {
+            Icon(
+                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                contentDescription = "Back",
+                modifier = Modifier.size(18.dp)
+            )
+        },
+        modifier = Modifier.height(48.dp)
+    )
+}
+
+@Composable
+private fun BrandHeader(colors: AadhaarVerifiedSuccessColors, onMenuClick: () -> Unit) {
+    Column {
+        Ux4gAppHeader(
+            title = "",
+            variant = Ux4gAppHeaderVariant.Light,
+            height = 64.dp,
+            horizontalPadding = Ux4gSpace.Space16,
+            leadingSpacing = Ux4gSpace.Space8,
+            leadingWidgets = listOf(
+                {
+                    Image(
+                        painter = painterResource(Ux4gR.drawable.ic_national_emblem),
+                        contentDescription = "National Emblem of India",
+                        colorFilter = colors.emblemTint?.let { ColorFilter.tint(it) },
+                        modifier = Modifier.height(32.dp)
+                    )
+                },
+                {
+                    Ux4gDivider(
+                        orientation = Ux4gDividerOrientation.Vertical,
+                        color = colors.headerDivider,
+                        height = 28.dp
+                    )
+                },
+                {
+                    Image(
+                        painter = painterResource(Ux4gR.drawable.ic_union),
+                        contentDescription = "Government of India",
+                        colorFilter = ColorFilter.tint(colors.brandLogoTint),
+                        modifier = Modifier.height(32.dp)
+                    )
+                }
+            ),
+            actions = listOf(
+                Ux4gAppHeaderAction(
+                    customWidget = {
+                        Box(
+                            modifier = Modifier
+                                .size(40.dp)
+                                .clip(RoundedCornerShape(10.dp))
+                                .background(colors.menuButtonBackground)
+                                .border(1.5.dp, colors.menuButtonBorder, RoundedCornerShape(10.dp))
+                                .clickable(onClick = onMenuClick),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Icon(
+                                imageVector = Icons.Filled.Menu,
+                                contentDescription = "Open menu",
+                                tint = colors.menuButtonIcon,
+                                modifier = Modifier.size(20.dp)
+                            )
+                        }
+                    }
+                )
+            )
+        )
+        Ux4gDivider(color = colors.border)
+    }
+}
+
+@Composable
+private fun BrandFooter(colors: AadhaarVerifiedSuccessColors) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = Ux4gSpace.Space8, bottom = Ux4gSpace.Space20),
+        horizontalArrangement = Arrangement.Center,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(
+            text = "Powered by -",
+            style = Ux4gTheme.typography.lS_default.copy(color = colors.mutedText)
+        )
+        Spacer(Modifier.width(Ux4gSpace.Space8))
+        Image(
+            painter = painterResource(AppR.drawable.ic_digital_india),
+            contentDescription = "Digital India",
+            colorFilter = colors.footerLogoTint?.let { ColorFilter.tint(it) },
+            modifier = Modifier.height(22.dp)
+        )
+    }
+}
+`}
+>
+  <img
+    src="/images/patterns/aadhaar_verified_success/aadhaar_verified_success.svg"
+    alt="Aadhaar verified - success - Default style"
+    className="w-full max-w-[360px] rounded-2xl border border-border shadow-sm"
+  />
+</ComponentPreview>
+
+---
+
+### 2. Card Style Variant
+
+Elevated card container on a soft purple canvas tint (`Ux4gColors.primary100` / `primary800`) with smooth shadow, authentication success banner, transaction ID summary, and continuation action.
+
+<ComponentPreview
+  title="Aadhaar verified - success - Card Style"
+  category="Pattern · Jetpack Compose"
+  code={`package com.example.ux4g.patterns.identity.aadhaar
+
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.CheckCircle
+import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.example.ux4g.R as AppR
+import com.ux4g.designsystemv1.R as Ux4gR
+import com.ux4g.designsystemv1.components.Ux4gAppHeader
+import com.ux4g.designsystemv1.components.Ux4gAppHeaderAction
+import com.ux4g.designsystemv1.components.Ux4gAppHeaderVariant
+import com.ux4g.designsystemv1.components.Ux4gBannerVariant
+import com.ux4g.designsystemv1.components.Ux4gDivider
+import com.ux4g.designsystemv1.components.Ux4gDividerOrientation
+import com.ux4g.designsystemv1.components.Ux4gStatusBanner
+import com.ux4g.designsystemv1.components.buttons.Ux4gButton
+import com.ux4g.designsystemv1.components.buttons.Ux4gButtonSize
+import com.ux4g.designsystemv1.components.buttons.Ux4gButtonVariant
+import com.ux4g.designsystemv1.foundation.Ux4gColors
+import com.ux4g.designsystemv1.foundation.Ux4gSpace
+import com.ux4g.designsystemv1.theme.Ux4gTheme
+
+@Composable
+fun AadhaarVerifiedSuccessCardScreen(
+    modifier: Modifier = Modifier,
+    isDarkTheme: Boolean = isSystemInDarkTheme(),
+    successBannerText: String = "Aadhaar identity verified successfully",
+    transactionId: String = "TXN-2024-AAD-78432",
+    onBackClick: () -> Unit = {},
+    onMenuClick: () -> Unit = {},
+    onContinue: () -> Unit = {}
+) {
+    val colors = if (isDarkTheme) DarkAadhaarVerifiedSuccessColors else LightAadhaarVerifiedSuccessColors
+    val canvasBg = if (isDarkTheme) Ux4gColors.primary800 else Ux4gColors.primary100
+    val cardSurfaceBg = if (isDarkTheme) Ux4gColors.neutral900 else Ux4gColors.neutral0
+
+    Column(
+        modifier = modifier
+            .fillMaxSize()
+            .background(canvasBg)
+    ) {
+        // App Header
+        BrandHeader(colors = colors, onMenuClick = onMenuClick)
+
+        Column(
+            modifier = Modifier
+                .weight(1f)
+                .verticalScroll(rememberScrollState())
+                .padding(horizontal = 16.dp, vertical = 20.dp),
+            verticalArrangement = Arrangement.SpaceBetween
+        ) {
+            // Elevated Card Container
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .shadow(
+                        elevation = 6.dp,
+                        shape = RoundedCornerShape(16.dp),
+                        ambientColor = Color.Black.copy(alpha = 0.08f),
+                        spotColor = Color.Black.copy(alpha = 0.12f)
+                    )
+                    .clip(RoundedCornerShape(16.dp))
+                    .background(cardSurfaceBg)
+                    .border(1.dp, colors.border, RoundedCornerShape(16.dp))
+                    .padding(20.dp)
+            ) {
+                Column(modifier = Modifier.fillMaxWidth()) {
+                    BackButton(onClick = onBackClick)
+                    Spacer(Modifier.height(16.dp))
+
+                    // Green confirmation banner
+                    Ux4gStatusBanner(
+                        variant = Ux4gBannerVariant.SuccessLight,
+                        title = successBannerText,
+                        titleStyle = TextStyle(
+                            fontSize = 14.sp,
+                            fontWeight = FontWeight.Medium,
+                            color = colors.successText,
+                            lineHeight = 18.sp
+                        ),
+                        leadingIcon = {
+                            Icon(
+                                imageVector = Icons.Filled.CheckCircle,
+                                contentDescription = null,
+                                tint = colors.successIcon,
+                                modifier = Modifier.size(20.dp)
+                            )
+                        },
+                        backgroundColor = colors.successBackground,
+                        borderColor = colors.successBorder,
+                        margin = PaddingValues(0.dp),
+                        padding = PaddingValues(12.dp)
+                    )
+                    Spacer(Modifier.height(20.dp))
+
+                    Text(
+                        text = "Authentication Successful",
+                        style = TextStyle(
+                            fontSize = 22.sp,
+                            fontWeight = FontWeight.ExtraBold,
+                            color = colors.title,
+                            lineHeight = 26.sp,
+                            letterSpacing = (-0.3).sp
+                        )
+                    )
+                    Spacer(Modifier.height(8.dp))
+
+                    Text(
+                        text = "Your Aadhaar identity has been verified. You may now proceed to the service.",
+                        style = TextStyle(
+                            fontSize = 14.sp,
+                            color = colors.subtleText,
+                            lineHeight = 18.sp
+                        )
+                    )
+                    Spacer(Modifier.height(24.dp))
+
+                    // Transaction ID summary box inside Card
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clip(RoundedCornerShape(12.dp))
+                            .background(colors.infoCardBackground)
+                            .border(1.dp, colors.infoCardBorder, RoundedCornerShape(12.dp))
+                            .padding(horizontal = 16.dp, vertical = 14.dp)
+                    ) {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Text(
+                                text = "Transaction ID",
+                                style = TextStyle(
+                                    fontSize = 14.sp,
+                                    fontWeight = FontWeight.Medium,
+                                    color = colors.subtleText,
+                                    lineHeight = 18.sp
+                                )
+                            )
+                            Text(
+                                text = transactionId,
+                                style = TextStyle(
+                                    fontSize = 14.sp,
+                                    fontWeight = FontWeight.SemiBold,
+                                    fontFamily = FontFamily.Monospace,
+                                    color = colors.infoCardValue,
+                                    lineHeight = 18.sp
+                                )
+                            )
+                        }
+                    }
+                    Spacer(Modifier.height(28.dp))
+
+                    Ux4gButton(
+                        text = "Continue to Service",
+                        onClick = onContinue,
+                        size = Ux4gButtonSize.Large,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(48.dp)
+                    )
+                }
+            }
+
+            Spacer(Modifier.height(16.dp))
+
+            BrandFooter(colors = colors)
+        }
+    }
+}
+`}
+>
+  <img
+    src="/images/patterns/aadhaar_verified_success/aadhaar_verified_success_cardstyle.svg"
+    alt="Aadhaar verified - success - Card style"
+    className="w-full max-w-[360px] rounded-2xl border border-border shadow-sm"
+  />
+</ComponentPreview>
