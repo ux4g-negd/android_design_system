@@ -4,6 +4,8 @@
     "otp-error-incorrect-entry",
     "otp-error-attempt-warning",
     "otp-error-last-attempt-warning",
-    "otp-error-account-locked"
+    "otp-error-account-locked",
+    "otp-error-unlocked",
+    "otp-step-up-suspicious-activity"
   ]
 }
