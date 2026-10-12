@@ -3,6 +3,7 @@
   "pages": [
     "sign-in",
     "otp-verification",
-    "session-time-out-dialog"
+    "session-time-out-dialog",
+    "auth-errors-and-lockout"
   ]
 }

@@ -1,0 +1,9 @@
+{
+  "title": "Auth errors and lockout",
+  "pages": [
+    "otp-error-incorrect-entry",
+    "otp-error-attempt-warning",
+    "otp-error-last-attempt-warning",
+    "otp-error-account-locked"
+  ]
+}
