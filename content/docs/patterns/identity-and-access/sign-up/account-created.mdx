@@ -1,0 +1,613 @@
+---
+title: Account Created
+description: Registration success screen with concentric checkmark indicator, personalized welcome greeting, Aadhaar linkage prompt, and Card-Style variant
+---
+
+# Account Created
+
+An onboarding completion pattern confirming successful citizen account registration. The screen presents positive visual feedback with a concentric green checkmark badge, personalized greeting (*"Welcome, Ramesh Kumar"*), a recommended **Link Aadhaar Now** call-to-action button, a **Skip and Browse Services** secondary option, supportive reassurance messaging (*"You can link Aadhaar later from your profile"*), and a pinned Digital India brand footer.
+
+---
+
+<h2><MIcon name="smartphone" /> Interactive Previews</h2>
+
+### 1. Default Style (Full Screen)
+
+Standard full-screen account creation success flow with centered feedback badge, action options, and advisory caption.
+
+<ComponentPreview
+  title="Account Created - Default"
+  category="Pattern · Jetpack Compose"
+  code={`package com.example.ux4g.patterns.identity.signup
+
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.example.ux4g.R as AppR
+import com.ux4g.designsystemv1.R as Ux4gR
+import com.ux4g.designsystemv1.components.Ux4gAppHeader
+import com.ux4g.designsystemv1.components.Ux4gAppHeaderAction
+import com.ux4g.designsystemv1.components.Ux4gAppHeaderVariant
+import com.ux4g.designsystemv1.components.Ux4gDivider
+import com.ux4g.designsystemv1.components.Ux4gDividerOrientation
+import com.ux4g.designsystemv1.components.buttons.Ux4gButton
+import com.ux4g.designsystemv1.components.buttons.Ux4gButtonSize
+import com.ux4g.designsystemv1.components.buttons.Ux4gButtonVariant
+import com.ux4g.designsystemv1.foundation.Ux4gColors
+import com.ux4g.designsystemv1.foundation.Ux4gSpace
+import com.ux4g.designsystemv1.theme.Ux4gTheme
+
+data class AccountCreatedColors(
+    val screenBackground: Color,
+    val border: Color,
+    val title: Color,
+    val subtleText: Color,
+    val mutedText: Color,
+    val headerDivider: Color,
+    val brandLogoTint: Color,
+    val emblemTint: Color?,
+    val menuButtonBackground: Color,
+    val menuButtonBorder: Color,
+    val menuButtonIcon: Color,
+    val successOuterCircle: Color,
+    val successInnerCircle: Color,
+    val recommendedBadgeBackground: Color,
+    val recommendedBadgeText: Color,
+    val footerLogoTint: Color?
+)
+
+val LightAccountCreatedColors = AccountCreatedColors(
+    screenBackground = Ux4gColors.neutral50,
+    border = Ux4gColors.neutral200,
+    title = Ux4gColors.gray900,
+    subtleText = Ux4gColors.neutral500,
+    mutedText = Ux4gColors.neutral400,
+    headerDivider = Ux4gColors.neutral300,
+    brandLogoTint = Ux4gColors.primary600,
+    emblemTint = null,
+    menuButtonBackground = Ux4gColors.neutral0,
+    menuButtonBorder = Ux4gColors.primary300,
+    menuButtonIcon = Ux4gColors.primary600,
+    successOuterCircle = Color(0xFFD1FADF),
+    successInnerCircle = Color(0xFF12B76A),
+    recommendedBadgeBackground = Color(0xFFFEF0C7),
+    recommendedBadgeText = Color(0xFFB54708),
+    footerLogoTint = null
+)
+
+val DarkAccountCreatedColors = AccountCreatedColors(
+    screenBackground = Ux4gColors.neutral950,
+    border = Ux4gColors.neutral800,
+    title = Ux4gColors.neutral50,
+    subtleText = Ux4gColors.neutral400,
+    mutedText = Ux4gColors.neutral500,
+    headerDivider = Ux4gColors.neutral700,
+    brandLogoTint = Ux4gColors.primary300,
+    emblemTint = Color.White,
+    menuButtonBackground = Ux4gColors.neutral800,
+    menuButtonBorder = Ux4gColors.primary600,
+    menuButtonIcon = Ux4gColors.primary300,
+    successOuterCircle = Color(0xFF054F31),
+    successInnerCircle = Color(0xFF12B76A),
+    recommendedBadgeBackground = Color(0xFF713B12),
+    recommendedBadgeText = Color(0xFFFEDF89),
+    footerLogoTint = Color.White
+)
+
+@Composable
+fun AccountCreatedScreen(
+    modifier: Modifier = Modifier,
+    isDarkTheme: Boolean = isSystemInDarkTheme(),
+    citizenName: String = "Ramesh Kumar",
+    onMenuClick: () -> Unit = {},
+    onLinkAadhaar: () -> Unit = {},
+    onSkip: () -> Unit = {}
+) {
+    val colors = if (isDarkTheme) DarkAccountCreatedColors else LightAccountCreatedColors
+    val typography = Ux4gTheme.typography
+
+    Column(
+        modifier = modifier
+            .fillMaxSize()
+            .background(colors.screenBackground)
+    ) {
+        BrandHeader(colors = colors, onMenuClick = onMenuClick)
+
+        Column(
+            modifier = Modifier
+                .weight(1f)
+                .verticalScroll(rememberScrollState())
+                .padding(horizontal = 24.dp, vertical = 28.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Spacer(Modifier.height(16.dp))
+
+            // Concentric Green Success Checkmark Badge
+            Box(
+                modifier = Modifier
+                    .size(80.dp)
+                    .clip(CircleShape)
+                    .background(colors.successOuterCircle),
+                contentAlignment = Alignment.Center
+            ) {
+                Box(
+                    modifier = Modifier
+                        .size(44.dp)
+                        .clip(CircleShape)
+                        .background(colors.successInnerCircle),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(
+                        imageVector = Icons.Filled.Check,
+                        contentDescription = "Success",
+                        tint = Color.White,
+                        modifier = Modifier.size(24.dp)
+                    )
+                }
+            }
+            Spacer(Modifier.height(28.dp))
+
+            Text(
+                text = "Account Created!",
+                style = typography.hM_strong.copy(
+                    fontSize = 28.sp,
+                    color = colors.title,
+                    letterSpacing = (-0.3).sp
+                ),
+                textAlign = TextAlign.Center
+            )
+            Spacer(Modifier.height(8.dp))
+            Text(
+                text = "Welcome, $citizenName",
+                style = typography.bM_default.copy(
+                    fontSize = 16.sp,
+                    color = colors.subtleText
+                ),
+                textAlign = TextAlign.Center
+            )
+            Spacer(Modifier.height(28.dp))
+
+            // RECOMMENDED Badge
+            Box(
+                modifier = Modifier
+                    .clip(RoundedCornerShape(6.dp))
+                    .background(colors.recommendedBadgeBackground)
+                    .padding(horizontal = 12.dp, vertical = 6.dp)
+            ) {
+                Text(
+                    text = "RECOMMENDED",
+                    style = TextStyle(
+                        fontSize = 11.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = colors.recommendedBadgeText,
+                        letterSpacing = 0.5.sp
+                    )
+                )
+            }
+            Spacer(Modifier.height(14.dp))
+
+            // Primary Call to Action
+            Ux4gButton(
+                text = "Link Aadhaar Now",
+                onClick = onLinkAadhaar,
+                size = Ux4gButtonSize.Large,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(48.dp)
+            )
+            Spacer(Modifier.height(12.dp))
+
+            // Secondary Outline Action
+            Ux4gButton(
+                text = "Skip and Browse Services",
+                onClick = onSkip,
+                variant = Ux4gButtonVariant.Outline,
+                size = Ux4gButtonSize.Large,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(48.dp)
+            )
+            Spacer(Modifier.height(24.dp))
+
+            Text(
+                text = "You can link Aadhaar later from your profile",
+                style = TextStyle(
+                    fontSize = 13.sp,
+                    color = colors.subtleText,
+                    lineHeight = 17.sp
+                ),
+                textAlign = TextAlign.Center
+            )
+        }
+
+        BrandFooter(colors = colors)
+    }
+}
+
+@Composable
+private fun BrandHeader(colors: AccountCreatedColors, onMenuClick: () -> Unit) {
+    Column {
+        Ux4gAppHeader(
+            title = "",
+            variant = Ux4gAppHeaderVariant.Light,
+            height = 64.dp,
+            horizontalPadding = Ux4gSpace.Space16,
+            leadingSpacing = Ux4gSpace.Space8,
+            leadingWidgets = listOf(
+                {
+                    Image(
+                        painter = painterResource(Ux4gR.drawable.ic_national_emblem),
+                        contentDescription = "National Emblem of India",
+                        colorFilter = colors.emblemTint?.let { ColorFilter.tint(it) },
+                        modifier = Modifier.height(32.dp)
+                    )
+                },
+                {
+                    Ux4gDivider(
+                        orientation = Ux4gDividerOrientation.Vertical,
+                        color = colors.headerDivider,
+                        height = 28.dp
+                    )
+                },
+                {
+                    Image(
+                        painter = painterResource(Ux4gR.drawable.ic_union),
+                        contentDescription = "Government of India",
+                        colorFilter = ColorFilter.tint(colors.brandLogoTint),
+                        modifier = Modifier.height(32.dp)
+                    )
+                }
+            ),
+            actions = listOf(
+                Ux4gAppHeaderAction(
+                    customWidget = {
+                        Box(
+                            modifier = Modifier
+                                .size(40.dp)
+                                .clip(RoundedCornerShape(10.dp))
+                                .background(colors.menuButtonBackground)
+                                .border(1.5.dp, colors.menuButtonBorder, RoundedCornerShape(10.dp))
+                                .clickable(onClick = onMenuClick),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Icon(
+                                imageVector = Icons.Filled.Menu,
+                                contentDescription = "Open menu",
+                                tint = colors.menuButtonIcon,
+                                modifier = Modifier.size(20.dp)
+                            )
+                        }
+                    }
+                )
+            )
+        )
+        Ux4gDivider(color = colors.border)
+    }
+}
+
+@Composable
+private fun BrandFooter(colors: AccountCreatedColors) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = Ux4gSpace.Space8, bottom = Ux4gSpace.Space20),
+        horizontalArrangement = Arrangement.Center,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(
+            text = "Powered by -",
+            style = Ux4gTheme.typography.lS_default.copy(color = colors.mutedText)
+        )
+        Spacer(Modifier.width(Ux4gSpace.Space8))
+        Image(
+            painter = painterResource(AppR.drawable.ic_digital_india),
+            contentDescription = "Digital India",
+            colorFilter = colors.footerLogoTint?.let { ColorFilter.tint(it) },
+            modifier = Modifier.height(22.dp)
+        )
+    }
+}
+
+@Preview(name = "Account Created - Light", showBackground = true)
+@Composable
+private fun AccountCreatedScreenLightPreview() {
+    Ux4gTheme {
+        AccountCreatedScreen()
+    }
+}
+
+@Preview(name = "Account Created - Dark", showBackground = true)
+@Composable
+private fun AccountCreatedScreenDarkPreview() {
+    Ux4gTheme {
+        AccountCreatedScreen(isDarkTheme = true)
+    }
+}`}
+>
+  <img
+    src="/images/patterns/account_created/account_created.svg"
+    alt="Account Created - Default style"
+    className="w-full max-w-[360px] rounded-2xl border border-border shadow-sm"
+  />
+</ComponentPreview>
+
+---
+
+### 2. Card Style Variant
+
+Elevated card container on a soft purple tinted canvas (`Ux4gColors.primary100` / `primary800`) with smooth shadows and pinned footer branding.
+
+<ComponentPreview
+  title="Account Created - Card Style"
+  category="Pattern · Jetpack Compose"
+  code={`package com.example.ux4g.patterns.identity.signup
+
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.example.ux4g.R as AppR
+import com.ux4g.designsystemv1.R as Ux4gR
+import com.ux4g.designsystemv1.components.Ux4gAppHeader
+import com.ux4g.designsystemv1.components.Ux4gAppHeaderAction
+import com.ux4g.designsystemv1.components.Ux4gAppHeaderVariant
+import com.ux4g.designsystemv1.components.Ux4gDivider
+import com.ux4g.designsystemv1.components.Ux4gDividerOrientation
+import com.ux4g.designsystemv1.components.buttons.Ux4gButton
+import com.ux4g.designsystemv1.components.buttons.Ux4gButtonSize
+import com.ux4g.designsystemv1.components.buttons.Ux4gButtonVariant
+import com.ux4g.designsystemv1.foundation.Ux4gColors
+import com.ux4g.designsystemv1.theme.Ux4gTheme
+
+@Composable
+fun AccountCreatedCardScreen(
+    modifier: Modifier = Modifier,
+    isDarkTheme: Boolean = isSystemInDarkTheme(),
+    citizenName: String = "Ramesh Kumar",
+    onMenuClick: () -> Unit = {},
+    onLinkAadhaar: () -> Unit = {},
+    onSkip: () -> Unit = {}
+) {
+    val colors = if (isDarkTheme) DarkAccountCreatedColors else LightAccountCreatedColors
+
+    // Soft-purple section background hosting the elevated card
+    val cardSectionBg = if (isDarkTheme) Ux4gColors.primary800 else Ux4gColors.primary100
+    val cardSurfaceBg = if (isDarkTheme) Ux4gColors.neutral900 else Ux4gColors.neutral0
+
+    Column(
+        modifier = modifier
+            .fillMaxSize()
+            .background(colors.screenBackground)
+    ) {
+        BrandHeader(colors = colors, onMenuClick = onMenuClick)
+
+        // Soft-purple body container with scrollable card & pinned footer
+        Column(
+            modifier = Modifier
+                .weight(1f)
+                .fillMaxWidth()
+                .background(cardSectionBg)
+        ) {
+            Column(
+                modifier = Modifier
+                    .weight(1f)
+                    .fillMaxWidth()
+                    .verticalScroll(rememberScrollState())
+                    .padding(start = 16.dp, top = 20.dp, end = 16.dp, bottom = 16.dp)
+            ) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .shadow(
+                            elevation = 4.dp,
+                            shape = RoundedCornerShape(16.dp),
+                            spotColor = Color.Black.copy(alpha = 0.04f)
+                        )
+                        .clip(RoundedCornerShape(16.dp))
+                        .background(cardSurfaceBg)
+                        .padding(horizontal = 20.dp, vertical = 28.dp)
+                ) {
+                    Column(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        // Concentric Green Success Checkmark Badge
+                        Box(
+                            modifier = Modifier
+                                .size(80.dp)
+                                .clip(CircleShape)
+                                .background(colors.successOuterCircle),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Box(
+                                modifier = Modifier
+                                    .size(44.dp)
+                                    .clip(CircleShape)
+                                    .background(colors.successInnerCircle),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Filled.Check,
+                                    contentDescription = "Success",
+                                    tint = Color.White,
+                                    modifier = Modifier.size(24.dp)
+                                )
+                            }
+                        }
+                        Spacer(Modifier.height(24.dp))
+
+                        Text(
+                            text = "Account Created!",
+                            style = TextStyle(
+                                fontSize = 26.sp,
+                                fontWeight = FontWeight.ExtraBold,
+                                color = colors.title,
+                                lineHeight = 32.sp,
+                                letterSpacing = (-0.3).sp
+                            ),
+                            textAlign = TextAlign.Center
+                        )
+                        Spacer(Modifier.height(8.dp))
+                        Text(
+                            text = "Welcome, $citizenName",
+                            style = TextStyle(
+                                fontSize = 15.sp,
+                                color = colors.subtleText,
+                                lineHeight = 20.sp
+                            ),
+                            textAlign = TextAlign.Center
+                        )
+                        Spacer(Modifier.height(24.dp))
+
+                        // RECOMMENDED Badge
+                        Box(
+                            modifier = Modifier
+                                .clip(RoundedCornerShape(6.dp))
+                                .background(colors.recommendedBadgeBackground)
+                                .padding(horizontal = 12.dp, vertical = 6.dp)
+                        ) {
+                            Text(
+                                text = "RECOMMENDED",
+                                style = TextStyle(
+                                    fontSize = 11.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    color = colors.recommendedBadgeText,
+                                    letterSpacing = 0.5.sp
+                                )
+                            )
+                        }
+                        Spacer(Modifier.height(14.dp))
+
+                        // Primary Call to Action
+                        Ux4gButton(
+                            text = "Link Aadhaar Now",
+                            onClick = onLinkAadhaar,
+                            size = Ux4gButtonSize.Large,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(48.dp)
+                        )
+                        Spacer(Modifier.height(12.dp))
+
+                        // Secondary Outline Action
+                        Ux4gButton(
+                            text = "Skip and Browse Services",
+                            onClick = onSkip,
+                            variant = Ux4gButtonVariant.Outline,
+                            size = Ux4gButtonSize.Large,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(48.dp)
+                        )
+                        Spacer(Modifier.height(20.dp))
+
+                        Text(
+                            text = "You can link Aadhaar later from your profile",
+                            style = TextStyle(
+                                fontSize = 13.sp,
+                                color = colors.subtleText,
+                                lineHeight = 17.sp
+                            ),
+                            textAlign = TextAlign.Center
+                        )
+                    }
+                }
+            }
+
+            BrandFooter(colors = colors)
+        }
+    }
+}
+
+@Preview(name = "Account Created - Card Style Light", showBackground = true)
+@Composable
+private fun AccountCreatedCardScreenLightPreview() {
+    Ux4gTheme {
+        AccountCreatedCardScreen()
+    }
+}
+
+@Preview(name = "Account Created - Card Style Dark", showBackground = true)
+@Composable
+private fun AccountCreatedCardScreenDarkPreview() {
+    Ux4gTheme {
+        AccountCreatedCardScreen(isDarkTheme = true)
+    }
+}`}
+>
+  <img
+    src="/images/patterns/account_created/account_created_cardstyle.svg"
+    alt="Account Created - Card style"
+    className="w-full max-w-[360px] rounded-2xl border border-border shadow-sm"
+  />
+</ComponentPreview>

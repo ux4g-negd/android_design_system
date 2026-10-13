@@ -1,0 +1,10 @@
+{
+  "title": "SignUp",
+  "pages": [
+    "create-your-account",
+    "verify-your-mobile",
+    "complete-your-profile",
+    "password-setup",
+    "account-created"
+  ]
+}

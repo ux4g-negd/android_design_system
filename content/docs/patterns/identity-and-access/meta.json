@@ -2,6 +2,7 @@
   "title": "Identity and Access",
   "pages": [
     "sign-in",
+    "sign-up",
     "aadhaar-authentication-gate",
     "otp-verification",
     "session-time-out-dialog",
