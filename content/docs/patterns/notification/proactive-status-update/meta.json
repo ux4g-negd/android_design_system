@@ -1,0 +1,9 @@
+{
+  "title": "Proactive Status Update",
+  "pages": [
+    "auto-dismiss-banner",
+    "live-status",
+    "reconnecting-state",
+    "manual-refresh-prompt"
+  ]
+}

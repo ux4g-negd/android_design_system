@@ -1,0 +1,397 @@
+---
+title: Live Status
+description: Real-time application tracking pattern featuring active socket connection indicator, live status badge, and multi-stage journey progression timeline
+---
+
+# Live Status
+
+A proactive status tracking pattern for citizen portals connected to a real-time event stream (such as WebSocket or Server-Sent Events). When an application is receiving live server updates, the top status summary displays an active **Live** indicator tag (`Ux4gTag` in Success tonal style). The view dynamically reflects stage transitions along the **Application journey** without requiring manual page reloads or intrusive popups.
+
+---
+
+<h2><MIcon name="sensors" /> Interactive Previews</h2>
+
+### 1. Default Style (Full Screen)
+
+Citizen application tracking screen connected to a live event stream, built with UX4G design system components: `Ux4gAppHeader`, `Ux4gTag`, `Ux4gLinearProgressBar`, and `Ux4gJourneyTimeline`.
+
+<ComponentPreview
+  title="Live Status - Default"
+  category="Pattern · Jetpack Compose"
+  code={`package com.example.ux4g.patterns.notification.proactive
+
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.example.ux4g.R as AppR
+import com.ux4g.designsystemv1.R as Ux4gR
+import com.ux4g.designsystemv1.components.Ux4gAppHeader
+import com.ux4g.designsystemv1.components.Ux4gAppHeaderAction
+import com.ux4g.designsystemv1.components.Ux4gAppHeaderVariant
+import com.ux4g.designsystemv1.components.Ux4gDivider
+import com.ux4g.designsystemv1.components.Ux4gDividerOrientation
+import com.ux4g.designsystemv1.components.journeytimeline.Ux4gJourneyBadgePosition
+import com.ux4g.designsystemv1.components.journeytimeline.Ux4gJourneyHeader
+import com.ux4g.designsystemv1.components.journeytimeline.Ux4gJourneyStep
+import com.ux4g.designsystemv1.components.journeytimeline.Ux4gJourneyStepState
+import com.ux4g.designsystemv1.components.journeytimeline.Ux4gJourneyStepStatus
+import com.ux4g.designsystemv1.components.journeytimeline.Ux4gJourneyTimeline
+import com.ux4g.designsystemv1.components.progress.Ux4gLinearProgressBar
+import com.ux4g.designsystemv1.components.progress.Ux4gProgressShape
+import com.ux4g.designsystemv1.components.tag.Ux4gTag
+import com.ux4g.designsystemv1.components.tag.Ux4gTagColor
+import com.ux4g.designsystemv1.components.tag.Ux4gTagSize
+import com.ux4g.designsystemv1.components.tag.Ux4gTagStyle
+import com.ux4g.designsystemv1.foundation.Ux4gColors
+import com.ux4g.designsystemv1.foundation.Ux4gSpace
+import com.ux4g.designsystemv1.theme.Ux4gTheme
+
+data class LiveStatusColors(
+    val screenBackground: Color,
+    val cardBackground: Color,
+    val border: Color,
+    val title: Color,
+    val subtleText: Color,
+    val mutedText: Color,
+    val brandLogoTint: Color,
+    val emblemTint: Color?,
+    val menuButtonBorder: Color,
+    val menuButtonIcon: Color,
+    val backButtonColor: Color,
+    val progressFill: Color,
+    val progressTrack: Color,
+    val footerLogoTint: Color?
+)
+
+val LightLiveStatusColors = LiveStatusColors(
+    screenBackground = Ux4gColors.neutral50,
+    cardBackground = Ux4gColors.neutral0,
+    border = Ux4gColors.neutral200,
+    title = Ux4gColors.gray900,
+    subtleText = Ux4gColors.neutral600,
+    mutedText = Ux4gColors.neutral400,
+    brandLogoTint = Ux4gColors.primary600,
+    emblemTint = null,
+    menuButtonBorder = Ux4gColors.primary300,
+    menuButtonIcon = Ux4gColors.primary600,
+    backButtonColor = Ux4gColors.primary600,
+    progressFill = Color(0xFFA66A03),
+    progressTrack = Color(0xFFF8D1A2),
+    footerLogoTint = null
+)
+
+val DarkLiveStatusColors = LiveStatusColors(
+    screenBackground = Ux4gColors.neutral950,
+    cardBackground = Ux4gColors.neutral900,
+    border = Ux4gColors.neutral800,
+    title = Ux4gColors.neutral50,
+    subtleText = Ux4gColors.neutral400,
+    mutedText = Ux4gColors.neutral500,
+    brandLogoTint = Ux4gColors.primary300,
+    emblemTint = Color.White,
+    menuButtonBorder = Ux4gColors.primary600,
+    menuButtonIcon = Ux4gColors.primary300,
+    backButtonColor = Ux4gColors.primary300,
+    progressFill = Color(0xFFF8D1A2),
+    progressTrack = Color(0xFF78350F),
+    footerLogoTint = Color.White
+)
+
+@Composable
+fun LiveStatusScreen(
+    modifier: Modifier = Modifier,
+    isDarkTheme: Boolean = isSystemInDarkTheme(),
+    onBackClick: () -> Unit = {},
+    onMenuClick: () -> Unit = {}
+) {
+    val colors = if (isDarkTheme) DarkLiveStatusColors else LightLiveStatusColors
+
+    Column(
+        modifier = modifier
+            .fillMaxSize()
+            .background(colors.screenBackground)
+    ) {
+        BrandHeader(colors = colors, onMenuClick = onMenuClick)
+
+        Column(
+            modifier = Modifier
+                .weight(1f)
+                .verticalScroll(rememberScrollState())
+                .padding(horizontal = 16.dp, vertical = 12.dp)
+        ) {
+            // Back Navigation Link
+            Row(
+                modifier = Modifier
+                    .clickable(onClick = onBackClick)
+                    .padding(vertical = 4.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Icon(
+                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                    contentDescription = "Back",
+                    tint = colors.backButtonColor,
+                    modifier = Modifier.size(16.dp)
+                )
+                Spacer(Modifier.width(6.dp))
+                Text(
+                    text = "Back",
+                    style = TextStyle(
+                        fontSize = 14.sp,
+                        fontWeight = FontWeight.SemiBold,
+                        color = colors.backButtonColor
+                    )
+                )
+            }
+
+            Spacer(Modifier.height(16.dp))
+
+            // Card 1: Application Status with "Live" Tag & Progress
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(12.dp))
+                    .background(colors.cardBackground)
+                    .border(1.dp, colors.border, RoundedCornerShape(12.dp))
+                    .padding(16.dp)
+            ) {
+                Column {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            text = "Income Certificate",
+                            style = TextStyle(
+                                fontSize = 16.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = colors.title
+                            )
+                        )
+                        // Live Status Tag (Success Tonal Style)
+                        Ux4gTag(
+                            text = "Live",
+                            colorScheme = Ux4gTagColor.Success,
+                            style = Ux4gTagStyle.Tonal,
+                            size = Ux4gTagSize.M
+                        )
+                    }
+
+                    Spacer(Modifier.height(6.dp))
+                    Text(
+                        text = "Application ID · INC-2026-MH-04127",
+                        style = TextStyle(
+                            fontSize = 12.sp,
+                            color = colors.subtleText
+                        )
+                    )
+
+                    Spacer(Modifier.height(14.dp))
+                    Ux4gLinearProgressBar(
+                        value = 0.38f,
+                        label = "8 days left",
+                        height = 6.dp,
+                        shape = Ux4gProgressShape.Rounded,
+                        color = colors.progressFill,
+                        trackColor = colors.progressTrack
+                    )
+                }
+            }
+
+            Spacer(Modifier.height(16.dp))
+
+            // Card 2: Application Journey (Ux4gJourneyTimeline)
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(12.dp))
+                    .background(colors.cardBackground)
+                    .border(1.dp, colors.border, RoundedCornerShape(12.dp))
+                    .padding(16.dp)
+            ) {
+                Ux4gJourneyTimeline(
+                    header = Ux4gJourneyHeader(
+                        title = "Application journey",
+                        description = "Every step from submission to issuance"
+                    ),
+                    steps = listOf(
+                        Ux4gJourneyStep(
+                            state = Ux4gJourneyStepState.Completed,
+                            date = "07 Apr 2026, 10:24 AM",
+                            title = "Application Submitted"
+                        ),
+                        Ux4gJourneyStep(
+                            state = Ux4gJourneyStepState.Completed,
+                            date = "10 Apr 2026, 02:15 PM",
+                            title = "Documents Verified"
+                        ),
+                        Ux4gJourneyStep(
+                            state = Ux4gJourneyStepState.Current,
+                            date = "11 Apr 2026 (Est)",
+                            title = "Under Review",
+                            dateColor = colors.brandLogoTint,
+                            cardColor = if (isDarkTheme) Color(0xFF2E1A47) else Color(0xFFF3F0FF),
+                            cardBorderColor = colors.brandLogoTint
+                        ),
+                        Ux4gJourneyStep(
+                            state = Ux4gJourneyStepState.Upcoming,
+                            date = "22 Apr 2026 (Est)",
+                            title = "Decision",
+                            status = Ux4gJourneyStepStatus(
+                                text = "2 days remaining",
+                                badgeText = "Pending",
+                                badgePosition = Ux4gJourneyBadgePosition.Bottom
+                            )
+                        )
+                    ),
+                    activeColor = colors.brandLogoTint,
+                    indicatorSize = 18.dp,
+                    lineWidth = 2.dp
+                )
+            }
+
+            Spacer(Modifier.height(32.dp))
+            BrandFooter(colors = colors)
+            Spacer(Modifier.height(16.dp))
+        }
+    }
+}
+
+@Composable
+private fun BrandHeader(colors: LiveStatusColors, onMenuClick: () -> Unit) {
+    Column {
+        Ux4gAppHeader(
+            title = "",
+            variant = Ux4gAppHeaderVariant.Light,
+            height = 64.dp,
+            horizontalPadding = Ux4gSpace.Space16,
+            leadingSpacing = Ux4gSpace.Space8,
+            leadingWidgets = listOf(
+                {
+                    Image(
+                        painter = painterResource(Ux4gR.drawable.ic_national_emblem),
+                        contentDescription = "National Emblem of India",
+                        colorFilter = colors.emblemTint?.let { ColorFilter.tint(it) },
+                        modifier = Modifier.height(28.dp)
+                    )
+                },
+                {
+                    Ux4gDivider(
+                        orientation = Ux4gDividerOrientation.Vertical,
+                        color = colors.border,
+                        modifier = Modifier.height(18.dp)
+                    )
+                },
+                {
+                    Image(
+                        painter = painterResource(Ux4gR.drawable.ic_union),
+                        contentDescription = "Government of India",
+                        colorFilter = ColorFilter.tint(colors.brandLogoTint),
+                        modifier = Modifier.height(28.dp)
+                    )
+                }
+            ),
+            actions = listOf(
+                Ux4gAppHeaderAction(
+                    customWidget = {
+                        Box(
+                            modifier = Modifier
+                                .size(32.dp)
+                                .clip(RoundedCornerShape(6.dp))
+                                .border(1.dp, colors.menuButtonBorder, RoundedCornerShape(6.dp))
+                                .clickable(onClick = onMenuClick),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Icon(
+                                imageVector = Icons.Filled.Menu,
+                                contentDescription = "Menu",
+                                tint = colors.menuButtonIcon,
+                                modifier = Modifier.size(18.dp)
+                            )
+                        }
+                    }
+                )
+            )
+        )
+        Ux4gDivider(color = colors.border)
+    }
+}
+
+@Composable
+private fun BrandFooter(colors: LiveStatusColors) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = Ux4gSpace.Space8, bottom = Ux4gSpace.Space12),
+        horizontalArrangement = Arrangement.Center,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(
+            text = "Powered by -",
+            style = Ux4gTheme.typography.lS_default.copy(color = colors.mutedText)
+        )
+        Spacer(Modifier.width(Ux4gSpace.Space8))
+        Image(
+            painter = painterResource(AppR.drawable.ic_digital_india),
+            contentDescription = "Digital India",
+            colorFilter = colors.footerLogoTint?.let { ColorFilter.tint(it) },
+            modifier = Modifier.height(18.dp)
+        )
+    }
+}
+
+@Preview(name = "Live Status - Light", showBackground = true)
+@Composable
+private fun LiveStatusScreenLightPreview() {
+    Ux4gTheme {
+        LiveStatusScreen()
+    }
+}
+
+@Preview(name = "Live Status - Dark", showBackground = true)
+@Composable
+private fun LiveStatusScreenDarkPreview() {
+    Ux4gTheme {
+        LiveStatusScreen(isDarkTheme = true)
+    }
+}`}
+>
+  <img
+    src="/images/patterns/proactive_status_update/live_status.svg"
+    alt="Live Status"
+    className="w-full max-w-[360px] rounded-2xl border border-border shadow-sm"
+  />
+</ComponentPreview>

@@ -3,6 +3,7 @@
   "pages": [
     "notification",
     "reminder-alerts",
-    "notification-preferences"
+    "notification-preferences",
+    "proactive-status-update"
   ]
 }
