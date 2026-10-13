@@ -1,0 +1,392 @@
+---
+title: Reminder Alerts
+description: Progressive deadline countdown and time-sensitive in-app advisory alerts using Ux4gToast across service lifecycle stages
+---
+
+# Reminder Alerts
+
+A progressive notification and advisory pattern for citizen applications facing time-sensitive deadlines, draft expirations, certificate renewals, and scheduled in-person appointments. The pattern uses the official `Ux4gToast` component to deliver contextual floating alerts with standardized UX4G severity categories—transitioning from non-intrusive early guidance (*30 days before*) to actionable warnings (*5 days before*), critical deletion alerts (*2 days before*), expiration notices (*On expiry day*), and immediate appointment reminders (*1 hour before*).
+
+Each alert leverages `Ux4gToast` with its built-in category icon, explicit title, informative guidance text, contextual action button, and dismissible close control.
+
+---
+
+<h2><MIcon name="smartphone" /> Interactive Previews</h2>
+
+### 1. 30 Days Before Expiry (Informational)
+
+Early renewal advisory informing citizens well in advance of document expiration to prevent service interruption using `Ux4gToast` with `Ux4gToastCategory.Info`.
+
+<ComponentPreview
+  title="Reminder Alert - 30 Days Before Expiry"
+  category="Pattern · Jetpack Compose"
+  code={`package com.example.ux4g.patterns.notification
+
+import androidx.compose.foundation.background
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import com.ux4g.designsystemv1.components.toast.Ux4gToast
+import com.ux4g.designsystemv1.components.toast.Ux4gToastCategory
+import com.ux4g.designsystemv1.theme.Ux4gTheme
+
+@Composable
+fun ReminderAlertThirtyDaysScreen(
+    modifier: Modifier = Modifier,
+    isDarkTheme: Boolean = isSystemInDarkTheme(),
+    onDismiss: () -> Unit = {},
+    onActionClick: () -> Unit = {}
+) {
+    Box(
+        modifier = modifier
+            .fillMaxSize()
+            .background(Color(0xFFB0B0B0).copy(alpha = 0.5f))
+            .padding(16.dp),
+        contentAlignment = Alignment.BottomCenter
+    ) {
+        Ux4gToast(
+            category = Ux4gToastCategory.Info,
+            title = "30 days before expiry",
+            subtitle = "Your Income Certificate expires on 15 May 2026 (30 days away). Renew early to avoid a service gap: bit.ly/renew-mh.",
+            actionText = "Renew Application",
+            onActionClick = onActionClick,
+            onCloseClick = onDismiss,
+            modifier = Modifier.fillMaxWidth()
+        )
+    }
+}
+
+@Preview(name = "30 Days Before - Light", showBackground = true)
+@Composable
+private fun ReminderAlertThirtyDaysLightPreview() {
+    Ux4gTheme {
+        ReminderAlertThirtyDaysScreen()
+    }
+}
+
+@Preview(name = "30 Days Before - Dark", showBackground = true)
+@Composable
+private fun ReminderAlertThirtyDaysDarkPreview() {
+    Ux4gTheme {
+        ReminderAlertThirtyDaysScreen(isDarkTheme = true)
+    }
+}`}
+>
+  <img
+    src="/images/patterns/reminder_alerts/30_days_before_expiry.svg"
+    alt="30 days before expiry"
+    className="w-full max-w-[360px] rounded-2xl border border-border shadow-sm"
+  />
+</ComponentPreview>
+
+---
+
+### 2. 5 Days Before Expiry (Early Warning)
+
+Warning advisory indicating that an unsubmitted draft application will expire soon, rendered with `Ux4gToastCategory.Warning`.
+
+<ComponentPreview
+  title="Reminder Alert - 5 Days Before Expiry"
+  category="Pattern · Jetpack Compose"
+  code={`package com.example.ux4g.patterns.notification
+
+import androidx.compose.foundation.background
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import com.ux4g.designsystemv1.components.toast.Ux4gToast
+import com.ux4g.designsystemv1.components.toast.Ux4gToastCategory
+import com.ux4g.designsystemv1.theme.Ux4gTheme
+
+@Composable
+fun ReminderAlertFiveDaysScreen(
+    modifier: Modifier = Modifier,
+    isDarkTheme: Boolean = isSystemInDarkTheme(),
+    onDismiss: () -> Unit = {},
+    onActionClick: () -> Unit = {}
+) {
+    Box(
+        modifier = modifier
+            .fillMaxSize()
+            .background(Color(0xFFB0B0B0).copy(alpha = 0.5f))
+            .padding(16.dp),
+        contentAlignment = Alignment.BottomCenter
+    ) {
+        Ux4gToast(
+            category = Ux4gToastCategory.Warning,
+            title = "5 days before expiry",
+            subtitle = "Your Income Certificate draft expires in 5 days (16 Apr). Resume now: bit.ly/resume-mh.",
+            actionText = "Resume Application",
+            onActionClick = onActionClick,
+            onCloseClick = onDismiss,
+            modifier = Modifier.fillMaxWidth()
+        )
+    }
+}
+
+@Preview(name = "5 Days Before - Light", showBackground = true)
+@Composable
+private fun ReminderAlertFiveDaysLightPreview() {
+    Ux4gTheme {
+        ReminderAlertFiveDaysScreen()
+    }
+}
+
+@Preview(name = "5 Days Before - Dark", showBackground = true)
+@Composable
+private fun ReminderAlertFiveDaysDarkPreview() {
+    Ux4gTheme {
+        ReminderAlertFiveDaysScreen(isDarkTheme = true)
+    }
+}`}
+>
+  <img
+    src="/images/patterns/reminder_alerts/5_days_before_expiry.svg"
+    alt="5 days before expiry"
+    className="w-full max-w-[360px] rounded-2xl border border-border shadow-sm"
+  />
+</ComponentPreview>
+
+---
+
+### 3. 2 Days Before Expiry (Urgent / Action Required)
+
+High-priority urgent alert warning the citizen that pending draft data will be permanently cleared within 48 hours, presented using `Ux4gToastCategory.Error`.
+
+<ComponentPreview
+  title="Reminder Alert - 2 Days Before Expiry"
+  category="Pattern · Jetpack Compose"
+  code={`package com.example.ux4g.patterns.notification
+
+import androidx.compose.foundation.background
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import com.ux4g.designsystemv1.components.toast.Ux4gToast
+import com.ux4g.designsystemv1.components.toast.Ux4gToastCategory
+import com.ux4g.designsystemv1.theme.Ux4gTheme
+
+@Composable
+fun ReminderAlertTwoDaysScreen(
+    modifier: Modifier = Modifier,
+    isDarkTheme: Boolean = isSystemInDarkTheme(),
+    onDismiss: () -> Unit = {},
+    onActionClick: () -> Unit = {}
+) {
+    Box(
+        modifier = modifier
+            .fillMaxSize()
+            .background(Color(0xFFB0B0B0).copy(alpha = 0.5f))
+            .padding(16.dp),
+        contentAlignment = Alignment.BottomCenter
+    ) {
+        Ux4gToast(
+            category = Ux4gToastCategory.Error,
+            title = "2 days before expiry",
+            subtitle = "Only 2 days left. Submit your Income Certificate before 16 Apr or your draft will be deleted. Resume: bit.ly/resume-mh.",
+            actionText = "Start new Application",
+            onActionClick = onActionClick,
+            onCloseClick = onDismiss,
+            modifier = Modifier.fillMaxWidth()
+        )
+    }
+}
+
+@Preview(name = "2 Days Before - Light", showBackground = true)
+@Composable
+private fun ReminderAlertTwoDaysLightPreview() {
+    Ux4gTheme {
+        ReminderAlertTwoDaysScreen()
+    }
+}
+
+@Preview(name = "2 Days Before - Dark", showBackground = true)
+@Composable
+private fun ReminderAlertTwoDaysDarkPreview() {
+    Ux4gTheme {
+        ReminderAlertTwoDaysScreen(isDarkTheme = true)
+    }
+}`}
+>
+  <img
+    src="/images/patterns/reminder_alerts/2_days_before_expiry.svg"
+    alt="2 days before expiry"
+    className="w-full max-w-[360px] rounded-2xl border border-border shadow-sm"
+  />
+</ComponentPreview>
+
+---
+
+### 4. On Expiry Day (Expired Notification)
+
+Final expiration notification informing the citizen that the application window has lapsed, rendered via `Ux4gToastCategory.Error`.
+
+<ComponentPreview
+  title="Reminder Alert - On Expiry Day"
+  category="Pattern · Jetpack Compose"
+  code={`package com.example.ux4g.patterns.notification
+
+import androidx.compose.foundation.background
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import com.ux4g.designsystemv1.components.toast.Ux4gToast
+import com.ux4g.designsystemv1.components.toast.Ux4gToastCategory
+import com.ux4g.designsystemv1.theme.Ux4gTheme
+
+@Composable
+fun ReminderAlertOnExpiryDayScreen(
+    modifier: Modifier = Modifier,
+    isDarkTheme: Boolean = isSystemInDarkTheme(),
+    onDismiss: () -> Unit = {},
+    onActionClick: () -> Unit = {}
+) {
+    Box(
+        modifier = modifier
+            .fillMaxSize()
+            .background(Color(0xFFB0B0B0).copy(alpha = 0.5f))
+            .padding(16.dp),
+        contentAlignment = Alignment.BottomCenter
+    ) {
+        Ux4gToast(
+            category = Ux4gToastCategory.Error,
+            title = "On expiry day",
+            subtitle = "Your Income Certificate draft expired on 16 Apr. Your saved data has been removed. Start a new application: bit.ly/apply-mh.",
+            actionText = "Start new Application",
+            onActionClick = onActionClick,
+            onCloseClick = onDismiss,
+            modifier = Modifier.fillMaxWidth()
+        )
+    }
+}
+
+@Preview(name = "On Expiry Day - Light", showBackground = true)
+@Composable
+private fun ReminderAlertOnExpiryDayLightPreview() {
+    Ux4gTheme {
+        ReminderAlertOnExpiryDayScreen()
+    }
+}
+
+@Preview(name = "On Expiry Day - Dark", showBackground = true)
+@Composable
+private fun ReminderAlertOnExpiryDayDarkPreview() {
+    Ux4gTheme {
+        ReminderAlertOnExpiryDayScreen(isDarkTheme = true)
+    }
+}`}
+>
+  <img
+    src="/images/patterns/reminder_alerts/on_expiry_day.svg"
+    alt="On expiry day"
+    className="w-full max-w-[360px] rounded-2xl border border-border shadow-sm"
+  />
+</ComponentPreview>
+
+---
+
+### 5. 1 Hour Before (Immediate Event / Inspection)
+
+Real-time appointment notification alerting the citizen of an upcoming scheduled field inspection or verification appointment, styled using `Ux4gToastCategory.Success`.
+
+<ComponentPreview
+  title="Reminder Alert - 1 Hour Before"
+  category="Pattern · Jetpack Compose"
+  code={`package com.example.ux4g.patterns.notification
+
+import androidx.compose.foundation.background
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import com.ux4g.designsystemv1.components.toast.Ux4gToast
+import com.ux4g.designsystemv1.components.toast.Ux4gToastCategory
+import com.ux4g.designsystemv1.theme.Ux4gTheme
+
+@Composable
+fun ReminderAlertOneHourScreen(
+    modifier: Modifier = Modifier,
+    isDarkTheme: Boolean = isSystemInDarkTheme(),
+    onDismiss: () -> Unit = {},
+    onActionClick: () -> Unit = {}
+) {
+    Box(
+        modifier = modifier
+            .fillMaxSize()
+            .background(Color(0xFFB0B0B0).copy(alpha = 0.5f))
+            .padding(16.dp),
+        contentAlignment = Alignment.BottomCenter
+    ) {
+        Ux4gToast(
+            category = Ux4gToastCategory.Success,
+            title = "1 hour before: Sent 10:13 AM",
+            subtitle = "In 1 hour: Your 11:00 AM field inspection. Revenue Inspector, Sector 12 office. Directions: bit.ly/dir-mh.",
+            actionText = "View Application",
+            onActionClick = onActionClick,
+            onCloseClick = onDismiss,
+            modifier = Modifier.fillMaxWidth()
+        )
+    }
+}
+
+@Preview(name = "1 Hour Before - Light", showBackground = true)
+@Composable
+private fun ReminderAlertOneHourLightPreview() {
+    Ux4gTheme {
+        ReminderAlertOneHourScreen()
+    }
+}
+
+@Preview(name = "1 Hour Before - Dark", showBackground = true)
+@Composable
+private fun ReminderAlertOneHourDarkPreview() {
+    Ux4gTheme {
+        ReminderAlertOneHourScreen(isDarkTheme = true)
+    }
+}`}
+>
+  <img
+    src="/images/patterns/reminder_alerts/1_hour_before.svg"
+    alt="1 hour before"
+    className="w-full max-w-[360px] rounded-2xl border border-border shadow-sm"
+  />
+</ComponentPreview>

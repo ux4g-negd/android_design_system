@@ -1,0 +1,923 @@
+---
+title: Notification
+description: Centralized notification center with chronological groupings, status category indicators, contextual action links, and empty state
+---
+
+# Notification
+
+A comprehensive notification management pattern for citizen mobile applications. The notification center organizes system alerts, application updates, reminders, and action requests into clear chronological sections (*"Today"*, *"Yesterday"*, *"Earlier this week"*). It features distinct color-coded category indicators, direct action triggers (*"Upload now"*), bulk read management (*"Mark as read"*), and a dedicated empty state when no alerts require attention.
+
+---
+
+<h2><MIcon name="smartphone" /> Interactive Previews</h2>
+
+### 1. Notification Feed (Default)
+
+Grouped chronological notification stream displaying active citizen alerts with category indicator dots, timestamps, contextual action links, and bulk read actions.
+
+<ComponentPreview
+  title="Notification Feed - Default"
+  category="Pattern · Jetpack Compose"
+  code={`package com.example.ux4g.patterns.notification
+
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.ux4g.designsystemv1.components.Ux4gDivider
+import com.ux4g.designsystemv1.foundation.Ux4gColors
+import com.ux4g.designsystemv1.theme.Ux4gTheme
+
+enum class NotificationCategory(
+    val label: String,
+    val indicatorColorLight: Color,
+    val indicatorColorDark: Color
+) {
+    ActionRequired("Action required", Color(0xFFD92D20), Color(0xFFF04438)),
+    StatusUpdate("Status Update", Color(0xFF7F56D9), Color(0xFF9E77ED)),
+    Reminder("Reminder", Color(0xFFF79009), Color(0xFFFEC84B)),
+    Info("Info", Color(0xFF06AED4), Color(0xFF22CCEE))
+}
+
+data class NotificationItemData(
+    val id: String,
+    val category: NotificationCategory,
+    val categoryLabelOverride: String? = null,
+    val title: String,
+    val body: String,
+    val timestamp: String,
+    val actionLabel: String? = null,
+    val onActionClick: (() -> Unit)? = null
+)
+
+data class NotificationGroupData(
+    val header: String,
+    val items: List<NotificationItemData>
+)
+
+data class NotificationScreenColors(
+    val screenBackground: Color,
+    val topBarBackground: Color,
+    val sectionHeaderBackground: Color,
+    val sectionHeaderText: Color,
+    val title: Color,
+    val body: Color,
+    val subtleText: Color,
+    val mutedText: Color,
+    val primaryAction: Color,
+    val disabledAction: Color,
+    val divider: Color
+)
+
+val LightNotificationColors = NotificationScreenColors(
+    screenBackground = Ux4gColors.neutral0,
+    topBarBackground = Ux4gColors.neutral0,
+    sectionHeaderBackground = Color(0xFFF8F9FA),
+    sectionHeaderText = Ux4gColors.neutral700,
+    title = Ux4gColors.gray900,
+    body = Ux4gColors.neutral700,
+    subtleText = Ux4gColors.neutral600,
+    mutedText = Ux4gColors.neutral500,
+    primaryAction = Ux4gColors.primary600,
+    disabledAction = Ux4gColors.neutral300,
+    divider = Ux4gColors.neutral200
+)
+
+val DarkNotificationColors = NotificationScreenColors(
+    screenBackground = Ux4gColors.neutral950,
+    topBarBackground = Ux4gColors.neutral950,
+    sectionHeaderBackground = Ux4gColors.neutral900,
+    sectionHeaderText = Ux4gColors.neutral300,
+    title = Ux4gColors.neutral50,
+    body = Ux4gColors.neutral300,
+    subtleText = Ux4gColors.neutral400,
+    mutedText = Ux4gColors.neutral500,
+    primaryAction = Ux4gColors.primary300,
+    disabledAction = Ux4gColors.neutral600,
+    divider = Ux4gColors.neutral800
+)
+
+@Composable
+fun NotificationScreen(
+    modifier: Modifier = Modifier,
+    isDarkTheme: Boolean = isSystemInDarkTheme(),
+    onClose: () -> Unit = {},
+    onMarkAsRead: () -> Unit = {},
+    onItemClick: (NotificationItemData) -> Unit = {}
+) {
+    val colors = if (isDarkTheme) DarkNotificationColors else LightNotificationColors
+
+    val sampleGroups = remember {
+        listOf(
+            NotificationGroupData(
+                header = "TODAY",
+                items = listOf(
+                    NotificationItemData(
+                        id = "1",
+                        category = NotificationCategory.ActionRequired,
+                        title = "Income Certificate · Action required",
+                        body = "Upload your income proof by 15 Apr to avoid rejection.",
+                        timestamp = "10:24 AM",
+                        actionLabel = "Upload now"
+                    ),
+                    NotificationItemData(
+                        id = "2",
+                        category = NotificationCategory.StatusUpdate,
+                        categoryLabelOverride = "Action required",
+                        title = "Income Certificate · Action required",
+                        body = "Upload your income proof by 15 Apr to avoid rejection.",
+                        timestamp = "8:03 AM"
+                    )
+                )
+            ),
+            NotificationGroupData(
+                header = "YESTERDAY",
+                items = listOf(
+                    NotificationItemData(
+                        id = "3",
+                        category = NotificationCategory.Reminder,
+                        title = "Draft expiring · Income Certificate",
+                        body = "Your draft expires in 5 days.",
+                        timestamp = "8:03 AM"
+                    ),
+                    NotificationItemData(
+                        id = "4",
+                        category = NotificationCategory.Info,
+                        title = "PAN Correction · Status update",
+                        body = "Under review by Income Tax Dept.",
+                        timestamp = "8:03 AM"
+                    )
+                )
+            ),
+            NotificationGroupData(
+                header = "EARLIER THIS WEEK",
+                items = listOf(
+                    NotificationItemData(
+                        id = "5",
+                        category = NotificationCategory.Info,
+                        title = "Birth Certificate · Submitted",
+                        body = "Reference: BC-2026-MH-001.",
+                        timestamp = "8:03 AM"
+                    )
+                )
+            )
+        )
+    }
+
+    Column(
+        modifier = modifier
+            .fillMaxSize()
+            .background(colors.screenBackground)
+    ) {
+        // Top App Bar
+        NotificationTopBar(
+            title = "Notification",
+            canMarkAsRead = true,
+            colors = colors,
+            onClose = onClose,
+            onMarkAsRead = onMarkAsRead
+        )
+
+        Ux4gDivider(color = colors.divider)
+
+        // Notification List Feed
+        Column(
+            modifier = Modifier
+                .weight(1f)
+                .verticalScroll(rememberScrollState())
+        ) {
+            sampleGroups.forEach { group ->
+                // Section Header Banner
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(colors.sectionHeaderBackground)
+                        .padding(horizontal = 16.dp, vertical = 12.dp)
+                ) {
+                    Text(
+                        text = group.header,
+                        style = TextStyle(
+                            fontSize = 12.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = colors.sectionHeaderText,
+                            letterSpacing = 0.5.sp
+                        )
+                    )
+                }
+
+                // Group Notification Items
+                group.items.forEachIndexed { index, item ->
+                    NotificationRow(
+                        item = item,
+                        colors = colors,
+                        isDarkTheme = isDarkTheme,
+                        onClick = { onItemClick(item) }
+                    )
+                    if (index < group.items.size - 1) {
+                        Ux4gDivider(color = colors.divider)
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun NotificationTopBar(
+    title: String,
+    canMarkAsRead: Boolean,
+    colors: NotificationScreenColors,
+    onClose: () -> Unit,
+    onMarkAsRead: () -> Unit
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp, vertical = 16.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        Text(
+            text = title,
+            style = TextStyle(
+                fontSize = 22.sp,
+                fontWeight = FontWeight.Bold,
+                color = colors.title,
+                letterSpacing = (-0.3).sp
+            )
+        )
+
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Text(
+                text = "Mark as read",
+                style = TextStyle(
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.Medium,
+                    color = if (canMarkAsRead) colors.primaryAction else colors.disabledAction
+                ),
+                modifier = Modifier
+                    .clip(RoundedCornerShape(4.dp))
+                    .then(
+                        if (canMarkAsRead) Modifier.clickable(onClick = onMarkAsRead)
+                        else Modifier
+                    )
+                    .padding(horizontal = 8.dp, vertical = 4.dp)
+            )
+
+            Spacer(Modifier.width(8.dp))
+
+            Box(
+                modifier = Modifier
+                    .size(36.dp)
+                    .clip(CircleShape)
+                    .clickable(onClick = onClose),
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(
+                    imageVector = Icons.Filled.Close,
+                    contentDescription = "Close",
+                    tint = colors.title,
+                    modifier = Modifier.size(24.dp)
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun NotificationRow(
+    item: NotificationItemData,
+    colors: NotificationScreenColors,
+    isDarkTheme: Boolean,
+    onClick: () -> Unit
+) {
+    val indicatorColor = if (isDarkTheme) {
+        item.category.indicatorColorDark
+    } else {
+        item.category.indicatorColorLight
+    }
+
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable(onClick = onClick)
+            .padding(16.dp)
+    ) {
+        // Category Dot Indicator & Timestamp Row
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Box(
+                    modifier = Modifier
+                        .size(8.dp)
+                        .clip(CircleShape)
+                        .background(indicatorColor)
+                )
+                Spacer(Modifier.width(8.dp))
+                Text(
+                    text = item.categoryLabelOverride ?: item.category.label,
+                    style = TextStyle(
+                        fontSize = 13.sp,
+                        fontWeight = FontWeight.Medium,
+                        color = colors.body
+                    )
+                )
+            }
+
+            Text(
+                text = item.timestamp,
+                style = TextStyle(
+                    fontSize = 13.sp,
+                    color = colors.mutedText
+                )
+            )
+        }
+
+        Spacer(Modifier.height(8.dp))
+
+        // Title
+        Text(
+            text = item.title,
+            style = TextStyle(
+                fontSize = 15.sp,
+                fontWeight = FontWeight.SemiBold,
+                color = colors.title,
+                lineHeight = 20.sp
+            )
+        )
+
+        Spacer(Modifier.height(4.dp))
+
+        // Description Body
+        Text(
+            text = item.body,
+            style = TextStyle(
+                fontSize = 14.sp,
+                color = colors.subtleText,
+                lineHeight = 20.sp
+            )
+        )
+
+        // Contextual Action Link
+        if (item.actionLabel != null) {
+            Spacer(Modifier.height(10.dp))
+            Text(
+                text = item.actionLabel,
+                style = TextStyle(
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.SemiBold,
+                    color = colors.primaryAction
+                ),
+                modifier = Modifier
+                    .clip(RoundedCornerShape(4.dp))
+                    .clickable { item.onActionClick?.invoke() }
+                    .padding(vertical = 2.dp)
+            )
+        }
+    }
+}
+
+@Preview(name = "Notification Feed - Light", showBackground = true)
+@Composable
+private fun NotificationScreenLightPreview() {
+    Ux4gTheme {
+        NotificationScreen()
+    }
+}
+
+@Preview(name = "Notification Feed - Dark", showBackground = true)
+@Composable
+private fun NotificationScreenDarkPreview() {
+    Ux4gTheme {
+        NotificationScreen(isDarkTheme = true)
+    }
+}`}
+>
+  <img
+    src="/images/patterns/notification/notification.svg"
+    alt="Notification Feed - Default"
+    className="w-full max-w-[360px] rounded-2xl border border-border shadow-sm"
+  />
+</ComponentPreview>
+
+---
+
+### 2. Notification Types Breakdown
+
+Classification reference demonstrating the four standard UX4G notification types with standardized category color codes:
+- **Action required**: High-priority alert requiring immediate citizen submission or document upload (Red indicator).
+- **Status Update**: Informational transition representing application processing states (Purple indicator).
+- **Reminder**: Time-sensitive notice for impending expirations or draft deadlines (Amber indicator).
+- **Info**: General government advisory and confirmation messages (Cyan indicator).
+
+<ComponentPreview
+  title="Notification Types"
+  category="Pattern · Jetpack Compose"
+  code={`package com.example.ux4g.patterns.notification
+
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.ux4g.designsystemv1.components.Ux4gDivider
+import com.ux4g.designsystemv1.foundation.Ux4gColors
+import com.ux4g.designsystemv1.theme.Ux4gTheme
+
+@Composable
+fun NotificationTypesScreen(
+    modifier: Modifier = Modifier,
+    isDarkTheme: Boolean = isSystemInDarkTheme(),
+    onClose: () -> Unit = {},
+    onMarkAsRead: () -> Unit = {}
+) {
+    val colors = if (isDarkTheme) DarkNotificationColors else LightNotificationColors
+
+    val sampleTypes = remember {
+        listOf(
+            NotificationItemData(
+                id = "type-1",
+                category = NotificationCategory.ActionRequired,
+                title = "Income Certificate · Action required",
+                body = "Upload your income proof by 15 Apr to avoid rejection.",
+                timestamp = "8:03 AM"
+            ),
+            NotificationItemData(
+                id = "type-2",
+                category = NotificationCategory.StatusUpdate,
+                title = "Income Certificate · Action required",
+                body = "Upload your income proof by 15 Apr to avoid rejection.",
+                timestamp = "8:03 AM"
+            ),
+            NotificationItemData(
+                id = "type-3",
+                category = NotificationCategory.Reminder,
+                title = "Draft expiring · Income Certificate",
+                body = "Your draft expires in 5 days.",
+                timestamp = "8:03 AM"
+            ),
+            NotificationItemData(
+                id = "type-4",
+                category = NotificationCategory.Info,
+                title = "Birth Certificate · Submitted",
+                body = "Reference: BC-2026-MH-001.",
+                timestamp = "8:03 AM"
+            )
+        )
+    }
+
+    Column(
+        modifier = modifier
+            .fillMaxSize()
+            .background(colors.screenBackground)
+    ) {
+        // Top App Bar
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp, vertical = 16.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Text(
+                text = "Notification",
+                style = TextStyle(
+                    fontSize = 22.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = colors.title,
+                    letterSpacing = (-0.3).sp
+                )
+            )
+
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text(
+                    text = "Mark as read",
+                    style = TextStyle(
+                        fontSize = 14.sp,
+                        fontWeight = FontWeight.Medium,
+                        color = colors.primaryAction
+                    ),
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(4.dp))
+                        .clickable(onClick = onMarkAsRead)
+                        .padding(horizontal = 8.dp, vertical = 4.dp)
+                )
+
+                Spacer(Modifier.width(8.dp))
+
+                Box(
+                    modifier = Modifier
+                        .size(36.dp)
+                        .clip(CircleShape)
+                        .clickable(onClick = onClose),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(
+                        imageVector = Icons.Filled.Close,
+                        contentDescription = "Close",
+                        tint = colors.title,
+                        modifier = Modifier.size(24.dp)
+                    )
+                }
+            }
+        }
+
+        Ux4gDivider(color = colors.divider)
+
+        Column(
+            modifier = Modifier
+                .weight(1f)
+                .verticalScroll(rememberScrollState())
+        ) {
+            // Header
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(colors.sectionHeaderBackground)
+                    .padding(horizontal = 16.dp, vertical = 12.dp)
+            ) {
+                Text(
+                    text = "NOTIFICATION TYPES",
+                    style = TextStyle(
+                        fontSize = 12.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = colors.sectionHeaderText,
+                        letterSpacing = 0.5.sp
+                    )
+                )
+            }
+
+            // Notification Types Rows
+            sampleTypes.forEachIndexed { index, item ->
+                val indicatorColor = if (isDarkTheme) {
+                    item.category.indicatorColorDark
+                } else {
+                    item.category.indicatorColorLight
+                }
+
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp)
+                ) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Box(
+                                modifier = Modifier
+                                    .size(8.dp)
+                                    .clip(CircleShape)
+                                    .background(indicatorColor)
+                            )
+                            Spacer(Modifier.width(8.dp))
+                            Text(
+                                text = item.category.label,
+                                style = TextStyle(
+                                    fontSize = 13.sp,
+                                    fontWeight = FontWeight.Medium,
+                                    color = colors.body
+                                )
+                            )
+                        }
+
+                        Text(
+                            text = item.timestamp,
+                            style = TextStyle(
+                                fontSize = 13.sp,
+                                color = colors.mutedText
+                            )
+                        )
+                    }
+
+                    Spacer(Modifier.height(8.dp))
+
+                    Text(
+                        text = item.title,
+                        style = TextStyle(
+                            fontSize = 15.sp,
+                            fontWeight = FontWeight.SemiBold,
+                            color = colors.title,
+                            lineHeight = 20.sp
+                        )
+                    )
+
+                    Spacer(Modifier.height(4.dp))
+
+                    Text(
+                        text = item.body,
+                        style = TextStyle(
+                            fontSize = 14.sp,
+                            color = colors.subtleText,
+                            lineHeight = 20.sp
+                        )
+                    )
+                }
+
+                if (index < sampleTypes.size - 1) {
+                    Ux4gDivider(color = colors.divider)
+                }
+            }
+        }
+    }
+}
+
+@Preview(name = "Notification Types - Light", showBackground = true)
+@Composable
+private fun NotificationTypesScreenLightPreview() {
+    Ux4gTheme {
+        NotificationTypesScreen()
+    }
+}
+
+@Preview(name = "Notification Types - Dark", showBackground = true)
+@Composable
+private fun NotificationTypesScreenDarkPreview() {
+    Ux4gTheme {
+        NotificationTypesScreen(isDarkTheme = true)
+    }
+}`}
+>
+  <img
+    src="/images/patterns/notification/notification_types.svg"
+    alt="Notification Types"
+    className="w-full max-w-[360px] rounded-2xl border border-border shadow-sm"
+  />
+</ComponentPreview>
+
+---
+
+### 3. Empty State
+
+Zero-data state displayed when no notifications are pending or all alerts have been cleared, featuring a centered bell badge, unread counter badge, and reassuring helper messaging.
+
+<ComponentPreview
+  title="Notification - Empty State"
+  category="Pattern · Jetpack Compose"
+  code={`package com.example.ux4g.patterns.notification
+
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.outlined.Notifications
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.ux4g.designsystemv1.components.Ux4gDivider
+import com.ux4g.designsystemv1.foundation.Ux4gColors
+import com.ux4g.designsystemv1.theme.Ux4gTheme
+
+@Composable
+fun NotificationEmptyScreen(
+    modifier: Modifier = Modifier,
+    isDarkTheme: Boolean = isSystemInDarkTheme(),
+    unreadCountBadge: Int = 3,
+    onClose: () -> Unit = {}
+) {
+    val colors = if (isDarkTheme) DarkNotificationColors else LightNotificationColors
+
+    Column(
+        modifier = modifier
+            .fillMaxSize()
+            .background(colors.screenBackground)
+    ) {
+        // Top App Bar with disabled "Mark as read"
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp, vertical = 16.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Text(
+                text = "Notification",
+                style = TextStyle(
+                    fontSize = 22.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = colors.title,
+                    letterSpacing = (-0.3).sp
+                )
+            )
+
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text(
+                    text = "Mark as read",
+                    style = TextStyle(
+                        fontSize = 14.sp,
+                        fontWeight = FontWeight.Medium,
+                        color = colors.disabledAction
+                    ),
+                    modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
+                )
+
+                Spacer(Modifier.width(8.dp))
+
+                Box(
+                    modifier = Modifier
+                        .size(36.dp)
+                        .clip(CircleShape)
+                        .clickable(onClick = onClose),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(
+                        imageVector = Icons.Filled.Close,
+                        contentDescription = "Close",
+                        tint = colors.title,
+                        modifier = Modifier.size(24.dp)
+                    )
+                }
+            }
+        }
+
+        Ux4gDivider(color = colors.divider)
+
+        // Centered Empty State Content
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .weight(1f)
+                .padding(horizontal = 32.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
+            // Concentric Bell Badge with Floating Counter
+            Box(contentAlignment = Alignment.TopEnd) {
+                Box(
+                    modifier = Modifier
+                        .size(80.dp)
+                        .clip(CircleShape)
+                        .background(
+                            if (isDarkTheme) Ux4gColors.neutral800
+                            else Color(0xFFF3F1FD)
+                        ),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(
+                        imageVector = Icons.Outlined.Notifications,
+                        contentDescription = "No notifications",
+                        tint = if (isDarkTheme) Ux4gColors.primary300 else Ux4gColors.primary600,
+                        modifier = Modifier.size(32.dp)
+                    )
+                }
+
+                if (unreadCountBadge > 0) {
+                    Box(
+                        modifier = Modifier
+                            .size(20.dp)
+                            .clip(CircleShape)
+                            .background(Color(0xFFD92D20)),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            text = unreadCountBadge.toString(),
+                            style = TextStyle(
+                                fontSize = 11.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = Color.White
+                            )
+                        )
+                    }
+                }
+            }
+
+            Spacer(Modifier.height(24.dp))
+
+            // Headline
+            Text(
+                text = "No new notifications",
+                style = TextStyle(
+                    fontSize = 22.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = colors.title,
+                    letterSpacing = (-0.3).sp
+                ),
+                textAlign = TextAlign.Center
+            )
+
+            Spacer(Modifier.height(8.dp))
+
+            // Subtitle Description
+            Text(
+                text = "Currently, there are no notifications to display. You can check back later!",
+                style = TextStyle(
+                    fontSize = 15.sp,
+                    color = colors.subtleText,
+                    lineHeight = 22.sp
+                ),
+                textAlign = TextAlign.Center
+            )
+        }
+    }
+}
+
+@Preview(name = "Notification Empty State - Light", showBackground = true)
+@Composable
+private fun NotificationEmptyScreenLightPreview() {
+    Ux4gTheme {
+        NotificationEmptyScreen()
+    }
+}
+
+@Preview(name = "Notification Empty State - Dark", showBackground = true)
+@Composable
+private fun NotificationEmptyScreenDarkPreview() {
+    Ux4gTheme {
+        NotificationEmptyScreen(isDarkTheme = true)
+    }
+}`}
+>
+  <img
+    src="/images/patterns/notification/empty_state.svg"
+    alt="Notification - Empty State"
+    className="w-full max-w-[360px] rounded-2xl border border-border shadow-sm"
+  />
+</ComponentPreview>

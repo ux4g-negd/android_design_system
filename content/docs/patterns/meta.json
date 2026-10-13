@@ -4,6 +4,7 @@
   "pages": [
     "identity-and-access",
     "application-submission",
-    "service-discovery"
+    "service-discovery",
+    "notification"
   ]
 }
