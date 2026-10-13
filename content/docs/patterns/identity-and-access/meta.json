@@ -3,6 +3,7 @@
   "pages": [
     "sign-in",
     "sign-up",
+    "forgot-password-and-account-recovery",
     "aadhaar-authentication-gate",
     "otp-verification",
     "session-time-out-dialog",

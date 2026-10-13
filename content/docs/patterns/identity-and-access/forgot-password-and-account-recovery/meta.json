@@ -1,0 +1,10 @@
+{
+  "title": "Forgot Password and Account Recovery",
+  "pages": [
+    "reset-password",
+    "enter-otp",
+    "create-new-password",
+    "password-reset-successfully",
+    "account-recovery"
+  ]
+}

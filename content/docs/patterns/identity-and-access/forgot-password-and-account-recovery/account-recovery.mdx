@@ -1,0 +1,541 @@
+---
+title: Account recovery
+description: Aadhaar-based citizen identity recovery screen with masked Aadhaar input, consent verification checkbox, Send OTP authentication, and Card-Style variant
+---
+
+# Account recovery
+
+An account recovery pattern enabling citizens to recover account access and initiate credential renewal using their Aadhaar Number when mobile numbers or passwords are unknown. The screen features a **Back to Sign in** navigation link, prominent heading (*"Account recovery"*), an auto-formatting Aadhaar Number input with digit masking toggle, an explicit verification consent checkbox (*"I agree to verify my identity via Aadhaar OTP for the purpose of password recovery."*), a primary **Send OTP** call-to-action button, and a pinned Digital India brand footer.
+
+---
+
+<h2><MIcon name="smartphone" /> Interactive Previews</h2>
+
+### 1. Default Style (Full Screen)
+
+Standard full-screen account recovery flow with direct back navigation, masked Aadhaar entry, consent checkbox, and OTP dispatch action.
+
+<ComponentPreview
+  title="Account recovery - Default"
+  category="Pattern · Jetpack Compose"
+  code={`package com.example.ux4g.patterns.identity.recovery
+
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.example.ux4g.R as AppR
+import com.ux4g.designsystemv1.R as Ux4gR
+import com.ux4g.designsystemv1.components.Ux4gAppHeader
+import com.ux4g.designsystemv1.components.Ux4gAppHeaderAction
+import com.ux4g.designsystemv1.components.Ux4gAppHeaderVariant
+import com.ux4g.designsystemv1.components.Ux4gCheckbox
+import com.ux4g.designsystemv1.components.Ux4gDivider
+import com.ux4g.designsystemv1.components.Ux4gDividerOrientation
+import com.ux4g.designsystemv1.components.buttons.Ux4gButton
+import com.ux4g.designsystemv1.components.buttons.Ux4gButtonSize
+import com.ux4g.designsystemv1.components.inputfield.Ux4gAadhaarInputField
+import com.ux4g.designsystemv1.components.inputfield.Ux4gInputFieldSize
+import com.ux4g.designsystemv1.foundation.Ux4gColors
+import com.ux4g.designsystemv1.foundation.Ux4gSpace
+import com.ux4g.designsystemv1.theme.Ux4gTheme
+
+data class AccountRecoveryColors(
+    val screenBackground: Color,
+    val canvasBackground: Color,
+    val cardBackground: Color,
+    val border: Color,
+    val title: Color,
+    val subtleText: Color,
+    val mutedText: Color,
+    val headerDivider: Color,
+    val brandLogoTint: Color,
+    val emblemTint: Color?,
+    val menuButtonBackground: Color,
+    val menuButtonBorder: Color,
+    val menuButtonIcon: Color,
+    val backAction: Color,
+    val footerLogoTint: Color?
+)
+
+val LightAccountRecoveryColors = AccountRecoveryColors(
+    screenBackground = Ux4gColors.neutral50,
+    canvasBackground = Ux4gColors.primary100,
+    cardBackground = Ux4gColors.neutral0,
+    border = Ux4gColors.neutral200,
+    title = Ux4gColors.gray900,
+    subtleText = Ux4gColors.neutral600,
+    mutedText = Ux4gColors.neutral400,
+    headerDivider = Ux4gColors.neutral300,
+    brandLogoTint = Ux4gColors.primary600,
+    emblemTint = null,
+    menuButtonBackground = Ux4gColors.neutral0,
+    menuButtonBorder = Ux4gColors.primary300,
+    menuButtonIcon = Ux4gColors.primary600,
+    backAction = Ux4gColors.primary600,
+    footerLogoTint = null
+)
+
+val DarkAccountRecoveryColors = AccountRecoveryColors(
+    screenBackground = Ux4gColors.neutral950,
+    canvasBackground = Ux4gColors.primary800,
+    cardBackground = Ux4gColors.neutral900,
+    border = Ux4gColors.neutral800,
+    title = Ux4gColors.neutral50,
+    subtleText = Ux4gColors.neutral400,
+    mutedText = Ux4gColors.neutral500,
+    headerDivider = Ux4gColors.neutral700,
+    brandLogoTint = Ux4gColors.primary300,
+    emblemTint = Color.White,
+    menuButtonBackground = Ux4gColors.neutral800,
+    menuButtonBorder = Ux4gColors.primary600,
+    menuButtonIcon = Ux4gColors.primary300,
+    backAction = Ux4gColors.primary300,
+    footerLogoTint = Color.White
+)
+
+@Composable
+fun AccountRecoveryScreen(
+    modifier: Modifier = Modifier,
+    isDarkTheme: Boolean = isSystemInDarkTheme(),
+    onMenuClick: () -> Unit = {},
+    onBackToSignIn: () -> Unit = {},
+    onSendOtp: (String) -> Unit = {}
+) {
+    val colors = if (isDarkTheme) DarkAccountRecoveryColors else LightAccountRecoveryColors
+
+    var aadhaarNumber by rememberSaveable { mutableStateOf("XXXX XXXX 1234") }
+    var isConsentChecked by rememberSaveable { mutableStateOf(false) }
+
+    Column(
+        modifier = modifier
+            .fillMaxSize()
+            .background(colors.screenBackground)
+    ) {
+        BrandHeader(colors = colors, onMenuClick = onMenuClick)
+
+        Column(
+            modifier = Modifier
+                .weight(1f)
+                .verticalScroll(rememberScrollState())
+                .padding(horizontal = 24.dp, vertical = 24.dp)
+        ) {
+            // Back to Sign in link
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier
+                    .clip(RoundedCornerShape(6.dp))
+                    .clickable(onClick = onBackToSignIn)
+                    .padding(vertical = 4.dp)
+            ) {
+                Icon(
+                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                    contentDescription = "Back to Sign in",
+                    tint = colors.backAction,
+                    modifier = Modifier.size(18.dp)
+                )
+                Spacer(Modifier.width(6.dp))
+                Text(
+                    text = "Back to Sign in",
+                    style = TextStyle(
+                        fontSize = 15.sp,
+                        fontWeight = FontWeight.Medium,
+                        color = colors.backAction
+                    )
+                )
+            }
+            Spacer(Modifier.height(28.dp))
+
+            // Heading
+            Text(
+                text = "Account recovery",
+                style = TextStyle(
+                    fontSize = 30.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = colors.title,
+                    letterSpacing = (-0.4).sp
+                )
+            )
+            Spacer(Modifier.height(24.dp))
+
+            // Aadhaar Number Input with Mask Toggle
+            Ux4gAadhaarInputField(
+                value = aadhaarNumber,
+                onValueChange = { aadhaarNumber = it },
+                label = "Aadhaar Number",
+                placeholder = "XXXX XXXX 1234",
+                showMaskToggle = true,
+                size = Ux4gInputFieldSize.Large,
+                modifier = Modifier.fillMaxWidth()
+            )
+            Spacer(Modifier.height(20.dp))
+
+            // Identity Verification Consent Checkbox
+            Ux4gCheckbox(
+                value = isConsentChecked,
+                onValueChange = { isConsentChecked = it == true },
+                label = "I agree to verify my identity via Aadhaar OTP for the purpose of password recovery.",
+                modifier = Modifier.fillMaxWidth()
+            )
+            Spacer(Modifier.height(28.dp))
+
+            // Primary Call to Action Button
+            Ux4gButton(
+                text = "Send OTP",
+                onClick = { onSendOtp(aadhaarNumber) },
+                size = Ux4gButtonSize.Large,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(48.dp)
+            )
+            Spacer(Modifier.height(24.dp))
+        }
+
+        BrandFooter(colors = colors)
+    }
+}
+
+@Composable
+private fun BrandHeader(colors: AccountRecoveryColors, onMenuClick: () -> Unit) {
+    Column {
+        Ux4gAppHeader(
+            title = "",
+            variant = Ux4gAppHeaderVariant.Light,
+            height = 64.dp,
+            horizontalPadding = Ux4gSpace.Space16,
+            leadingSpacing = Ux4gSpace.Space8,
+            leadingWidgets = listOf(
+                {
+                    Image(
+                        painter = painterResource(Ux4gR.drawable.ic_national_emblem),
+                        contentDescription = "National Emblem of India",
+                        colorFilter = colors.emblemTint?.let { ColorFilter.tint(it) },
+                        modifier = Modifier.height(32.dp)
+                    )
+                },
+                {
+                    Ux4gDivider(
+                        orientation = Ux4gDividerOrientation.Vertical,
+                        color = colors.headerDivider,
+                        height = 28.dp
+                    )
+                },
+                {
+                    Image(
+                        painter = painterResource(Ux4gR.drawable.ic_union),
+                        contentDescription = "Government of India",
+                        colorFilter = ColorFilter.tint(colors.brandLogoTint),
+                        modifier = Modifier.height(32.dp)
+                    )
+                }
+            ),
+            actions = listOf(
+                Ux4gAppHeaderAction(
+                    customWidget = {
+                        Box(
+                            modifier = Modifier
+                                .size(40.dp)
+                                .clip(RoundedCornerShape(10.dp))
+                                .background(colors.menuButtonBackground)
+                                .border(1.5.dp, colors.menuButtonBorder, RoundedCornerShape(10.dp))
+                                .clickable(onClick = onMenuClick),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Icon(
+                                imageVector = Icons.Filled.Menu,
+                                contentDescription = "Open menu",
+                                tint = colors.menuButtonIcon,
+                                modifier = Modifier.size(20.dp)
+                            )
+                        }
+                    }
+                )
+            )
+        )
+        Ux4gDivider(color = colors.border)
+    }
+}
+
+@Composable
+private fun BrandFooter(colors: AccountRecoveryColors) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = Ux4gSpace.Space8, bottom = Ux4gSpace.Space20),
+        horizontalArrangement = Arrangement.Center,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(
+            text = "Powered by -",
+            style = Ux4gTheme.typography.lS_default.copy(color = colors.mutedText)
+        )
+        Spacer(Modifier.width(Ux4gSpace.Space8))
+        Image(
+            painter = painterResource(AppR.drawable.ic_digital_india),
+            contentDescription = "Digital India",
+            colorFilter = colors.footerLogoTint?.let { ColorFilter.tint(it) },
+            modifier = Modifier.height(22.dp)
+        )
+    }
+}
+
+@Preview(name = "Account recovery - Light", showBackground = true)
+@Composable
+private fun AccountRecoveryScreenLightPreview() {
+    Ux4gTheme {
+        AccountRecoveryScreen()
+    }
+}
+
+@Preview(name = "Account recovery - Dark", showBackground = true)
+@Composable
+private fun AccountRecoveryScreenDarkPreview() {
+    Ux4gTheme {
+        AccountRecoveryScreen(isDarkTheme = true)
+    }
+}`}
+>
+  <img
+    src="/images/patterns/account_recovery/account_recovery.svg"
+    alt="Account recovery - Default"
+    className="w-full max-w-[360px] rounded-2xl border border-border shadow-sm"
+  />
+</ComponentPreview>
+
+---
+
+### 2. Card Style Variant
+
+Elevated card presentation on soft-tinted canvas with contained input elements, inline consent validation, and clear focal hierarchy.
+
+<ComponentPreview
+  title="Account recovery - Card Style"
+  category="Pattern · Jetpack Compose"
+  code={`package com.example.ux4g.patterns.identity.recovery
+
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.example.ux4g.R as AppR
+import com.ux4g.designsystemv1.R as Ux4gR
+import com.ux4g.designsystemv1.components.Ux4gAppHeader
+import com.ux4g.designsystemv1.components.Ux4gAppHeaderAction
+import com.ux4g.designsystemv1.components.Ux4gAppHeaderVariant
+import com.ux4g.designsystemv1.components.Ux4gCheckbox
+import com.ux4g.designsystemv1.components.Ux4gDivider
+import com.ux4g.designsystemv1.components.Ux4gDividerOrientation
+import com.ux4g.designsystemv1.components.buttons.Ux4gButton
+import com.ux4g.designsystemv1.components.buttons.Ux4gButtonSize
+import com.ux4g.designsystemv1.components.inputfield.Ux4gAadhaarInputField
+import com.ux4g.designsystemv1.components.inputfield.Ux4gInputFieldSize
+import com.ux4g.designsystemv1.foundation.Ux4gColors
+import com.ux4g.designsystemv1.foundation.Ux4gSpace
+import com.ux4g.designsystemv1.theme.Ux4gTheme
+
+@Composable
+fun AccountRecoveryCardScreen(
+    modifier: Modifier = Modifier,
+    isDarkTheme: Boolean = isSystemInDarkTheme(),
+    onMenuClick: () -> Unit = {},
+    onBackToSignIn: () -> Unit = {},
+    onSendOtp: (String) -> Unit = {}
+) {
+    val colors = if (isDarkTheme) DarkAccountRecoveryColors else LightAccountRecoveryColors
+
+    var aadhaarNumber by rememberSaveable { mutableStateOf("XXXX XXXX 1234") }
+    var isConsentChecked by rememberSaveable { mutableStateOf(false) }
+
+    Column(
+        modifier = modifier
+            .fillMaxSize()
+            .background(colors.canvasBackground)
+    ) {
+        BrandHeader(colors = colors, onMenuClick = onMenuClick)
+
+        Column(
+            modifier = Modifier
+                .weight(1f)
+                .verticalScroll(rememberScrollState())
+                .padding(horizontal = 16.dp, vertical = 20.dp)
+        ) {
+            // Elevated Surface Card
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(16.dp))
+                    .background(colors.cardBackground)
+                    .border(1.dp, colors.border, RoundedCornerShape(16.dp))
+                    .padding(24.dp)
+            ) {
+                Column(modifier = Modifier.fillMaxWidth()) {
+                    // Back to Sign in link inside Card
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier
+                            .clip(RoundedCornerShape(6.dp))
+                            .clickable(onClick = onBackToSignIn)
+                            .padding(vertical = 4.dp)
+                    ) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = "Back to Sign in",
+                            tint = colors.backAction,
+                            modifier = Modifier.size(18.dp)
+                        )
+                        Spacer(Modifier.width(6.dp))
+                        Text(
+                            text = "Back to Sign in",
+                            style = TextStyle(
+                                fontSize = 15.sp,
+                                fontWeight = FontWeight.Medium,
+                                color = colors.backAction
+                            )
+                        )
+                    }
+                    Spacer(Modifier.height(24.dp))
+
+                    // Heading
+                    Text(
+                        text = "Account recovery",
+                        style = TextStyle(
+                            fontSize = 28.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = colors.title,
+                            letterSpacing = (-0.4).sp
+                        )
+                    )
+                    Spacer(Modifier.height(24.dp))
+
+                    // Aadhaar Number Input with Mask Toggle
+                    Ux4gAadhaarInputField(
+                        value = aadhaarNumber,
+                        onValueChange = { aadhaarNumber = it },
+                        label = "Aadhaar Number",
+                        placeholder = "XXXX XXXX 1234",
+                        showMaskToggle = true,
+                        size = Ux4gInputFieldSize.Large,
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                    Spacer(Modifier.height(20.dp))
+
+                    // Identity Verification Consent Checkbox
+                    Ux4gCheckbox(
+                        value = isConsentChecked,
+                        onValueChange = { isConsentChecked = it == true },
+                        label = "I agree to verify my identity via Aadhaar OTP for the purpose of password recovery.",
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                    Spacer(Modifier.height(28.dp))
+
+                    // Primary Call to Action Button
+                    Ux4gButton(
+                        text = "Send OTP",
+                        onClick = { onSendOtp(aadhaarNumber) },
+                        size = Ux4gButtonSize.Large,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(48.dp)
+                    )
+                }
+            }
+        }
+
+        BrandFooter(colors = colors)
+    }
+}
+
+@Preview(name = "Account recovery - Card Style Light", showBackground = true)
+@Composable
+private fun AccountRecoveryCardScreenLightPreview() {
+    Ux4gTheme {
+        AccountRecoveryCardScreen()
+    }
+}
+
+@Preview(name = "Account recovery - Card Style Dark", showBackground = true)
+@Composable
+private fun AccountRecoveryCardScreenDarkPreview() {
+    Ux4gTheme {
+        AccountRecoveryCardScreen(isDarkTheme = true)
+    }
+}`}
+>
+  <img
+    src="/images/patterns/account_recovery/account_recovery_cardstyle.svg"
+    alt="Account recovery - Card style"
+    className="w-full max-w-[360px] rounded-2xl border border-border shadow-sm"
+  />
+</ComponentPreview>
