@@ -2,6 +2,7 @@
   "title": "Notification",
   "pages": [
     "notification",
-    "reminder-alerts"
+    "reminder-alerts",
+    "notification-preferences"
   ]
 }

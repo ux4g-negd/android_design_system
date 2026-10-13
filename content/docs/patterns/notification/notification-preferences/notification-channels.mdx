@@ -1,0 +1,466 @@
+---
+title: Notification Channels
+description: Citizen notification preference center configuring SMS, Email, App push notifications, and WhatsApp communication channels
+---
+
+# Notification Channels
+
+A central notification configuration pattern allowing citizens to customize multi-channel delivery preferences (SMS, Email, in-app push alerts, and WhatsApp). The screen provides instant binary toggle controls for each communication channel, verified destination metadata (registered phone number and masked email address), regulatory opt-in notices, category filter navigation (*"Notification Channels"*, *"Update Frequency"*), and an official government brand header and footer.
+
+---
+
+<h2><MIcon name="smartphone" /> Interactive Previews</h2>
+
+### 1. Default Style (Full Screen)
+
+Citizen preference center featuring segmented tabs, elevated channel card container, and live toggle controls with automatic state persistence.
+
+<ComponentPreview
+  title="Notification Channels - Default"
+  category="Pattern · Jetpack Compose"
+  code={`package com.example.ux4g.patterns.notification.preferences
+
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.example.ux4g.R as AppR
+import com.ux4g.designsystemv1.R as Ux4gR
+import com.ux4g.designsystemv1.components.Ux4gAppHeader
+import com.ux4g.designsystemv1.components.Ux4gAppHeaderAction
+import com.ux4g.designsystemv1.components.Ux4gAppHeaderVariant
+import com.ux4g.designsystemv1.components.Ux4gDivider
+import com.ux4g.designsystemv1.components.Ux4gDividerOrientation
+import com.ux4g.designsystemv1.components.toggle.Ux4gSwitch
+import com.ux4g.designsystemv1.components.toggle.Ux4gSwitchLabelPosition
+import com.ux4g.designsystemv1.components.toggle.Ux4gSwitchSize
+import com.ux4g.designsystemv1.foundation.Ux4gColors
+import com.ux4g.designsystemv1.foundation.Ux4gSpace
+import com.ux4g.designsystemv1.theme.Ux4gTheme
+
+data class NotificationChannelsColors(
+    val screenBackground: Color,
+    val cardBackground: Color,
+    val border: Color,
+    val title: Color,
+    val subtleText: Color,
+    val mutedText: Color,
+    val headerDivider: Color,
+    val brandLogoTint: Color,
+    val emblemTint: Color?,
+    val menuButtonBackground: Color,
+    val menuButtonBorder: Color,
+    val menuButtonIcon: Color,
+    val activeTabBackground: Color,
+    val activeTabText: Color,
+    val inactiveTabBackground: Color,
+    val inactiveTabText: Color,
+    val inactiveTabBorder: Color,
+    val divider: Color,
+    val footerLogoTint: Color?
+)
+
+val LightNotificationChannelsColors = NotificationChannelsColors(
+    screenBackground = Ux4gColors.neutral50,
+    cardBackground = Ux4gColors.neutral0,
+    border = Ux4gColors.neutral200,
+    title = Ux4gColors.gray900,
+    subtleText = Ux4gColors.neutral600,
+    mutedText = Ux4gColors.neutral400,
+    headerDivider = Ux4gColors.neutral300,
+    brandLogoTint = Ux4gColors.primary600,
+    emblemTint = null,
+    menuButtonBackground = Ux4gColors.neutral0,
+    menuButtonBorder = Ux4gColors.primary300,
+    menuButtonIcon = Ux4gColors.primary600,
+    activeTabBackground = Ux4gColors.primary600,
+    activeTabText = Color.White,
+    inactiveTabBackground = Ux4gColors.neutral0,
+    inactiveTabText = Ux4gColors.neutral700,
+    inactiveTabBorder = Ux4gColors.neutral300,
+    divider = Ux4gColors.neutral200,
+    footerLogoTint = null
+)
+
+val DarkNotificationChannelsColors = NotificationChannelsColors(
+    screenBackground = Ux4gColors.neutral950,
+    cardBackground = Ux4gColors.neutral900,
+    border = Ux4gColors.neutral800,
+    title = Ux4gColors.neutral50,
+    subtleText = Ux4gColors.neutral400,
+    mutedText = Ux4gColors.neutral500,
+    headerDivider = Ux4gColors.neutral700,
+    brandLogoTint = Ux4gColors.primary300,
+    emblemTint = Color.White,
+    menuButtonBackground = Ux4gColors.neutral800,
+    menuButtonBorder = Ux4gColors.primary600,
+    menuButtonIcon = Ux4gColors.primary300,
+    activeTabBackground = Ux4gColors.primary500,
+    activeTabText = Color.White,
+    inactiveTabBackground = Ux4gColors.neutral800,
+    inactiveTabText = Ux4gColors.neutral300,
+    inactiveTabBorder = Ux4gColors.neutral700,
+    divider = Ux4gColors.neutral800,
+    footerLogoTint = Color.White
+)
+
+@Composable
+fun NotificationChannelsScreen(
+    modifier: Modifier = Modifier,
+    isDarkTheme: Boolean = isSystemInDarkTheme(),
+    onMenuClick: () -> Unit = {}
+) {
+    val colors = if (isDarkTheme) DarkNotificationChannelsColors else LightNotificationChannelsColors
+
+    var selectedTab by rememberSaveable { mutableStateOf("Notification Channels") }
+    var smsEnabled by rememberSaveable { mutableStateOf(true) }
+    var emailEnabled by rememberSaveable { mutableStateOf(true) }
+    var appPushEnabled by rememberSaveable { mutableStateOf(true) }
+    var whatsappEnabled by rememberSaveable { mutableStateOf(true) }
+
+    Column(
+        modifier = modifier
+            .fillMaxSize()
+            .background(colors.screenBackground)
+    ) {
+        BrandHeader(colors = colors, onMenuClick = onMenuClick)
+
+        Column(
+            modifier = Modifier
+                .weight(1f)
+                .verticalScroll(rememberScrollState())
+                .padding(horizontal = 16.dp, vertical = 20.dp)
+        ) {
+            // Screen Title
+            Text(
+                text = "Notification Preferences",
+                style = TextStyle(
+                    fontSize = 24.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = colors.title,
+                    letterSpacing = (-0.3).sp
+                )
+            )
+            Spacer(Modifier.height(8.dp))
+
+            // Subtitle Description
+            Text(
+                text = "Control how and when the portal contacts you. Changes are saved automatically.",
+                style = TextStyle(
+                    fontSize = 14.sp,
+                    color = colors.subtleText,
+                    lineHeight = 20.sp
+                )
+            )
+            Spacer(Modifier.height(18.dp))
+
+            // Filter Tabs Bar
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .horizontalScroll(rememberScrollState()),
+                horizontalArrangement = Arrangement.spacedBy(10.dp)
+            ) {
+                listOf("Notification Channels", "Update Frequency", "Quiet Hours").forEach { tab ->
+                    val isSelected = selectedTab == tab
+                    Box(
+                        modifier = Modifier
+                            .clip(RoundedCornerShape(8.dp))
+                            .background(
+                                if (isSelected) colors.activeTabBackground
+                                else colors.inactiveTabBackground
+                            )
+                            .border(
+                                width = 1.dp,
+                                color = if (isSelected) colors.activeTabBackground else colors.inactiveTabBorder,
+                                shape = RoundedCornerShape(8.dp)
+                            )
+                            .clickable { selectedTab = tab }
+                            .padding(horizontal = 16.dp, vertical = 10.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            text = tab,
+                            style = TextStyle(
+                                fontSize = 14.sp,
+                                fontWeight = if (isSelected) FontWeight.SemiBold else FontWeight.Medium,
+                                color = if (isSelected) colors.activeTabText else colors.inactiveTabText
+                            )
+                        )
+                    }
+                }
+            }
+            Spacer(Modifier.height(20.dp))
+
+            // Channels Card Container
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(16.dp))
+                    .background(colors.cardBackground)
+                    .border(1.dp, colors.border, RoundedCornerShape(16.dp))
+                    .padding(20.dp)
+            ) {
+                Column(modifier = Modifier.fillMaxWidth()) {
+                    Text(
+                        text = "Notification channels",
+                        style = TextStyle(
+                            fontSize = 20.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = colors.title
+                        )
+                    )
+                    Spacer(Modifier.height(6.dp))
+                    Text(
+                        text = "Choose which channels the portal can use to reach you.",
+                        style = TextStyle(
+                            fontSize = 14.sp,
+                            color = colors.subtleText,
+                            lineHeight = 20.sp
+                        )
+                    )
+                    Spacer(Modifier.height(20.dp))
+
+                    // 1. SMS Channel
+                    ChannelToggleRow(
+                        title = "SMS",
+                        subtitle = "+91 98765 43210",
+                        checked = smsEnabled,
+                        onCheckedChange = { smsEnabled = it },
+                        colors = colors
+                    )
+
+                    Ux4gDivider(
+                        color = colors.divider,
+                        modifier = Modifier.padding(vertical = 16.dp)
+                    )
+
+                    // 2. Email Channel
+                    ChannelToggleRow(
+                        title = "Email",
+                        subtitle = "r•••••h@gmail.com",
+                        checked = emailEnabled,
+                        onCheckedChange = { emailEnabled = it },
+                        colors = colors
+                    )
+
+                    Ux4gDivider(
+                        color = colors.divider,
+                        modifier = Modifier.padding(vertical = 16.dp)
+                    )
+
+                    // 3. App Push Notifications Channel
+                    ChannelToggleRow(
+                        title = "App notifications",
+                        subtitle = "Push alerts on this device",
+                        checked = appPushEnabled,
+                        onCheckedChange = { appPushEnabled = it },
+                        colors = colors
+                    )
+
+                    Ux4gDivider(
+                        color = colors.divider,
+                        modifier = Modifier.padding(vertical = 16.dp)
+                    )
+
+                    // 4. WhatsApp Channel
+                    ChannelToggleRow(
+                        title = "WhatsApp",
+                        subtitle = "Opt-in required — needs your explicit consent",
+                        checked = whatsappEnabled,
+                        onCheckedChange = { whatsappEnabled = it },
+                        colors = colors
+                    )
+                }
+            }
+            Spacer(Modifier.height(20.dp))
+        }
+
+        BrandFooter(colors = colors)
+    }
+}
+
+@Composable
+private fun ChannelToggleRow(
+    title: String,
+    subtitle: String,
+    checked: Boolean,
+    onCheckedChange: (Boolean) -> Unit,
+    colors: NotificationChannelsColors
+) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        Column(modifier = Modifier.weight(1f).padding(end = 16.dp)) {
+            Text(
+                text = title,
+                style = TextStyle(
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.SemiBold,
+                    color = colors.title
+                )
+            )
+            Spacer(Modifier.height(4.dp))
+            Text(
+                text = subtitle,
+                style = TextStyle(
+                    fontSize = 14.sp,
+                    color = colors.subtleText,
+                    lineHeight = 19.sp
+                )
+            )
+        }
+
+        Ux4gSwitch(
+            checked = checked,
+            onCheckedChange = onCheckedChange,
+            size = Ux4gSwitchSize.M,
+            labelPosition = Ux4gSwitchLabelPosition.NoLabel
+        )
+    }
+}
+
+@Composable
+private fun BrandHeader(colors: NotificationChannelsColors, onMenuClick: () -> Unit) {
+    Column {
+        Ux4gAppHeader(
+            title = "",
+            variant = Ux4gAppHeaderVariant.Light,
+            height = 64.dp,
+            horizontalPadding = Ux4gSpace.Space16,
+            leadingSpacing = Ux4gSpace.Space8,
+            leadingWidgets = listOf(
+                {
+                    Image(
+                        painter = painterResource(Ux4gR.drawable.ic_national_emblem),
+                        contentDescription = "National Emblem of India",
+                        colorFilter = colors.emblemTint?.let { ColorFilter.tint(it) },
+                        modifier = Modifier.height(32.dp)
+                    )
+                },
+                {
+                    Ux4gDivider(
+                        orientation = Ux4gDividerOrientation.Vertical,
+                        color = colors.headerDivider,
+                        height = 28.dp
+                    )
+                },
+                {
+                    Image(
+                        painter = painterResource(Ux4gR.drawable.ic_union),
+                        contentDescription = "Government of India",
+                        colorFilter = ColorFilter.tint(colors.brandLogoTint),
+                        modifier = Modifier.height(32.dp)
+                    )
+                }
+            ),
+            actions = listOf(
+                Ux4gAppHeaderAction(
+                    customWidget = {
+                        Box(
+                            modifier = Modifier
+                                .size(40.dp)
+                                .clip(RoundedCornerShape(10.dp))
+                                .background(colors.menuButtonBackground)
+                                .border(1.5.dp, colors.menuButtonBorder, RoundedCornerShape(10.dp))
+                                .clickable(onClick = onMenuClick),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Icon(
+                                imageVector = Icons.Filled.Menu,
+                                contentDescription = "Open menu",
+                                tint = colors.menuButtonIcon,
+                                modifier = Modifier.size(20.dp)
+                            )
+                        }
+                    }
+                )
+            )
+        )
+        Ux4gDivider(color = colors.border)
+    }
+}
+
+@Composable
+private fun BrandFooter(colors: NotificationChannelsColors) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = Ux4gSpace.Space8, bottom = Ux4gSpace.Space20),
+        horizontalArrangement = Arrangement.Center,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(
+            text = "Powered by -",
+            style = Ux4gTheme.typography.lS_default.copy(color = colors.mutedText)
+        )
+        Spacer(Modifier.width(Ux4gSpace.Space8))
+        Image(
+            painter = painterResource(AppR.drawable.ic_digital_india),
+            contentDescription = "Digital India",
+            colorFilter = colors.footerLogoTint?.let { ColorFilter.tint(it) },
+            modifier = Modifier.height(22.dp)
+        )
+    }
+}
+
+@Preview(name = "Notification Channels - Light", showBackground = true)
+@Composable
+private fun NotificationChannelsScreenLightPreview() {
+    Ux4gTheme {
+        NotificationChannelsScreen()
+    }
+}
+
+@Preview(name = "Notification Channels - Dark", showBackground = true)
+@Composable
+private fun NotificationChannelsScreenDarkPreview() {
+    Ux4gTheme {
+        NotificationChannelsScreen(isDarkTheme = true)
+    }
+}`}
+>
+  <img
+    src="/images/patterns/notification_preferences/notification_channels.svg"
+    alt="Notification Channels"
+    className="w-full max-w-[360px] rounded-2xl border border-border shadow-sm"
+  />
+</ComponentPreview>

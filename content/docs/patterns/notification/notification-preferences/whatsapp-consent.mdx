@@ -1,0 +1,462 @@
+---
+title: WhatsApp Consent
+description: Explicit DPDP Act compliant WhatsApp notification opt-in pattern with scope disclosure, legal consent checkbox, and activation button
+---
+
+# WhatsApp Consent
+
+A privacy-first citizen opt-in pattern adhering to the Digital Personal Data Protection Act (DPDP Act 2023) for external messaging channels. Because WhatsApp notifications require explicit, freely given citizen permission, this screen details the exact scope of delivered communications (*Application status changes*, *Appointment reminders*, *Action-required alerts*), legal withdrawal rights, an interactive consent validation checkbox, and a state-dependent **Enable WhatsApp notifications** primary button.
+
+---
+
+<h2><MIcon name="smartphone" /> Interactive Previews</h2>
+
+### 1. Default Style (Full Screen)
+
+Citizen opt-in consent flow featuring scope disclosure card, legal DPDP Act advisory, and conditional enable action.
+
+<ComponentPreview
+  title="WhatsApp Consent - Default"
+  category="Pattern · Jetpack Compose"
+  code={`package com.example.ux4g.patterns.notification.preferences
+
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.example.ux4g.R as AppR
+import com.ux4g.designsystemv1.R as Ux4gR
+import com.ux4g.designsystemv1.components.Ux4gAppHeader
+import com.ux4g.designsystemv1.components.Ux4gAppHeaderAction
+import com.ux4g.designsystemv1.components.Ux4gAppHeaderVariant
+import com.ux4g.designsystemv1.components.Ux4gCheckbox
+import com.ux4g.designsystemv1.components.Ux4gDivider
+import com.ux4g.designsystemv1.components.Ux4gDividerOrientation
+import com.ux4g.designsystemv1.components.buttons.Ux4gButton
+import com.ux4g.designsystemv1.components.buttons.Ux4gButtonSize
+import com.ux4g.designsystemv1.foundation.Ux4gColors
+import com.ux4g.designsystemv1.foundation.Ux4gSpace
+import com.ux4g.designsystemv1.theme.Ux4gTheme
+
+data class WhatsAppConsentColors(
+    val screenBackground: Color,
+    val cardBackground: Color,
+    val border: Color,
+    val title: Color,
+    val subtleText: Color,
+    val mutedText: Color,
+    val headerDivider: Color,
+    val brandLogoTint: Color,
+    val emblemTint: Color?,
+    val menuButtonBackground: Color,
+    val menuButtonBorder: Color,
+    val menuButtonIcon: Color,
+    val activeTabBackground: Color,
+    val activeTabText: Color,
+    val inactiveTabBackground: Color,
+    val inactiveTabText: Color,
+    val inactiveTabBorder: Color,
+    val scopeCardBackground: Color,
+    val scopeCardBorder: Color,
+    val scopeCardTitle: Color,
+    val scopeCardText: Color,
+    val scopeCheckIcon: Color,
+    val footerLogoTint: Color?
+)
+
+val LightWhatsAppConsentColors = WhatsAppConsentColors(
+    screenBackground = Ux4gColors.neutral50,
+    cardBackground = Ux4gColors.neutral0,
+    border = Ux4gColors.neutral200,
+    title = Ux4gColors.gray900,
+    subtleText = Ux4gColors.neutral600,
+    mutedText = Ux4gColors.neutral400,
+    headerDivider = Ux4gColors.neutral300,
+    brandLogoTint = Ux4gColors.primary600,
+    emblemTint = null,
+    menuButtonBackground = Ux4gColors.neutral0,
+    menuButtonBorder = Ux4gColors.primary300,
+    menuButtonIcon = Ux4gColors.primary600,
+    activeTabBackground = Ux4gColors.primary600,
+    activeTabText = Color.White,
+    inactiveTabBackground = Ux4gColors.neutral0,
+    inactiveTabText = Ux4gColors.neutral700,
+    inactiveTabBorder = Ux4gColors.neutral300,
+    scopeCardBackground = Color(0xFFECFDF3),
+    scopeCardBorder = Color(0xFFA6F4C5),
+    scopeCardTitle = Color(0xFF027A48),
+    scopeCardText = Ux4gColors.neutral800,
+    scopeCheckIcon = Color(0xFF027A48),
+    footerLogoTint = null
+)
+
+val DarkWhatsAppConsentColors = WhatsAppConsentColors(
+    screenBackground = Ux4gColors.neutral950,
+    cardBackground = Ux4gColors.neutral900,
+    border = Ux4gColors.neutral800,
+    title = Ux4gColors.neutral50,
+    subtleText = Ux4gColors.neutral400,
+    mutedText = Ux4gColors.neutral500,
+    headerDivider = Ux4gColors.neutral700,
+    brandLogoTint = Ux4gColors.primary300,
+    emblemTint = Color.White,
+    menuButtonBackground = Ux4gColors.neutral800,
+    menuButtonBorder = Ux4gColors.primary600,
+    menuButtonIcon = Ux4gColors.primary300,
+    activeTabBackground = Ux4gColors.primary500,
+    activeTabText = Color.White,
+    inactiveTabBackground = Ux4gColors.neutral800,
+    inactiveTabText = Ux4gColors.neutral300,
+    inactiveTabBorder = Ux4gColors.neutral700,
+    scopeCardBackground = Color(0xFF053321),
+    scopeCardBorder = Color(0xFF085D3A),
+    scopeCardTitle = Color(0xFF32D583),
+    scopeCardText = Ux4gColors.neutral200,
+    scopeCheckIcon = Color(0xFF32D583),
+    footerLogoTint = Color.White
+)
+
+@Composable
+fun WhatsAppConsentScreen(
+    modifier: Modifier = Modifier,
+    isDarkTheme: Boolean = isSystemInDarkTheme(),
+    onMenuClick: () -> Unit = {},
+    onEnableWhatsApp: () -> Unit = {}
+) {
+    val colors = if (isDarkTheme) DarkWhatsAppConsentColors else LightWhatsAppConsentColors
+
+    var selectedTab by rememberSaveable { mutableStateOf("Whatsapp Notifications") }
+    var isConsentChecked by rememberSaveable { mutableStateOf(false) }
+
+    Column(
+        modifier = modifier
+            .fillMaxSize()
+            .background(colors.screenBackground)
+    ) {
+        BrandHeader(colors = colors, onMenuClick = onMenuClick)
+
+        Column(
+            modifier = Modifier
+                .weight(1f)
+                .verticalScroll(rememberScrollState())
+                .padding(horizontal = 16.dp, vertical = 20.dp)
+        ) {
+            // Screen Title
+            Text(
+                text = "Notification Preferences",
+                style = TextStyle(
+                    fontSize = 24.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = colors.title,
+                    letterSpacing = (-0.3).sp
+                )
+            )
+            Spacer(Modifier.height(8.dp))
+
+            // Subtitle Description
+            Text(
+                text = "Control how and when the portal contacts you. Changes are saved automatically.",
+                style = TextStyle(
+                    fontSize = 14.sp,
+                    color = colors.subtleText,
+                    lineHeight = 20.sp
+                )
+            )
+            Spacer(Modifier.height(18.dp))
+
+            // Filter Tabs Bar
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .horizontalScroll(rememberScrollState()),
+                horizontalArrangement = Arrangement.spacedBy(10.dp)
+            ) {
+                listOf("Whatsapp Notifications", "Manage all Subscriptions").forEach { tab ->
+                    val isSelected = selectedTab == tab
+                    Box(
+                        modifier = Modifier
+                            .clip(RoundedCornerShape(8.dp))
+                            .background(
+                                if (isSelected) colors.activeTabBackground
+                                else colors.inactiveTabBackground
+                            )
+                            .border(
+                                width = 1.dp,
+                                color = if (isSelected) colors.activeTabBackground else colors.inactiveTabBorder,
+                                shape = RoundedCornerShape(8.dp)
+                            )
+                            .clickable { selectedTab = tab }
+                            .padding(horizontal = 16.dp, vertical = 10.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            text = tab,
+                            style = TextStyle(
+                                fontSize = 14.sp,
+                                fontWeight = if (isSelected) FontWeight.SemiBold else FontWeight.Medium,
+                                color = if (isSelected) colors.activeTabText else colors.inactiveTabText
+                            )
+                        )
+                    }
+                }
+            }
+            Spacer(Modifier.height(20.dp))
+
+            // WhatsApp Opt-in Card
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(16.dp))
+                    .background(colors.cardBackground)
+                    .border(1.dp, colors.border, RoundedCornerShape(16.dp))
+                    .padding(20.dp)
+            ) {
+                Column(modifier = Modifier.fillMaxWidth()) {
+                    Text(
+                        text = "WhatsApp notifications",
+                        style = TextStyle(
+                            fontSize = 20.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = colors.title
+                        )
+                    )
+                    Spacer(Modifier.height(6.dp))
+                    Text(
+                        text = "Receive updates on WhatsApp. This channel is strictly opt-in and needs your explicit consent.",
+                        style = TextStyle(
+                            fontSize = 14.sp,
+                            color = colors.subtleText,
+                            lineHeight = 20.sp
+                        )
+                    )
+                    Spacer(Modifier.height(18.dp))
+
+                    // Green Scope Disclosure Container
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clip(RoundedCornerShape(12.dp))
+                            .background(colors.scopeCardBackground)
+                            .border(1.5.dp, colors.scopeCardBorder, RoundedCornerShape(12.dp))
+                            .padding(16.dp)
+                    ) {
+                        Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                            Text(
+                                text = "What you will receive on WhatsApp",
+                                style = TextStyle(
+                                    fontSize = 15.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    color = colors.scopeCardTitle
+                                )
+                            )
+
+                            listOf(
+                                "Application status changes",
+                                "Appointment reminders (D-1 and H-1)",
+                                "Action-required alerts with quick links"
+                            ).forEach { itemText ->
+                                Row(verticalAlignment = Alignment.CenterVertically) {
+                                    Icon(
+                                        imageVector = Icons.Filled.Check,
+                                        contentDescription = null,
+                                        tint = colors.scopeCheckIcon,
+                                        modifier = Modifier.size(18.dp)
+                                    )
+                                    Spacer(Modifier.width(10.dp))
+                                    Text(
+                                        text = itemText,
+                                        style = TextStyle(
+                                            fontSize = 14.sp,
+                                            fontWeight = FontWeight.Medium,
+                                            color = colors.scopeCardText
+                                        )
+                                    )
+                                }
+                            }
+                        }
+                    }
+                    Spacer(Modifier.height(20.dp))
+
+                    // Consent Checkbox
+                    Column(modifier = Modifier.fillMaxWidth()) {
+                        Ux4gCheckbox(
+                            value = isConsentChecked,
+                            onValueChange = { isConsentChecked = it == true },
+                            label = "I consent to receiving notifications on WhatsApp",
+                            modifier = Modifier.fillMaxWidth()
+                        )
+                        Spacer(Modifier.height(6.dp))
+                        Text(
+                            text = "You can withdraw this consent at any time. This checkbox is compliant with the Digital Personal Data Protection (DPDP Act 2023).",
+                            style = TextStyle(
+                                fontSize = 13.sp,
+                                color = colors.mutedText,
+                                lineHeight = 18.sp
+                            ),
+                            modifier = Modifier.padding(start = 32.dp)
+                        )
+                    }
+                    Spacer(Modifier.height(24.dp))
+
+                    // Primary Enable Action Button
+                    Ux4gButton(
+                        text = "Enable WhatsApp notifications",
+                        onClick = onEnableWhatsApp,
+                        enabled = isConsentChecked,
+                        size = Ux4gButtonSize.Large,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(48.dp)
+                    )
+                }
+            }
+            Spacer(Modifier.height(20.dp))
+        }
+
+        BrandFooter(colors = colors)
+    }
+}
+
+@Composable
+private fun BrandHeader(colors: WhatsAppConsentColors, onMenuClick: () -> Unit) {
+    Column {
+        Ux4gAppHeader(
+            title = "",
+            variant = Ux4gAppHeaderVariant.Light,
+            height = 64.dp,
+            horizontalPadding = Ux4gSpace.Space16,
+            leadingSpacing = Ux4gSpace.Space8,
+            leadingWidgets = listOf(
+                {
+                    Image(
+                        painter = painterResource(Ux4gR.drawable.ic_national_emblem),
+                        contentDescription = "National Emblem of India",
+                        colorFilter = colors.emblemTint?.let { ColorFilter.tint(it) },
+                        modifier = Modifier.height(32.dp)
+                    )
+                },
+                {
+                    Ux4gDivider(
+                        orientation = Ux4gDividerOrientation.Vertical,
+                        color = colors.headerDivider,
+                        height = 28.dp
+                    )
+                },
+                {
+                    Image(
+                        painter = painterResource(Ux4gR.drawable.ic_union),
+                        contentDescription = "Government of India",
+                        colorFilter = ColorFilter.tint(colors.brandLogoTint),
+                        modifier = Modifier.height(32.dp)
+                    )
+                }
+            ),
+            actions = listOf(
+                Ux4gAppHeaderAction(
+                    customWidget = {
+                        Box(
+                            modifier = Modifier
+                                .size(40.dp)
+                                .clip(RoundedCornerShape(10.dp))
+                                .background(colors.menuButtonBackground)
+                                .border(1.5.dp, colors.menuButtonBorder, RoundedCornerShape(10.dp))
+                                .clickable(onClick = onMenuClick),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Icon(
+                                imageVector = Icons.Filled.Menu,
+                                contentDescription = "Open menu",
+                                tint = colors.menuButtonIcon,
+                                modifier = Modifier.size(20.dp)
+                            )
+                        }
+                    }
+                )
+            )
+        )
+        Ux4gDivider(color = colors.border)
+    }
+}
+
+@Composable
+private fun BrandFooter(colors: WhatsAppConsentColors) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = Ux4gSpace.Space8, bottom = Ux4gSpace.Space20),
+        horizontalArrangement = Arrangement.Center,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(
+            text = "Powered by -",
+            style = Ux4gTheme.typography.lS_default.copy(color = colors.mutedText)
+        )
+        Spacer(Modifier.width(Ux4gSpace.Space8))
+        Image(
+            painter = painterResource(AppR.drawable.ic_digital_india),
+            contentDescription = "Digital India",
+            colorFilter = colors.footerLogoTint?.let { ColorFilter.tint(it) },
+            modifier = Modifier.height(22.dp)
+        )
+    }
+}
+
+@Preview(name = "WhatsApp Consent - Light", showBackground = true)
+@Composable
+private fun WhatsAppConsentScreenLightPreview() {
+    Ux4gTheme {
+        WhatsAppConsentScreen()
+    }
+}
+
+@Preview(name = "WhatsApp Consent - Dark", showBackground = true)
+@Composable
+private fun WhatsAppConsentScreenDarkPreview() {
+    Ux4gTheme {
+        WhatsAppConsentScreen(isDarkTheme = true)
+    }
+}`}
+>
+  <img
+    src="/images/patterns/notification_preferences/whatsapp_consent.svg"
+    alt="WhatsApp Consent"
+    className="w-full max-w-[360px] rounded-2xl border border-border shadow-sm"
+  />
+</ComponentPreview>

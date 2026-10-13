@@ -1,0 +1,588 @@
+---
+title: Manage All Subscriptions
+description: Centralized notification overview pattern categorized into optional citizen preferences and mandatory government policy alerts with one-click bulk opt-out
+---
+
+# Manage All Subscriptions
+
+A centralized notification management pattern providing citizens with a comprehensive overview of every alert type sent by the portal. To maintain strict regulatory compliance while honoring citizen autonomy, alerts are divided into:
+- **Optional Alerts**: Customizable subscriptions (*Status updates*, *Action reminders*, *Certificate expiry*, *Promotional updates*) with individual `Ux4gSwitch` toggles and an immediate **Turn off all optional notifications** bulk action.
+- **Mandatory Policy Alerts**: Statutory communications (*SLA breach alerts*, *Rejection notices*) required under government service guarantee frameworks, surfaced with non-removable **Always on** badges.
+
+---
+
+<h2><MIcon name="tune" /> Interactive Previews</h2>
+
+### 1. Default Style (Full Screen)
+
+Citizen preference dashboard featuring segmented navigation tabs, sectioned notification controls, policy status badges, and bulk opt-out functionality.
+
+<ComponentPreview
+  title="Manage All Subscriptions - Default"
+  category="Pattern · Jetpack Compose"
+  code={`package com.example.ux4g.patterns.notification.preferences
+
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.example.ux4g.R as AppR
+import com.ux4g.designsystemv1.R as Ux4gR
+import com.ux4g.designsystemv1.components.Ux4gAppHeader
+import com.ux4g.designsystemv1.components.Ux4gAppHeaderAction
+import com.ux4g.designsystemv1.components.Ux4gAppHeaderVariant
+import com.ux4g.designsystemv1.components.Ux4gDivider
+import com.ux4g.designsystemv1.components.toggle.Ux4gSwitch
+import com.ux4g.designsystemv1.components.toggle.Ux4gSwitchLabelPosition
+import com.ux4g.designsystemv1.components.toggle.Ux4gSwitchSize
+import com.ux4g.designsystemv1.foundation.Ux4gColors
+import com.ux4g.designsystemv1.foundation.Ux4gSpace
+import com.ux4g.designsystemv1.theme.Ux4gTheme
+
+data class ManageAllSubscriptionsColors(
+    val screenBackground: Color,
+    val cardBackground: Color,
+    val border: Color,
+    val title: Color,
+    val cardTitle: Color,
+    val subtleText: Color,
+    val sectionHeaderColor: Color,
+    val dividerColor: Color,
+    val mutedText: Color,
+    val brandLogoTint: Color,
+    val emblemTint: Color?,
+    val menuButtonBackground: Color,
+    val menuButtonBorder: Color,
+    val menuButtonIcon: Color,
+    val activeTabBackground: Color,
+    val activeTabText: Color,
+    val inactiveTabBackground: Color,
+    val inactiveTabText: Color,
+    val inactiveTabBorder: Color,
+    val badgeBackground: Color,
+    val badgeText: Color,
+    val bulkButtonBorder: Color,
+    val bulkButtonText: Color,
+    val footerLogoTint: Color?
+)
+
+val LightManageAllSubscriptionsColors = ManageAllSubscriptionsColors(
+    screenBackground = Ux4gColors.neutral50,
+    cardBackground = Ux4gColors.neutral0,
+    border = Ux4gColors.neutral200,
+    title = Ux4gColors.gray900,
+    cardTitle = Ux4gColors.gray900,
+    subtleText = Ux4gColors.neutral600,
+    sectionHeaderColor = Ux4gColors.neutral700,
+    dividerColor = Ux4gColors.neutral200,
+    mutedText = Ux4gColors.neutral400,
+    brandLogoTint = Ux4gColors.primary600,
+    emblemTint = null,
+    menuButtonBackground = Ux4gColors.neutral0,
+    menuButtonBorder = Ux4gColors.primary300,
+    menuButtonIcon = Ux4gColors.primary600,
+    activeTabBackground = Ux4gColors.primary600,
+    activeTabText = Color.White,
+    inactiveTabBackground = Ux4gColors.neutral0,
+    inactiveTabText = Ux4gColors.neutral700,
+    inactiveTabBorder = Ux4gColors.neutral300,
+    badgeBackground = Color(0xFFF2F4F7),
+    badgeText = Color(0xFF344054),
+    bulkButtonBorder = Color(0xFFFDA29B),
+    bulkButtonText = Color(0xFFB42318),
+    footerLogoTint = null
+)
+
+val DarkManageAllSubscriptionsColors = ManageAllSubscriptionsColors(
+    screenBackground = Ux4gColors.neutral950,
+    cardBackground = Ux4gColors.neutral900,
+    border = Ux4gColors.neutral800,
+    title = Ux4gColors.neutral50,
+    cardTitle = Ux4gColors.neutral50,
+    subtleText = Ux4gColors.neutral400,
+    sectionHeaderColor = Ux4gColors.neutral300,
+    dividerColor = Ux4gColors.neutral800,
+    mutedText = Ux4gColors.neutral500,
+    brandLogoTint = Ux4gColors.primary300,
+    emblemTint = Color.White,
+    menuButtonBackground = Ux4gColors.neutral800,
+    menuButtonBorder = Ux4gColors.primary600,
+    menuButtonIcon = Ux4gColors.primary300,
+    activeTabBackground = Ux4gColors.primary500,
+    activeTabText = Color.White,
+    inactiveTabBackground = Ux4gColors.neutral800,
+    inactiveTabText = Ux4gColors.neutral300,
+    inactiveTabBorder = Ux4gColors.neutral700,
+    badgeBackground = Color(0xFF344054),
+    badgeText = Color(0xFFEAECF0),
+    bulkButtonBorder = Color(0xFF7A271A),
+    bulkButtonText = Color(0xFFF97066),
+    footerLogoTint = Color.White
+)
+
+@Composable
+fun ManageAllSubscriptionsScreen(
+    modifier: Modifier = Modifier,
+    isDarkTheme: Boolean = isSystemInDarkTheme(),
+    onMenuClick: () -> Unit = {}
+) {
+    val colors = if (isDarkTheme) DarkManageAllSubscriptionsColors else LightManageAllSubscriptionsColors
+
+    var selectedTab by rememberSaveable { mutableStateOf("Manage all Subscriptions") }
+    
+    // Optional alert subscription states
+    var statusUpdates by rememberSaveable { mutableStateOf(true) }
+    var actionReminders by rememberSaveable { mutableStateOf(true) }
+    var certificateExpiry by rememberSaveable { mutableStateOf(true) }
+    var promotionalUpdates by rememberSaveable { mutableStateOf(true) }
+
+    Column(
+        modifier = modifier
+            .fillMaxSize()
+            .background(colors.screenBackground)
+    ) {
+        BrandHeader(colors = colors, onMenuClick = onMenuClick)
+
+        Column(
+            modifier = Modifier
+                .weight(1f)
+                .verticalScroll(rememberScrollState())
+                .padding(horizontal = 16.dp, vertical = 20.dp)
+        ) {
+            // Screen Heading
+            Text(
+                text = "Notification Preferences",
+                style = TextStyle(
+                    fontSize = 24.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = colors.title,
+                    letterSpacing = (-0.3).sp
+                )
+            )
+            Spacer(Modifier.height(8.dp))
+
+            // Subtitle Description
+            Text(
+                text = "Control how and when the portal contacts you. Changes are saved automatically.",
+                style = TextStyle(
+                    fontSize = 14.sp,
+                    color = colors.subtleText,
+                    lineHeight = 20.sp
+                )
+            )
+            Spacer(Modifier.height(18.dp))
+
+            // Filter Tabs Bar
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .horizontalScroll(rememberScrollState()),
+                horizontalArrangement = Arrangement.spacedBy(10.dp)
+            ) {
+                listOf("Whatsapp Notifications", "Manage all Subscriptions").forEach { tab ->
+                    val isSelected = selectedTab == tab
+                    Box(
+                        modifier = Modifier
+                            .clip(RoundedCornerShape(8.dp))
+                            .background(
+                                if (isSelected) colors.activeTabBackground
+                                else colors.inactiveTabBackground
+                            )
+                            .border(
+                                width = 1.dp,
+                                color = if (isSelected) colors.activeTabBackground else colors.inactiveTabBorder,
+                                shape = RoundedCornerShape(8.dp)
+                            )
+                            .clickable { selectedTab = tab }
+                            .padding(horizontal = 16.dp, vertical = 10.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            text = tab,
+                            style = TextStyle(
+                                fontSize = 14.sp,
+                                fontWeight = if (isSelected) FontWeight.SemiBold else FontWeight.Medium,
+                                color = if (isSelected) colors.activeTabText else colors.inactiveTabText
+                            )
+                        )
+                    }
+                }
+            }
+            Spacer(Modifier.height(20.dp))
+
+            // Main Management Card
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(16.dp))
+                    .background(colors.cardBackground)
+                    .border(1.dp, colors.border, RoundedCornerShape(16.dp))
+                    .padding(20.dp)
+            ) {
+                Column {
+                    // Card Title & Description
+                    Text(
+                        text = "Manage all subscriptions",
+                        style = TextStyle(
+                            fontSize = 20.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = colors.cardTitle,
+                            letterSpacing = (-0.2).sp
+                        )
+                    )
+                    Spacer(Modifier.height(6.dp))
+                    Text(
+                        text = "A complete overview of every notification type and a quick way to opt out of optional ones.",
+                        style = TextStyle(
+                            fontSize = 14.sp,
+                            color = colors.subtleText,
+                            lineHeight = 20.sp
+                        )
+                    )
+                    Spacer(Modifier.height(24.dp))
+
+                    // SECTION 1: OPTIONAL NOTIFICATIONS
+                    Text(
+                        text = "OPTIONAL — YOU CAN TURN THESE OFF",
+                        style = TextStyle(
+                            fontSize = 12.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = colors.sectionHeaderColor,
+                            letterSpacing = 0.5.sp
+                        )
+                    )
+                    Spacer(Modifier.height(16.dp))
+
+                    ToggleItemRow(
+                        title = "Status updates",
+                        subtitle = "Stage changes across all your applications",
+                        checked = statusUpdates,
+                        onCheckedChange = { statusUpdates = it },
+                        colors = colors
+                    )
+                    Ux4gDivider(modifier = Modifier.padding(vertical = 14.dp), color = colors.dividerColor)
+
+                    ToggleItemRow(
+                        title = "Action reminders",
+                        subtitle = "Upload and payment reminders",
+                        checked = actionReminders,
+                        onCheckedChange = { actionReminders = it },
+                        colors = colors
+                    )
+                    Ux4gDivider(modifier = Modifier.padding(vertical = 14.dp), color = colors.dividerColor)
+
+                    ToggleItemRow(
+                        title = "Certificate expiry",
+                        subtitle = "Renewal reminders before documents expire",
+                        checked = certificateExpiry,
+                        onCheckedChange = { certificateExpiry = it },
+                        colors = colors
+                    )
+                    Ux4gDivider(modifier = Modifier.padding(vertical = 14.dp), color = colors.dividerColor)
+
+                    ToggleItemRow(
+                        title = "Promotional updates",
+                        subtitle = "New services and scheme announcements",
+                        checked = promotionalUpdates,
+                        onCheckedChange = { promotionalUpdates = it },
+                        colors = colors
+                    )
+
+                    Spacer(Modifier.height(28.dp))
+
+                    // SECTION 2: MANDATORY NOTIFICATIONS
+                    Text(
+                        text = "MANDATORY — REQUIRED BY GOVERNMENT POLICY",
+                        style = TextStyle(
+                            fontSize = 12.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = colors.sectionHeaderColor,
+                            letterSpacing = 0.5.sp
+                        )
+                    )
+                    Spacer(Modifier.height(16.dp))
+
+                    MandatoryItemRow(
+                        title = "SLA breach alerts",
+                        subtitle = "Service guarantee deadline notifications",
+                        colors = colors
+                    )
+                    Ux4gDivider(modifier = Modifier.padding(vertical = 14.dp), color = colors.dividerColor)
+
+                    MandatoryItemRow(
+                        title = "Rejection notices",
+                        subtitle = "Application rejection with reasons",
+                        colors = colors
+                    )
+
+                    Spacer(Modifier.height(24.dp))
+
+                    // Bulk Opt-out Button
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clip(RoundedCornerShape(8.dp))
+                            .border(1.dp, colors.bulkButtonBorder, RoundedCornerShape(8.dp))
+                            .clickable {
+                                // Turn off all optional subscriptions
+                                statusUpdates = false
+                                actionReminders = false
+                                certificateExpiry = false
+                                promotionalUpdates = false
+                            }
+                            .padding(vertical = 14.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            text = "Turn off all optional notifications",
+                            style = TextStyle(
+                                fontSize = 15.sp,
+                                fontWeight = FontWeight.SemiBold,
+                                color = colors.bulkButtonText
+                            )
+                        )
+                    }
+                }
+            }
+
+            Spacer(Modifier.height(24.dp))
+            BrandFooter(colors = colors)
+        }
+    }
+}
+
+@Composable
+private fun ToggleItemRow(
+    title: String,
+    subtitle: String,
+    checked: Boolean,
+    onCheckedChange: (Boolean) -> Unit,
+    colors: ManageAllSubscriptionsColors
+) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        Column(
+            modifier = Modifier
+                .weight(1f)
+                .padding(end = 16.dp)
+        ) {
+            Text(
+                text = title,
+                style = TextStyle(
+                    fontSize = 15.sp,
+                    fontWeight = FontWeight.SemiBold,
+                    color = colors.title
+                )
+            )
+            Spacer(Modifier.height(2.dp))
+            Text(
+                text = subtitle,
+                style = TextStyle(
+                    fontSize = 13.sp,
+                    color = colors.subtleText,
+                    lineHeight = 18.sp
+                )
+            )
+        }
+
+        Ux4gSwitch(
+            checked = checked,
+            onCheckedChange = onCheckedChange,
+            size = Ux4gSwitchSize.M,
+            labelPosition = Ux4gSwitchLabelPosition.NoLabel
+        )
+    }
+}
+
+@Composable
+private fun MandatoryItemRow(
+    title: String,
+    subtitle: String,
+    colors: ManageAllSubscriptionsColors
+) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        Column(
+            modifier = Modifier
+                .weight(1f)
+                .padding(end = 16.dp)
+        ) {
+            Text(
+                text = title,
+                style = TextStyle(
+                    fontSize = 15.sp,
+                    fontWeight = FontWeight.SemiBold,
+                    color = colors.title
+                )
+            )
+            Spacer(Modifier.height(2.dp))
+            Text(
+                text = subtitle,
+                style = TextStyle(
+                    fontSize = 13.sp,
+                    color = colors.subtleText,
+                    lineHeight = 18.sp
+                )
+            )
+        }
+
+        // "Always on" Pill Badge
+        Box(
+            modifier = Modifier
+                .clip(RoundedCornerShape(6.dp))
+                .background(colors.badgeBackground)
+                .padding(horizontal = 10.dp, vertical = 5.dp)
+        ) {
+            Text(
+                text = "Always on",
+                style = TextStyle(
+                    fontSize = 13.sp,
+                    fontWeight = FontWeight.Medium,
+                    color = colors.badgeText
+                )
+            )
+        }
+    }
+}
+
+@Composable
+private fun BrandHeader(colors: ManageAllSubscriptionsColors, onMenuClick: () -> Unit) {
+    Column {
+        Ux4gAppHeader(
+            title = "",
+            variant = Ux4gAppHeaderVariant.Light,
+            height = 64.dp,
+            horizontalPadding = Ux4gSpace.Space16,
+            leadingSpacing = Ux4gSpace.Space8,
+            leadingWidgets = listOf(
+                {
+                    Image(
+                        painter = painterResource(Ux4gR.drawable.ic_national_emblem),
+                        contentDescription = "National Emblem of India",
+                        colorFilter = colors.emblemTint?.let { ColorFilter.tint(it) },
+                        modifier = Modifier.height(36.dp)
+                    )
+                },
+                {
+                    Image(
+                        painter = painterResource(Ux4gR.drawable.ic_union),
+                        contentDescription = "Government of India",
+                        colorFilter = ColorFilter.tint(colors.brandLogoTint),
+                        modifier = Modifier.height(32.dp)
+                    )
+                }
+            ),
+            actions = listOf(
+                Ux4gAppHeaderAction(
+                    customWidget = {
+                        Box(
+                            modifier = Modifier
+                                .size(40.dp)
+                                .clip(RoundedCornerShape(10.dp))
+                                .background(colors.menuButtonBackground)
+                                .border(1.5.dp, colors.menuButtonBorder, RoundedCornerShape(10.dp))
+                                .clickable(onClick = onMenuClick),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Icon(
+                                imageVector = Icons.Filled.Menu,
+                                contentDescription = "Open menu",
+                                tint = colors.menuButtonIcon,
+                                modifier = Modifier.size(20.dp)
+                            )
+                        }
+                    }
+                )
+            )
+        )
+        Ux4gDivider(color = colors.border)
+    }
+}
+
+@Composable
+private fun BrandFooter(colors: ManageAllSubscriptionsColors) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = Ux4gSpace.Space8, bottom = Ux4gSpace.Space20),
+        horizontalArrangement = Arrangement.Center,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(
+            text = "Powered by -",
+            style = Ux4gTheme.typography.lS_default.copy(color = colors.mutedText)
+        )
+        Spacer(Modifier.width(Ux4gSpace.Space8))
+        Image(
+            painter = painterResource(AppR.drawable.ic_digital_india),
+            contentDescription = "Digital India",
+            colorFilter = colors.footerLogoTint?.let { ColorFilter.tint(it) },
+            modifier = Modifier.height(22.dp)
+        )
+    }
+}
+
+@Preview(name = "Manage All Subscriptions - Light", showBackground = true)
+@Composable
+private fun ManageAllSubscriptionsScreenLightPreview() {
+    Ux4gTheme {
+        ManageAllSubscriptionsScreen()
+    }
+}
+
+@Preview(name = "Manage All Subscriptions - Dark", showBackground = true)
+@Composable
+private fun ManageAllSubscriptionsScreenDarkPreview() {
+    Ux4gTheme {
+        ManageAllSubscriptionsScreen(isDarkTheme = true)
+    }
+}`}
+>
+  <img
+    src="/images/patterns/notification_preferences/manage_all.svg"
+    alt="Manage All Subscriptions"
+    className="w-full max-w-[360px] rounded-2xl border border-border shadow-sm"
+  />
+</ComponentPreview>

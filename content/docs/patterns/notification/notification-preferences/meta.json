@@ -1,0 +1,11 @@
+{
+  "title": "Notification Preferences",
+  "pages": [
+    "notification-channels",
+    "update-frequency",
+    "per-service",
+    "locked-notifications",
+    "whatsapp-consent",
+    "manage-all"
+  ]
+}
