@@ -3,6 +3,7 @@
   "pages": [
     "save-and-resume",
     "submission-acknowledgement",
-    "document-scan-and-upload"
+    "document-scan-and-upload",
+    "eligibility-check-wizard"
   ]
 }

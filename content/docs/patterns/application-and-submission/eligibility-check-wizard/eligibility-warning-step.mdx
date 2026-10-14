@@ -1,0 +1,621 @@
+---
+title: Eligibility Warning Step
+description: Wizard outcome pattern for conditional eligibility requiring manual administrative review with highlighted pending criteria and a clear continuation path
+---
+
+# Eligibility Warning Step
+
+A conditional outcome pattern presented when an automated assessment cannot definitively resolve all statutory rules, informing the citizen that their application qualifies for manual administrative verification.
+
+This state manages expectations by acknowledging that while most parameters are verified, certain criteria (such as *Income within eligible range*) require discretionary review by an authorized case officer. An orange warning indicator and reassurance copy (*"You May Be Eligible"*) prevent premature abandonment while clarifying that human verification will occur during subsequent processing. A prominent action button (*"Proceed to Apply"*) allows citizens to continue their formal submission without barrier.
+
+---
+
+<h2><MIcon name="smartphone" /> Interactive Previews</h2>
+
+### 1. Default Style (Full Screen)
+
+Standard full-screen review screen featuring a circular warning icon, conditional qualification status, itemized criteria breakdown highlighting pending verification, and a continuation trigger.
+
+<ComponentPreview
+  title="Eligibility Warning Step - Default Style"
+  category="Pattern · Jetpack Compose"
+  code={`package com.example.ux4g.patterns.application
+
+import androidx.compose.foundation.background
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.Warning
+import androidx.compose.material3.Divider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.ux4g.designsystemv1.components.Ux4gAppHeader
+import com.ux4g.designsystemv1.components.Ux4gAppHeaderAction
+import com.ux4g.designsystemv1.components.Ux4gAppHeaderVariant
+import com.ux4g.designsystemv1.components.buttons.Ux4gButton
+import com.ux4g.designsystemv1.components.buttons.Ux4gButtonSize
+import com.ux4g.designsystemv1.components.buttons.Ux4gButtonVariant
+import com.ux4g.designsystemv1.foundation.Ux4gColors
+
+/**
+ * Status of an eligibility criteria verification
+ */
+enum class CriteriaStatus {
+    MET,
+    UNCONFIRMED
+}
+
+/**
+ * Data class representing an evaluated criteria item in the warning pattern
+ */
+data class WarningCriteriaItem(
+    val id: String,
+    val title: String,
+    val status: CriteriaStatus
+)
+
+/**
+ * Eligibility Warning Step - Full Screen Default Pattern
+ *
+ * @param onProceedToApply Callback invoked when citizen proceeds to the formal application
+ */
+@Composable
+fun EligibilityWarningStepScreen(
+    onProceedToApply: () -> Unit = {}
+) {
+    val isDark = isSystemInDarkTheme()
+    val scrollState = rememberScrollState()
+
+    val surfaceBg = if (isDark) Ux4gColors.Neutral950 else Color(0xFFFAFAFA)
+    val textPrimary = if (isDark) Ux4gColors.Neutral50 else Ux4gColors.Neutral900
+    val textSecondary = if (isDark) Ux4gColors.Neutral400 else Ux4gColors.Neutral700
+    val warningColor = if (isDark) Ux4gColors.Orange200 else Ux4gColors.Orange800
+    val warningBadgeBg = if (isDark) Ux4gColors.Orange900 else Ux4gColors.Orange100
+    val warningIconColor = if (isDark) Ux4gColors.Orange400 else Ux4gColors.Orange600
+
+    val checkBadgeBg = if (isDark) Ux4gColors.Green900 else Ux4gColors.Green100
+    val checkIconColor = if (isDark) Ux4gColors.Green400 else Ux4gColors.Green600
+
+    val criteriaList = listOf(
+        WarningCriteriaItem("age", "Age requirement met (18 years or above)", CriteriaStatus.MET),
+        WarningCriteriaItem("id", "Valid government-issued ID submitted", CriteriaStatus.MET),
+        WarningCriteriaItem("address", "Residential address confirmed", CriteriaStatus.MET),
+        WarningCriteriaItem("income", "Income within eligible range", CriteriaStatus.UNCONFIRMED),
+        WarningCriteriaItem("dues", "No outstanding dues or penalties", CriteriaStatus.MET)
+    )
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(surfaceBg)
+    ) {
+        // App Header
+        Ux4gAppHeader(
+            variant = Ux4gAppHeaderVariant.Light,
+            leadingWidgets = listOf("emblem", "union"),
+            actions = listOf(
+                Ux4gAppHeaderAction(
+                    icon = "menu",
+                    onClick = {}
+                )
+            ),
+            modifier = Modifier.fillMaxWidth()
+        )
+
+        Divider(
+            thickness = 1.dp,
+            color = if (isDark) Ux4gColors.Neutral800 else Color(0xFFE5E7EB)
+        )
+
+        // Scrollable Body Content
+        Column(
+            modifier = Modifier
+                .weight(1f)
+                .fillMaxWidth()
+                .verticalScroll(scrollState)
+                .padding(horizontal = 24.dp, vertical = 28.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            // Warning Icon Badge
+            Box(
+                contentAlignment = Alignment.Center,
+                modifier = Modifier
+                    .size(64.dp)
+                    .clip(CircleShape)
+                    .background(warningBadgeBg)
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Warning,
+                    contentDescription = "Review Required",
+                    tint = warningIconColor,
+                    modifier = Modifier.size(34.dp)
+                )
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // Heading
+            Text(
+                text = "You May Be Eligible",
+                style = TextStyle(
+                    fontSize = 24.sp,
+                    fontWeight = FontWeight.ExtraBold,
+                    color = warningColor
+                )
+            )
+
+            Spacer(modifier = Modifier.height(10.dp))
+
+            // Explanation
+            Text(
+                text = "One or more criteria could not be confirmed automatically. An officer will review and verify your eligibility.",
+                textAlign = TextAlign.Center,
+                style = TextStyle(
+                    fontSize = 14.sp,
+                    color = textSecondary,
+                    lineHeight = 20.sp
+                )
+            )
+
+            Spacer(modifier = Modifier.height(24.dp))
+
+            Divider(
+                thickness = 1.dp,
+                color = if (isDark) Ux4gColors.Neutral800 else Color(0xFFE5E7EB)
+            )
+
+            Spacer(modifier = Modifier.height(20.dp))
+
+            // Section Header
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.Start
+            ) {
+                Text(
+                    text = "Eligibility Criteria",
+                    style = TextStyle(
+                        fontSize = 14.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = textPrimary
+                    )
+                )
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // Criteria Items
+            Column(
+                verticalArrangement = Arrangement.spacedBy(14.dp),
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                criteriaList.forEach { criteria ->
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            text = criteria.title,
+                            style = TextStyle(
+                                fontSize = 13.sp,
+                                fontWeight = FontWeight.Medium,
+                                color = textSecondary,
+                                lineHeight = 18.sp
+                            ),
+                            modifier = Modifier.weight(1f)
+                        )
+
+                        Spacer(modifier = Modifier.width(12.dp))
+
+                        // Status Pill (Checkmark or Question Mark)
+                        Box(
+                            contentAlignment = Alignment.Center,
+                            modifier = Modifier
+                                .size(20.dp)
+                                .clip(RoundedCornerShape(4.dp))
+                                .background(
+                                    if (criteria.status == CriteriaStatus.MET) checkBadgeBg else warningBadgeBg
+                                )
+                        ) {
+                            if (criteria.status == CriteriaStatus.MET) {
+                                Icon(
+                                    imageVector = Icons.Default.Check,
+                                    contentDescription = "Requirement met",
+                                    tint = checkIconColor,
+                                    modifier = Modifier.size(14.dp)
+                                )
+                            } else {
+                                Text(
+                                    text = "?",
+                                    style = TextStyle(
+                                        fontSize = 14.sp,
+                                        fontWeight = FontWeight.Bold,
+                                        color = warningIconColor
+                                    )
+                                )
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        // Bottom Action Area
+        Divider(
+            thickness = 1.dp,
+            color = if (isDark) Ux4gColors.Neutral800 else Color(0xFFE5E7EB)
+        )
+
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 24.dp, vertical = 16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Ux4gButton(
+                text = "Proceed to Apply",
+                variant = Ux4gButtonVariant.Primary,
+                size = Ux4gButtonSize.Large,
+                onClick = onProceedToApply,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(48.dp)
+            )
+
+            Spacer(modifier = Modifier.height(14.dp))
+
+            // Footer
+            Text(
+                text = "Powered by Digital India",
+                style = TextStyle(
+                    fontSize = 11.sp,
+                    color = Ux4gColors.Neutral400,
+                    fontWeight = FontWeight.Medium
+                )
+            )
+        }
+    }
+}
+
+@Preview(showBackground = true, widthDp = 360, heightDp = 760)
+@Composable
+fun EligibilityWarningStepPreview() {
+    EligibilityWarningStepScreen()
+}`}
+>
+  <img
+    src="/images/patterns/eligibility_check_wizard/eligibility_warning_step.svg"
+    alt="Eligibility Warning Step Pattern - Default Full Screen Style"
+    className="w-full max-w-[360px] rounded-2xl border border-border shadow-sm mx-auto my-4"
+  />
+</ComponentPreview>
+
+---
+
+### 2. Card Style (Contained)
+
+Card-contained layout encapsulating the review alert, criteria breakdown with pending status badges, and continuation button inside a central elevated surface on a brand canvas.
+
+<ComponentPreview
+  title="Eligibility Warning Step - Card Style"
+  category="Pattern · Jetpack Compose"
+  code={`package com.example.ux4g.patterns.application
+
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.Warning
+import androidx.compose.material3.Divider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.ux4g.designsystemv1.components.Ux4gAppHeader
+import com.ux4g.designsystemv1.components.Ux4gAppHeaderAction
+import com.ux4g.designsystemv1.components.Ux4gAppHeaderVariant
+import com.ux4g.designsystemv1.components.buttons.Ux4gButton
+import com.ux4g.designsystemv1.components.buttons.Ux4gButtonSize
+import com.ux4g.designsystemv1.components.buttons.Ux4gButtonVariant
+import com.ux4g.designsystemv1.foundation.Ux4gColors
+
+/**
+ * Eligibility Warning Step - Card Contained Pattern
+ *
+ * @param onProceedToApply Callback invoked when continuing to application
+ */
+@Composable
+fun EligibilityWarningStepCardScreen(
+    onProceedToApply: () -> Unit = {}
+) {
+    val isDark = isSystemInDarkTheme()
+    val scrollState = rememberScrollState()
+
+    val canvasBg = if (isDark) Ux4gColors.Primary900 else Ux4gColors.Primary50
+    val cardBg = if (isDark) Ux4gColors.Neutral900 else Color.White
+    val cardBorder = if (isDark) Ux4gColors.Neutral800 else Color(0xFFE5E7EB)
+    val textPrimary = if (isDark) Ux4gColors.Neutral50 else Ux4gColors.Neutral900
+    val textSecondary = if (isDark) Ux4gColors.Neutral400 else Ux4gColors.Neutral700
+    val warningColor = if (isDark) Ux4gColors.Orange200 else Ux4gColors.Orange800
+    val warningBadgeBg = if (isDark) Ux4gColors.Orange900 else Ux4gColors.Orange100
+    val warningIconColor = if (isDark) Ux4gColors.Orange400 else Ux4gColors.Orange600
+
+    val checkBadgeBg = if (isDark) Ux4gColors.Green900 else Ux4gColors.Green100
+    val checkIconColor = if (isDark) Ux4gColors.Green400 else Ux4gColors.Green600
+
+    val criteriaList = listOf(
+        WarningCriteriaItem("age", "Age requirement met (18 years or above)", CriteriaStatus.MET),
+        WarningCriteriaItem("id", "Valid government-issued ID submitted", CriteriaStatus.MET),
+        WarningCriteriaItem("address", "Residential address confirmed", CriteriaStatus.MET),
+        WarningCriteriaItem("income", "Income within eligible range", CriteriaStatus.UNCONFIRMED),
+        WarningCriteriaItem("dues", "No outstanding dues or penalties", CriteriaStatus.MET)
+    )
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(canvasBg)
+    ) {
+        // App Header
+        Ux4gAppHeader(
+            variant = Ux4gAppHeaderVariant.Light,
+            leadingWidgets = listOf("emblem", "union"),
+            actions = listOf(
+                Ux4gAppHeaderAction(
+                    icon = "menu",
+                    onClick = {}
+                )
+            ),
+            modifier = Modifier.fillMaxWidth()
+        )
+
+        // Scrollable Body
+        Column(
+            modifier = Modifier
+                .weight(1f)
+                .fillMaxWidth()
+                .verticalScroll(scrollState)
+                .padding(16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            // Elevated Content Card
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .shadow(
+                        elevation = 6.dp,
+                        shape = RoundedCornerShape(16.dp),
+                        ambientColor = Color.Black.copy(alpha = 0.04f)
+                    )
+                    .clip(RoundedCornerShape(16.dp))
+                    .background(cardBg)
+                    .border(1.dp, cardBorder, RoundedCornerShape(16.dp))
+                    .padding(20.dp)
+            ) {
+                Column(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    // Warning Badge
+                    Box(
+                        contentAlignment = Alignment.Center,
+                        modifier = Modifier
+                            .size(64.dp)
+                            .clip(CircleShape)
+                            .background(warningBadgeBg)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Warning,
+                            contentDescription = "Review Required",
+                            tint = warningIconColor,
+                            modifier = Modifier.size(34.dp)
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.height(14.dp))
+
+                    // Title
+                    Text(
+                        text = "You May Be Eligible",
+                        style = TextStyle(
+                            fontSize = 22.sp,
+                            fontWeight = FontWeight.ExtraBold,
+                            color = warningColor
+                        )
+                    )
+
+                    Spacer(modifier = Modifier.height(10.dp))
+
+                    // Description
+                    Text(
+                        text = "One or more criteria could not be confirmed automatically. An officer will review and verify your eligibility.",
+                        textAlign = TextAlign.Center,
+                        style = TextStyle(
+                            fontSize = 13.sp,
+                            color = textSecondary,
+                            lineHeight = 19.sp
+                        )
+                    )
+
+                    Spacer(modifier = Modifier.height(18.dp))
+
+                    Divider(
+                        thickness = 1.dp,
+                        color = if (isDark) Ux4gColors.Neutral800 else Color(0xFFE5E7EB)
+                    )
+
+                    Spacer(modifier = Modifier.height(16.dp))
+
+                    // Section Heading
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.Start
+                    ) {
+                        Text(
+                            text = "Eligibility Criteria",
+                            style = TextStyle(
+                                fontSize = 14.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = textPrimary
+                            )
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.height(14.dp))
+
+                    // Criteria items
+                    Column(
+                        verticalArrangement = Arrangement.spacedBy(14.dp),
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        criteriaList.forEach { criteria ->
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Text(
+                                    text = criteria.title,
+                                    style = TextStyle(
+                                        fontSize = 13.sp,
+                                        fontWeight = FontWeight.Medium,
+                                        color = textSecondary,
+                                        lineHeight = 17.sp
+                                    ),
+                                    modifier = Modifier.weight(1f)
+                                )
+
+                                Spacer(modifier = Modifier.width(12.dp))
+
+                                Box(
+                                    contentAlignment = Alignment.Center,
+                                    modifier = Modifier
+                                        .size(20.dp)
+                                        .clip(RoundedCornerShape(4.dp))
+                                        .background(
+                                            if (criteria.status == CriteriaStatus.MET) checkBadgeBg else warningBadgeBg
+                                        )
+                                ) {
+                                    if (criteria.status == CriteriaStatus.MET) {
+                                        Icon(
+                                            imageVector = Icons.Default.Check,
+                                            contentDescription = "Requirement met",
+                                            tint = checkIconColor,
+                                            modifier = Modifier.size(14.dp)
+                                        )
+                                    } else {
+                                        Text(
+                                            text = "?",
+                                            style = TextStyle(
+                                                fontSize = 14.sp,
+                                                fontWeight = FontWeight.Bold,
+                                                color = warningIconColor
+                                            )
+                                        )
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    Spacer(modifier = Modifier.height(20.dp))
+
+                    // Button inside card
+                    Ux4gButton(
+                        text = "Proceed to Apply",
+                        variant = Ux4gButtonVariant.Primary,
+                        size = Ux4gButtonSize.Large,
+                        onClick = onProceedToApply,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(48.dp)
+                    )
+                }
+            }
+
+            Spacer(modifier = Modifier.height(20.dp))
+
+            // Footer
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 12.dp),
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = "Powered by Digital India",
+                    style = TextStyle(
+                        fontSize = 11.sp,
+                        color = Ux4gColors.Neutral400,
+                        fontWeight = FontWeight.Medium
+                    )
+                )
+            }
+        }
+    }
+}
+
+@Preview(showBackground = true, widthDp = 360, heightDp = 760)
+@Composable
+fun EligibilityWarningStepCardPreview() {
+    EligibilityWarningStepCardScreen()
+}`}
+>
+  <img
+    src="/images/patterns/eligibility_check_wizard/eligibility_warning_step_cardstyle.svg"
+    alt="Eligibility Warning Step Pattern - Card Style Variant"
+    className="w-full max-w-[360px] rounded-2xl border border-border shadow-sm mx-auto my-4"
+  />
+</ComponentPreview>

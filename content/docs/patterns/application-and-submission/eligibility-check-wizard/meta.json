@@ -1,0 +1,11 @@
+{
+  "title": "Eligibility Check Wizard",
+  "pages": [
+    "eligibility-check-landing",
+    "eligibility-question-step",
+    "eligibility-final-question-step",
+    "eligibility-success-step",
+    "eligibility-failure-step",
+    "eligibility-warning-step"
+  ]
+}

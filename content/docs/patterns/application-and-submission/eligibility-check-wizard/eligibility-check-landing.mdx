@@ -1,0 +1,557 @@
+---
+title: Eligibility Check Landing
+description: Wizard entry pattern setting user expectations before starting an eligibility questionnaire with estimated time, questions count, and clear navigation paths
+---
+
+# Eligibility Check Landing
+
+A guided intake and orientation pattern introducing citizens to an eligibility assessment questionnaire prior to committing to a formal government petition or entitlement application.
+
+The landing screen mitigates citizen uncertainty and drop-off by clarifying the scope of the assessment upfront—stating the number of questions (*5 questions*), estimated completion time (*~2 minutes*), and confirming that no physical documents or file uploads are required at this stage. Dual advancement options empower the citizen to either begin the step-by-step verification wizard or directly skip ahead if they already understand statutory requirements.
+
+---
+
+<h2><MIcon name="smartphone" /> Interactive Previews</h2>
+
+### 1. Default Style (Full Screen)
+
+Standard full-screen orientation layout presenting the service title, value proposition, time and document expectations, primary start trigger, and an optional direct bypass.
+
+<ComponentPreview
+  title="Eligibility Check Landing - Default Style"
+  category="Pattern · Jetpack Compose"
+  code={`package com.example.ux4g.patterns.application
+
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material3.Divider
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.ux4g.designsystemv1.components.Ux4gAppHeader
+import com.ux4g.designsystemv1.components.Ux4gAppHeaderAction
+import com.ux4g.designsystemv1.components.Ux4gAppHeaderVariant
+import com.ux4g.designsystemv1.components.buttons.Ux4gButton
+import com.ux4g.designsystemv1.components.buttons.Ux4gButtonSize
+import com.ux4g.designsystemv1.components.buttons.Ux4gButtonVariant
+import com.ux4g.designsystemv1.foundation.Ux4gColors
+
+/**
+ * Eligibility Check Landing - Full Screen Default Pattern
+ *
+ * @param onStartCheck Callback to begin the step-by-step eligibility questionnaire
+ * @param onSkipAndApply Callback to bypass check and apply directly
+ * @param onTrackApplication Callback to check existing application status
+ */
+@Composable
+fun EligibilityCheckLandingScreen(
+    onStartCheck: () -> Unit = {},
+    onSkipAndApply: () -> Unit = {},
+    onTrackApplication: () -> Unit = {}
+) {
+    val isDark = isSystemInDarkTheme()
+    val scrollState = rememberScrollState()
+
+    val surfaceBg = if (isDark) Ux4gColors.Neutral950 else Color(0xFFFAFAFA)
+    val textPrimary = if (isDark) Ux4gColors.Neutral50 else Ux4gColors.Neutral900
+    val textSecondary = if (isDark) Ux4gColors.Neutral400 else Ux4gColors.Neutral700
+    val primaryColor = if (isDark) Ux4gColors.Primary300 else Ux4gColors.Primary600
+
+    val infoBullets = listOf(
+        "5 questions",
+        "~2 minutes to complete",
+        "No documents needed at this step"
+    )
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(surfaceBg)
+    ) {
+        // App Header
+        Ux4gAppHeader(
+            variant = Ux4gAppHeaderVariant.Light,
+            leadingWidgets = listOf("emblem", "union"),
+            actions = listOf(
+                Ux4gAppHeaderAction(
+                    icon = "menu",
+                    onClick = {}
+                )
+            ),
+            modifier = Modifier.fillMaxWidth()
+        )
+
+        Divider(
+            thickness = 1.dp,
+            color = if (isDark) Ux4gColors.Neutral800 else Color(0xFFE5E7EB)
+        )
+
+        // Scrollable Body Content
+        Column(
+            modifier = Modifier
+                .weight(1f)
+                .fillMaxWidth()
+                .verticalScroll(scrollState)
+                .padding(horizontal = 24.dp)
+        ) {
+            Spacer(modifier = Modifier.height(40.dp))
+
+            // Scheme Title
+            Text(
+                text = "Income Certificate\\nCheck Eligibility",
+                style = TextStyle(
+                    fontSize = 24.sp,
+                    fontWeight = FontWeight.ExtraBold,
+                    color = textPrimary,
+                    lineHeight = 32.sp
+                ),
+                textAlign = TextAlign.Center,
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            Spacer(modifier = Modifier.height(14.dp))
+
+            // Subtitle Guidance
+            Text(
+                text = "Answer a few quick questions to see if you qualify.",
+                style = TextStyle(
+                    fontSize = 14.sp,
+                    color = textSecondary,
+                    lineHeight = 20.sp
+                ),
+                textAlign = TextAlign.Center,
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            Spacer(modifier = Modifier.height(32.dp))
+
+            // Info Expectations Bullet List
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                verticalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+                infoBullets.forEach { bulletText ->
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Box(
+                            modifier = Modifier
+                                .size(8.dp)
+                                .clip(CircleShape)
+                                .background(primaryColor)
+                        )
+
+                        Spacer(modifier = Modifier.width(12.dp))
+
+                        Text(
+                            text = bulletText,
+                            style = TextStyle(
+                                fontSize = 14.sp,
+                                color = textSecondary,
+                                fontWeight = FontWeight.Normal
+                            )
+                        )
+                    }
+                }
+            }
+
+            Spacer(modifier = Modifier.height(32.dp))
+        }
+
+        // Bottom Actions & Navigation
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 24.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Divider(
+                thickness = 1.dp,
+                color = if (isDark) Ux4gColors.Neutral800 else Color(0xFFE5E7EB)
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            Ux4gButton(
+                text = "Start Eligibility Check",
+                variant = Ux4gButtonVariant.Primary,
+                size = Ux4gButtonSize.Large,
+                onClick = onStartCheck,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(48.dp)
+            )
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            Ux4gButton(
+                text = "Skip and Apply Directly",
+                variant = Ux4gButtonVariant.Ghost,
+                size = Ux4gButtonSize.Large,
+                onClick = onSkipAndApply,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(48.dp)
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            Text(
+                text = "Already applied? Track your application →",
+                style = TextStyle(
+                    fontSize = 13.sp,
+                    fontWeight = FontWeight.Medium,
+                    color = textSecondary
+                ),
+                modifier = Modifier
+                    .clickable { onTrackApplication() }
+                    .padding(vertical = 4.dp)
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // Footer Branding
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 20.dp),
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = "Powered by Digital India",
+                    style = TextStyle(
+                        fontSize = 11.sp,
+                        color = Ux4gColors.Neutral400,
+                        fontWeight = FontWeight.Medium
+                    )
+                )
+            }
+        }
+    }
+}
+
+@Preview(showBackground = true, widthDp = 360, heightDp = 760)
+@Composable
+fun EligibilityCheckLandingPreview() {
+    EligibilityCheckLandingScreen()
+}`}
+>
+  <img
+    src="/images/patterns/eligibility_check_wizard/eligibility_check_landing.svg"
+    alt="Eligibility Check Landing Pattern - Default Style"
+    className="w-full max-w-[360px] rounded-2xl border border-border shadow-sm mx-auto my-4"
+  />
+</ComponentPreview>
+
+---
+
+### 2. Card Style Variant
+
+Elevated card presentation nestled against a subtle primary tint background canvas, centering the wizard orientation content within a soft elevated card container.
+
+<ComponentPreview
+  title="Eligibility Check Landing - Card Style Variant"
+  category="Pattern · Jetpack Compose"
+  code={`package com.example.ux4g.patterns.application
+
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material3.Divider
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.ux4g.designsystemv1.components.Ux4gAppHeader
+import com.ux4g.designsystemv1.components.Ux4gAppHeaderAction
+import com.ux4g.designsystemv1.components.Ux4gAppHeaderVariant
+import com.ux4g.designsystemv1.components.buttons.Ux4gButton
+import com.ux4g.designsystemv1.components.buttons.Ux4gButtonSize
+import com.ux4g.designsystemv1.components.buttons.Ux4gButtonVariant
+import com.ux4g.designsystemv1.foundation.Ux4gColors
+
+/**
+ * Eligibility Check Landing - Card Style Variant Pattern
+ *
+ * @param onStartCheck Callback to begin the step-by-step eligibility questionnaire
+ * @param onSkipAndApply Callback to bypass check and apply directly
+ * @param onTrackApplication Callback to check existing application status
+ */
+@Composable
+fun EligibilityCheckLandingCardScreen(
+    onStartCheck: () -> Unit = {},
+    onSkipAndApply: () -> Unit = {},
+    onTrackApplication: () -> Unit = {}
+) {
+    val isDark = isSystemInDarkTheme()
+    val scrollState = rememberScrollState()
+
+    val canvasBg = if (isDark) Ux4gColors.Primary900 else Ux4gColors.Primary50
+    val cardBg = if (isDark) Ux4gColors.Neutral900 else Color.White
+    val cardBorder = if (isDark) Ux4gColors.Neutral800 else Color(0xFFE5E7EB)
+    val textPrimary = if (isDark) Ux4gColors.Neutral50 else Ux4gColors.Neutral900
+    val textSecondary = if (isDark) Ux4gColors.Neutral400 else Ux4gColors.Neutral700
+    val primaryColor = if (isDark) Ux4gColors.Primary300 else Ux4gColors.Primary600
+
+    val infoBullets = listOf(
+        "5 questions",
+        "~2 minutes to complete",
+        "No documents needed at this step"
+    )
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(canvasBg)
+    ) {
+        // App Header with pure white container
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(if (isDark) Ux4gColors.Neutral900 else Color.White)
+        ) {
+            Column(modifier = Modifier.fillMaxWidth()) {
+                Ux4gAppHeader(
+                    variant = Ux4gAppHeaderVariant.Light,
+                    leadingWidgets = listOf("emblem", "union"),
+                    actions = listOf(
+                        Ux4gAppHeaderAction(
+                            icon = "menu",
+                            onClick = {}
+                        )
+                    ),
+                    modifier = Modifier.fillMaxWidth()
+                )
+                Divider(
+                    thickness = 1.dp,
+                    color = if (isDark) Ux4gColors.Neutral800 else Color(0xFFE5E7EB)
+                )
+            }
+        }
+
+        // Scrollable Body Content
+        Column(
+            modifier = Modifier
+                .weight(1f)
+                .fillMaxWidth()
+                .verticalScroll(scrollState)
+                .padding(horizontal = 16.dp, vertical = 20.dp)
+        ) {
+            // Elevated Main Card Container
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .shadow(
+                        elevation = 8.dp,
+                        shape = RoundedCornerShape(16.dp),
+                        ambientColor = Color.Black.copy(alpha = 0.04f)
+                    )
+                    .clip(RoundedCornerShape(16.dp))
+                    .background(cardBg)
+                    .border(1.dp, cardBorder, RoundedCornerShape(16.dp))
+                    .padding(24.dp)
+            ) {
+                Column(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Spacer(modifier = Modifier.height(12.dp))
+
+                    // Scheme Title
+                    Text(
+                        text = "Income Certificate\\nCheck Eligibility",
+                        style = TextStyle(
+                            fontSize = 24.sp,
+                            fontWeight = FontWeight.ExtraBold,
+                            color = textPrimary,
+                            lineHeight = 32.sp
+                        ),
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.fillMaxWidth()
+                    )
+
+                    Spacer(modifier = Modifier.height(14.dp))
+
+                    // Subtitle
+                    Text(
+                        text = "Answer a few quick questions to see if you qualify.",
+                        style = TextStyle(
+                            fontSize = 14.sp,
+                            color = textSecondary,
+                            lineHeight = 20.sp
+                        ),
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.fillMaxWidth()
+                    )
+
+                    Spacer(modifier = Modifier.height(28.dp))
+
+                    // Info Bullets
+                    Column(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalArrangement = Arrangement.spacedBy(16.dp)
+                    ) {
+                        infoBullets.forEach { bulletText ->
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                modifier = Modifier.fillMaxWidth()
+                            ) {
+                                Box(
+                                    modifier = Modifier
+                                        .size(8.dp)
+                                        .clip(CircleShape)
+                                        .background(primaryColor)
+                                )
+
+                                Spacer(modifier = Modifier.width(12.dp))
+
+                                Text(
+                                    text = bulletText,
+                                    style = TextStyle(
+                                        fontSize = 14.sp,
+                                        color = textSecondary,
+                                        fontWeight = FontWeight.Normal
+                                    )
+                                )
+                            }
+                        }
+                    }
+
+                    Spacer(modifier = Modifier.height(12.dp))
+                }
+            }
+
+            Spacer(modifier = Modifier.height(24.dp))
+
+            // Actions outside card on canvas
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Ux4gButton(
+                    text = "Start Eligibility Check",
+                    variant = Ux4gButtonVariant.Primary,
+                    size = Ux4gButtonSize.Large,
+                    onClick = onStartCheck,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(48.dp)
+                )
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                Ux4gButton(
+                    text = "Skip and Apply Directly",
+                    variant = Ux4gButtonVariant.Ghost,
+                    size = Ux4gButtonSize.Large,
+                    onClick = onSkipAndApply,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(48.dp)
+                )
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                Text(
+                    text = "Already applied? Track your application →",
+                    style = TextStyle(
+                        fontSize = 13.sp,
+                        fontWeight = FontWeight.Medium,
+                        color = textSecondary
+                    ),
+                    modifier = Modifier
+                        .clickable { onTrackApplication() }
+                        .padding(vertical = 4.dp)
+                )
+            }
+
+            Spacer(modifier = Modifier.height(20.dp))
+
+            // Footer Branding
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 20.dp),
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = "Powered by Digital India",
+                    style = TextStyle(
+                        fontSize = 11.sp,
+                        color = Ux4gColors.Neutral400,
+                        fontWeight = FontWeight.Medium
+                    )
+                )
+            }
+        }
+    }
+}
+
+@Preview(showBackground = true, widthDp = 360, heightDp = 760)
+@Composable
+fun EligibilityCheckLandingCardPreview() {
+    EligibilityCheckLandingCardScreen()
+}`}
+>
+  <img
+    src="/images/patterns/eligibility_check_wizard/eligibility_check_landing_cardstyle.svg"
+    alt="Eligibility Check Landing Pattern - Card Style Variant"
+    className="w-full max-w-[360px] rounded-2xl border border-border shadow-sm mx-auto my-4"
+  />
+</ComponentPreview>
