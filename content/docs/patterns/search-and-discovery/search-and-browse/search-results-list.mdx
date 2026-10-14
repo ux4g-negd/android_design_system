@@ -1,0 +1,382 @@
+---
+title: Search Results List
+description: Filterable search results pattern featuring query counts, horizontal category filter chips, granular filter modal trigger, itemized service cards, and pagination
+---
+
+# Search Results List
+
+A structured results listing pattern designed for efficient evaluation and filtering of high-volume public services, welfare schemes, and civil certificates.
+
+The screen pairs an active keyword search bar (`Ux4gSearchField`) with quantitative feedback (*"48 results"*) and a dedicated **Filters** modal trigger (`Ux4gButton` with `Icons.Default.Tune`). Horizontally scrollable segmentation chips (`Ux4gChoiceChip`) allow rapid pivoting between categories (*All*, *Certificates*, *Schemes*, *Services*, *Documents*, *Applications*). Individual service cards display immediate cost indicators (*Free* or *Paid* status badges), statutory turnaround times, and direct **Apply** actions, concluded by accessible pagination controls.
+
+---
+
+<h2><MIcon name="smartphone" /> Interactive Preview</h2>
+
+### Results List Overview
+
+Filterable search results view showing total matches, category filter chips, itemized service cards, and bottom pagination.
+
+<ComponentPreview
+  title="Search Results List - Paginated Scheme Directory"
+  category="Pattern · Jetpack Compose"
+  code={`package com.example.ux4g.patterns.discovery
+
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccessTime
+import androidx.compose.material.icons.filled.Tune
+import androidx.compose.material3.Divider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.ux4g.designsystemv1.components.Ux4gAppHeader
+import com.ux4g.designsystemv1.components.Ux4gAppHeaderVariant
+import com.ux4g.designsystemv1.components.buttons.Ux4gButton
+import com.ux4g.designsystemv1.components.buttons.Ux4gButtonSize
+import com.ux4g.designsystemv1.components.buttons.Ux4gButtonVariant
+import com.ux4g.designsystemv1.components.chips.Ux4gChoiceChip
+import com.ux4g.designsystemv1.components.chips.Ux4gChoiceChipSize
+import com.ux4g.designsystemv1.components.searchfield.Ux4gSearchField
+import com.ux4g.designsystemv1.components.searchfield.Ux4gSearchFieldSize
+import com.ux4g.designsystemv1.components.searchfield.Ux4gSearchFieldVariant
+import com.ux4g.designsystemv1.foundation.Ux4gColors
+
+/**
+ * Search Results List Screen Pattern
+ *
+ * @param onBack Invoked when citizen taps back button
+ * @param onSearchSubmit Invoked when citizen submits search
+ * @param onOpenFilters Invoked when citizen taps 'Filters' button
+ * @param onApplyService Invoked when citizen taps 'Apply' on a service card
+ * @param onPageChange Invoked when citizen changes pagination page
+ */
+@Composable
+fun SearchResultsListScreen(
+    onBack: () -> Unit = {},
+    onSearchSubmit: (String) -> Unit = {},
+    onOpenFilters: () -> Unit = {},
+    onApplyService: (String) -> Unit = {},
+    onPageChange: (Int) -> Unit = {}
+) {
+    val isDark = isSystemInDarkTheme()
+    val scrollState = rememberScrollState()
+    val chipScrollState = rememberScrollState()
+
+    var searchQuery by remember { mutableStateOf("income") }
+    var selectedChipIndex by remember { mutableIntStateOf(1) } // "Certificates · 22" selected
+    var currentPage by remember { mutableIntStateOf(1) }
+
+    val surfaceBg = if (isDark) Ux4gColors.Neutral950 else Ux4gColors.Neutral50
+    val cardBg = if (isDark) Ux4gColors.Neutral900 else Color.White
+    val borderCol = if (isDark) Ux4gColors.Neutral800 else Color(0xFFE5E7EB)
+    val textPrimary = if (isDark) Ux4gColors.Neutral50 else Ux4gColors.Neutral900
+    val textSecondary = if (isDark) Ux4gColors.Neutral400 else Color(0xFF4B5563)
+    val badgeBg = if (isDark) Ux4gColors.Neutral800 else Color(0xFFE5E7EB)
+
+    val filterChips = listOf(
+        "All · 48",
+        "Certificates · 22",
+        "Schemes · 14",
+        "Services · 12",
+        "Documents · 8",
+        "Applications · 5"
+    )
+
+    val results = listOf(
+        SearchResultItem("Income Certificate", "Free", null, "20 mins", false),
+        SearchResultItem("Income Tax Return (ITR) Filing", "Free", null, "30 mins", false),
+        SearchResultItem("Low Income Group (LIG) Certificate", "Free", null, "7 days", false),
+        SearchResultItem("Income & Asset Certificate", "Paid", "₹50+", "15 days", true),
+        SearchResultItem("EWS Certificate", "Free", null, "10 days", false)
+    )
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(surfaceBg)
+    ) {
+        // App Header - Filled Primary Style
+        Ux4gAppHeader(
+            variant = Ux4gAppHeaderVariant.Filled,
+            title = "National Services Portal",
+            showBackButton = true,
+            onBackClick = onBack
+        )
+
+        // Search Bar Section
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp, vertical = 12.dp)
+        ) {
+            Ux4gSearchField(
+                value = searchQuery,
+                onValueChange = { searchQuery = it },
+                placeholder = "Search services...",
+                variant = Ux4gSearchFieldVariant.SearchWithSubmit,
+                size = Ux4gSearchFieldSize.Medium,
+                showVoiceIcon = true,
+                showClearIcon = true,
+                onClearClick = { searchQuery = "" },
+                onSubmitClick = { onSearchSubmit(searchQuery) },
+                modifier = Modifier.fillMaxWidth()
+            )
+        }
+
+        // Results Header Row (Result count + Filter button)
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp, vertical = 4.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = "48 results",
+                style = TextStyle(
+                    fontSize = 15.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = textPrimary
+                )
+            )
+
+            Ux4gButton(
+                text = "Filters",
+                onClick = onOpenFilters,
+                variant = Ux4gButtonVariant.Outline,
+                size = Ux4gButtonSize.Small,
+                leadingIcon = {
+                    Icon(
+                        imageVector = Icons.Default.Tune,
+                        contentDescription = "Filters",
+                        tint = textPrimary,
+                        modifier = Modifier.size(16.dp)
+                    )
+                }
+            )
+        }
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        // Horizontal Category Filter Chips
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .horizontalScroll(chipScrollState)
+                .padding(horizontal = 16.dp),
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            filterChips.forEachIndexed { index, label ->
+                Ux4gChoiceChip(
+                    text = label,
+                    selected = selectedChipIndex == index,
+                    onClick = { selectedChipIndex = index },
+                    size = Ux4gChoiceChipSize.Default
+                )
+            }
+        }
+
+        Spacer(modifier = Modifier.height(12.dp))
+
+        // Paginated Service Results List
+        Column(
+            modifier = Modifier
+                .weight(1f)
+                .fillMaxWidth()
+                .verticalScroll(scrollState)
+                .padding(horizontal = 16.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp)
+        ) {
+            results.forEach { item ->
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clip(RoundedCornerShape(12.dp))
+                        .background(cardBg)
+                        .border(1.dp, borderCol, RoundedCornerShape(12.dp))
+                        .padding(14.dp)
+                ) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Column(modifier = Modifier.weight(1f)) {
+                            Text(
+                                text = item.title,
+                                style = TextStyle(
+                                    fontSize = 14.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    color = textPrimary
+                                )
+                            )
+
+                            Spacer(modifier = Modifier.height(6.dp))
+
+                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                // Badge: Free / Paid
+                                Box(
+                                    modifier = Modifier
+                                        .clip(RoundedCornerShape(4.dp))
+                                        .background(badgeBg)
+                                        .padding(horizontal = 6.dp, vertical = 2.dp)
+                                ) {
+                                    Text(
+                                        text = item.statusTag,
+                                        style = TextStyle(
+                                            fontSize = 11.sp,
+                                            fontWeight = FontWeight.SemiBold,
+                                            color = textPrimary
+                                        )
+                                    )
+                                }
+
+                                if (item.isPaid && item.feeText != null) {
+                                    Spacer(modifier = Modifier.width(4.dp))
+                                    Text(
+                                        text = item.feeText,
+                                        style = TextStyle(
+                                            fontSize = 12.sp,
+                                            color = textSecondary
+                                        )
+                                    )
+                                }
+
+                                Spacer(modifier = Modifier.width(8.dp))
+
+                                Icon(
+                                    imageVector = Icons.Default.AccessTime,
+                                    contentDescription = "Processing Time",
+                                    tint = textSecondary,
+                                    modifier = Modifier.size(13.dp)
+                                )
+
+                                Spacer(modifier = Modifier.width(3.dp))
+
+                                Text(
+                                    text = item.time,
+                                    style = TextStyle(
+                                        fontSize = 12.sp,
+                                        color = textSecondary
+                                    )
+                                )
+                            }
+                        }
+
+                        Spacer(modifier = Modifier.width(12.dp))
+
+                        Ux4gButton(
+                            text = "Apply",
+                            onClick = { onApplyService(item.title) },
+                            variant = Ux4gButtonVariant.Outline,
+                            size = Ux4gButtonSize.Small
+                        )
+                    }
+                }
+            }
+
+            Spacer(modifier = Modifier.height(8.dp))
+        }
+
+        Divider(color = borderCol, thickness = 1.dp)
+
+        // Pagination Footer
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp, vertical = 12.dp),
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Ux4gButton(
+                text = "Prev",
+                onClick = {
+                    if (currentPage > 1) {
+                        currentPage--
+                        onPageChange(currentPage)
+                    }
+                },
+                variant = Ux4gButtonVariant.Outline,
+                size = Ux4gButtonSize.Small,
+                enabled = currentPage > 1
+            )
+
+            Spacer(modifier = Modifier.width(16.dp))
+
+            Text(
+                text = "Page " + currentPage + " of 8",
+                style = TextStyle(
+                    fontSize = 13.sp,
+                    color = textSecondary
+                )
+            )
+
+            Spacer(modifier = Modifier.width(16.dp))
+
+            Ux4gButton(
+                text = "Next",
+                onClick = {
+                    if (currentPage < 8) {
+                        currentPage++
+                        onPageChange(currentPage)
+                    }
+                },
+                variant = Ux4gButtonVariant.Outline,
+                size = Ux4gButtonSize.Small,
+                enabled = currentPage < 8
+            )
+        }
+    }
+}
+
+private data class SearchResultItem(
+    val title: String,
+    val statusTag: String,
+    val feeText: String?,
+    val time: String,
+    val isPaid: Boolean
+)
+
+@Preview(showBackground = true, widthDp = 360, heightDp = 800)
+@Composable
+fun SearchResultsListPreview() {
+    SearchResultsListScreen()
+}`}
+>
+  <img
+    src="/images/patterns/search_and_browse/search_results_list.svg"
+    alt="Search Results List Pattern - Paginated Scheme Directory"
+    className="w-full max-w-[360px] rounded-2xl border border-border shadow-sm mx-auto my-4"
+  />
+</ComponentPreview>
