@@ -4,6 +4,7 @@
     "save-and-resume",
     "submission-acknowledgement",
     "document-scan-and-upload",
-    "eligibility-check-wizard"
+    "eligibility-check-wizard",
+    "journey-progress-indicator"
   ]
 }
