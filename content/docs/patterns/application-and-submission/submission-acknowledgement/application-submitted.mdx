@@ -1,0 +1,994 @@
+---
+title: Application Submitted
+description: Confirmation and receipt pattern presenting an official application reference number, multi-step progress timeline, SMS/email confirmation alerts, and acknowledgement slip download
+---
+
+# Application Submitted
+
+A definitive confirmation and receipt pattern displayed upon the successful submission of citizen service petitions, welfare scheme forms, or statutory certificate requests.
+
+The screen provides unambiguous closure to the submission journey by issuing an official application reference ID with one-tap copy functionality, displaying an audit timeline of expected downstream department actions (*"What happens next"*), confirming delivery of automated dispatch alerts via SMS and email, and offering an immediate PDF acknowledgement slip download.
+
+---
+
+<h2><MIcon name="smartphone" /> Interactive Previews</h2>
+
+### 1. Default Style (Full Screen)
+
+Standard full-screen confirmation layout with centralized success affirmation, reference badge, journey progress timeline, dispatch notices, and primary tracking controls.
+
+<ComponentPreview
+  title="Application Submitted - Default Style"
+  category="Pattern · Jetpack Compose"
+  code={`package com.example.ux4g.patterns.application
+
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.CheckCircle
+import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material.icons.outlined.ContentCopy
+import androidx.compose.material.icons.outlined.Email
+import androidx.compose.material.icons.outlined.PhoneIphone
+import androidx.compose.material3.Divider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.ux4g.designsystemv1.components.Ux4gAppHeader
+import com.ux4g.designsystemv1.components.Ux4gAppHeaderAction
+import com.ux4g.designsystemv1.components.Ux4gAppHeaderVariant
+import com.ux4g.designsystemv1.components.buttons.Ux4gButton
+import com.ux4g.designsystemv1.components.buttons.Ux4gButtonSize
+import com.ux4g.designsystemv1.components.buttons.Ux4gButtonVariant
+import com.ux4g.designsystemv1.foundation.Ux4gColors
+
+data class TimelineStep(
+    val title: String,
+    val date: String,
+    val isCompleted: Boolean = false,
+    val isCurrent: Boolean = false
+)
+
+/**
+ * Application Submitted - Full Screen Default Pattern
+ *
+ * @param referenceNumber Statutory application tracking ID
+ * @param onTrackClick Callback to open application status tracker
+ * @param onDownloadPdf Callback to download acknowledgement receipt
+ * @param onReturnClick Callback to return to citizen dashboard
+ */
+@Composable
+fun ApplicationSubmittedScreen(
+    referenceNumber: String = "INC-2026-MH-04127",
+    onTrackClick: () -> Unit = {},
+    onDownloadPdf: () -> Unit = {},
+    onReturnClick: () -> Unit = {}
+) {
+    val isDark = isSystemInDarkTheme()
+    val scrollState = rememberScrollState()
+
+    val surfaceBg = if (isDark) Ux4gColors.Neutral950 else Color(0xFFFAFAFA)
+    val cardBg = if (isDark) Ux4gColors.Neutral900 else Color.White
+    val cardBorder = if (isDark) Ux4gColors.Neutral800 else Color(0xFFE5E7EB)
+    val textPrimary = if (isDark) Ux4gColors.Neutral50 else Color(0xFF111827)
+    val textSecondary = if (isDark) Ux4gColors.Neutral300 else Color(0xFF4B5563)
+    val dividerColor = if (isDark) Ux4gColors.Neutral800 else Ux4gColors.Neutral200
+
+    val refCardBg = if (isDark) Ux4gColors.Primary900 else Ux4gColors.Primary50
+    val refCardBorder = if (isDark) Ux4gColors.Primary700 else Ux4gColors.Primary200
+    val refCodeColor = if (isDark) Ux4gColors.Neutral50 else Ux4gColors.Neutral900
+    val accentColor = if (isDark) Ux4gColors.Primary300 else Ux4gColors.Primary600
+
+    val timelineSteps = listOf(
+        TimelineStep("Application Submitted", "02 Sep 2026", isCompleted = true),
+        TimelineStep("Document Verification", "03 Sep 2026", isCurrent = true),
+        TimelineStep("Field Enquiry", "06 Sep 2026"),
+        TimelineStep("Certificate Issued", "10 Sep 2026")
+    )
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(surfaceBg)
+    ) {
+        // App Header
+        Ux4gAppHeader(
+            variant = Ux4gAppHeaderVariant.Standard,
+            title = "Government Services Portal",
+            actions = listOf(
+                Ux4gAppHeaderAction(
+                    icon = Icons.Filled.Menu,
+                    contentDescription = "Menu",
+                    onClick = {}
+                )
+            )
+        )
+
+        Divider(thickness = 1.dp, color = dividerColor)
+
+        // Scrollable Body
+        Column(
+            modifier = Modifier
+                .weight(1f)
+                .fillMaxWidth()
+                .verticalScroll(scrollState)
+                .padding(horizontal = 24.dp, vertical = 20.dp)
+        ) {
+            // Return to Services Link
+            Row(
+                modifier = Modifier
+                    .clickable { onReturnClick() }
+                    .padding(vertical = 4.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Icon(
+                    imageVector = Icons.Filled.ArrowBack,
+                    contentDescription = "Return",
+                    tint = accentColor,
+                    modifier = Modifier.size(18.dp)
+                )
+                Spacer(modifier = Modifier.width(6.dp))
+                Text(
+                    text = "Return to services",
+                    style = TextStyle(
+                        fontSize = 14.sp,
+                        fontWeight = FontWeight.Medium,
+                        color = accentColor
+                    )
+                )
+            }
+
+            Spacer(modifier = Modifier.height(24.dp))
+
+            // Concentric Green Success Icon
+            Box(
+                modifier = Modifier.fillMaxWidth(),
+                contentAlignment = Alignment.Center
+            ) {
+                Box(
+                    modifier = Modifier
+                        .size(56.dp)
+                        .clip(CircleShape)
+                        .background(if (isDark) Ux4gColors.Green800 else Ux4gColors.Green100),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(
+                        imageVector = Icons.Filled.CheckCircle,
+                        contentDescription = "Submission Success",
+                        tint = if (isDark) Ux4gColors.Green400 else Ux4gColors.Green600,
+                        modifier = Modifier.size(36.dp)
+                    )
+                }
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // Affirmation Heading
+            Text(
+                text = "Application Submitted\\nSuccessfully",
+                style = TextStyle(
+                    fontSize = 24.sp,
+                    fontWeight = FontWeight.ExtraBold,
+                    color = textPrimary,
+                    lineHeight = 30.sp
+                ),
+                textAlign = TextAlign.Center,
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            // Service Subtitle
+            Text(
+                text = "Your Income Certificate application is now\\nunder review by the Revenue Department.",
+                style = TextStyle(
+                    fontSize = 14.sp,
+                    color = textSecondary,
+                    lineHeight = 20.sp
+                ),
+                textAlign = TextAlign.Center,
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            Spacer(modifier = Modifier.height(24.dp))
+
+            // Reference Card
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(12.dp))
+                    .background(refCardBg)
+                    .border(1.dp, refCardBorder, RoundedCornerShape(12.dp))
+                    .padding(16.dp)
+            ) {
+                Column(modifier = Modifier.fillMaxWidth()) {
+                    Text(
+                        text = "Application Reference",
+                        style = TextStyle(
+                            fontSize = 12.sp,
+                            color = textSecondary,
+                            fontWeight = FontWeight.Normal
+                        )
+                    )
+                    Spacer(modifier = Modifier.height(6.dp))
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            text = referenceNumber,
+                            style = TextStyle(
+                                fontSize = 18.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = refCodeColor,
+                                letterSpacing = 0.5.sp
+                            )
+                        )
+                        Icon(
+                            imageVector = Icons.Outlined.ContentCopy,
+                            contentDescription = "Copy Reference",
+                            tint = accentColor,
+                            modifier = Modifier
+                                .size(22.dp)
+                                .clickable { /* Copy to clipboard */ }
+                        )
+                    }
+                }
+            }
+
+            Spacer(modifier = Modifier.height(24.dp))
+
+            // What Happens Next Section
+            Text(
+                text = "What happens next",
+                style = TextStyle(
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = textPrimary
+                )
+            )
+
+            Spacer(modifier = Modifier.height(12.dp))
+
+            // Progress Timeline Card
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(12.dp))
+                    .background(cardBg)
+                    .border(1.dp, cardBorder, RoundedCornerShape(12.dp))
+                    .padding(16.dp)
+            ) {
+                Column(modifier = Modifier.fillMaxWidth()) {
+                    Text(
+                        text = "Application Progress",
+                        style = TextStyle(
+                            fontSize = 15.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = textPrimary
+                        )
+                    )
+                    Spacer(modifier = Modifier.height(4.dp))
+                    Text(
+                        text = "Track the status of your Income Certificate application",
+                        style = TextStyle(
+                            fontSize = 13.sp,
+                            color = textSecondary
+                        )
+                    )
+
+                    Spacer(modifier = Modifier.height(20.dp))
+
+                    // Timeline Step Rows
+                    timelineSteps.forEachIndexed { index, step ->
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            verticalAlignment = Alignment.Top
+                        ) {
+                            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                                Box(
+                                    modifier = Modifier
+                                        .size(20.dp)
+                                        .clip(CircleShape)
+                                        .background(
+                                            when {
+                                                step.isCompleted -> if (isDark) Ux4gColors.Green500 else Ux4gColors.Green600
+                                                step.isCurrent -> accentColor
+                                                else -> if (isDark) Ux4gColors.Neutral800 else Ux4gColors.Neutral200
+                                            }
+                                        ),
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    if (step.isCompleted) {
+                                        Icon(
+                                            imageVector = Icons.Filled.Check,
+                                            contentDescription = null,
+                                            tint = Color.White,
+                                            modifier = Modifier.size(12.dp)
+                                        )
+                                    } else if (step.isCurrent) {
+                                        Box(
+                                            modifier = Modifier
+                                                .size(6.dp)
+                                                .clip(CircleShape)
+                                                .background(Color.White)
+                                        )
+                                    }
+                                }
+
+                                if (index < timelineSteps.size - 1) {
+                                    Box(
+                                        modifier = Modifier
+                                            .width(2.dp)
+                                            .height(36.dp)
+                                            .background(
+                                                if (step.isCompleted) (if (isDark) Ux4gColors.Green500 else Ux4gColors.Green600)
+                                                else (if (isDark) Ux4gColors.Neutral800 else Ux4gColors.Neutral200)
+                                            )
+                                    )
+                                }
+                            }
+
+                            Spacer(modifier = Modifier.width(12.dp))
+
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(top = 1.dp),
+                                horizontalArrangement = Arrangement.SpaceBetween,
+                                verticalAlignment = Alignment.Top
+                            ) {
+                                Column(modifier = Modifier.weight(1f)) {
+                                    Text(
+                                        text = step.title,
+                                        style = TextStyle(
+                                            fontSize = 14.sp,
+                                            fontWeight = FontWeight.SemiBold,
+                                            color = textPrimary
+                                        )
+                                    )
+                                    Text(
+                                        text = step.date,
+                                        style = TextStyle(
+                                            fontSize = 12.sp,
+                                            color = textSecondary
+                                        )
+                                    )
+                                }
+
+                                if (step.isCompleted) {
+                                    Box(
+                                        modifier = Modifier
+                                            .clip(RoundedCornerShape(4.dp))
+                                            .background(if (isDark) Ux4gColors.Green900 else Color(0xFFDCFCE7))
+                                            .padding(horizontal = 8.dp, vertical = 2.dp)
+                                    ) {
+                                        Text(
+                                            text = "Completed",
+                                            style = TextStyle(
+                                                fontSize = 11.sp,
+                                                fontWeight = FontWeight.Bold,
+                                                color = if (isDark) Ux4gColors.Green400 else Color(0xFF15803D)
+                                            )
+                                        )
+                                    }
+                                } else {
+                                    Text(
+                                        text = "Upcoming",
+                                        style = TextStyle(
+                                            fontSize = 12.sp,
+                                            color = textSecondary
+                                        )
+                                    )
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            Spacer(modifier = Modifier.height(20.dp))
+
+            // Notifications Dispatched
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Icon(
+                        imageVector = Icons.Outlined.PhoneIphone,
+                        contentDescription = "SMS Sent",
+                        tint = accentColor,
+                        modifier = Modifier.size(18.dp)
+                    )
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text(
+                        text = "SMS sent to +91 98765 •••••",
+                        style = TextStyle(fontSize = 12.sp, color = textSecondary)
+                    )
+                }
+
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Icon(
+                        imageVector = Icons.Outlined.Email,
+                        contentDescription = "Email Sent",
+                        tint = accentColor,
+                        modifier = Modifier.size(18.dp)
+                    )
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text(
+                        text = "Email sent to r••••@gmail.com",
+                        style = TextStyle(fontSize = 12.sp, color = textSecondary)
+                    )
+                }
+            }
+
+            Spacer(modifier = Modifier.height(24.dp))
+
+            // Action Buttons
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                verticalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                Ux4gButton(
+                    text = "Track my application",
+                    variant = Ux4gButtonVariant.Primary,
+                    size = Ux4gButtonSize.Large,
+                    onClick = onTrackClick,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(48.dp)
+                )
+
+                Ux4gButton(
+                    text = "Download acknowledgement (PDF)",
+                    variant = Ux4gButtonVariant.Outline,
+                    size = Ux4gButtonSize.Large,
+                    onClick = onDownloadPdf,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(48.dp)
+                )
+
+                Ux4gButton(
+                    text = "Add to calendar",
+                    variant = Ux4gButtonVariant.Secondary,
+                    size = Ux4gButtonSize.Large,
+                    onClick = {},
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(48.dp)
+                )
+            }
+
+            Spacer(modifier = Modifier.height(24.dp))
+        }
+
+        // Footer Branding
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = 24.dp),
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = "Powered by Digital India",
+                style = TextStyle(
+                    fontSize = 11.sp,
+                    color = Ux4gColors.Neutral400,
+                    fontWeight = FontWeight.Medium
+                )
+            )
+        }
+    }
+}
+
+@Preview(showBackground = true, widthDp = 360, heightDp = 760)
+@Composable
+fun ApplicationSubmittedPreview() {
+    ApplicationSubmittedScreen()
+}`}
+>
+  <img
+    src="/images/patterns/submission_acknowledgement/application_submitted.svg"
+    alt="Application Submitted Pattern - Default Style"
+    className="w-full max-w-[360px] rounded-2xl border border-border shadow-sm mx-auto my-4"
+  />
+</ComponentPreview>
+
+---
+
+### 2. Card Style Variant
+
+Contained card-based presentation on a soothing lavender canvas background, encapsulating the submission success receipt and timeline into an elevated card sheet.
+
+<ComponentPreview
+  title="Application Submitted - Card Style Variant"
+  category="Pattern · Jetpack Compose"
+  code={`package com.example.ux4g.patterns.application
+
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.CheckCircle
+import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material.icons.outlined.ContentCopy
+import androidx.compose.material.icons.outlined.Email
+import androidx.compose.material.icons.outlined.PhoneIphone
+import androidx.compose.material3.Divider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.ux4g.designsystemv1.components.Ux4gAppHeader
+import com.ux4g.designsystemv1.components.Ux4gAppHeaderAction
+import com.ux4g.designsystemv1.components.Ux4gAppHeaderVariant
+import com.ux4g.designsystemv1.components.buttons.Ux4gButton
+import com.ux4g.designsystemv1.components.buttons.Ux4gButtonSize
+import com.ux4g.designsystemv1.components.buttons.Ux4gButtonVariant
+import com.ux4g.designsystemv1.foundation.Ux4gColors
+
+/**
+ * Application Submitted - Card Style Variant Pattern
+ */
+@Composable
+fun ApplicationSubmittedCardScreen(
+    referenceNumber: String = "INC-2026-MH-04127",
+    onTrackClick: () -> Unit = {},
+    onDownloadPdf: () -> Unit = {},
+    onReturnClick: () -> Unit = {}
+) {
+    val isDark = isSystemInDarkTheme()
+    val scrollState = rememberScrollState()
+
+    val canvasBg = if (isDark) Ux4gColors.Primary950 else Color(0xFFDCD4FF)
+    val cardBg = if (isDark) Ux4gColors.Neutral900 else Color.White
+    val cardBorder = if (isDark) Ux4gColors.Neutral800 else Ux4gColors.Neutral200
+    val textPrimary = if (isDark) Ux4gColors.Neutral50 else Color(0xFF111827)
+    val textSecondary = if (isDark) Ux4gColors.Neutral400 else Color(0xFF4B5563)
+
+    val refCardBg = if (isDark) Ux4gColors.Primary900 else Ux4gColors.Primary50
+    val refCardBorder = if (isDark) Ux4gColors.Primary700 else Ux4gColors.Primary200
+    val refCodeColor = if (isDark) Ux4gColors.Neutral50 else Ux4gColors.Neutral900
+    val accentColor = if (isDark) Ux4gColors.Primary300 else Ux4gColors.Primary600
+
+    val timelineSteps = listOf(
+        TimelineStep("Application Submitted", "02 Sep 2026", isCompleted = true),
+        TimelineStep("Document Verification", "03 Sep 2026", isCurrent = true),
+        TimelineStep("Field Enquiry", "06 Sep 2026"),
+        TimelineStep("Certificate Issued", "10 Sep 2026")
+    )
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(canvasBg)
+    ) {
+        // App Header
+        Ux4gAppHeader(
+            variant = Ux4gAppHeaderVariant.Standard,
+            title = "Government Services Portal",
+            actions = listOf(
+                Ux4gAppHeaderAction(
+                    icon = Icons.Filled.Menu,
+                    contentDescription = "Menu",
+                    onClick = {}
+                )
+            )
+        )
+
+        Divider(
+            thickness = 1.dp,
+            color = if (isDark) Ux4gColors.Neutral800 else Ux4gColors.Neutral200
+        )
+
+        // Card Container Content
+        Column(
+            modifier = Modifier
+                .weight(1f)
+                .fillMaxWidth()
+                .verticalScroll(scrollState)
+                .padding(16.dp)
+        ) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(16.dp))
+                    .background(cardBg)
+                    .border(1.dp, cardBorder, RoundedCornerShape(16.dp))
+                    .padding(20.dp)
+            ) {
+                Column(modifier = Modifier.fillMaxWidth()) {
+                    // Return Link
+                    Row(
+                        modifier = Modifier
+                            .clickable { onReturnClick() }
+                            .padding(vertical = 4.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Icon(
+                            imageVector = Icons.Filled.ArrowBack,
+                            contentDescription = "Return",
+                            tint = accentColor,
+                            modifier = Modifier.size(18.dp)
+                        )
+                        Spacer(modifier = Modifier.width(6.dp))
+                        Text(
+                            text = "Return to services",
+                            style = TextStyle(
+                                fontSize = 14.sp,
+                                fontWeight = FontWeight.Medium,
+                                color = accentColor
+                            )
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.height(20.dp))
+
+                    // Concentric Green Success Icon
+                    Box(
+                        modifier = Modifier.fillMaxWidth(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Box(
+                            modifier = Modifier
+                                .size(56.dp)
+                                .clip(CircleShape)
+                                .background(if (isDark) Ux4gColors.Green800 else Ux4gColors.Green100),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Icon(
+                                imageVector = Icons.Filled.CheckCircle,
+                                contentDescription = "Submission Success",
+                                tint = if (isDark) Ux4gColors.Green400 else Ux4gColors.Green600,
+                                modifier = Modifier.size(36.dp)
+                            )
+                        }
+                    }
+
+                    Spacer(modifier = Modifier.height(16.dp))
+
+                    Text(
+                        text = "Application Submitted\\nSuccessfully",
+                        style = TextStyle(
+                            fontSize = 22.sp,
+                            fontWeight = FontWeight.ExtraBold,
+                            color = textPrimary,
+                            lineHeight = 28.sp
+                        ),
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.fillMaxWidth()
+                    )
+
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    Text(
+                        text = "Your Income Certificate application is now\\nunder review by the Revenue Department.",
+                        style = TextStyle(
+                            fontSize = 14.sp,
+                            color = textSecondary,
+                            lineHeight = 20.sp
+                        ),
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.fillMaxWidth()
+                    )
+
+                    Spacer(modifier = Modifier.height(20.dp))
+
+                    // Reference Box
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clip(RoundedCornerShape(12.dp))
+                            .background(refCardBg)
+                            .border(1.dp, refCardBorder, RoundedCornerShape(12.dp))
+                            .padding(16.dp)
+                    ) {
+                        Column(modifier = Modifier.fillMaxWidth()) {
+                            Text(
+                                text = "Application Reference",
+                                style = TextStyle(
+                                    fontSize = 12.sp,
+                                    color = textSecondary
+                                )
+                            )
+                            Spacer(modifier = Modifier.height(4.dp))
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.SpaceBetween,
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Text(
+                                    text = referenceNumber,
+                                    style = TextStyle(
+                                        fontSize = 18.sp,
+                                        fontWeight = FontWeight.Bold,
+                                        color = refCodeColor
+                                    )
+                                )
+                                Icon(
+                                    imageVector = Icons.Outlined.ContentCopy,
+                                    contentDescription = "Copy Reference",
+                                    tint = accentColor,
+                                    modifier = Modifier.size(20.dp)
+                                )
+                            }
+                        }
+                    }
+
+                    Spacer(modifier = Modifier.height(20.dp))
+
+                    // Progress Section
+                    Text(
+                        text = "What happens next",
+                        style = TextStyle(
+                            fontSize = 16.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = textPrimary
+                        )
+                    )
+
+                    Spacer(modifier = Modifier.height(12.dp))
+
+                    // Timeline Steps
+                    timelineSteps.forEachIndexed { index, step ->
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            verticalAlignment = Alignment.Top
+                        ) {
+                            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                                Box(
+                                    modifier = Modifier
+                                        .size(20.dp)
+                                        .clip(CircleShape)
+                                        .background(
+                                            when {
+                                                step.isCompleted -> if (isDark) Ux4gColors.Green500 else Ux4gColors.Green600
+                                                step.isCurrent -> accentColor
+                                                else -> if (isDark) Ux4gColors.Neutral800 else Ux4gColors.Neutral200
+                                            }
+                                        ),
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    if (step.isCompleted) {
+                                        Icon(
+                                            imageVector = Icons.Filled.Check,
+                                            contentDescription = null,
+                                            tint = Color.White,
+                                            modifier = Modifier.size(12.dp)
+                                        )
+                                    }
+                                }
+
+                                if (index < timelineSteps.size - 1) {
+                                    Box(
+                                        modifier = Modifier
+                                            .width(2.dp)
+                                            .height(32.dp)
+                                            .background(
+                                                if (step.isCompleted) (if (isDark) Ux4gColors.Green500 else Ux4gColors.Green600)
+                                                else (if (isDark) Ux4gColors.Neutral800 else Ux4gColors.Neutral200)
+                                            )
+                                    )
+                                }
+                            }
+
+                            Spacer(modifier = Modifier.width(12.dp))
+
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(top = 1.dp),
+                                horizontalArrangement = Arrangement.SpaceBetween
+                            ) {
+                                Column {
+                                    Text(
+                                        text = step.title,
+                                        style = TextStyle(
+                                            fontSize = 14.sp,
+                                            fontWeight = FontWeight.SemiBold,
+                                            color = textPrimary
+                                        )
+                                    )
+                                    Text(
+                                        text = step.date,
+                                        style = TextStyle(
+                                            fontSize = 12.sp,
+                                            color = textSecondary
+                                        )
+                                    )
+                                }
+
+                                if (step.isCompleted) {
+                                    Box(
+                                        modifier = Modifier
+                                            .clip(RoundedCornerShape(4.dp))
+                                            .background(if (isDark) Ux4gColors.Green900 else Color(0xFFDCFCE7))
+                                            .padding(horizontal = 8.dp, vertical = 2.dp)
+                                    ) {
+                                        Text(
+                                            text = "Completed",
+                                            style = TextStyle(
+                                                fontSize = 11.sp,
+                                                fontWeight = FontWeight.Bold,
+                                                color = if (isDark) Ux4gColors.Green400 else Color(0xFF15803D)
+                                            )
+                                        )
+                                    }
+                                } else {
+                                    Text(
+                                        text = "Upcoming",
+                                        style = TextStyle(
+                                            fontSize = 12.sp,
+                                            color = textSecondary
+                                        )
+                                    )
+                                }
+                            }
+                        }
+                    }
+
+                    Spacer(modifier = Modifier.height(20.dp))
+
+                    // Notification Alerts
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Icon(
+                            imageVector = Icons.Outlined.PhoneIphone,
+                            contentDescription = null,
+                            tint = accentColor,
+                            modifier = Modifier.size(16.dp)
+                        )
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Text(
+                            text = "SMS sent to +91 98765 •••••",
+                            style = TextStyle(fontSize = 12.sp, color = textSecondary)
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.height(6.dp))
+
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Icon(
+                            imageVector = Icons.Outlined.Email,
+                            contentDescription = null,
+                            tint = accentColor,
+                            modifier = Modifier.size(16.dp)
+                        )
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Text(
+                            text = "Email sent to r••••@gmail.com",
+                            style = TextStyle(fontSize = 12.sp, color = textSecondary)
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.height(24.dp))
+
+                    // Action Buttons inside Card
+                    Ux4gButton(
+                        text = "Track my application",
+                        variant = Ux4gButtonVariant.Primary,
+                        size = Ux4gButtonSize.Large,
+                        onClick = onTrackClick,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(48.dp)
+                    )
+
+                    Spacer(modifier = Modifier.height(10.dp))
+
+                    Ux4gButton(
+                        text = "Download acknowledgement (PDF)",
+                        variant = Ux4gButtonVariant.Outline,
+                        size = Ux4gButtonSize.Large,
+                        onClick = onDownloadPdf,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(48.dp)
+                    )
+
+                    Spacer(modifier = Modifier.height(10.dp))
+
+                    Ux4gButton(
+                        text = "Add to calendar",
+                        variant = Ux4gButtonVariant.Secondary,
+                        size = Ux4gButtonSize.Large,
+                        onClick = {},
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(48.dp)
+                    )
+                }
+            }
+        }
+
+        // Footer Branding
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = 24.dp, top = 4.dp),
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = "Powered by Digital India",
+                style = TextStyle(
+                    fontSize = 11.sp,
+                    color = Ux4gColors.Neutral400,
+                    fontWeight = FontWeight.Medium
+                )
+            )
+        }
+    }
+}
+
+@Preview(showBackground = true, widthDp = 360, heightDp = 760)
+@Composable
+fun ApplicationSubmittedCardPreview() {
+    ApplicationSubmittedCardScreen()
+}`}
+>
+  <img
+    src="/images/patterns/submission_acknowledgement/application_submitted_cardstyle.svg"
+    alt="Application Submitted Pattern - Card Style Variant"
+    className="w-full max-w-[360px] rounded-2xl border border-border shadow-sm mx-auto my-4"
+  />
+</ComponentPreview>
