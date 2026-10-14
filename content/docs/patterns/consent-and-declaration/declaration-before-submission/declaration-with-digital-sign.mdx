@@ -1,0 +1,770 @@
+---
+title: Declaration with Digital Sign
+description: Digital attestation pattern combining statutory declaration agreement with applicant full name digital signature verification against Aadhaar records
+---
+
+# Declaration with Digital Sign
+
+A legally binding digital affirmation and signature pattern used for high-stakes citizen service applications, permit issuances, and official statutory filings.
+
+This pattern combines solemn legal declarations with digital name attestation. Citizens must review the declaration statements, check the mandatory agreement confirmation, and type their full name exactly as registered in official records (such as Aadhaar). A real-time verification indicator validates the signature before enabling the final application submission trigger, reinforced with a statutory penal caution under **Section 193 of the Indian Penal Code (IPC)**.
+
+---
+
+<h2><MIcon name="smartphone" /> Interactive Previews</h2>
+
+### 1. Default Style (Full Screen)
+
+Standard full-screen declaration flow featuring interactive agreement check, Aadhaar-matched digital name attestation, live signature validation state, and statutory IPC Section 193 warning.
+
+<ComponentPreview
+  title="Declaration with Digital Sign - Default"
+  category="Pattern · Jetpack Compose"
+  code={`package com.example.ux4g.patterns.declaration
+
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.CheckCircle
+import androidx.compose.material.icons.filled.Error
+import androidx.compose.material.icons.outlined.Info
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.ux4g.designsystemv1.components.Ux4gAppHeader
+import com.ux4g.designsystemv1.components.Ux4gAppHeaderAction
+import com.ux4g.designsystemv1.components.Ux4gAppHeaderVariant
+import com.ux4g.designsystemv1.components.Ux4gCheckbox
+import com.ux4g.designsystemv1.components.checkbox.Ux4gCheckboxSize
+import com.ux4g.designsystemv1.components.buttons.Ux4gButton
+import com.ux4g.designsystemv1.components.buttons.Ux4gButtonSize
+import com.ux4g.designsystemv1.components.buttons.Ux4gButtonVariant
+import com.ux4g.designsystemv1.foundation.Ux4gColors
+
+/**
+ * Declaration with Digital Sign - Full Screen Pattern
+ *
+ * @param initialSigned Whether the declaration is initially pre-filled and signed
+ * @param onBackClick Navigation callback when back is pressed
+ * @param onSubmitClick Callback triggered when application is submitted
+ */
+@Composable
+fun DeclarationWithDigitalSignScreen(
+    initialSigned: Boolean = false,
+    onBackClick: () -> Unit = {},
+    onSubmitClick: () -> Unit = {}
+) {
+    val isDark = isSystemInDarkTheme()
+    val scrollState = rememberScrollState()
+
+    var agreed by remember { mutableStateOf(initialSigned) }
+    var fullName by remember { mutableStateOf(if (initialSigned) "Ramesh Kumar" else "") }
+
+    // Signed condition: user has entered at least first and last name
+    val isSigned = fullName.trim().split(" ").filter { it.isNotBlank() }.size >= 2
+    val canSubmit = agreed && isSigned
+
+    // Theme palette
+    val surfaceBg = if (isDark) Ux4gColors.Neutral950 else Color(0xFFF9FAFB)
+    val textPrimary = if (isDark) Ux4gColors.Neutral50 else Ux4gColors.Neutral900
+    val textSecondary = if (isDark) Ux4gColors.Neutral400 else Ux4gColors.Neutral600
+    val boxBg = if (isDark) Ux4gColors.Neutral900 else Ux4gColors.Neutral100
+    val boxBorder = if (isDark) Ux4gColors.Neutral800 else Ux4gColors.Neutral200
+
+    val inputBg = if (isDark) Ux4gColors.Neutral800 else Color.White
+    val inputBorderColor = when {
+        isSigned -> if (isDark) Ux4gColors.Green400 else Ux4gColors.Green600
+        else -> if (isDark) Ux4gColors.Neutral600 else Ux4gColors.Neutral300
+    }
+
+    val warningBg = if (isDark) Color(0xFF3B1E08) else Color(0xFFFFF7ED)
+    val warningBorder = if (isDark) Color(0xFF7C2D12) else Color(0xFFFED7AA)
+    val warningText = if (isDark) Color(0xFFFDBA74) else Color(0xFF9A3412)
+
+    val validationColor = if (isSigned) {
+        if (isDark) Ux4gColors.Green400 else Ux4gColors.Green600
+    } else {
+        if (isDark) Ux4gColors.Neutral400 else Ux4gColors.Neutral500
+    }
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(surfaceBg)
+    ) {
+        // App Header
+        Ux4gAppHeader(
+            title = "Declaration & Attestation",
+            variant = Ux4gAppHeaderVariant.Standard,
+            navigationAction = Ux4gAppHeaderAction(
+                icon = Icons.Filled.ArrowBack,
+                contentDescription = "Back",
+                onClick = onBackClick
+            )
+        )
+
+        // Scrollable Content
+        Column(
+            modifier = Modifier
+                .weight(1f)
+                .fillMaxWidth()
+                .verticalScroll(scrollState)
+                .padding(horizontal = 20.dp, vertical = 24.dp)
+        ) {
+            // Heading
+            Text(
+                text = "Declaration",
+                style = TextStyle(
+                    fontSize = 24.sp,
+                    fontWeight = FontWeight.ExtraBold,
+                    color = textPrimary,
+                    letterSpacing = (-0.5).sp
+                )
+            )
+
+            Spacer(modifier = Modifier.height(10.dp))
+
+            // Dynamic Subtitle
+            Text(
+                text = if (isSigned) {
+                    "Declaration agreed and signed. Your application is ready to submit."
+                } else {
+                    "You have agreed. Now sign by typing your full name as per Aadhaar."
+                },
+                style = TextStyle(
+                    fontSize = 14.sp,
+                    color = textSecondary,
+                    lineHeight = 20.sp,
+                    fontWeight = FontWeight.Normal
+                )
+            )
+
+            Spacer(modifier = Modifier.height(24.dp))
+
+            // Solemn Declaration Box
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(12.dp))
+                    .background(boxBg)
+                    .border(1.dp, boxBorder, RoundedCornerShape(12.dp))
+                    .padding(16.dp)
+            ) {
+                Text(
+                    text = "4. I authorise the Revenue Department to verify these particulars from any source.\n\n" +
+                            "5. I am aware that furnishing false information is a punishable offence.\n\n" +
+                            "6. If any information is later found false, the certificate is liable to be cancelled and legal action may be taken.\n\n" +
+                            "I make this declaration believing the contents to be true.",
+                    style = TextStyle(
+                        fontSize = 14.sp,
+                        color = if (isDark) Ux4gColors.Neutral300 else Ux4gColors.Neutral700,
+                        lineHeight = 22.sp,
+                        fontWeight = FontWeight.Medium
+                    )
+                )
+            }
+
+            Spacer(modifier = Modifier.height(24.dp))
+
+            // Mandatory Agreement Checkbox
+            Ux4gCheckbox(
+                value = agreed,
+                onValueChange = { agreed = it ?: false },
+                label = "I have read and agree to the above declaration.",
+                isRequired = true,
+                size = Ux4gCheckboxSize.Large
+            )
+
+            Spacer(modifier = Modifier.height(24.dp))
+
+            // Name Attestation Label
+            Text(
+                text = "Enter your full name to attest this declaration",
+                style = TextStyle(
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.SemiBold,
+                    color = if (isDark) Ux4gColors.Neutral300 else Ux4gColors.Neutral700
+                )
+            )
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            // Attestation Input Field
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(48.dp)
+                    .clip(RoundedCornerShape(8.dp))
+                    .background(inputBg)
+                    .border(1.dp, inputBorderColor, RoundedCornerShape(8.dp))
+                    .padding(horizontal = 16.dp),
+                contentAlignment = Alignment.CenterStart
+            ) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Box(modifier = Modifier.weight(1f)) {
+                        if (fullName.isEmpty()) {
+                            Text(
+                                text = "Enter your full name",
+                                style = TextStyle(
+                                    fontSize = 15.sp,
+                                    color = if (isDark) Ux4gColors.Neutral500 else Ux4gColors.Neutral400
+                                )
+                            )
+                        }
+                        BasicTextField(
+                            value = fullName,
+                            onValueChange = { fullName = it },
+                            textStyle = TextStyle(
+                                fontSize = 15.sp,
+                                fontWeight = FontWeight.Normal,
+                                color = textPrimary
+                            ),
+                            cursorBrush = SolidColor(if (isDark) Color.White else Color.Black),
+                            modifier = Modifier.fillMaxWidth()
+                        )
+                    }
+
+                    if (isSigned) {
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Icon(
+                            imageVector = Icons.Filled.CheckCircle,
+                            contentDescription = "Signature verified",
+                            tint = if (isDark) Ux4gColors.Green400 else Ux4gColors.Green600,
+                            modifier = Modifier.size(20.dp)
+                        )
+                    }
+                }
+            }
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            // Validation Caption Row
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Icon(
+                    imageVector = if (isSigned) Icons.Filled.CheckCircle else Icons.Outlined.Info,
+                    contentDescription = null,
+                    tint = validationColor,
+                    modifier = Modifier.size(16.dp)
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+                Text(
+                    text = "Your name will be matched against your aadhaar records.",
+                    style = TextStyle(
+                        fontSize = 13.sp,
+                        color = validationColor,
+                        fontWeight = FontWeight.Normal
+                    )
+                )
+            }
+
+            Spacer(modifier = Modifier.height(24.dp))
+
+            // Statutory Warning Box (Section 193 IPC)
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(8.dp))
+                    .background(warningBg)
+                    .border(1.dp, warningBorder, RoundedCornerShape(8.dp))
+                    .padding(14.dp),
+                verticalAlignment = Alignment.Top
+            ) {
+                Icon(
+                    imageVector = Icons.Filled.Error,
+                    contentDescription = "Statutory Warning",
+                    tint = Color(0xFFEA580C),
+                    modifier = Modifier.size(18.dp)
+                )
+                Spacer(modifier = Modifier.width(12.dp))
+                Text(
+                    text = "Furnishing false information is a punishable offence under Section 193 IPC — up to 7 years imprisonment.",
+                    style = TextStyle(
+                        fontSize = 13.sp,
+                        color = warningText,
+                        lineHeight = 18.sp,
+                        fontWeight = FontWeight.Medium
+                    )
+                )
+            }
+
+            Spacer(modifier = Modifier.height(32.dp))
+
+            // Primary Submit Action
+            Ux4gButton(
+                text = "Submit application",
+                variant = Ux4gButtonVariant.Primary,
+                size = Ux4gButtonSize.Large,
+                onClick = onSubmitClick,
+                enabled = canSubmit,
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            Spacer(modifier = Modifier.height(20.dp))
+
+            // Footer
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = "Powered by Digital India",
+                    style = TextStyle(
+                        fontSize = 12.sp,
+                        color = Ux4gColors.Neutral400,
+                        fontWeight = FontWeight.Medium
+                    )
+                )
+            }
+        }
+    }
+}
+
+@Preview(showBackground = true, widthDp = 360, heightDp = 760)
+@Composable
+fun DeclarationWithDigitalSignUnsignedPreview() {
+    DeclarationWithDigitalSignScreen(initialSigned = false)
+}
+
+@Preview(showBackground = true, widthDp = 360, heightDp = 760)
+@Composable
+fun DeclarationWithDigitalSignSignedPreview() {
+    DeclarationWithDigitalSignScreen(initialSigned = true)
+}`}
+>
+  <Tabs items={['Unsigned', 'Signed']}>
+    <Tab value="Unsigned">
+      <img
+        src="/images/patterns/declaration_before_submission/declaration_with_digital_sign_unsigned.svg"
+        alt="Declaration with Digital Sign - Unsigned"
+        className="w-full max-w-[360px] rounded-2xl border border-border shadow-sm mx-auto my-4"
+      />
+    </Tab>
+    <Tab value="Signed">
+      <img
+        src="/images/patterns/declaration_before_submission/declaration_with_digital_sign_signed.svg"
+        alt="Declaration with Digital Sign - Signed"
+        className="w-full max-w-[360px] rounded-2xl border border-border shadow-sm mx-auto my-4"
+      />
+    </Tab>
+  </Tabs>
+</ComponentPreview>
+
+---
+
+### 2. Card Style Variant
+
+Contained card-based presentation designed for stepped citizen workflows, modal approval dialogs, or multi-section portal dashboards.
+
+<ComponentPreview
+  title="Declaration with Digital Sign - Card Style"
+  category="Pattern · Jetpack Compose"
+  code={`package com.example.ux4g.patterns.declaration
+
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.CheckCircle
+import androidx.compose.material.icons.filled.Error
+import androidx.compose.material.icons.outlined.Info
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.ux4g.designsystemv1.components.Ux4gAppHeader
+import com.ux4g.designsystemv1.components.Ux4gAppHeaderAction
+import com.ux4g.designsystemv1.components.Ux4gAppHeaderVariant
+import com.ux4g.designsystemv1.components.Ux4gCheckbox
+import com.ux4g.designsystemv1.components.checkbox.Ux4gCheckboxSize
+import com.ux4g.designsystemv1.components.buttons.Ux4gButton
+import com.ux4g.designsystemv1.components.buttons.Ux4gButtonSize
+import com.ux4g.designsystemv1.components.buttons.Ux4gButtonVariant
+import com.ux4g.designsystemv1.foundation.Ux4gColors
+
+/**
+ * Declaration with Digital Sign - Card Style Pattern
+ */
+@Composable
+fun DeclarationWithDigitalSignCardScreen(
+    initialSigned: Boolean = false,
+    onBackClick: () -> Unit = {},
+    onSubmitClick: () -> Unit = {}
+) {
+    val isDark = isSystemInDarkTheme()
+    val scrollState = rememberScrollState()
+
+    var agreed by remember { mutableStateOf(initialSigned) }
+    var fullName by remember { mutableStateOf(if (initialSigned) "Ramesh Kumar" else "") }
+
+    val isSigned = fullName.trim().split(" ").filter { it.isNotBlank() }.size >= 2
+    val canSubmit = agreed && isSigned
+
+    val screenBg = if (isDark) Ux4gColors.Neutral950 else Color(0xFFF3F4F6)
+    val cardBg = if (isDark) Ux4gColors.Neutral900 else Color.White
+    val cardBorder = if (isDark) Ux4gColors.Neutral800 else Ux4gColors.Neutral200
+    val textPrimary = if (isDark) Ux4gColors.Neutral50 else Ux4gColors.Neutral900
+    val textSecondary = if (isDark) Ux4gColors.Neutral400 else Ux4gColors.Neutral600
+    val boxBg = if (isDark) Ux4gColors.Neutral950 else Color(0xFFF9FAFB)
+    val boxBorder = if (isDark) Ux4gColors.Neutral800 else Ux4gColors.Neutral200
+
+    val inputBg = if (isDark) Ux4gColors.Neutral800 else Color.White
+    val inputBorderColor = when {
+        isSigned -> if (isDark) Ux4gColors.Green400 else Ux4gColors.Green600
+        else -> if (isDark) Ux4gColors.Neutral600 else Ux4gColors.Neutral300
+    }
+
+    val warningBg = if (isDark) Color(0xFF3B1E08) else Color(0xFFFFF7ED)
+    val warningBorder = if (isDark) Color(0xFF7C2D12) else Color(0xFFFED7AA)
+    val warningText = if (isDark) Color(0xFFFDBA74) else Color(0xFF9A3412)
+
+    val validationColor = if (isSigned) {
+        if (isDark) Ux4gColors.Green400 else Ux4gColors.Green600
+    } else {
+        if (isDark) Ux4gColors.Neutral400 else Ux4gColors.Neutral500
+    }
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(screenBg)
+    ) {
+        // App Header
+        Ux4gAppHeader(
+            title = "Declaration & Attestation",
+            variant = Ux4gAppHeaderVariant.Standard,
+            navigationAction = Ux4gAppHeaderAction(
+                icon = Icons.Filled.ArrowBack,
+                contentDescription = "Back",
+                onClick = onBackClick
+            )
+        )
+
+        // Card Container Content
+        Column(
+            modifier = Modifier
+                .weight(1f)
+                .fillMaxWidth()
+                .verticalScroll(scrollState)
+                .padding(16.dp)
+        ) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(16.dp))
+                    .background(cardBg)
+                    .border(1.dp, cardBorder, RoundedCornerShape(16.dp))
+                    .padding(20.dp)
+            ) {
+                Column(modifier = Modifier.fillMaxWidth()) {
+                    // Header
+                    Text(
+                        text = "Declaration",
+                        style = TextStyle(
+                            fontSize = 22.sp,
+                            fontWeight = FontWeight.ExtraBold,
+                            color = textPrimary,
+                            letterSpacing = (-0.5).sp
+                        )
+                    )
+
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    Text(
+                        text = if (isSigned) {
+                            "Declaration agreed and signed. Your application is ready to submit."
+                        } else {
+                            "You have agreed. Now sign by typing your full name as per Aadhaar."
+                        },
+                        style = TextStyle(
+                            fontSize = 14.sp,
+                            color = textSecondary,
+                            lineHeight = 20.sp,
+                            fontWeight = FontWeight.Normal
+                        )
+                    )
+
+                    Spacer(modifier = Modifier.height(20.dp))
+
+                    // Solemn Declaration Box
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clip(RoundedCornerShape(12.dp))
+                            .background(boxBg)
+                            .border(1.dp, boxBorder, RoundedCornerShape(12.dp))
+                            .padding(16.dp)
+                    ) {
+                        Text(
+                            text = "4. I authorise the Revenue Department to verify these particulars from any source.\n\n" +
+                                    "5. I am aware that furnishing false information is a punishable offence.\n\n" +
+                                    "6. If any information is later found false, the certificate is liable to be cancelled and legal action may be taken.\n\n" +
+                                    "I make this declaration believing the contents to be true.",
+                            style = TextStyle(
+                                fontSize = 13.sp,
+                                color = if (isDark) Ux4gColors.Neutral300 else Ux4gColors.Neutral700,
+                                lineHeight = 20.sp,
+                                fontWeight = FontWeight.Medium
+                            )
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.height(20.dp))
+
+                    // Mandatory Agreement Checkbox
+                    Ux4gCheckbox(
+                        value = agreed,
+                        onValueChange = { agreed = it ?: false },
+                        label = "I have read and agree to the above declaration.",
+                        isRequired = true,
+                        size = Ux4gCheckboxSize.Large
+                    )
+
+                    Spacer(modifier = Modifier.height(20.dp))
+
+                    // Name Attestation Label
+                    Text(
+                        text = "Enter your full name to attest this declaration",
+                        style = TextStyle(
+                            fontSize = 14.sp,
+                            fontWeight = FontWeight.SemiBold,
+                            color = if (isDark) Ux4gColors.Neutral300 else Ux4gColors.Neutral700
+                        )
+                    )
+
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    // Attestation Input Field
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(48.dp)
+                            .clip(RoundedCornerShape(8.dp))
+                            .background(inputBg)
+                            .border(1.dp, inputBorderColor, RoundedCornerShape(8.dp))
+                            .padding(horizontal = 16.dp),
+                        contentAlignment = Alignment.CenterStart
+                    ) {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Box(modifier = Modifier.weight(1f)) {
+                                if (fullName.isEmpty()) {
+                                    Text(
+                                        text = "Enter your full name",
+                                        style = TextStyle(
+                                            fontSize = 15.sp,
+                                            color = if (isDark) Ux4gColors.Neutral500 else Ux4gColors.Neutral400
+                                        )
+                                    )
+                                }
+                                BasicTextField(
+                                    value = fullName,
+                                    onValueChange = { fullName = it },
+                                    textStyle = TextStyle(
+                                        fontSize = 15.sp,
+                                        fontWeight = FontWeight.Normal,
+                                        color = textPrimary
+                                    ),
+                                    cursorBrush = SolidColor(if (isDark) Color.White else Color.Black),
+                                    modifier = Modifier.fillMaxWidth()
+                                )
+                            }
+
+                            if (isSigned) {
+                                Spacer(modifier = Modifier.width(8.dp))
+                                Icon(
+                                    imageVector = Icons.Filled.CheckCircle,
+                                    contentDescription = "Signature verified",
+                                    tint = if (isDark) Ux4gColors.Green400 else Ux4gColors.Green600,
+                                    modifier = Modifier.size(20.dp)
+                                )
+                            }
+                        }
+                    }
+
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    // Validation Caption Row
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Icon(
+                            imageVector = if (isSigned) Icons.Filled.CheckCircle else Icons.Outlined.Info,
+                            contentDescription = null,
+                            tint = validationColor,
+                            modifier = Modifier.size(16.dp)
+                        )
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Text(
+                            text = "Your name will be matched against your aadhaar records.",
+                            style = TextStyle(
+                                fontSize = 13.sp,
+                                color = validationColor,
+                                fontWeight = FontWeight.Normal
+                            )
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.height(20.dp))
+
+                    // Statutory Warning Box (Section 193 IPC)
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clip(RoundedCornerShape(8.dp))
+                            .background(warningBg)
+                            .border(1.dp, warningBorder, RoundedCornerShape(8.dp))
+                            .padding(14.dp),
+                        verticalAlignment = Alignment.Top
+                    ) {
+                        Icon(
+                            imageVector = Icons.Filled.Error,
+                            contentDescription = "Statutory Warning",
+                            tint = Color(0xFFEA580C),
+                            modifier = Modifier.size(18.dp)
+                        )
+                        Spacer(modifier = Modifier.width(12.dp))
+                        Text(
+                            text = "Furnishing false information is a punishable offence under Section 193 IPC — up to 7 years imprisonment.",
+                            style = TextStyle(
+                                fontSize = 13.sp,
+                                color = warningText,
+                                lineHeight = 18.sp,
+                                fontWeight = FontWeight.Medium
+                            )
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.height(28.dp))
+
+                    // Submit Action
+                    Ux4gButton(
+                        text = "Submit application",
+                        variant = Ux4gButtonVariant.Primary,
+                        size = Ux4gButtonSize.Large,
+                        onClick = onSubmitClick,
+                        enabled = canSubmit,
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                }
+            }
+
+            Spacer(modifier = Modifier.height(20.dp))
+
+            // Footer
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = "Powered by Digital India",
+                    style = TextStyle(
+                        fontSize = 12.sp,
+                        color = Ux4gColors.Neutral400,
+                        fontWeight = FontWeight.Medium
+                    )
+                )
+            }
+        }
+    }
+}
+
+@Preview(showBackground = true, widthDp = 360, heightDp = 760)
+@Composable
+fun DeclarationWithDigitalSignCardUnsignedPreview() {
+    DeclarationWithDigitalSignCardScreen(initialSigned = false)
+}
+
+@Preview(showBackground = true, widthDp = 360, heightDp = 760)
+@Composable
+fun DeclarationWithDigitalSignCardSignedPreview() {
+    DeclarationWithDigitalSignCardScreen(initialSigned = true)
+}`}
+>
+  <Tabs items={['Unsigned', 'Signed']}>
+    <Tab value="Unsigned">
+      <img
+        src="/images/patterns/declaration_before_submission/declaration_with_digital_sign_unsigned_cardstyle.svg"
+        alt="Declaration with Digital Sign - Card Style Unsigned"
+        className="w-full max-w-[360px] rounded-2xl border border-border shadow-sm mx-auto my-4"
+      />
+    </Tab>
+    <Tab value="Signed">
+      <img
+        src="/images/patterns/declaration_before_submission/declaration_with_digital_sign_signed_cardstyle.svg"
+        alt="Declaration with Digital Sign - Card Style Signed"
+        className="w-full max-w-[360px] rounded-2xl border border-border shadow-sm mx-auto my-4"
+      />
+    </Tab>
+  </Tabs>
+</ComponentPreview>

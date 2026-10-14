@@ -1,0 +1,597 @@
+---
+title: Declaration Before Submission
+description: Statutory applicant declaration pattern with mandatory scroll-to-read validation, IPC Section 193 penal warning callout, and card-style variants
+---
+
+# Declaration Before Submission
+
+A formal legal affirmation pattern required prior to the final submission of government citizen service requests, certificate applications, or welfare benefit petitions.
+
+To protect against inadvertent or careless submission of incorrect information, the pattern requires citizens to read the full text of the solemn declaration before the agreement checkbox is unlocked. It pairs this with a statutory warning citing **Section 193 of the Indian Penal Code (IPC)** regarding penalties for furnishing false statements, followed by the primary application submission trigger.
+
+---
+
+<h2><MIcon name="smartphone" /> Interactive Previews</h2>
+
+### 1. Default Style (Full Screen)
+
+Standard full-screen declaration flow requiring full-text scroll progression, mandatory agreement checkbox confirmation, and statutory penal advisory before submission.
+
+<ComponentPreview
+  title="Declaration Before Submission - Default"
+  category="Pattern · Jetpack Compose"
+  code={`package com.example.ux4g.patterns.declaration
+
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Error
+import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.ux4g.designsystemv1.components.Ux4gAppHeader
+import com.ux4g.designsystemv1.components.Ux4gAppHeaderAction
+import com.ux4g.designsystemv1.components.Ux4gAppHeaderVariant
+import com.ux4g.designsystemv1.components.Ux4gCheckbox
+import com.ux4g.designsystemv1.components.checkbox.Ux4gCheckboxSize
+import com.ux4g.designsystemv1.components.buttons.Ux4gButton
+import com.ux4g.designsystemv1.components.buttons.Ux4gButtonSize
+import com.ux4g.designsystemv1.components.buttons.Ux4gButtonVariant
+import com.ux4g.designsystemv1.foundation.Ux4gColors
+
+@Composable
+fun DeclarationBeforeSubmissionScreen(
+    onSubmitClick: () -> Unit = {}
+) {
+    val isDark = isSystemInDarkTheme()
+    val outerScrollState = rememberScrollState()
+    val declarationScrollState = rememberScrollState()
+
+    val surfaceBg = if (isDark) Ux4gColors.Neutral950 else Color(0xFFF9FAFB)
+    val boxBg = if (isDark) Ux4gColors.Neutral900 else Color(0xFFF3F4F6)
+    val boxBorder = if (isDark) Ux4gColors.Neutral800 else Ux4gColors.Neutral200
+    val textPrimary = if (isDark) Ux4gColors.Neutral50 else Ux4gColors.Neutral900
+    val textSecondary = if (isDark) Ux4gColors.Neutral300 else Ux4gColors.Neutral700
+    val textSubtle = if (isDark) Ux4gColors.Neutral400 else Ux4gColors.Neutral600
+
+    val warningBg = if (isDark) Color(0xFF3B1E08) else Color(0xFFFFF7ED)
+    val warningBorder = if (isDark) Color(0xFF7C2D12) else Color(0xFFFED7AA)
+    val warningText = if (isDark) Color(0xFFFDBA74) else Color(0xFF9A3412)
+
+    var agreed by remember { mutableStateOf(false) }
+
+    // Unlocks only after reading through declaration
+    val hasScrolledToEnd by remember {
+        derivedStateOf {
+            declarationScrollState.value >= (declarationScrollState.maxValue - 20) || declarationScrollState.maxValue == 0
+        }
+    }
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(surfaceBg)
+    ) {
+        // 1. Official Government Header
+        Ux4gAppHeader(
+            title = "Digital Services",
+            variant = Ux4gAppHeaderVariant.Standard,
+            navigationIcon = Icons.Filled.Menu,
+            onNavigationClick = {},
+            actions = listOf(
+                Ux4gAppHeaderAction(
+                    icon = Icons.Filled.Menu,
+                    contentDescription = "Menu",
+                    onClick = {}
+                )
+            )
+        )
+
+        // 2. Scrollable Body
+        Column(
+            modifier = Modifier
+                .weight(1f)
+                .fillMaxWidth()
+                .verticalScroll(outerScrollState)
+                .padding(horizontal = 20.dp, vertical = 20.dp)
+        ) {
+            Text(
+                text = "Declaration",
+                style = TextStyle(
+                    fontSize = 24.sp,
+                    fontWeight = FontWeight.ExtraBold,
+                    color = textPrimary,
+                    letterSpacing = (-0.5).sp
+                )
+            )
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            Text(
+                text = "Read the declaration in full. Scroll to the end before you can agree.",
+                style = TextStyle(
+                    fontSize = 14.sp,
+                    color = textSubtle,
+                    lineHeight = 20.sp
+                )
+            )
+
+            Spacer(modifier = Modifier.height(20.dp))
+
+            // Scrollable Declaration Box
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(220.dp)
+                    .clip(RoundedCornerShape(12.dp))
+                    .background(boxBg)
+                    .border(1.dp, boxBorder, RoundedCornerShape(12.dp))
+            ) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .verticalScroll(declarationScrollState)
+                        .padding(16.dp)
+                ) {
+                    Text(
+                        text = "I, the applicant, do hereby solemnly declare and affirm that:\\n\\n" +
+                                "1. All information furnished in this application is true, complete and correct to the best of my knowledge and belief.\\n\\n" +
+                                "2. I have not concealed, suppressed or misrepresented any material fact.\\n\\n" +
+                                "3. I am aware that any false information or suppression of material facts will lead to rejection of my application or termination of service if already granted.\\n\\n" +
+                                "4. I undertake to inform the department immediately of any changes in the information provided in this application.\\n\\n" +
+                                "5. I understand that the data provided by me will be used for the purpose of processing this application and related government services.",
+                        style = TextStyle(
+                            fontSize = 13.sp,
+                            color = textSecondary,
+                            lineHeight = 19.sp,
+                            fontWeight = FontWeight.Medium
+                        )
+                    )
+                }
+
+                // Scroll to read all gradient hint
+                AnimatedVisibility(
+                    visible = !hasScrolledToEnd,
+                    modifier = Modifier.align(Alignment.BottomCenter)
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .background(
+                                Brush.verticalGradient(
+                                    colors = listOf(
+                                        Color.Transparent,
+                                        boxBg.copy(alpha = 0.95f)
+                                    )
+                                )
+                            )
+                            .padding(vertical = 8.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            text = "Scroll to read all",
+                            style = TextStyle(
+                                fontSize = 12.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = Ux4gColors.Primary600
+                            )
+                        )
+                    }
+                }
+            }
+
+            Spacer(modifier = Modifier.height(20.dp))
+
+            // Mandatory Agreement Checkbox
+            Ux4gCheckbox(
+                value = agreed,
+                onValueChange = { agreed = it ?: false },
+                label = "I have read and agree to the above declaration.",
+                isRequired = true,
+                size = Ux4gCheckboxSize.Large
+            )
+
+            Spacer(modifier = Modifier.height(20.dp))
+
+            // Penal Warning Callout Box (IPC Section 193)
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(8.dp))
+                    .background(warningBg)
+                    .border(1.dp, warningBorder, RoundedCornerShape(8.dp))
+                    .padding(14.dp),
+                verticalAlignment = Alignment.Top
+            ) {
+                Icon(
+                    imageVector = Icons.Filled.Error,
+                    contentDescription = "Warning",
+                    tint = Color(0xFFEA580C),
+                    modifier = Modifier.size(18.dp)
+                )
+                Spacer(modifier = Modifier.width(10.dp))
+                Text(
+                    text = "Furnishing false information is a punishable offence under Section 193 IPC — up to 7 years imprisonment.",
+                    style = TextStyle(
+                        fontSize = 13.sp,
+                        color = warningText,
+                        lineHeight = 18.sp,
+                        fontWeight = FontWeight.Medium
+                    )
+                )
+            }
+
+            Spacer(modifier = Modifier.height(28.dp))
+
+            // Primary Submit Action
+            Ux4gButton(
+                text = "Submit application",
+                variant = Ux4gButtonVariant.Primary,
+                size = Ux4gButtonSize.Large,
+                onClick = onSubmitClick,
+                enabled = agreed,
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+        }
+
+        // 3. Official Digital India Footer
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 12.dp),
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = "Powered by Digital India",
+                style = TextStyle(
+                    fontSize = 11.sp,
+                    color = Ux4gColors.Neutral400,
+                    fontWeight = FontWeight.Medium
+                )
+            )
+        }
+    }
+}
+
+@Preview(showBackground = true, widthDp = 360, heightDp = 760)
+@Composable
+fun DeclarationBeforeSubmissionPreview() {
+    DeclarationBeforeSubmissionScreen()
+}`}
+>
+  <img
+    src="/images/patterns/declaration_before_submission/declaration_before_submission.svg"
+    alt="Declaration Before Submission - Default Style"
+    className="w-full max-w-[360px] rounded-2xl border border-border shadow-sm mx-auto my-4"
+  />
+</ComponentPreview>
+
+---
+
+### 2. Card Style Variant
+
+Elevated card layout set against a soft purple page canvas with a contained declaration container, statutory warning box, and elevated submit action.
+
+<ComponentPreview
+  title="Declaration Before Submission - Card Style"
+  category="Pattern · Jetpack Compose"
+  code={`package com.example.ux4g.patterns.declaration
+
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Error
+import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.ux4g.designsystemv1.components.Ux4gAppHeader
+import com.ux4g.designsystemv1.components.Ux4gAppHeaderAction
+import com.ux4g.designsystemv1.components.Ux4gAppHeaderVariant
+import com.ux4g.designsystemv1.components.Ux4gCheckbox
+import com.ux4g.designsystemv1.components.checkbox.Ux4gCheckboxSize
+import com.ux4g.designsystemv1.components.buttons.Ux4gButton
+import com.ux4g.designsystemv1.components.buttons.Ux4gButtonSize
+import com.ux4g.designsystemv1.components.buttons.Ux4gButtonVariant
+import com.ux4g.designsystemv1.foundation.Ux4gColors
+
+@Composable
+fun DeclarationBeforeSubmissionCardScreen(
+    onSubmitClick: () -> Unit = {}
+) {
+    val isDark = isSystemInDarkTheme()
+    val outerScrollState = rememberScrollState()
+    val declarationScrollState = rememberScrollState()
+
+    val pageBg = if (isDark) Ux4gColors.Neutral950 else Color(0xFFF3E8FF)
+    val cardBg = if (isDark) Ux4gColors.Neutral900 else Color.White
+    val cardBorder = if (isDark) Ux4gColors.Neutral800 else Ux4gColors.Neutral200
+    val boxBg = if (isDark) Ux4gColors.Neutral950 else Color(0xFFF9FAFB)
+    val boxBorder = if (isDark) Ux4gColors.Neutral800 else Ux4gColors.Neutral200
+    val textPrimary = if (isDark) Ux4gColors.Neutral50 else Ux4gColors.Neutral900
+    val textSecondary = if (isDark) Ux4gColors.Neutral300 else Ux4gColors.Neutral700
+    val textSubtle = if (isDark) Ux4gColors.Neutral400 else Ux4gColors.Neutral600
+
+    val warningBg = if (isDark) Color(0xFF3B1E08) else Color(0xFFFFF7ED)
+    val warningBorder = if (isDark) Color(0xFF7C2D12) else Color(0xFFFED7AA)
+    val warningText = if (isDark) Color(0xFFFDBA74) else Color(0xFF9A3412)
+
+    var agreed by remember { mutableStateOf(false) }
+
+    val hasScrolledToEnd by remember {
+        derivedStateOf {
+            declarationScrollState.value >= (declarationScrollState.maxValue - 20) || declarationScrollState.maxValue == 0
+        }
+    }
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(pageBg)
+    ) {
+        // App Header
+        Ux4gAppHeader(
+            title = "Digital Services",
+            variant = Ux4gAppHeaderVariant.Standard,
+            navigationIcon = Icons.Filled.Menu,
+            onNavigationClick = {},
+            actions = listOf(
+                Ux4gAppHeaderAction(icon = Icons.Filled.Menu, contentDescription = "Menu", onClick = {})
+            )
+        )
+
+        // Scrollable Elevated Card Container
+        Column(
+            modifier = Modifier
+                .weight(1f)
+                .fillMaxWidth()
+                .verticalScroll(outerScrollState)
+                .padding(horizontal = 16.dp, vertical = 16.dp)
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .shadow(elevation = 2.dp, shape = RoundedCornerShape(16.dp))
+                    .clip(RoundedCornerShape(16.dp))
+                    .background(cardBg)
+                    .border(1.dp, cardBorder, RoundedCornerShape(16.dp))
+                    .padding(20.dp)
+            ) {
+                Text(
+                    text = "Declaration",
+                    style = TextStyle(
+                        fontSize = 24.sp,
+                        fontWeight = FontWeight.ExtraBold,
+                        color = textPrimary,
+                        letterSpacing = (-0.5).sp
+                    )
+                )
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                Text(
+                    text = "Read the declaration in full. Scroll to the end before you can agree.",
+                    style = TextStyle(
+                        fontSize = 14.sp,
+                        color = textSubtle,
+                        lineHeight = 20.sp
+                    )
+                )
+
+                Spacer(modifier = Modifier.height(20.dp))
+
+                // Scrollable Box inside Card
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(220.dp)
+                        .clip(RoundedCornerShape(12.dp))
+                        .background(boxBg)
+                        .border(1.dp, boxBorder, RoundedCornerShape(12.dp))
+                ) {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .verticalScroll(declarationScrollState)
+                            .padding(16.dp)
+                    ) {
+                        Text(
+                            text = "I, the applicant, do hereby solemnly declare and affirm that:\\n\\n" +
+                                    "1. All information furnished in this application is true, complete and correct to the best of my knowledge and belief.\\n\\n" +
+                                    "2. I have not concealed, suppressed or misrepresented any material fact.\\n\\n" +
+                                    "3. I am aware that any false information or suppression of material facts will lead to rejection of my application or termination of service if already granted.\\n\\n" +
+                                    "4. I undertake to inform the department immediately of any changes in the information provided in this application.\\n\\n" +
+                                    "5. I understand that the data provided by me will be used for the purpose of processing this application and related government services.",
+                            style = TextStyle(
+                                fontSize = 13.sp,
+                                color = textSecondary,
+                                lineHeight = 19.sp,
+                                fontWeight = FontWeight.Medium
+                            )
+                        )
+                    }
+
+                    AnimatedVisibility(
+                        visible = !hasScrolledToEnd,
+                        modifier = Modifier.align(Alignment.BottomCenter)
+                    ) {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .background(
+                                    Brush.verticalGradient(
+                                        colors = listOf(
+                                            Color.Transparent,
+                                            boxBg.copy(alpha = 0.95f)
+                                        )
+                                    )
+                                )
+                                .padding(vertical = 8.dp),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text(
+                                text = "Scroll to read all",
+                                style = TextStyle(
+                                    fontSize = 12.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    color = Ux4gColors.Primary600
+                                )
+                            )
+                        }
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(20.dp))
+
+                // Mandatory Agreement Checkbox
+                Ux4gCheckbox(
+                    value = agreed,
+                    onValueChange = { agreed = it ?: false },
+                    label = "I have read and agree to the above declaration.",
+                    isRequired = true,
+                    size = Ux4gCheckboxSize.Large
+                )
+
+                Spacer(modifier = Modifier.height(20.dp))
+
+                // Warning Box (IPC 193)
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clip(RoundedCornerShape(8.dp))
+                        .background(warningBg)
+                        .border(1.dp, warningBorder, RoundedCornerShape(8.dp))
+                        .padding(14.dp),
+                    verticalAlignment = Alignment.Top
+                ) {
+                    Icon(
+                        imageVector = Icons.Filled.Error,
+                        contentDescription = "Warning",
+                        tint = Color(0xFFEA580C),
+                        modifier = Modifier.size(18.dp)
+                    )
+                    Spacer(modifier = Modifier.width(10.dp))
+                    Text(
+                        text = "Furnishing false information is a punishable offence under Section 193 IPC — up to 7 years imprisonment.",
+                        style = TextStyle(
+                            fontSize = 13.sp,
+                            color = warningText,
+                            lineHeight = 18.sp,
+                            fontWeight = FontWeight.Medium
+                        )
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(24.dp))
+
+                // Submit Button
+                Ux4gButton(
+                    text = "Submit application",
+                    variant = Ux4gButtonVariant.Primary,
+                    size = Ux4gButtonSize.Large,
+                    onClick = onSubmitClick,
+                    enabled = agreed,
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+        }
+
+        // Footer
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 12.dp),
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = "Powered by Digital India",
+                style = TextStyle(
+                    fontSize = 11.sp,
+                    color = Ux4gColors.Neutral400,
+                    fontWeight = FontWeight.Medium
+                )
+            )
+        }
+    }
+}
+
+@Preview(showBackground = true, widthDp = 360, heightDp = 760)
+@Composable
+fun DeclarationBeforeSubmissionCardPreview() {
+    DeclarationBeforeSubmissionCardScreen()
+}`}
+>
+  <img
+    src="/images/patterns/declaration_before_submission/declaration_before_submission_cardstyle.svg"
+    alt="Declaration Before Submission - Card Style"
+    className="w-full max-w-[360px] rounded-2xl border border-border shadow-sm mx-auto my-4"
+  />
+</ComponentPreview>
