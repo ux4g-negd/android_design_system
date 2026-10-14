@@ -7,6 +7,7 @@
     "service-discovery",
     "notification",
     "payment-and-confirmation",
-    "status-and-tracking"
+    "status-and-tracking",
+    "consent-and-declaration"
   ]
 }

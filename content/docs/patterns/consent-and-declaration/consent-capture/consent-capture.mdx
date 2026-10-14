@@ -1,0 +1,819 @@
+---
+title: Consent Capture
+description: Digital Personal Data Protection (DPDP) compliant consent capture pattern with itemized permission scopes, tri-state selection, validity controls, and card-style variants
+---
+
+# Consent Capture
+
+A privacy-first consent collection pattern aligned with the Digital Personal Data Protection Act (DPDPA) and citizen-centric governance standards. The screen presents explicit, purpose-limited data sharing requests where citizens retain granular control over which personal data attributes, verified digital credentials (such as Aadhaar, PAN, and Driving License), and device capabilities are shared with public service portals.
+
+The pattern empowers citizens with itemized tri-state selections, expandable document categories, consent duration expiration disclosures with editing controls, and balanced, high-contrast **Allow** and **Deny** actions.
+
+---
+
+<h2><MIcon name="smartphone" /> Interactive Previews</h2>
+
+### 1. Default Style (Full Screen)
+
+Standard full-screen consent capture layout featuring an official header, collapsible credential categories with tri-state selection, profile permission scopes, validity date selector, and prominent dual CTAs.
+
+<ComponentPreview
+  title="Consent Capture - Default"
+  category="Pattern · Jetpack Compose"
+  code={`package com.example.ux4g.patterns.consent
+
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.AccountCircle
+import androidx.compose.material.icons.filled.DateRange
+import androidx.compose.material.icons.filled.Email
+import androidx.compose.material.icons.filled.KeyboardArrowDown
+import androidx.compose.material.icons.filled.KeyboardArrowRight
+import androidx.compose.material.icons.filled.LocationOn
+import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material.icons.outlined.AccountCircle
+import androidx.compose.material3.Divider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.ux4g.designsystemv1.components.Ux4gAppHeader
+import com.ux4g.designsystemv1.components.Ux4gAppHeaderAction
+import com.ux4g.designsystemv1.components.Ux4gAppHeaderVariant
+import com.ux4g.designsystemv1.components.Ux4gCheckbox
+import com.ux4g.designsystemv1.components.checkbox.Ux4gCheckboxSize
+import com.ux4g.designsystemv1.components.buttons.Ux4gButton
+import com.ux4g.designsystemv1.components.buttons.Ux4gButtonSize
+import com.ux4g.designsystemv1.components.buttons.Ux4gButtonVariant
+import com.ux4g.designsystemv1.foundation.Ux4gColors
+
+@Composable
+fun ConsentCaptureScreen(
+    onAllowClick: () -> Unit = {},
+    onDenyClick: () -> Unit = {},
+    onEditValidityClick: () -> Unit = {},
+    onViewAllDocsClick: () -> Unit = {}
+) {
+    val isDark = isSystemInDarkTheme()
+    val scrollState = rememberScrollState()
+
+    val surfaceBg = if (isDark) Ux4gColors.Neutral950 else Color(0xFFF9FAFB)
+    val cardBg = if (isDark) Ux4gColors.Neutral900 else Color.White
+    val cardBorder = if (isDark) Ux4gColors.Neutral800 else Ux4gColors.Neutral200
+    val dividerColor = if (isDark) Ux4gColors.Neutral800 else Color(0xFFF3F4F6)
+    val textPrimary = if (isDark) Ux4gColors.Neutral50 else Ux4gColors.Neutral900
+    val textSubtle = if (isDark) Ux4gColors.Neutral400 else Ux4gColors.Neutral600
+    val linkColor = if (isDark) Ux4gColors.Primary300 else Ux4gColors.Primary600
+
+    // Granular Consent State
+    var docsExpanded by remember { mutableStateOf(true) }
+    var aadhaarConsent by remember { mutableStateOf<Boolean?>(true) }
+    var panConsent by remember { mutableStateOf<Boolean?>(false) }
+    var dlConsent by remember { mutableStateOf<Boolean?>(false) }
+    var profileConsent by remember { mutableStateOf<Boolean?>(true) }
+    var emailConsent by remember { mutableStateOf<Boolean?>(true) }
+    var photoConsent by remember { mutableStateOf<Boolean?>(false) }
+    var locationConsent by remember { mutableStateOf<Boolean?>(false) }
+
+    // Tri-state for document group
+    val selectAllDocs: Boolean? = when {
+        aadhaarConsent == true && panConsent == true && dlConsent == true -> true
+        aadhaarConsent == true || panConsent == true || dlConsent == true -> null
+        else -> false
+    }
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(surfaceBg)
+    ) {
+        // 1. Government App Header
+        Ux4gAppHeader(
+            title = "Digital Services",
+            variant = Ux4gAppHeaderVariant.Standard,
+            navigationIcon = Icons.Filled.Menu,
+            onNavigationClick = {},
+            actions = listOf(
+                Ux4gAppHeaderAction(
+                    icon = Icons.Filled.Menu,
+                    contentDescription = "Menu",
+                    onClick = {}
+                )
+            )
+        )
+
+        // 2. Scrollable Body
+        Column(
+            modifier = Modifier
+                .weight(1f)
+                .fillMaxWidth()
+                .verticalScroll(scrollState)
+                .padding(horizontal = 16.dp, vertical = 16.dp)
+        ) {
+            // Main Purpose Headline
+            Text(
+                text = "Please provide your consent to share the following information",
+                style = TextStyle(
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = textPrimary,
+                    lineHeight = 22.sp
+                )
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // Main Consent Attributes Card
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(12.dp))
+                    .background(cardBg)
+                    .border(1.dp, cardBorder, RoundedCornerShape(12.dp))
+                    .padding(16.dp)
+            ) {
+                // Section 1: Documents Collapsible Header
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Icon(
+                        imageVector = if (docsExpanded) Icons.Filled.KeyboardArrowDown else Icons.Filled.KeyboardArrowRight,
+                        contentDescription = if (docsExpanded) "Collapse" else "Expand",
+                        tint = textPrimary,
+                        modifier = Modifier
+                            .size(20.dp)
+                            .clickable { docsExpanded = !docsExpanded }
+                    )
+                    Spacer(modifier = Modifier.width(6.dp))
+                    Text(
+                        text = "Documents",
+                        style = TextStyle(fontSize = 14.sp, fontWeight = FontWeight.Bold, color = textPrimary)
+                    )
+                    Spacer(modifier = Modifier.weight(1f))
+                    Text(
+                        text = "Select all",
+                        style = TextStyle(fontSize = 12.sp, color = textSubtle, fontWeight = FontWeight.Medium)
+                    )
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Ux4gCheckbox(
+                        value = selectAllDocs,
+                        onValueChange = { newVal ->
+                            val target = newVal == true
+                            aadhaarConsent = target
+                            panConsent = target
+                            dlConsent = target
+                        },
+                        size = Ux4gCheckboxSize.Small
+                    )
+                }
+
+                // Documents items
+                AnimatedVisibility(visible = docsExpanded) {
+                    Column(modifier = Modifier.padding(start = 26.dp, top = 12.dp)) {
+                        // Aadhaar Card
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(vertical = 4.dp),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Text(
+                                text = "Aadhaar Card",
+                                style = TextStyle(fontSize = 13.sp, fontWeight = FontWeight.Medium, color = textPrimary)
+                            )
+                            Ux4gCheckbox(
+                                value = aadhaarConsent,
+                                onValueChange = { aadhaarConsent = it },
+                                size = Ux4gCheckboxSize.Small
+                            )
+                        }
+
+                        // PAN
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(vertical = 4.dp),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Text(
+                                text = "PAN",
+                                style = TextStyle(fontSize = 13.sp, fontWeight = FontWeight.Medium, color = textPrimary)
+                            )
+                            Ux4gCheckbox(
+                                value = panConsent,
+                                onValueChange = { panConsent = it },
+                                size = Ux4gCheckboxSize.Small
+                            )
+                        }
+
+                        // Driving License
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(vertical = 4.dp),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Text(
+                                text = "Driving License",
+                                style = TextStyle(fontSize = 13.sp, fontWeight = FontWeight.Medium, color = textPrimary)
+                            )
+                            Ux4gCheckbox(
+                                value = dlConsent,
+                                onValueChange = { dlConsent = it },
+                                size = Ux4gCheckboxSize.Small
+                            )
+                        }
+
+                        Spacer(modifier = Modifier.height(4.dp))
+                        Text(
+                            text = "View all",
+                            style = TextStyle(
+                                fontSize = 13.sp,
+                                fontWeight = FontWeight.SemiBold,
+                                color = linkColor
+                            ),
+                            modifier = Modifier.clickable(onClick = onViewAllDocsClick)
+                        )
+                    }
+                }
+
+                Divider(color = dividerColor, thickness = 1.dp, modifier = Modifier.padding(vertical = 12.dp))
+
+                // Section 2: Profile Information
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Icon(
+                        imageVector = Icons.Outlined.AccountCircle,
+                        contentDescription = "Profile",
+                        tint = textPrimary,
+                        modifier = Modifier.size(22.dp)
+                    )
+                    Spacer(modifier = Modifier.width(10.dp))
+                    Column(modifier = Modifier.weight(1f)) {
+                        Text(
+                            text = "Profile information",
+                            style = TextStyle(fontSize = 14.sp, fontWeight = FontWeight.Bold, color = textPrimary)
+                        )
+                        Spacer(modifier = Modifier.height(2.dp))
+                        Text(
+                            text = "Name, Date of Birth, Gender",
+                            style = TextStyle(fontSize = 12.sp, color = textSubtle)
+                        )
+                    }
+                    Ux4gCheckbox(
+                        value = profileConsent,
+                        onValueChange = { profileConsent = it },
+                        size = Ux4gCheckboxSize.Small
+                    )
+                }
+
+                Divider(color = dividerColor, thickness = 1.dp, modifier = Modifier.padding(vertical = 12.dp))
+
+                // Section 3: Get your email
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Icon(
+                        imageVector = Icons.Filled.Email,
+                        contentDescription = "Email",
+                        tint = textPrimary,
+                        modifier = Modifier.size(22.dp)
+                    )
+                    Spacer(modifier = Modifier.width(10.dp))
+                    Text(
+                        text = "Get your email",
+                        style = TextStyle(fontSize = 14.sp, fontWeight = FontWeight.Bold, color = textPrimary),
+                        modifier = Modifier.weight(1f)
+                    )
+                    Ux4gCheckbox(
+                        value = emailConsent,
+                        onValueChange = { emailConsent = it },
+                        size = Ux4gCheckboxSize.Small
+                    )
+                }
+
+                Divider(color = dividerColor, thickness = 1.dp, modifier = Modifier.padding(vertical = 12.dp))
+
+                // Section 4: Get your profile picture
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Icon(
+                        imageVector = Icons.Filled.AccountCircle,
+                        contentDescription = "Profile Picture",
+                        tint = textPrimary,
+                        modifier = Modifier.size(22.dp)
+                    )
+                    Spacer(modifier = Modifier.width(10.dp))
+                    Text(
+                        text = "Get your profile picture",
+                        style = TextStyle(fontSize = 14.sp, fontWeight = FontWeight.Bold, color = textPrimary),
+                        modifier = Modifier.weight(1f)
+                    )
+                    Ux4gCheckbox(
+                        value = photoConsent,
+                        onValueChange = { photoConsent = it },
+                        size = Ux4gCheckboxSize.Small
+                    )
+                }
+
+                Divider(color = dividerColor, thickness = 1.dp, modifier = Modifier.padding(vertical = 12.dp))
+
+                // Section 5: Location
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Icon(
+                        imageVector = Icons.Filled.LocationOn,
+                        contentDescription = "Location",
+                        tint = textPrimary,
+                        modifier = Modifier.size(22.dp)
+                    )
+                    Spacer(modifier = Modifier.width(10.dp))
+                    Text(
+                        text = "Location",
+                        style = TextStyle(fontSize = 14.sp, fontWeight = FontWeight.Bold, color = textPrimary),
+                        modifier = Modifier.weight(1f)
+                    )
+                    Ux4gCheckbox(
+                        value = locationConsent,
+                        onValueChange = { locationConsent = it },
+                        size = Ux4gCheckboxSize.Small
+                    )
+                }
+
+                Divider(color = dividerColor, thickness = 1.dp, modifier = Modifier.padding(vertical = 12.dp))
+
+                // Section 6: Consent Validity Date
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.Top
+                ) {
+                    Icon(
+                        imageVector = Icons.Filled.DateRange,
+                        contentDescription = "Validity",
+                        tint = textPrimary,
+                        modifier = Modifier.size(22.dp)
+                    )
+                    Spacer(modifier = Modifier.width(10.dp))
+                    Column(modifier = Modifier.weight(1f)) {
+                        Text(
+                            text = "Consent validity date",
+                            style = TextStyle(fontSize = 14.sp, fontWeight = FontWeight.Bold, color = textPrimary)
+                        )
+                        Spacer(modifier = Modifier.height(2.dp))
+                        Text(
+                            text = "(Today + 30 days)\n08-Oct-2026",
+                            style = TextStyle(fontSize = 12.sp, color = textSubtle, lineHeight = 16.sp)
+                        )
+                    }
+                    Text(
+                        text = "Edit",
+                        style = TextStyle(
+                            fontSize = 13.sp,
+                            fontWeight = FontWeight.SemiBold,
+                            color = linkColor
+                        ),
+                        modifier = Modifier.clickable(onClick = onEditValidityClick)
+                    )
+                }
+            }
+
+            Spacer(modifier = Modifier.height(20.dp))
+
+            // Statutory DPDP Legal Disclaimer
+            Text(
+                text = "Consent validity is subject to applicable laws.\nBy selecting Allow, you are giving consent to share the items above.",
+                style = TextStyle(fontSize = 12.sp, color = textSubtle, lineHeight = 17.sp)
+            )
+
+            Spacer(modifier = Modifier.height(18.dp))
+
+            // Primary & Secondary Decision Actions
+            Ux4gButton(
+                text = "Allow",
+                variant = Ux4gButtonVariant.Primary,
+                size = Ux4gButtonSize.Large,
+                onClick = onAllowClick,
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            Spacer(modifier = Modifier.height(10.dp))
+
+            Ux4gButton(
+                text = "Deny",
+                variant = Ux4gButtonVariant.Outline,
+                size = Ux4gButtonSize.Large,
+                onClick = onDenyClick,
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+        }
+
+        // 3. Official Digital India Footer
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 12.dp),
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = "Powered by Digital India",
+                style = TextStyle(
+                    fontSize = 11.sp,
+                    color = Ux4gColors.Neutral400,
+                    fontWeight = FontWeight.Medium
+                )
+            )
+        }
+    }
+}
+
+@Preview(showBackground = true, widthDp = 360, heightDp = 760)
+@Composable
+fun ConsentCapturePreview() {
+    ConsentCaptureScreen()
+}`}
+>
+  <img
+    src="/images/patterns/consent_capture/consent_capture.svg"
+    alt="Consent Capture - Default Style"
+    className="w-full max-w-[360px] rounded-2xl border border-border shadow-sm mx-auto my-4"
+  />
+</ComponentPreview>
+
+---
+
+### 2. Card Style Variant
+
+Contained card-style presentation set against a soft page canvas with elevated bounding surfaces, ideal for modular dialog sheets and permission review steps.
+
+<ComponentPreview
+  title="Consent Capture - Card Style"
+  category="Pattern · Jetpack Compose"
+  code={`package com.example.ux4g.patterns.consent
+
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccountCircle
+import androidx.compose.material.icons.filled.DateRange
+import androidx.compose.material.icons.filled.Email
+import androidx.compose.material.icons.filled.KeyboardArrowDown
+import androidx.compose.material.icons.filled.KeyboardArrowRight
+import androidx.compose.material.icons.filled.LocationOn
+import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material.icons.outlined.AccountCircle
+import androidx.compose.material3.Divider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.ux4g.designsystemv1.components.Ux4gAppHeader
+import com.ux4g.designsystemv1.components.Ux4gAppHeaderAction
+import com.ux4g.designsystemv1.components.Ux4gAppHeaderVariant
+import com.ux4g.designsystemv1.components.Ux4gCheckbox
+import com.ux4g.designsystemv1.components.checkbox.Ux4gCheckboxSize
+import com.ux4g.designsystemv1.components.buttons.Ux4gButton
+import com.ux4g.designsystemv1.components.buttons.Ux4gButtonSize
+import com.ux4g.designsystemv1.components.buttons.Ux4gButtonVariant
+import com.ux4g.designsystemv1.foundation.Ux4gColors
+
+@Composable
+fun ConsentCaptureCardScreen(
+    onAllowClick: () -> Unit = {},
+    onDenyClick: () -> Unit = {},
+    onEditValidityClick: () -> Unit = {},
+    onViewAllDocsClick: () -> Unit = {}
+) {
+    val isDark = isSystemInDarkTheme()
+    val scrollState = rememberScrollState()
+
+    val pageBg = if (isDark) Ux4gColors.Neutral950 else Color(0xFFF1F5F9)
+    val cardBg = if (isDark) Ux4gColors.Neutral900 else Color.White
+    val cardBorder = if (isDark) Ux4gColors.Neutral800 else Ux4gColors.Neutral200
+    val dividerColor = if (isDark) Ux4gColors.Neutral800 else Color(0xFFF3F4F6)
+    val textPrimary = if (isDark) Ux4gColors.Neutral50 else Ux4gColors.Neutral900
+    val textSubtle = if (isDark) Ux4gColors.Neutral400 else Ux4gColors.Neutral600
+    val linkColor = if (isDark) Ux4gColors.Primary300 else Ux4gColors.Primary600
+
+    var docsExpanded by remember { mutableStateOf(true) }
+    var aadhaarConsent by remember { mutableStateOf<Boolean?>(true) }
+    var panConsent by remember { mutableStateOf<Boolean?>(false) }
+    var dlConsent by remember { mutableStateOf<Boolean?>(false) }
+    var profileConsent by remember { mutableStateOf<Boolean?>(true) }
+    var emailConsent by remember { mutableStateOf<Boolean?>(true) }
+    var photoConsent by remember { mutableStateOf<Boolean?>(false) }
+    var locationConsent by remember { mutableStateOf<Boolean?>(false) }
+
+    val selectAllDocs: Boolean? = when {
+        aadhaarConsent == true && panConsent == true && dlConsent == true -> true
+        aadhaarConsent == true || panConsent == true || dlConsent == true -> null
+        else -> false
+    }
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(pageBg)
+    ) {
+        // App Header
+        Ux4gAppHeader(
+            title = "Digital Services",
+            variant = Ux4gAppHeaderVariant.Standard,
+            navigationIcon = Icons.Filled.Menu,
+            onNavigationClick = {},
+            actions = listOf(
+                Ux4gAppHeaderAction(icon = Icons.Filled.Menu, contentDescription = "Menu", onClick = {})
+            )
+        )
+
+        // Scrollable Elevated Container
+        Column(
+            modifier = Modifier
+                .weight(1f)
+                .fillMaxWidth()
+                .verticalScroll(scrollState)
+                .padding(horizontal = 16.dp, vertical = 16.dp)
+        ) {
+            // Elevated Main Card Container
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .shadow(elevation = 2.dp, shape = RoundedCornerShape(16.dp))
+                    .clip(RoundedCornerShape(16.dp))
+                    .background(cardBg)
+                    .border(1.dp, cardBorder, RoundedCornerShape(16.dp))
+                    .padding(18.dp)
+            ) {
+                Text(
+                    text = "Please provide your consent to share the following information",
+                    style = TextStyle(
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = textPrimary,
+                        lineHeight = 22.sp
+                    )
+                )
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                // Documents Header
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Icon(
+                        imageVector = if (docsExpanded) Icons.Filled.KeyboardArrowDown else Icons.Filled.KeyboardArrowRight,
+                        contentDescription = "Toggle",
+                        tint = textPrimary,
+                        modifier = Modifier
+                            .size(20.dp)
+                            .clickable { docsExpanded = !docsExpanded }
+                    )
+                    Spacer(modifier = Modifier.width(6.dp))
+                    Text(
+                        text = "Documents",
+                        style = TextStyle(fontSize = 14.sp, fontWeight = FontWeight.Bold, color = textPrimary)
+                    )
+                    Spacer(modifier = Modifier.weight(1f))
+                    Text(
+                        text = "Select all",
+                        style = TextStyle(fontSize = 12.sp, color = textSubtle, fontWeight = FontWeight.Medium)
+                    )
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Ux4gCheckbox(
+                        value = selectAllDocs,
+                        onValueChange = { newVal ->
+                            val target = newVal == true
+                            aadhaarConsent = target
+                            panConsent = target
+                            dlConsent = target
+                        },
+                        size = Ux4gCheckboxSize.Small
+                    )
+                }
+
+                // Documents list
+                AnimatedVisibility(visible = docsExpanded) {
+                    Column(modifier = Modifier.padding(start = 26.dp, top = 12.dp)) {
+                        Row(
+                            modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp),
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            Text("Aadhaar Card", style = TextStyle(fontSize = 13.sp, fontWeight = FontWeight.Medium, color = textPrimary))
+                            Ux4gCheckbox(value = aadhaarConsent, onValueChange = { aadhaarConsent = it }, size = Ux4gCheckboxSize.Small)
+                        }
+                        Row(
+                            modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp),
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            Text("PAN", style = TextStyle(fontSize = 13.sp, fontWeight = FontWeight.Medium, color = textPrimary))
+                            Ux4gCheckbox(value = panConsent, onValueChange = { panConsent = it }, size = Ux4gCheckboxSize.Small)
+                        }
+                        Row(
+                            modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp),
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            Text("Driving License", style = TextStyle(fontSize = 13.sp, fontWeight = FontWeight.Medium, color = textPrimary))
+                            Ux4gCheckbox(value = dlConsent, onValueChange = { dlConsent = it }, size = Ux4gCheckboxSize.Small)
+                        }
+                        Spacer(modifier = Modifier.height(4.dp))
+                        Text(
+                            text = "View all",
+                            style = TextStyle(fontSize = 13.sp, fontWeight = FontWeight.SemiBold, color = linkColor),
+                            modifier = Modifier.clickable(onClick = onViewAllDocsClick)
+                        )
+                    }
+                }
+
+                Divider(color = dividerColor, thickness = 1.dp, modifier = Modifier.padding(vertical = 12.dp))
+
+                // Profile Info
+                Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+                    Icon(Icons.Outlined.AccountCircle, contentDescription = "Profile", tint = textPrimary, modifier = Modifier.size(22.dp))
+                    Spacer(modifier = Modifier.width(10.dp))
+                    Column(modifier = Modifier.weight(1f)) {
+                        Text("Profile information", style = TextStyle(fontSize = 14.sp, fontWeight = FontWeight.Bold, color = textPrimary))
+                        Text("Name, Date of Birth, Gender", style = TextStyle(fontSize = 12.sp, color = textSubtle))
+                    }
+                    Ux4gCheckbox(value = profileConsent, onValueChange = { profileConsent = it }, size = Ux4gCheckboxSize.Small)
+                }
+
+                Divider(color = dividerColor, thickness = 1.dp, modifier = Modifier.padding(vertical = 12.dp))
+
+                // Email
+                Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+                    Icon(Icons.Filled.Email, contentDescription = "Email", tint = textPrimary, modifier = Modifier.size(22.dp))
+                    Spacer(modifier = Modifier.width(10.dp))
+                    Text("Get your email", style = TextStyle(fontSize = 14.sp, fontWeight = FontWeight.Bold, color = textPrimary), modifier = Modifier.weight(1f))
+                    Ux4gCheckbox(value = emailConsent, onValueChange = { emailConsent = it }, size = Ux4gCheckboxSize.Small)
+                }
+
+                Divider(color = dividerColor, thickness = 1.dp, modifier = Modifier.padding(vertical = 12.dp))
+
+                // Profile Picture
+                Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+                    Icon(Icons.Filled.AccountCircle, contentDescription = "Photo", tint = textPrimary, modifier = Modifier.size(22.dp))
+                    Spacer(modifier = Modifier.width(10.dp))
+                    Text("Get your profile picture", style = TextStyle(fontSize = 14.sp, fontWeight = FontWeight.Bold, color = textPrimary), modifier = Modifier.weight(1f))
+                    Ux4gCheckbox(value = photoConsent, onValueChange = { photoConsent = it }, size = Ux4gCheckboxSize.Small)
+                }
+
+                Divider(color = dividerColor, thickness = 1.dp, modifier = Modifier.padding(vertical = 12.dp))
+
+                // Location
+                Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+                    Icon(Icons.Filled.LocationOn, contentDescription = "Location", tint = textPrimary, modifier = Modifier.size(22.dp))
+                    Spacer(modifier = Modifier.width(10.dp))
+                    Text("Location", style = TextStyle(fontSize = 14.sp, fontWeight = FontWeight.Bold, color = textPrimary), modifier = Modifier.weight(1f))
+                    Ux4gCheckbox(value = locationConsent, onValueChange = { locationConsent = it }, size = Ux4gCheckboxSize.Small)
+                }
+
+                Divider(color = dividerColor, thickness = 1.dp, modifier = Modifier.padding(vertical = 12.dp))
+
+                // Validity
+                Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.Top) {
+                    Icon(Icons.Filled.DateRange, contentDescription = "Validity", tint = textPrimary, modifier = Modifier.size(22.dp))
+                    Spacer(modifier = Modifier.width(10.dp))
+                    Column(modifier = Modifier.weight(1f)) {
+                        Text("Consent validity date", style = TextStyle(fontSize = 14.sp, fontWeight = FontWeight.Bold, color = textPrimary))
+                        Text("(Today + 30 days)\n08-Oct-2026", style = TextStyle(fontSize = 12.sp, color = textSubtle, lineHeight = 16.sp))
+                    }
+                    Text("Edit", style = TextStyle(fontSize = 13.sp, fontWeight = FontWeight.SemiBold, color = linkColor), modifier = Modifier.clickable(onClick = onEditValidityClick))
+                }
+            }
+
+            Spacer(modifier = Modifier.height(18.dp))
+
+            Text(
+                text = "Consent validity is subject to applicable laws.\nBy selecting Allow, you are giving consent to share the items above.",
+                style = TextStyle(fontSize = 12.sp, color = textSubtle, lineHeight = 17.sp)
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            Ux4gButton(
+                text = "Allow",
+                variant = Ux4gButtonVariant.Primary,
+                size = Ux4gButtonSize.Large,
+                onClick = onAllowClick,
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            Spacer(modifier = Modifier.height(10.dp))
+
+            Ux4gButton(
+                text = "Deny",
+                variant = Ux4gButtonVariant.Outline,
+                size = Ux4gButtonSize.Large,
+                onClick = onDenyClick,
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+        }
+
+        // Footer
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 12.dp),
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = "Powered by Digital India",
+                style = TextStyle(
+                    fontSize = 11.sp,
+                    color = Ux4gColors.Neutral400,
+                    fontWeight = FontWeight.Medium
+                )
+            )
+        }
+    }
+}
+
+@Preview(showBackground = true, widthDp = 360, heightDp = 760)
+@Composable
+fun ConsentCaptureCardPreview() {
+    ConsentCaptureCardScreen()
+}`}
+>
+  <img
+    src="/images/patterns/consent_capture/consent_capture_cardstyle.svg"
+    alt="Consent Capture - Card Style"
+    className="w-full max-w-[360px] rounded-2xl border border-border shadow-sm mx-auto my-4"
+  />
+</ComponentPreview>

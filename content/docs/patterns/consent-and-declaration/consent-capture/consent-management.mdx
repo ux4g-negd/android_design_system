@@ -1,0 +1,835 @@
+---
+title: Consent Management
+description: Citizen consent lifecycle dashboard pattern for reviewing active data sharing scopes, verifying validity dates, viewing audit history, and revoking authorizations
+---
+
+# Consent Management
+
+A citizen empowerment and ongoing data governance pattern that allows users to review previously granted consents, inspect itemized sharing scopes across verified credentials and profile attributes, check active validity durations, access historical audit trails, and exercise their legal right to revoke or withdraw consent at any time.
+
+The pattern presents clear, color-coded status badges for every permission category:
+- **Shared**: Actively authorized attribute or document.
+- **Partly shared**: Group permission where a subset of credentials has been granted.
+- **Not shared**: Explicitly withheld attribute or document.
+
+---
+
+<h2><MIcon name="smartphone" /> Interactive Previews</h2>
+
+### 1. Default Style (Full Screen)
+
+Full-screen management dashboard displaying the itemized data sharing breakdown, active status pills, validity timeline, historical log access, and instant revocation action.
+
+<ComponentPreview
+  title="Consent Management - Default"
+  category="Pattern · Jetpack Compose"
+  code={`package com.example.ux4g.patterns.consent
+
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.OpenInNew
+import androidx.compose.material.icons.filled.AccountCircle
+import androidx.compose.material.icons.filled.DateRange
+import androidx.compose.material.icons.filled.Email
+import androidx.compose.material.icons.filled.KeyboardArrowDown
+import androidx.compose.material.icons.filled.KeyboardArrowRight
+import androidx.compose.material.icons.filled.LocationOn
+import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material.icons.outlined.AccountCircle
+import androidx.compose.material3.Divider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.ux4g.designsystemv1.components.Ux4gAppHeader
+import com.ux4g.designsystemv1.components.Ux4gAppHeaderAction
+import com.ux4g.designsystemv1.components.Ux4gAppHeaderVariant
+import com.ux4g.designsystemv1.components.buttons.Ux4gButton
+import com.ux4g.designsystemv1.components.buttons.Ux4gButtonSize
+import com.ux4g.designsystemv1.components.buttons.Ux4gButtonVariant
+import com.ux4g.designsystemv1.components.tag.Ux4gTag
+import com.ux4g.designsystemv1.components.tag.Ux4gTagColor
+import com.ux4g.designsystemv1.components.tag.Ux4gTagStyle
+import com.ux4g.designsystemv1.foundation.Ux4gColors
+
+enum class ConsentShareStatus(val label: String) {
+    Shared("Shared"),
+    PartlyShared("Partly shared"),
+    NotShared("Not shared")
+}
+
+@Composable
+fun ConsentManagementScreen(
+    onCloseClick: () -> Unit = {},
+    onRevokeClick: () -> Unit = {},
+    onEditValidityClick: () -> Unit = {},
+    onViewHistoryClick: () -> Unit = {},
+    onViewAllDocsClick: () -> Unit = {}
+) {
+    val isDark = isSystemInDarkTheme()
+    val scrollState = rememberScrollState()
+
+    val surfaceBg = if (isDark) Ux4gColors.Neutral950 else Color(0xFFF9FAFB)
+    val cardBg = if (isDark) Ux4gColors.Neutral900 else Color.White
+    val cardBorder = if (isDark) Ux4gColors.Neutral800 else Ux4gColors.Neutral200
+    val dividerColor = if (isDark) Ux4gColors.Neutral800 else Color(0xFFF3F4F6)
+    val textPrimary = if (isDark) Ux4gColors.Neutral50 else Ux4gColors.Neutral900
+    val textSubtle = if (isDark) Ux4gColors.Neutral400 else Ux4gColors.Neutral600
+    val linkColor = if (isDark) Ux4gColors.Primary300 else Ux4gColors.Primary600
+
+    var docsExpanded by remember { mutableStateOf(true) }
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(surfaceBg)
+    ) {
+        // 1. Government App Header
+        Ux4gAppHeader(
+            title = "Digital Services",
+            variant = Ux4gAppHeaderVariant.Standard,
+            navigationIcon = Icons.Filled.Menu,
+            onNavigationClick = {},
+            actions = listOf(
+                Ux4gAppHeaderAction(
+                    icon = Icons.Filled.Menu,
+                    contentDescription = "Menu",
+                    onClick = {}
+                )
+            )
+        )
+
+        // 2. Scrollable Body
+        Column(
+            modifier = Modifier
+                .weight(1f)
+                .fillMaxWidth()
+                .verticalScroll(scrollState)
+                .padding(horizontal = 16.dp, vertical = 16.dp)
+        ) {
+            // Main Purpose Headline
+            Text(
+                text = "You gave consent to share the following information",
+                style = TextStyle(
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = textPrimary,
+                    lineHeight = 22.sp
+                )
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // Main Consent Items Card
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(12.dp))
+                    .background(cardBg)
+                    .border(1.dp, cardBorder, RoundedCornerShape(12.dp))
+                    .padding(16.dp)
+            ) {
+                // Section 1: Documents Collapsible Header
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable { docsExpanded = !docsExpanded },
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Icon(
+                        imageVector = if (docsExpanded) Icons.Filled.KeyboardArrowDown else Icons.Filled.KeyboardArrowRight,
+                        contentDescription = if (docsExpanded) "Collapse" else "Expand",
+                        tint = textPrimary,
+                        modifier = Modifier.size(20.dp)
+                    )
+                    Spacer(modifier = Modifier.width(6.dp))
+                    Text(
+                        text = "Documents",
+                        style = TextStyle(fontSize = 14.sp, fontWeight = FontWeight.Bold, color = textPrimary)
+                    )
+                    Spacer(modifier = Modifier.weight(1f))
+                    ConsentStatusPill(status = ConsentShareStatus.PartlyShared, isDark = isDark)
+                }
+
+                // Documents items
+                AnimatedVisibility(visible = docsExpanded) {
+                    Column(modifier = Modifier.padding(start = 26.dp, top = 12.dp)) {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(vertical = 4.dp),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Text("Aadhaar Card", style = TextStyle(fontSize = 13.sp, fontWeight = FontWeight.Medium, color = textPrimary))
+                            ConsentStatusPill(status = ConsentShareStatus.Shared, isDark = isDark)
+                        }
+
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(vertical = 4.dp),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Text("PAN", style = TextStyle(fontSize = 13.sp, fontWeight = FontWeight.Medium, color = textPrimary))
+                            ConsentStatusPill(status = ConsentShareStatus.NotShared, isDark = isDark)
+                        }
+
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(vertical = 4.dp),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Text("Driving License", style = TextStyle(fontSize = 13.sp, fontWeight = FontWeight.Medium, color = textPrimary))
+                            ConsentStatusPill(status = ConsentShareStatus.NotShared, isDark = isDark)
+                        }
+
+                        Spacer(modifier = Modifier.height(4.dp))
+                        Text(
+                            text = "View all",
+                            style = TextStyle(fontSize = 13.sp, fontWeight = FontWeight.SemiBold, color = linkColor),
+                            modifier = Modifier.clickable(onClick = onViewAllDocsClick)
+                        )
+                    }
+                }
+
+                Divider(color = dividerColor, thickness = 1.dp, modifier = Modifier.padding(vertical = 12.dp))
+
+                // Section 2: Profile Information
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Icon(
+                        imageVector = Icons.Outlined.AccountCircle,
+                        contentDescription = "Profile",
+                        tint = textPrimary,
+                        modifier = Modifier.size(22.dp)
+                    )
+                    Spacer(modifier = Modifier.width(10.dp))
+                    Column(modifier = Modifier.weight(1f)) {
+                        Text(
+                            text = "Profile information",
+                            style = TextStyle(fontSize = 14.sp, fontWeight = FontWeight.Bold, color = textPrimary)
+                        )
+                        Spacer(modifier = Modifier.height(2.dp))
+                        Text(
+                            text = "Name, Date of Birth, Gender",
+                            style = TextStyle(fontSize = 12.sp, color = textSubtle)
+                        )
+                    }
+                    ConsentStatusPill(status = ConsentShareStatus.Shared, isDark = isDark)
+                }
+
+                Divider(color = dividerColor, thickness = 1.dp, modifier = Modifier.padding(vertical = 12.dp))
+
+                // Section 3: Get your email
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Icon(
+                        imageVector = Icons.Filled.Email,
+                        contentDescription = "Email",
+                        tint = textPrimary,
+                        modifier = Modifier.size(22.dp)
+                    )
+                    Spacer(modifier = Modifier.width(10.dp))
+                    Text(
+                        text = "Get your email",
+                        style = TextStyle(fontSize = 14.sp, fontWeight = FontWeight.Bold, color = textPrimary),
+                        modifier = Modifier.weight(1f)
+                    )
+                    ConsentStatusPill(status = ConsentShareStatus.Shared, isDark = isDark)
+                }
+
+                Divider(color = dividerColor, thickness = 1.dp, modifier = Modifier.padding(vertical = 12.dp))
+
+                // Section 4: Get your profile picture
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Icon(
+                        imageVector = Icons.Filled.AccountCircle,
+                        contentDescription = "Profile Picture",
+                        tint = textPrimary,
+                        modifier = Modifier.size(22.dp)
+                    )
+                    Spacer(modifier = Modifier.width(10.dp))
+                    Text(
+                        text = "Get your profile picture",
+                        style = TextStyle(fontSize = 14.sp, fontWeight = FontWeight.Bold, color = textPrimary),
+                        modifier = Modifier.weight(1f)
+                    )
+                    ConsentStatusPill(status = ConsentShareStatus.NotShared, isDark = isDark)
+                }
+
+                Divider(color = dividerColor, thickness = 1.dp, modifier = Modifier.padding(vertical = 12.dp))
+
+                // Section 5: Location
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Icon(
+                        imageVector = Icons.Filled.LocationOn,
+                        contentDescription = "Location",
+                        tint = textPrimary,
+                        modifier = Modifier.size(22.dp)
+                    )
+                    Spacer(modifier = Modifier.width(10.dp))
+                    Text(
+                        text = "Location",
+                        style = TextStyle(fontSize = 14.sp, fontWeight = FontWeight.Bold, color = textPrimary),
+                        modifier = Modifier.weight(1f)
+                    )
+                    ConsentStatusPill(status = ConsentShareStatus.NotShared, isDark = isDark)
+                }
+
+                Divider(color = dividerColor, thickness = 1.dp, modifier = Modifier.padding(vertical = 12.dp))
+
+                // Section 6: Consent Validity Date
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.Top
+                ) {
+                    Icon(
+                        imageVector = Icons.Filled.DateRange,
+                        contentDescription = "Validity",
+                        tint = textPrimary,
+                        modifier = Modifier.size(22.dp)
+                    )
+                    Spacer(modifier = Modifier.width(10.dp))
+                    Column(modifier = Modifier.weight(1f)) {
+                        Text(
+                            text = "Consent validity date",
+                            style = TextStyle(fontSize = 14.sp, fontWeight = FontWeight.Bold, color = textPrimary)
+                        )
+                        Spacer(modifier = Modifier.height(2.dp))
+                        Text(
+                            text = "(Today + 30 days)\n08-Oct-2026",
+                            style = TextStyle(fontSize = 12.sp, color = textSubtle, lineHeight = 16.sp)
+                        )
+                    }
+                    Text(
+                        text = "Edit",
+                        style = TextStyle(
+                            fontSize = 13.sp,
+                            fontWeight = FontWeight.SemiBold,
+                            color = linkColor
+                        ),
+                        modifier = Modifier.clickable(onClick = onEditValidityClick)
+                    )
+                }
+            }
+
+            Spacer(modifier = Modifier.height(18.dp))
+
+            // Statutory Legal Notice
+            Text(
+                text = "Consent validity is subject to applicable laws.\nBy selecting Allow, you are giving consent to share the items above.",
+                style = TextStyle(fontSize = 12.sp, color = textSubtle, lineHeight = 17.sp)
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // Full Consent History Link
+            Row(
+                modifier = Modifier
+                    .clickable(onClick = onViewHistoryClick)
+                    .padding(vertical = 4.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = "View full consent history",
+                    style = TextStyle(fontSize = 13.sp, fontWeight = FontWeight.SemiBold, color = linkColor)
+                )
+                Spacer(modifier = Modifier.width(4.dp))
+                Icon(
+                    imageVector = Icons.AutoMirrored.Filled.OpenInNew,
+                    contentDescription = "External link",
+                    tint = linkColor,
+                    modifier = Modifier.size(14.dp)
+                )
+            }
+
+            Spacer(modifier = Modifier.height(20.dp))
+
+            // Close & Revoke Action Buttons
+            Ux4gButton(
+                text = "Close",
+                variant = Ux4gButtonVariant.Primary,
+                size = Ux4gButtonSize.Large,
+                onClick = onCloseClick,
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            Spacer(modifier = Modifier.height(10.dp))
+
+            Ux4gButton(
+                text = "Revoke consent",
+                variant = Ux4gButtonVariant.Outline,
+                size = Ux4gButtonSize.Large,
+                onClick = onRevokeClick,
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+        }
+
+        // 3. Official Digital India Footer
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 12.dp),
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = "Powered by Digital India",
+                style = TextStyle(
+                    fontSize = 11.sp,
+                    color = Ux4gColors.Neutral400,
+                    fontWeight = FontWeight.Medium
+                )
+            )
+        }
+    }
+}
+
+@Composable
+private fun ConsentStatusPill(status: ConsentShareStatus, isDark: Boolean) {
+    val (bg, textColor) = when (status) {
+        ConsentShareStatus.Shared -> {
+            if (isDark) Color(0xFF14532D) to Color(0xFF86EFAC)
+            else Color(0xFFDCFCE7) to Color(0xFF166534)
+        }
+        ConsentShareStatus.PartlyShared -> {
+            if (isDark) Color(0xFF452205) to Color(0xFFFFB74D)
+            else Color(0xFFFFE8C6) to Color(0xFF975A16)
+        }
+        ConsentShareStatus.NotShared -> {
+            if (isDark) Ux4gColors.Neutral800 to Ux4gColors.Neutral300
+            else Color(0xFFE9ECEF) to Color(0xFF495057)
+        }
+    }
+
+    Box(
+        modifier = Modifier
+            .clip(RoundedCornerShape(6.dp))
+            .background(bg)
+            .padding(horizontal = 8.dp, vertical = 3.dp)
+    ) {
+        Text(
+            text = status.label,
+            style = TextStyle(
+                fontSize = 11.sp,
+                fontWeight = FontWeight.SemiBold,
+                color = textColor
+            )
+        )
+    }
+}
+
+@Preview(showBackground = true, widthDp = 360, heightDp = 760)
+@Composable
+fun ConsentManagementPreview() {
+    ConsentManagementScreen()
+}`}
+>
+  <img
+    src="/images/patterns/consent_capture/consent_management.svg"
+    alt="Consent Management - Default Style"
+    className="w-full max-w-[360px] rounded-2xl border border-border shadow-sm mx-auto my-4"
+  />
+</ComponentPreview>
+
+---
+
+### 2. Card Style Variant
+
+Elevated card presentation set against a soft lavender canvas with modular data review cards, color-coded sharing badges, and clear revocation pathways.
+
+<ComponentPreview
+  title="Consent Management - Card Style"
+  category="Pattern · Jetpack Compose"
+  code={`package com.example.ux4g.patterns.consent
+
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.OpenInNew
+import androidx.compose.material.icons.filled.AccountCircle
+import androidx.compose.material.icons.filled.DateRange
+import androidx.compose.material.icons.filled.Email
+import androidx.compose.material.icons.filled.KeyboardArrowDown
+import androidx.compose.material.icons.filled.KeyboardArrowRight
+import androidx.compose.material.icons.filled.LocationOn
+import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material.icons.outlined.AccountCircle
+import androidx.compose.material3.Divider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.ux4g.designsystemv1.components.Ux4gAppHeader
+import com.ux4g.designsystemv1.components.Ux4gAppHeaderAction
+import com.ux4g.designsystemv1.components.Ux4gAppHeaderVariant
+import com.ux4g.designsystemv1.components.buttons.Ux4gButton
+import com.ux4g.designsystemv1.components.buttons.Ux4gButtonSize
+import com.ux4g.designsystemv1.components.buttons.Ux4gButtonVariant
+import com.ux4g.designsystemv1.foundation.Ux4gColors
+
+@Composable
+fun ConsentManagementCardScreen(
+    onCloseClick: () -> Unit = {},
+    onRevokeClick: () -> Unit = {},
+    onEditValidityClick: () -> Unit = {},
+    onViewHistoryClick: () -> Unit = {},
+    onViewAllDocsClick: () -> Unit = {}
+) {
+    val isDark = isSystemInDarkTheme()
+    val scrollState = rememberScrollState()
+
+    val pageBg = if (isDark) Ux4gColors.Neutral950 else Color(0xFFF3E8FF)
+    val cardBg = if (isDark) Ux4gColors.Neutral900 else Color.White
+    val cardBorder = if (isDark) Ux4gColors.Neutral800 else Ux4gColors.Neutral200
+    val dividerColor = if (isDark) Ux4gColors.Neutral800 else Color(0xFFF3F4F6)
+    val textPrimary = if (isDark) Ux4gColors.Neutral50 else Ux4gColors.Neutral900
+    val textSubtle = if (isDark) Ux4gColors.Neutral400 else Ux4gColors.Neutral600
+    val linkColor = if (isDark) Ux4gColors.Primary300 else Ux4gColors.Primary600
+
+    var docsExpanded by remember { mutableStateOf(true) }
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(pageBg)
+    ) {
+        // App Header
+        Ux4gAppHeader(
+            title = "Digital Services",
+            variant = Ux4gAppHeaderVariant.Standard,
+            navigationIcon = Icons.Filled.Menu,
+            onNavigationClick = {},
+            actions = listOf(
+                Ux4gAppHeaderAction(icon = Icons.Filled.Menu, contentDescription = "Menu", onClick = {})
+            )
+        )
+
+        // Scrollable Elevated Container
+        Column(
+            modifier = Modifier
+                .weight(1f)
+                .fillMaxWidth()
+                .verticalScroll(scrollState)
+                .padding(horizontal = 16.dp, vertical = 16.dp)
+        ) {
+            // Elevated Main Card Container
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .shadow(elevation = 2.dp, shape = RoundedCornerShape(16.dp))
+                    .clip(RoundedCornerShape(16.dp))
+                    .background(cardBg)
+                    .border(1.dp, cardBorder, RoundedCornerShape(16.dp))
+                    .padding(18.dp)
+            ) {
+                Text(
+                    text = "You gave consent to share the following information",
+                    style = TextStyle(
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = textPrimary,
+                        lineHeight = 22.sp
+                    )
+                )
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                // Documents Header
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable { docsExpanded = !docsExpanded },
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Icon(
+                        imageVector = if (docsExpanded) Icons.Filled.KeyboardArrowDown else Icons.Filled.KeyboardArrowRight,
+                        contentDescription = "Toggle",
+                        tint = textPrimary,
+                        modifier = Modifier.size(20.dp)
+                    )
+                    Spacer(modifier = Modifier.width(6.dp))
+                    Text(
+                        text = "Documents",
+                        style = TextStyle(fontSize = 14.sp, fontWeight = FontWeight.Bold, color = textPrimary)
+                    )
+                    Spacer(modifier = Modifier.weight(1f))
+                    ConsentStatusPillCard(status = ConsentShareStatus.PartlyShared, isDark = isDark)
+                }
+
+                // Documents list
+                AnimatedVisibility(visible = docsExpanded) {
+                    Column(modifier = Modifier.padding(start = 26.dp, top = 12.dp)) {
+                        Row(modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp), horizontalArrangement = Arrangement.SpaceBetween) {
+                            Text("Aadhaar Card", style = TextStyle(fontSize = 13.sp, fontWeight = FontWeight.Medium, color = textPrimary))
+                            ConsentStatusPillCard(status = ConsentShareStatus.Shared, isDark = isDark)
+                        }
+                        Row(modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp), horizontalArrangement = Arrangement.SpaceBetween) {
+                            Text("PAN", style = TextStyle(fontSize = 13.sp, fontWeight = FontWeight.Medium, color = textPrimary))
+                            ConsentStatusPillCard(status = ConsentShareStatus.NotShared, isDark = isDark)
+                        }
+                        Row(modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp), horizontalArrangement = Arrangement.SpaceBetween) {
+                            Text("Driving License", style = TextStyle(fontSize = 13.sp, fontWeight = FontWeight.Medium, color = textPrimary))
+                            ConsentStatusPillCard(status = ConsentShareStatus.NotShared, isDark = isDark)
+                        }
+                        Spacer(modifier = Modifier.height(4.dp))
+                        Text(
+                            text = "View all",
+                            style = TextStyle(fontSize = 13.sp, fontWeight = FontWeight.SemiBold, color = linkColor),
+                            modifier = Modifier.clickable(onClick = onViewAllDocsClick)
+                        )
+                    }
+                }
+
+                Divider(color = dividerColor, thickness = 1.dp, modifier = Modifier.padding(vertical = 12.dp))
+
+                // Profile Info
+                Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+                    Icon(Icons.Outlined.AccountCircle, contentDescription = "Profile", tint = textPrimary, modifier = Modifier.size(22.dp))
+                    Spacer(modifier = Modifier.width(10.dp))
+                    Column(modifier = Modifier.weight(1f)) {
+                        Text("Profile information", style = TextStyle(fontSize = 14.sp, fontWeight = FontWeight.Bold, color = textPrimary))
+                        Text("Name, Date of Birth, Gender", style = TextStyle(fontSize = 12.sp, color = textSubtle))
+                    }
+                    ConsentStatusPillCard(status = ConsentShareStatus.Shared, isDark = isDark)
+                }
+
+                Divider(color = dividerColor, thickness = 1.dp, modifier = Modifier.padding(vertical = 12.dp))
+
+                // Email
+                Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+                    Icon(Icons.Filled.Email, contentDescription = "Email", tint = textPrimary, modifier = Modifier.size(22.dp))
+                    Spacer(modifier = Modifier.width(10.dp))
+                    Text("Get your email", style = TextStyle(fontSize = 14.sp, fontWeight = FontWeight.Bold, color = textPrimary), modifier = Modifier.weight(1f))
+                    ConsentStatusPillCard(status = ConsentShareStatus.Shared, isDark = isDark)
+                }
+
+                Divider(color = dividerColor, thickness = 1.dp, modifier = Modifier.padding(vertical = 12.dp))
+
+                // Profile Picture
+                Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+                    Icon(Icons.Filled.AccountCircle, contentDescription = "Photo", tint = textPrimary, modifier = Modifier.size(22.dp))
+                    Spacer(modifier = Modifier.width(10.dp))
+                    Text("Get your profile picture", style = TextStyle(fontSize = 14.sp, fontWeight = FontWeight.Bold, color = textPrimary), modifier = Modifier.weight(1f))
+                    ConsentStatusPillCard(status = ConsentShareStatus.NotShared, isDark = isDark)
+                }
+
+                Divider(color = dividerColor, thickness = 1.dp, modifier = Modifier.padding(vertical = 12.dp))
+
+                // Location
+                Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+                    Icon(Icons.Filled.LocationOn, contentDescription = "Location", tint = textPrimary, modifier = Modifier.size(22.dp))
+                    Spacer(modifier = Modifier.width(10.dp))
+                    Text("Location", style = TextStyle(fontSize = 14.sp, fontWeight = FontWeight.Bold, color = textPrimary), modifier = Modifier.weight(1f))
+                    ConsentStatusPillCard(status = ConsentShareStatus.NotShared, isDark = isDark)
+                }
+
+                Divider(color = dividerColor, thickness = 1.dp, modifier = Modifier.padding(vertical = 12.dp))
+
+                // Validity
+                Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.Top) {
+                    Icon(Icons.Filled.DateRange, contentDescription = "Validity", tint = textPrimary, modifier = Modifier.size(22.dp))
+                    Spacer(modifier = Modifier.width(10.dp))
+                    Column(modifier = Modifier.weight(1f)) {
+                        Text("Consent validity date", style = TextStyle(fontSize = 14.sp, fontWeight = FontWeight.Bold, color = textPrimary))
+                        Text("(Today + 30 days)\n08-Oct-2026", style = TextStyle(fontSize = 12.sp, color = textSubtle, lineHeight = 16.sp))
+                    }
+                    Text("Edit", style = TextStyle(fontSize = 13.sp, fontWeight = FontWeight.SemiBold, color = linkColor), modifier = Modifier.clickable(onClick = onEditValidityClick))
+                }
+            }
+
+            Spacer(modifier = Modifier.height(18.dp))
+
+            Text(
+                text = "Consent validity is subject to applicable laws.\nBy selecting Allow, you are giving consent to share the items above.",
+                style = TextStyle(fontSize = 12.sp, color = textSubtle, lineHeight = 17.sp)
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // History Link
+            Row(
+                modifier = Modifier
+                    .clickable(onClick = onViewHistoryClick)
+                    .padding(vertical = 4.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = "View full consent history",
+                    style = TextStyle(fontSize = 13.sp, fontWeight = FontWeight.SemiBold, color = linkColor)
+                )
+                Spacer(modifier = Modifier.width(4.dp))
+                Icon(
+                    imageVector = Icons.AutoMirrored.Filled.OpenInNew,
+                    contentDescription = "External link",
+                    tint = linkColor,
+                    modifier = Modifier.size(14.dp)
+                )
+            }
+
+            Spacer(modifier = Modifier.height(20.dp))
+
+            Ux4gButton(
+                text = "Close",
+                variant = Ux4gButtonVariant.Primary,
+                size = Ux4gButtonSize.Large,
+                onClick = onCloseClick,
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            Spacer(modifier = Modifier.height(10.dp))
+
+            Ux4gButton(
+                text = "Revoke consent",
+                variant = Ux4gButtonVariant.Outline,
+                size = Ux4gButtonSize.Large,
+                onClick = onRevokeClick,
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+        }
+
+        // Footer
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 12.dp),
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = "Powered by Digital India",
+                style = TextStyle(
+                    fontSize = 11.sp,
+                    color = Ux4gColors.Neutral400,
+                    fontWeight = FontWeight.Medium
+                )
+            )
+        }
+    }
+}
+
+@Composable
+private fun ConsentStatusPillCard(status: ConsentShareStatus, isDark: Boolean) {
+    val (bg, textColor) = when (status) {
+        ConsentShareStatus.Shared -> {
+            if (isDark) Color(0xFF14532D) to Color(0xFF86EFAC)
+            else Color(0xFFDCFCE7) to Color(0xFF166534)
+        }
+        ConsentShareStatus.PartlyShared -> {
+            if (isDark) Color(0xFF452205) to Color(0xFFFFB74D)
+            else Color(0xFFFFE8C6) to Color(0xFF975A16)
+        }
+        ConsentShareStatus.NotShared -> {
+            if (isDark) Ux4gColors.Neutral800 to Ux4gColors.Neutral300
+            else Color(0xFFE9ECEF) to Color(0xFF495057)
+        }
+    }
+
+    Box(
+        modifier = Modifier
+            .clip(RoundedCornerShape(6.dp))
+            .background(bg)
+            .padding(horizontal = 8.dp, vertical = 3.dp)
+    ) {
+        Text(
+            text = status.label,
+            style = TextStyle(
+                fontSize = 11.sp,
+                fontWeight = FontWeight.SemiBold,
+                color = textColor
+            )
+        )
+    }
+}
+
+@Preview(showBackground = true, widthDp = 360, heightDp = 760)
+@Composable
+fun ConsentManagementCardPreview() {
+    ConsentManagementCardScreen()
+}`}
+>
+  <img
+    src="/images/patterns/consent_capture/consent_management_cardstyle.svg"
+    alt="Consent Management - Card Style"
+    className="w-full max-w-[360px] rounded-2xl border border-border shadow-sm mx-auto my-4"
+  />
+</ComponentPreview>
