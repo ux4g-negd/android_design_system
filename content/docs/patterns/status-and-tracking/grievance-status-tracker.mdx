@@ -1,0 +1,796 @@
+---
+title: Grievance Status Tracker
+description: End-to-end citizen grievance redressal lifecycle pattern with SLA breach tracking, multi-tier escalation hierarchy, satisfaction surveys, and reopen workflows
+---
+
+# Grievance Status Tracker
+
+A specialized public grievance monitoring pattern that provides citizens with real-time visibility into the investigation, review, escalation, and resolution of administrative complaints filed across central, state, and local portals (such as CPGRAMS or State Public Grievance Portals).
+
+The pattern models the complete grievance resolution lifecycle through 6 distinct administrative states:
+- **In Progress (Standard)**: Initial intake state displaying grievance metadata, subject category, and service-level agreement (SLA) countdown.
+- **In Progress (2nd Variant)**: Active officer scrutiny state where preliminary examination is underway.
+- **Assigned**: Transparent assignment card highlighting the designated Grievance Redressal Officer (GRO), department, and official contact channel.
+- **Escalated**: Multi-tier escalation path outlining Level 1 (District GRO), Level 2 (State Appellate Authority), and Level 3 (CPGRAMS National Portal) with active level markers.
+- **Resolved**: Positive resolution confirmation with citizen satisfaction feedback capture ("Yes, satisfied" / "No, reopen") within the statutory 30-day review window.
+- **Reopened**: Seamless dissatisfaction recourse permitting citizens to specify non-satisfaction reasons and submit additional evidence for re-examination.
+
+---
+
+<h2><MIcon name="smartphone" /> Interactive Previews</h2>
+
+### 1. Interactive Lifecycle States
+
+Switch across all 6 administrative states using the interactive tabs below to preview the responsive layout, state-specific cards, and full Jetpack Compose implementation.
+
+<ComponentPreview
+  title="Grievance Status Tracker"
+  category="Pattern · Jetpack Compose"
+  code={`package com.example.ux4g.patterns.tracking
+
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.CheckCircle
+import androidx.compose.material.icons.filled.KeyboardArrowDown
+import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material.icons.filled.Person
+import androidx.compose.material3.Divider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.LinearProgressIndicator
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.ux4g.designsystemv1.components.Ux4gAppHeader
+import com.ux4g.designsystemv1.components.Ux4gAppHeaderAction
+import com.ux4g.designsystemv1.components.Ux4gAppHeaderVariant
+import com.ux4g.designsystemv1.components.buttons.Ux4gButton
+import com.ux4g.designsystemv1.components.buttons.Ux4gButtonSize
+import com.ux4g.designsystemv1.components.buttons.Ux4gButtonVariant
+import com.ux4g.designsystemv1.components.journeytimeline.Ux4gJourneyBadgePosition
+import com.ux4g.designsystemv1.components.journeytimeline.Ux4gJourneyOrientation
+import com.ux4g.designsystemv1.components.journeytimeline.Ux4gJourneyStep
+import com.ux4g.designsystemv1.components.journeytimeline.Ux4gJourneyStepState
+import com.ux4g.designsystemv1.components.journeytimeline.Ux4gJourneyStepStatus
+import com.ux4g.designsystemv1.components.journeytimeline.Ux4gJourneyTimeline
+import com.ux4g.designsystemv1.components.tag.Ux4gTag
+import com.ux4g.designsystemv1.components.tag.Ux4gTagColor
+import com.ux4g.designsystemv1.components.tag.Ux4gTagStyle
+import com.ux4g.designsystemv1.foundation.Ux4gColors
+
+/**
+ * Grievance Lifecycle Status States.
+ */
+enum class GrievanceStatus(val title: String) {
+    InProgress("In Progress"),
+    InProgressVariant2("In Progress"),
+    Assigned("Assigned"),
+    Escalated("Escalated"),
+    Resolved("Resolved"),
+    Reopened("Reopened")
+}
+
+@Composable
+fun GrievanceStatusTrackerScreen(
+    status: GrievanceStatus = GrievanceStatus.InProgress,
+    grievanceId: String = "GRV-2026-MH-04127",
+    subject: String = "Delay in certificate issuance",
+    onBackClick: () -> Unit = {},
+    onSatisfiedClick: () -> Unit = {},
+    onReopenClick: () -> Unit = {},
+    onSubmitReopen: () -> Unit = {},
+    onCancelReopen: () -> Unit = {}
+) {
+    val isDark = isSystemInDarkTheme()
+    val scrollState = rememberScrollState()
+
+    val surfaceBg = if (isDark) Ux4gColors.Neutral950 else Color(0xFFF9FAFB)
+    val cardBg = if (isDark) Ux4gColors.Neutral900 else Color.White
+    val cardBorder = if (isDark) Ux4gColors.Neutral800 else Ux4gColors.Neutral200
+    val textPrimary = if (isDark) Ux4gColors.Neutral50 else Ux4gColors.Neutral900
+    val textSubtle = if (isDark) Ux4gColors.Neutral400 else Ux4gColors.Neutral600
+
+    val tagColor = when (status) {
+        GrievanceStatus.Resolved -> Ux4gTagColor.Success
+        GrievanceStatus.Escalated -> Ux4gTagColor.Error
+        GrievanceStatus.Reopened -> Ux4gTagColor.Warning
+        GrievanceStatus.Assigned -> Ux4gTagColor.Brand
+        else -> Ux4gTagColor.Warning
+    }
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(surfaceBg)
+    ) {
+        // 1. Purple Filled Government App Header
+        Ux4gAppHeader(
+            title = "Application Status",
+            variant = Ux4gAppHeaderVariant.Filled,
+            navigationIcon = Icons.AutoMirrored.Filled.ArrowBack,
+            onNavigationClick = onBackClick,
+            actions = listOf(
+                Ux4gAppHeaderAction(
+                    icon = Icons.Filled.Menu,
+                    contentDescription = "Menu",
+                    onClick = {}
+                )
+            )
+        )
+
+        // 2. Scrollable Body
+        Column(
+            modifier = Modifier
+                .weight(1f)
+                .fillMaxWidth()
+                .verticalScroll(scrollState)
+                .padding(horizontal = 16.dp, vertical = 12.dp)
+        ) {
+            // Resolution Success Banner (Resolved State)
+            if (status == GrievanceStatus.Resolved) {
+                ResolutionBanner(isDark = isDark)
+                Spacer(modifier = Modifier.height(12.dp))
+            }
+
+            // Grievance Information Summary Card
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(10.dp))
+                    .background(cardBg)
+                    .border(1.dp, cardBorder, RoundedCornerShape(10.dp))
+                    .padding(14.dp)
+            ) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = subject,
+                        style = TextStyle(
+                            fontSize = 15.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = textPrimary
+                        ),
+                        modifier = Modifier.weight(1f)
+                    )
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Ux4gTag(
+                        text = status.title,
+                        colorScheme = tagColor,
+                        style = Ux4gTagStyle.Tonal
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(4.dp))
+
+                Text(
+                    text = "Grievance ID · $grievanceId",
+                    style = TextStyle(fontSize = 12.sp, color = textSubtle)
+                )
+
+                if (status != GrievanceStatus.Resolved) {
+                    Spacer(modifier = Modifier.height(10.dp))
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Text(
+                            text = "8 days left",
+                            style = TextStyle(fontSize = 11.sp, fontWeight = FontWeight.Medium, color = textSubtle)
+                        )
+                        Text(
+                            text = "SLA Target: 22 Apr 2026",
+                            style = TextStyle(fontSize = 11.sp, color = textSubtle)
+                        )
+                    }
+                    Spacer(modifier = Modifier.height(4.dp))
+                    LinearProgressIndicator(
+                        progress = { 0.55f },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(6.dp)
+                            .clip(RoundedCornerShape(3.dp)),
+                        color = Ux4gColors.Primary600,
+                        trackColor = if (isDark) Ux4gColors.Neutral800 else Color(0xFFE5E7EB)
+                    )
+                }
+            }
+
+            Spacer(modifier = Modifier.height(12.dp))
+
+            // ── State-Specific Dynamic Sections ─────────────────────────────────
+
+            // In Progress: Grievance Details Table
+            if (status == GrievanceStatus.InProgress) {
+                GrievanceDetailsCard(cardBg = cardBg, cardBorder = cardBorder, textPrimary = textPrimary, textSubtle = textSubtle)
+                Spacer(modifier = Modifier.height(12.dp))
+            }
+
+            // Assigned: Assigned Officer Card
+            if (status == GrievanceStatus.Assigned) {
+                AssignedOfficerCard(cardBg = cardBg, cardBorder = cardBorder, textPrimary = textPrimary, textSubtle = textSubtle, isDark = isDark)
+                Spacer(modifier = Modifier.height(12.dp))
+            }
+
+            // Escalated: Multi-Tier Escalation Path
+            if (status == GrievanceStatus.Escalated) {
+                EscalationPathCard(cardBg = cardBg, cardBorder = cardBorder, textPrimary = textPrimary, textSubtle = textSubtle, isDark = isDark)
+                Spacer(modifier = Modifier.height(12.dp))
+            }
+
+            // Resolved: Citizen Satisfaction Survey
+            if (status == GrievanceStatus.Resolved) {
+                ResolutionSurveyCard(
+                    cardBg = cardBg,
+                    cardBorder = cardBorder,
+                    textPrimary = textPrimary,
+                    textSubtle = textSubtle,
+                    onSatisfied = onSatisfiedClick,
+                    onReopen = onReopenClick
+                )
+                Spacer(modifier = Modifier.height(12.dp))
+            }
+
+            // Reopened: Reopen Complaint Form
+            if (status == GrievanceStatus.Reopened) {
+                ReopenComplaintCard(
+                    cardBg = cardBg,
+                    cardBorder = cardBorder,
+                    textPrimary = textPrimary,
+                    textSubtle = textSubtle,
+                    isDark = isDark,
+                    onSubmit = onSubmitReopen,
+                    onCancel = onCancelReopen
+                )
+                Spacer(modifier = Modifier.height(12.dp))
+            }
+
+            // ── Grievance Journey Timeline (Shown for all states except Reopened form)
+            if (status != GrievanceStatus.Reopened && status != GrievanceStatus.InProgress) {
+                GrievanceJourneyCard(
+                    status = status,
+                    cardBg = cardBg,
+                    cardBorder = cardBorder,
+                    textPrimary = textPrimary,
+                    textSubtle = textSubtle
+                )
+                Spacer(modifier = Modifier.height(16.dp))
+            }
+
+            Spacer(modifier = Modifier.height(8.dp))
+        }
+
+        // 3. Official Digital India Footer
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 12.dp),
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = "Powered by Digital India",
+                style = TextStyle(
+                    fontSize = 11.sp,
+                    color = Ux4gColors.Neutral400,
+                    fontWeight = FontWeight.Medium
+                )
+            )
+        }
+    }
+}
+
+@Composable
+private fun ResolutionBanner(isDark: Boolean) {
+    val bg = if (isDark) Color(0xFF143823) else Color(0xFFF0FDF4)
+    val border = if (isDark) Color(0xFF166534) else Color(0xFFBBF7D0)
+    val text = if (isDark) Color(0xFF86EFAC) else Color(0xFF15803D)
+
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(10.dp))
+            .background(bg)
+            .border(1.dp, border, RoundedCornerShape(10.dp))
+            .padding(horizontal = 14.dp, vertical = 12.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Icon(
+            imageVector = Icons.Filled.CheckCircle,
+            contentDescription = "Resolved",
+            tint = text,
+            modifier = Modifier.size(20.dp)
+        )
+        Spacer(modifier = Modifier.width(10.dp))
+        Text(
+            text = "Grievance resolved on 14 Apr 2026 – certificate issued",
+            style = TextStyle(fontSize = 12.sp, fontWeight = FontWeight.Medium, color = text)
+        )
+    }
+}
+
+@Composable
+private fun GrievanceDetailsCard(
+    cardBg: Color,
+    cardBorder: Color,
+    textPrimary: Color,
+    textSubtle: Color
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(10.dp))
+            .background(cardBg)
+            .border(1.dp, cardBorder, RoundedCornerShape(10.dp))
+            .padding(14.dp)
+    ) {
+        Text(
+            text = "Grievance Details",
+            style = TextStyle(fontSize = 14.sp, fontWeight = FontWeight.Bold, color = textPrimary)
+        )
+        Spacer(modifier = Modifier.height(10.dp))
+
+        val details = listOf(
+            "Category" to "Revenue & Land Records",
+            "Sub-category" to "Delayed Service Delivery",
+            "Filing Date" to "02 Apr 2026",
+            "Target Date" to "22 Apr 2026",
+            "District" to "Pune, Maharashtra"
+        )
+
+        details.forEach { (label, value) ->
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 4.dp),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Text(text = label, style = TextStyle(fontSize = 12.sp, color = textSubtle))
+                Text(text = value, style = TextStyle(fontSize = 12.sp, fontWeight = FontWeight.Medium, color = textPrimary))
+            }
+        }
+    }
+}
+
+@Composable
+private fun AssignedOfficerCard(
+    cardBg: Color,
+    cardBorder: Color,
+    textPrimary: Color,
+    textSubtle: Color,
+    isDark: Boolean
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(10.dp))
+            .background(cardBg)
+            .border(1.dp, cardBorder, RoundedCornerShape(10.dp))
+            .padding(14.dp)
+    ) {
+        Text(
+            text = "Assigned Redressal Officer",
+            style = TextStyle(fontSize = 14.sp, fontWeight = FontWeight.Bold, color = textPrimary)
+        )
+        Spacer(modifier = Modifier.height(10.dp))
+
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Box(
+                modifier = Modifier
+                    .size(40.dp)
+                    .clip(CircleShape)
+                    .background(if (isDark) Ux4gColors.Primary900 else Ux4gColors.Primary100),
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(
+                    imageVector = Icons.Filled.Person,
+                    contentDescription = "Officer",
+                    tint = Ux4gColors.Primary600,
+                    modifier = Modifier.size(22.dp)
+                )
+            }
+            Spacer(modifier = Modifier.width(12.dp))
+            Column {
+                Text(
+                    text = "Shri Rajesh Sharma",
+                    style = TextStyle(fontSize = 13.sp, fontWeight = FontWeight.Bold, color = textPrimary)
+                )
+                Text(
+                    text = "District Grievance Redressal Officer, Pune",
+                    style = TextStyle(fontSize = 11.sp, color = textSubtle)
+                )
+                Text(
+                    text = "gro.pune@maharashtra.gov.in",
+                    style = TextStyle(fontSize = 11.sp, color = Ux4gColors.Primary600)
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun EscalationPathCard(
+    cardBg: Color,
+    cardBorder: Color,
+    textPrimary: Color,
+    textSubtle: Color,
+    isDark: Boolean
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(10.dp))
+            .background(cardBg)
+            .border(1.dp, cardBorder, RoundedCornerShape(10.dp))
+            .padding(14.dp)
+    ) {
+        Text(
+            text = "Escalation Path",
+            style = TextStyle(fontSize = 14.sp, fontWeight = FontWeight.Bold, color = textPrimary)
+        )
+        Spacer(modifier = Modifier.height(4.dp))
+        Text(
+            text = "Your grievance moves up a level if it is not resolved within the SLA.",
+            style = TextStyle(fontSize = 11.sp, color = textSubtle)
+        )
+        Spacer(modifier = Modifier.height(12.dp))
+
+        EscalationTierItem(
+            level = "Level 1 · District Grievance Officer",
+            subtitle = "Revenue Dept, Pune · Active since 10 Apr 2026",
+            isActive = true,
+            isDark = isDark
+        )
+        Spacer(modifier = Modifier.height(8.dp))
+        EscalationTierItem(
+            level = "Level 2 · State Appellate Authority",
+            subtitle = "Pending — escalates automatically after SLA breach",
+            isActive = false,
+            isDark = isDark
+        )
+        Spacer(modifier = Modifier.height(8.dp))
+        EscalationTierItem(
+            level = "Level 3 · CPGRAMS (National Portal)",
+            subtitle = "Pending — apex statutory escalation level",
+            isActive = false,
+            isDark = isDark
+        )
+    }
+}
+
+@Composable
+private fun EscalationTierItem(
+    level: String,
+    subtitle: String,
+    isActive: Boolean,
+    isDark: Boolean
+) {
+    val bg = if (isActive) (if (isDark) Color(0xFF3B1E08) else Color(0xFFFFF7ED)) else (if (isDark) Ux4gColors.Neutral900 else Color(0xFFF9FAFB))
+    val border = if (isActive) (if (isDark) Color(0xFFC2410C) else Color(0xFFFDBA74)) else (if (isDark) Ux4gColors.Neutral800 else Ux4gColors.Neutral200)
+    val titleColor = if (isActive) (if (isDark) Color(0xFFFDBA74) else Color(0xFFC2410C)) else (if (isDark) Ux4gColors.Neutral300 else Ux4gColors.Neutral700)
+
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(8.dp))
+            .background(bg)
+            .border(1.dp, border, RoundedCornerShape(8.dp))
+            .padding(10.dp),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Column(modifier = Modifier.weight(1f)) {
+            Text(text = level, style = TextStyle(fontSize = 12.sp, fontWeight = FontWeight.Bold, color = titleColor))
+            Spacer(modifier = Modifier.height(2.dp))
+            Text(text = subtitle, style = TextStyle(fontSize = 11.sp, color = Ux4gColors.Neutral400))
+        }
+        if (isActive) {
+            Box(
+                modifier = Modifier
+                    .size(8.dp)
+                    .clip(CircleShape)
+                    .background(Color(0xFFEA580C))
+            )
+        }
+    }
+}
+
+@Composable
+private fun ResolutionSurveyCard(
+    cardBg: Color,
+    cardBorder: Color,
+    textPrimary: Color,
+    textSubtle: Color,
+    onSatisfied: () -> Unit,
+    onReopen: () -> Unit
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(10.dp))
+            .background(cardBg)
+            .border(1.dp, cardBorder, RoundedCornerShape(10.dp))
+            .padding(14.dp)
+    ) {
+        Text(
+            text = "Are you satisfied with the resolution?",
+            style = TextStyle(fontSize = 13.sp, fontWeight = FontWeight.Bold, color = textPrimary)
+        )
+        Spacer(modifier = Modifier.height(12.dp))
+
+        Ux4gButton(
+            text = "Yes, satisfied",
+            variant = Ux4gButtonVariant.Outline,
+            size = Ux4gButtonSize.Medium,
+            onClick = onSatisfied,
+            modifier = Modifier.fillMaxWidth()
+        )
+        Spacer(modifier = Modifier.height(8.dp))
+
+        Ux4gButton(
+            text = "No, reopen",
+            variant = Ux4gButtonVariant.Outline,
+            size = Ux4gButtonSize.Medium,
+            onClick = onReopen,
+            modifier = Modifier.fillMaxWidth()
+        )
+        Spacer(modifier = Modifier.height(10.dp))
+
+        Text(
+            text = "You have 30 days from the resolution date to reopen this complaint.",
+            style = TextStyle(fontSize = 11.sp, color = textSubtle, lineHeight = 15.sp)
+        )
+    }
+}
+
+@Composable
+private fun ReopenComplaintCard(
+    cardBg: Color,
+    cardBorder: Color,
+    textPrimary: Color,
+    textSubtle: Color,
+    isDark: Boolean,
+    onSubmit: () -> Unit,
+    onCancel: () -> Unit
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(10.dp))
+            .background(cardBg)
+            .border(1.dp, cardBorder, RoundedCornerShape(10.dp))
+            .padding(14.dp)
+    ) {
+        Text(
+            text = "Reopen your complaint",
+            style = TextStyle(fontSize = 15.sp, fontWeight = FontWeight.Bold, color = textPrimary)
+        )
+        Spacer(modifier = Modifier.height(14.dp))
+
+        Text(
+            text = "Why are you not satisfied?",
+            style = TextStyle(fontSize = 13.sp, fontWeight = FontWeight.SemiBold, color = textPrimary)
+        )
+        Spacer(modifier = Modifier.height(6.dp))
+
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .clip(RoundedCornerShape(8.dp))
+                .border(1.dp, cardBorder, RoundedCornerShape(8.dp))
+                .padding(horizontal = 12.dp, vertical = 10.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = "Certificate still not issued",
+                style = TextStyle(fontSize = 13.sp, color = textPrimary)
+            )
+            Icon(
+                imageVector = Icons.Filled.KeyboardArrowDown,
+                contentDescription = "Select reason",
+                tint = textSubtle,
+                modifier = Modifier.size(20.dp)
+            )
+        }
+
+        Spacer(modifier = Modifier.height(14.dp))
+
+        Text(
+            text = "Additional details",
+            style = TextStyle(fontSize = 13.sp, fontWeight = FontWeight.SemiBold, color = textPrimary)
+        )
+        Spacer(modifier = Modifier.height(6.dp))
+
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(80.dp)
+                .clip(RoundedCornerShape(8.dp))
+                .border(1.dp, cardBorder, RoundedCornerShape(8.dp))
+                .padding(12.dp)
+        ) {
+            Text(
+                text = "Add any details that will help us re-examine your grievance.",
+                style = TextStyle(fontSize = 12.sp, color = textSubtle, lineHeight = 16.sp)
+            )
+        }
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        Ux4gButton(
+            text = "Reopen complaint",
+            variant = Ux4gButtonVariant.Primary,
+            size = Ux4gButtonSize.Large,
+            onClick = onSubmit,
+            modifier = Modifier.fillMaxWidth()
+        )
+        Spacer(modifier = Modifier.height(8.dp))
+
+        TextButton(
+            onClick = onCancel,
+            modifier = Modifier.align(Alignment.CenterHorizontally)
+        ) {
+            Text(
+                text = "Cancel",
+                style = TextStyle(fontSize = 14.sp, color = Ux4gColors.Primary600, fontWeight = FontWeight.SemiBold)
+            )
+        }
+    }
+}
+
+@Composable
+private fun GrievanceJourneyCard(
+    status: GrievanceStatus,
+    cardBg: Color,
+    cardBorder: Color,
+    textPrimary: Color,
+    textSubtle: Color
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(10.dp))
+            .background(cardBg)
+            .border(1.dp, cardBorder, RoundedCornerShape(10.dp))
+            .padding(14.dp)
+    ) {
+        Text(
+            text = "Grievance journey",
+            style = TextStyle(fontSize = 15.sp, fontWeight = FontWeight.Bold, color = textPrimary)
+        )
+        Text(
+            text = "Every update from lodging to resolution",
+            style = TextStyle(fontSize = 12.sp, color = textSubtle)
+        )
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        val isResolved = status == GrievanceStatus.Resolved
+        val isEscalated = status == GrievanceStatus.Escalated || isResolved
+        val isUnderReview = status == GrievanceStatus.Assigned || isEscalated
+
+        val steps = listOf(
+            Ux4gJourneyStep(
+                state = Ux4gJourneyStepState.Completed,
+                date = "02 Apr 2026",
+                title = "Grievance lodged"
+            ),
+            Ux4gJourneyStep(
+                state = if (status == GrievanceStatus.InProgressVariant2) Ux4gJourneyStepState.Current else Ux4gJourneyStepState.Completed,
+                date = "05 Apr 2026",
+                title = "Assigned to grievance officer"
+            ),
+            Ux4gJourneyStep(
+                state = when {
+                    status == GrievanceStatus.InProgressVariant2 -> Ux4gJourneyStepState.Upcoming
+                    isUnderReview -> Ux4gJourneyStepState.Completed
+                    else -> Ux4gJourneyStepState.Current
+                },
+                date = if (isUnderReview) "08 Apr 2026" else "Est. 08 Apr 2026",
+                title = "Under review by officer"
+            ),
+            Ux4gJourneyStep(
+                state = when {
+                    isResolved -> Ux4gJourneyStepState.Completed
+                    status == GrievanceStatus.Escalated -> Ux4gJourneyStepState.Current
+                    else -> Ux4gJourneyStepState.Upcoming
+                },
+                date = if (isEscalated) "10 Apr 2026" else "Est. 10 Apr 2026",
+                title = "Escalated to District Officer"
+            ),
+            Ux4gJourneyStep(
+                state = if (isResolved) Ux4gJourneyStepState.Completed else Ux4gJourneyStepState.Upcoming,
+                date = if (isResolved) "14 Apr 2026" else "Est. 14 Apr 2026",
+                title = "Resolution issued"
+            )
+        )
+
+        Ux4gJourneyTimeline(
+            steps = steps,
+            orientation = Ux4gJourneyOrientation.Vertical
+        )
+    }
+}
+
+@Preview(showBackground = true, widthDp = 360, heightDp = 760)
+@Composable
+fun GrievanceStatusTrackerPreview() {
+    GrievanceStatusTrackerScreen()
+}`}
+>
+  <Tabs items={['In Progress', 'In Progress (2nd Variant)', 'Assigned', 'Escalated', 'Resolved', 'Reopened']}>
+    <Tab value="In Progress">
+      <img
+        src="/images/patterns/grievance_status_tracker/in_progress.svg"
+        alt="Grievance Status Tracker - In Progress"
+        className="w-full max-w-[360px] rounded-2xl border border-border shadow-sm mx-auto my-4"
+      />
+    </Tab>
+    <Tab value="In Progress (2nd Variant)">
+      <img
+        src="/images/patterns/grievance_status_tracker/in_progress_2_varient.svg"
+        alt="Grievance Status Tracker - In Progress (2nd Variant)"
+        className="w-full max-w-[360px] rounded-2xl border border-border shadow-sm mx-auto my-4"
+      />
+    </Tab>
+    <Tab value="Assigned">
+      <img
+        src="/images/patterns/grievance_status_tracker/assigned.svg"
+        alt="Grievance Status Tracker - Assigned"
+        className="w-full max-w-[360px] rounded-2xl border border-border shadow-sm mx-auto my-4"
+      />
+    </Tab>
+    <Tab value="Escalated">
+      <img
+        src="/images/patterns/grievance_status_tracker/escalated.svg"
+        alt="Grievance Status Tracker - Escalated"
+        className="w-full max-w-[360px] rounded-2xl border border-border shadow-sm mx-auto my-4"
+      />
+    </Tab>
+    <Tab value="Resolved">
+      <img
+        src="/images/patterns/grievance_status_tracker/resolved.svg"
+        alt="Grievance Status Tracker - Resolved"
+        className="w-full max-w-[360px] rounded-2xl border border-border shadow-sm mx-auto my-4"
+      />
+    </Tab>
+    <Tab value="Reopened">
+      <img
+        src="/images/patterns/grievance_status_tracker/reopened.svg"
+        alt="Grievance Status Tracker - Reopened"
+        className="w-full max-w-[360px] rounded-2xl border border-border shadow-sm mx-auto my-4"
+      />
+    </Tab>
+  </Tabs>
+</ComponentPreview>

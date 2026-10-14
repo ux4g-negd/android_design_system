@@ -6,6 +6,7 @@
     "application-submission",
     "service-discovery",
     "notification",
-    "payment-and-confirmation"
+    "payment-and-confirmation",
+    "status-and-tracking"
   ]
 }

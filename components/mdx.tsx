@@ -10,6 +10,8 @@ import { TokenGrid } from '@/components/TokenGrid';
 import { TypographyGrid } from '@/components/TypographyCard';
 import { StepCard, PrerequisitesGrid, InfoCallout } from '@/components/QuickStartGuide';
 
+import { Tab, Tabs } from 'fumadocs-ui/components/tabs';
+
 function Table(props: React.ComponentProps<'table'>) {
   return (
     <div className="table-wrapper my-6 w-full overflow-x-auto rounded-xl border border-border/70 bg-card shadow-sm">
@@ -23,6 +25,8 @@ export function getMDXComponents(components?: MDXComponents) {
     ...defaultMdxComponents,
     h1: () => null,
     table: Table,
+    Tabs,
+    Tab,
     ComponentPreview,
     ColorPalette,
     TokenGrid,

@@ -1,0 +1,953 @@
+---
+title: Application Status Tracker
+description: Multi-stage citizen application lifecycle tracking pattern with real-time milestone checkpoints, SLA countdowns, actionable alerts, and card-style variants
+---
+
+# Application Status Tracker
+
+A high-visibility status monitoring pattern that empowers citizens to track their public service, certificate, or welfare applications through each milestone checkpoint—from initial submission and document verification to officer scrutiny and final certificate issuance.
+
+The pattern adapts dynamically across all key administrative lifecycle states:
+- **Under Review**: Standard in-progress state displaying current officer review and SLA milestone progression.
+- **Action Required**: Urgent citizen prompt alerting applicant to upload missing or clearer proof documents.
+- **Rejected**: Transparent adverse decision screen providing specific rejection reasons, remediation guidance, and single-tap reapplication.
+- **Delayed**: Proactive administrative delay advisory citing verification extension and a revised expected completion date with escalation recourse.
+- **Approved**: Final success state celebrating application approval with immediate PDF certificate download and DigiLocker synchronization.
+
+---
+
+<h2><MIcon name="smartphone" /> Interactive Previews</h2>
+
+### 1. Default Style (Full Screen)
+
+Full-screen citizen tracking interface with official header, status tag, dynamic alert banners, SLA progress bar, connected milestone timeline, and contextual resolution actions.
+
+<ComponentPreview
+  title="Application Status Tracker - Default"
+  category="Pattern · Jetpack Compose"
+  code={`package com.example.ux4g.patterns.tracking
+
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Error
+import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material3.Icon
+import androidx.compose.material3.LinearProgressIndicator
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.ux4g.designsystemv1.components.Ux4gAppHeader
+import com.ux4g.designsystemv1.components.Ux4gAppHeaderAction
+import com.ux4g.designsystemv1.components.Ux4gAppHeaderVariant
+import com.ux4g.designsystemv1.components.buttons.Ux4gButton
+import com.ux4g.designsystemv1.components.buttons.Ux4gButtonSize
+import com.ux4g.designsystemv1.components.buttons.Ux4gButtonVariant
+import com.ux4g.designsystemv1.components.journeytimeline.Ux4gJourneyBadgePosition
+import com.ux4g.designsystemv1.components.journeytimeline.Ux4gJourneyOrientation
+import com.ux4g.designsystemv1.components.journeytimeline.Ux4gJourneyStep
+import com.ux4g.designsystemv1.components.journeytimeline.Ux4gJourneyStepState
+import com.ux4g.designsystemv1.components.journeytimeline.Ux4gJourneyStepStatus
+import com.ux4g.designsystemv1.components.journeytimeline.Ux4gJourneyTimeline
+import com.ux4g.designsystemv1.components.tag.Ux4gTag
+import com.ux4g.designsystemv1.components.tag.Ux4gTagColor
+import com.ux4g.designsystemv1.components.tag.Ux4gTagStyle
+import com.ux4g.designsystemv1.foundation.Ux4gColors
+
+/**
+ * Application Lifecycle Status States.
+ */
+enum class ApplicationStatus(val title: String) {
+    UnderReview("Under Review"),
+    ActionRequired("Action Required"),
+    Rejected("Rejected"),
+    Delayed("Delayed"),
+    Approved("Approved")
+}
+
+@Composable
+fun ApplicationStatusTrackerScreen(
+    status: ApplicationStatus = ApplicationStatus.UnderReview,
+    applicationId: String = "INC-2026-MH-04127",
+    serviceName: String = "Income Certificate",
+    onBackClick: () -> Unit = {},
+    onUploadDocument: () -> Unit = {},
+    onReapply: () -> Unit = {},
+    onContactOffice: () -> Unit = {},
+    onEscalate: () -> Unit = {},
+    onDownloadPdf: () -> Unit = {},
+    onSaveDigiLocker: () -> Unit = {}
+) {
+    val isDark = isSystemInDarkTheme()
+    val scrollState = rememberScrollState()
+
+    val surfaceBg = if (isDark) Ux4gColors.Neutral950 else Color(0xFFF9FAFB)
+    val cardBg = if (isDark) Ux4gColors.Neutral900 else Color.White
+    val cardBorder = if (isDark) Ux4gColors.Neutral800 else Ux4gColors.Neutral200
+    val textPrimary = if (isDark) Ux4gColors.Neutral50 else Ux4gColors.Neutral900
+    val textSubtle = if (isDark) Ux4gColors.Neutral400 else Ux4gColors.Neutral600
+
+    val tagColor = when (status) {
+        ApplicationStatus.Approved -> Ux4gTagColor.Success
+        ApplicationStatus.Rejected -> Ux4gTagColor.Error
+        ApplicationStatus.Delayed -> Ux4gTagColor.Warning
+        ApplicationStatus.ActionRequired -> Ux4gTagColor.Warning
+        ApplicationStatus.UnderReview -> Ux4gTagColor.Neutral
+    }
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(surfaceBg)
+    ) {
+        // 1. Official Government Header
+        Ux4gAppHeader(
+            title = "Digital Services",
+            variant = Ux4gAppHeaderVariant.Standard,
+            navigationIcon = Icons.Filled.Menu,
+            onNavigationClick = {},
+            actions = listOf(
+                Ux4gAppHeaderAction(
+                    icon = Icons.Filled.Menu,
+                    contentDescription = "Menu",
+                    onClick = {}
+                )
+            )
+        )
+
+        // 2. Scrollable Body
+        Column(
+            modifier = Modifier
+                .weight(1f)
+                .fillMaxWidth()
+                .verticalScroll(scrollState)
+                .padding(horizontal = 16.dp, vertical = 12.dp)
+        ) {
+            // Back Button Row
+            Row(
+                modifier = Modifier
+                    .clickable(onClick = onBackClick)
+                    .padding(vertical = 6.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Icon(
+                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                    contentDescription = "Back",
+                    tint = Ux4gColors.Primary600,
+                    modifier = Modifier.size(18.dp)
+                )
+                Spacer(modifier = Modifier.width(6.dp))
+                Text(
+                    text = "Back",
+                    style = TextStyle(
+                        fontSize = 14.sp,
+                        fontWeight = FontWeight.SemiBold,
+                        color = Ux4gColors.Primary600
+                    )
+                )
+            }
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            // Contextual Alert Banner (for Action Required, Rejected, Delayed)
+            when (status) {
+                ApplicationStatus.ActionRequired -> {
+                    ActionRequiredBanner(onUploadDocument = onUploadDocument, isDark = isDark)
+                    Spacer(modifier = Modifier.height(12.dp))
+                }
+                ApplicationStatus.Rejected -> {
+                    RejectedBanner(isDark = isDark)
+                    Spacer(modifier = Modifier.height(12.dp))
+                }
+                ApplicationStatus.Delayed -> {
+                    DelayedBanner(isDark = isDark)
+                    Spacer(modifier = Modifier.height(12.dp))
+                }
+                else -> Unit
+            }
+
+            // Application Information Summary Card
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(10.dp))
+                    .background(cardBg)
+                    .border(1.dp, cardBorder, RoundedCornerShape(10.dp))
+                    .padding(16.dp)
+            ) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = serviceName,
+                        style = TextStyle(
+                            fontSize = 16.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = textPrimary
+                        )
+                    )
+                    Ux4gTag(
+                        text = status.title,
+                        colorScheme = tagColor,
+                        style = Ux4gTagStyle.Tonal
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(4.dp))
+
+                Text(
+                    text = "Application ID · $applicationId",
+                    style = TextStyle(fontSize = 12.sp, color = textSubtle)
+                )
+
+                if (status != ApplicationStatus.Approved) {
+                    Spacer(modifier = Modifier.height(12.dp))
+                    Text(
+                        text = "8 days left",
+                        style = TextStyle(fontSize = 11.sp, fontWeight = FontWeight.Medium, color = textSubtle)
+                    )
+                    Spacer(modifier = Modifier.height(4.dp))
+                    LinearProgressIndicator(
+                        progress = { 0.6f },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(6.dp)
+                            .clip(RoundedCornerShape(3.dp)),
+                        color = Ux4gColors.Primary600,
+                        trackColor = if (isDark) Ux4gColors.Neutral800 else Color(0xFFE5E7EB)
+                    )
+                }
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // Application Journey Timeline Card
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(10.dp))
+                    .background(cardBg)
+                    .border(1.dp, cardBorder, RoundedCornerShape(10.dp))
+                    .padding(16.dp)
+            ) {
+                Text(
+                    text = "Application journey",
+                    style = TextStyle(
+                        fontSize = 15.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = textPrimary
+                    )
+                )
+                Text(
+                    text = "Every step from submission to issuance",
+                    style = TextStyle(fontSize = 12.sp, color = textSubtle)
+                )
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                val isApproved = status == ApplicationStatus.Approved
+
+                val steps = listOf(
+                    Ux4gJourneyStep(
+                        state = Ux4gJourneyStepState.Completed,
+                        date = "07 Apr 2026, 10:24 AM",
+                        title = "Application Submitted"
+                    ),
+                    Ux4gJourneyStep(
+                        state = Ux4gJourneyStepState.Completed,
+                        date = "10 Apr 2026, 02:15 PM",
+                        title = "Documents Verified"
+                    ),
+                    Ux4gJourneyStep(
+                        state = if (isApproved) Ux4gJourneyStepState.Completed else Ux4gJourneyStepState.Current,
+                        date = "11 Apr 2026, 09:03 AM",
+                        title = "Officer Review"
+                    ),
+                    Ux4gJourneyStep(
+                        state = if (isApproved) Ux4gJourneyStepState.Current else Ux4gJourneyStepState.Upcoming,
+                        date = if (isApproved) "14 Apr 2026, 11:30 AM" else "Est. 22 Apr 2026",
+                        title = if (isApproved) "Certificate Issued" else "Certificate Will Be Issued",
+                        status = if (!isApproved) Ux4gJourneyStepStatus(
+                            text = if (status == ApplicationStatus.UnderReview) "2 days remaining" else "11 days remaining",
+                            badgeText = "Pending",
+                            badgePosition = Ux4gJourneyBadgePosition.Bottom
+                        ) else null
+                    )
+                )
+
+                Ux4gJourneyTimeline(
+                    steps = steps,
+                    orientation = Ux4gJourneyOrientation.Vertical
+                )
+            }
+
+            Spacer(modifier = Modifier.height(20.dp))
+
+            // Contextual Lifecycle Action Buttons
+            when (status) {
+                ApplicationStatus.Rejected -> {
+                    Ux4gButton(
+                        text = "Reapply",
+                        variant = Ux4gButtonVariant.Primary,
+                        size = Ux4gButtonSize.Large,
+                        onClick = onReapply,
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                    Spacer(modifier = Modifier.height(10.dp))
+                    TextButton(
+                        onClick = onContactOffice,
+                        modifier = Modifier.align(Alignment.CenterHorizontally)
+                    ) {
+                        Text(
+                            text = "Contact district office",
+                            style = TextStyle(fontSize = 14.sp, color = Ux4gColors.Primary600, fontWeight = FontWeight.SemiBold)
+                        )
+                    }
+                }
+                ApplicationStatus.Delayed -> {
+                    TextButton(
+                        onClick = onEscalate,
+                        modifier = Modifier.align(Alignment.CenterHorizontally)
+                    ) {
+                        Text(
+                            text = "Escalate this application",
+                            style = TextStyle(fontSize = 14.sp, color = Color(0xFFDC2626), fontWeight = FontWeight.SemiBold)
+                        )
+                    }
+                }
+                ApplicationStatus.Approved -> {
+                    Ux4gButton(
+                        text = "Download Certificate (PDF)",
+                        variant = Ux4gButtonVariant.Primary,
+                        size = Ux4gButtonSize.Large,
+                        onClick = onDownloadPdf,
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                    Spacer(modifier = Modifier.height(10.dp))
+                    Ux4gButton(
+                        text = "Save to DigiLocker",
+                        variant = Ux4gButtonVariant.Outline,
+                        size = Ux4gButtonSize.Large,
+                        onClick = onSaveDigiLocker,
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                }
+                else -> Unit
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+        }
+
+        // 3. Official Digital India Footer
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 12.dp),
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = "Powered by Digital India",
+                style = TextStyle(
+                    fontSize = 11.sp,
+                    color = Ux4gColors.Neutral400,
+                    fontWeight = FontWeight.Medium
+                )
+            )
+        }
+    }
+}
+
+@Composable
+private fun ActionRequiredBanner(onUploadDocument: () -> Unit, isDark: Boolean) {
+    val bg = if (isDark) Color(0xFF3B1E08) else Color(0xFFFFF7ED)
+    val border = if (isDark) Color(0xFF7C2D12) else Color(0xFFFED7AA)
+    val text = if (isDark) Color(0xFFFDBA74) else Color(0xFFC2410C)
+
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(8.dp))
+            .background(bg)
+            .border(1.dp, border, RoundedCornerShape(8.dp))
+            .padding(12.dp),
+        verticalAlignment = Alignment.Top
+    ) {
+        Icon(
+            imageVector = Icons.Filled.Error,
+            contentDescription = "Action Required",
+            tint = text,
+            modifier = Modifier.size(18.dp)
+        )
+        Spacer(modifier = Modifier.width(8.dp))
+        Column(modifier = Modifier.weight(1f)) {
+            Text(
+                text = "Action required: upload your income proof document",
+                style = TextStyle(fontSize = 12.sp, fontWeight = FontWeight.Medium, color = text, lineHeight = 16.sp)
+            )
+            Spacer(modifier = Modifier.height(6.dp))
+            Text(
+                text = "Upload Document",
+                style = TextStyle(
+                    fontSize = 12.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = text
+                ),
+                modifier = Modifier.clickable(onClick = onUploadDocument)
+            )
+        }
+    }
+}
+
+@Composable
+private fun RejectedBanner(isDark: Boolean) {
+    val bg = if (isDark) Color(0xFF381010) else Color(0xFFFEF2F2)
+    val border = if (isDark) Color(0xFF7F1D1D) else Color(0xFFFECACA)
+    val text = if (isDark) Color(0xFFFCA5A5) else Color(0xFF991B1B)
+
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(8.dp))
+            .background(bg)
+            .border(1.dp, border, RoundedCornerShape(8.dp))
+            .padding(12.dp),
+        verticalAlignment = Alignment.Top
+    ) {
+        Icon(
+            imageVector = Icons.Filled.Error,
+            contentDescription = "Rejected",
+            tint = text,
+            modifier = Modifier.size(18.dp)
+        )
+        Spacer(modifier = Modifier.width(8.dp))
+        Column(modifier = Modifier.weight(1f)) {
+            Text(
+                text = "Why was this rejected?",
+                style = TextStyle(fontSize = 13.sp, fontWeight = FontWeight.Bold, color = text)
+            )
+            Spacer(modifier = Modifier.height(4.dp))
+            Text(
+                text = "The income proof document submitted was not legible; the scan was too blurry to read.",
+                style = TextStyle(fontSize = 11.sp, color = text, lineHeight = 15.sp)
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            Text("1. Re-scan the document in good lighting", style = TextStyle(fontSize = 11.sp, color = text))
+            Text("2. Upload a clear JPG or PDF under 2 MB", style = TextStyle(fontSize = 11.sp, color = text))
+            Text("3. Reapply with the corrected document", style = TextStyle(fontSize = 11.sp, color = text))
+        }
+    }
+}
+
+@Composable
+private fun DelayedBanner(isDark: Boolean) {
+    val bg = if (isDark) Color(0xFF0C2E38) else Color(0xFFECFEFF)
+    val border = if (isDark) Color(0xFF155E75) else Color(0xFFA5F3FC)
+    val text = if (isDark) Color(0xFF67E8F9) else Color(0xFF155E75)
+
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(8.dp))
+            .background(bg)
+            .border(1.dp, border, RoundedCornerShape(8.dp))
+            .padding(12.dp),
+        verticalAlignment = Alignment.Top
+    ) {
+        Icon(
+            imageVector = Icons.Filled.Info,
+            contentDescription = "Delayed",
+            tint = text,
+            modifier = Modifier.size(18.dp)
+        )
+        Spacer(modifier = Modifier.width(8.dp))
+        Column(modifier = Modifier.weight(1f)) {
+            Text(
+                text = "Why is this delayed?",
+                style = TextStyle(fontSize = 13.sp, fontWeight = FontWeight.Bold, color = text)
+            )
+            Spacer(modifier = Modifier.height(4.dp))
+            Text(
+                text = "Additional field verification is required due to an address discrepancy in your application.",
+                style = TextStyle(fontSize = 11.sp, color = text, lineHeight = 15.sp)
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            Text(
+                text = "Revised expected date",
+                style = TextStyle(fontSize = 11.sp, fontWeight = FontWeight.SemiBold, color = text)
+            )
+            Text(
+                text = "25 Apr 2026",
+                style = TextStyle(fontSize = 13.sp, fontWeight = FontWeight.Bold, color = text)
+            )
+        }
+    }
+}
+
+@Preview(showBackground = true, widthDp = 390, heightDp = 844)
+@Composable
+fun ApplicationStatusTrackerPreview() {
+    ApplicationStatusTrackerScreen()
+}`}
+>
+  <Tabs items={['Under Review', 'Action Required', 'Rejected', 'Delayed', 'Approved']}>
+    <Tab value="Under Review">
+      <img
+        src="/images/patterns/application_status_tracker/under_review.svg"
+        alt="Application Status Tracker - Under Review"
+        className="w-full max-w-[360px] rounded-2xl border border-border shadow-sm mx-auto my-4"
+      />
+    </Tab>
+    <Tab value="Action Required">
+      <img
+        src="/images/patterns/application_status_tracker/action_required.svg"
+        alt="Application Status Tracker - Action Required"
+        className="w-full max-w-[360px] rounded-2xl border border-border shadow-sm mx-auto my-4"
+      />
+    </Tab>
+    <Tab value="Rejected">
+      <img
+        src="/images/patterns/application_status_tracker/rejected.svg"
+        alt="Application Status Tracker - Rejected"
+        className="w-full max-w-[360px] rounded-2xl border border-border shadow-sm mx-auto my-4"
+      />
+    </Tab>
+    <Tab value="Delayed">
+      <img
+        src="/images/patterns/application_status_tracker/delayed.svg"
+        alt="Application Status Tracker - Delayed"
+        className="w-full max-w-[360px] rounded-2xl border border-border shadow-sm mx-auto my-4"
+      />
+    </Tab>
+    <Tab value="Approved">
+      <img
+        src="/images/patterns/application_status_tracker/approved.svg"
+        alt="Application Status Tracker - Approved"
+        className="w-full max-w-[360px] rounded-2xl border border-border shadow-sm mx-auto my-4"
+      />
+    </Tab>
+  </Tabs>
+</ComponentPreview>
+
+---
+
+### 2. Card Style Variant
+
+Elevated surface card layout providing modular status tracking blocks over tinted backgrounds, ideal for dashboards, citizen service portals, and multi-service overview hubs.
+
+<ComponentPreview
+  title="Application Status Tracker - Card Style"
+  category="Pattern · Jetpack Compose"
+  code={`package com.example.ux4g.patterns.tracking
+
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material3.Icon
+import androidx.compose.material3.LinearProgressIndicator
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.ux4g.designsystemv1.components.Ux4gAppHeader
+import com.ux4g.designsystemv1.components.Ux4gAppHeaderAction
+import com.ux4g.designsystemv1.components.Ux4gAppHeaderVariant
+import com.ux4g.designsystemv1.components.buttons.Ux4gButton
+import com.ux4g.designsystemv1.components.buttons.Ux4gButtonSize
+import com.ux4g.designsystemv1.components.buttons.Ux4gButtonVariant
+import com.ux4g.designsystemv1.components.journeytimeline.Ux4gJourneyBadgePosition
+import com.ux4g.designsystemv1.components.journeytimeline.Ux4gJourneyOrientation
+import com.ux4g.designsystemv1.components.journeytimeline.Ux4gJourneyStep
+import com.ux4g.designsystemv1.components.journeytimeline.Ux4gJourneyStepState
+import com.ux4g.designsystemv1.components.journeytimeline.Ux4gJourneyStepStatus
+import com.ux4g.designsystemv1.components.journeytimeline.Ux4gJourneyTimeline
+import com.ux4g.designsystemv1.components.tag.Ux4gTag
+import com.ux4g.designsystemv1.components.tag.Ux4gTagColor
+import com.ux4g.designsystemv1.components.tag.Ux4gTagStyle
+import com.ux4g.designsystemv1.foundation.Ux4gColors
+
+/**
+ * Card Style Variant of the Application Status Tracker.
+ */
+@Composable
+fun ApplicationStatusTrackerCardScreen(
+    status: ApplicationStatus = ApplicationStatus.UnderReview,
+    applicationId: String = "INC-2026-MH-04127",
+    serviceName: String = "Income Certificate",
+    onBackClick: () -> Unit = {},
+    onUploadDocument: () -> Unit = {},
+    onReapply: () -> Unit = {},
+    onContactOffice: () -> Unit = {},
+    onEscalate: () -> Unit = {},
+    onDownloadPdf: () -> Unit = {},
+    onSaveDigiLocker: () -> Unit = {}
+) {
+    val isDark = isSystemInDarkTheme()
+    val scrollState = rememberScrollState()
+
+    val pageBg = if (isDark) Ux4gColors.Neutral950 else Color(0xFFF1F5F9)
+    val cardBg = if (isDark) Ux4gColors.Neutral900 else Color.White
+    val cardBorder = if (isDark) Ux4gColors.Neutral800 else Ux4gColors.Neutral200
+    val textPrimary = if (isDark) Ux4gColors.Neutral50 else Ux4gColors.Neutral900
+    val textSubtle = if (isDark) Ux4gColors.Neutral400 else Ux4gColors.Neutral600
+
+    val tagColor = when (status) {
+        ApplicationStatus.Approved -> Ux4gTagColor.Success
+        ApplicationStatus.Rejected -> Ux4gTagColor.Error
+        ApplicationStatus.Delayed -> Ux4gTagColor.Warning
+        ApplicationStatus.ActionRequired -> Ux4gTagColor.Warning
+        ApplicationStatus.UnderReview -> Ux4gTagColor.Neutral
+    }
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(pageBg)
+    ) {
+        // App Header
+        Ux4gAppHeader(
+            title = "Digital Services",
+            variant = Ux4gAppHeaderVariant.Standard,
+            navigationIcon = Icons.Filled.Menu,
+            onNavigationClick = {},
+            actions = listOf(
+                Ux4gAppHeaderAction(icon = Icons.Filled.Menu, contentDescription = "Menu", onClick = {})
+            )
+        )
+
+        // Scrollable Card Container
+        Column(
+            modifier = Modifier
+                .weight(1f)
+                .fillMaxWidth()
+                .verticalScroll(scrollState)
+                .padding(horizontal = 16.dp, vertical = 12.dp)
+        ) {
+            // Back Button
+            Row(
+                modifier = Modifier
+                    .clickable(onClick = onBackClick)
+                    .padding(vertical = 6.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Icon(
+                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                    contentDescription = "Back",
+                    tint = Ux4gColors.Primary600,
+                    modifier = Modifier.size(18.dp)
+                )
+                Spacer(modifier = Modifier.width(6.dp))
+                Text(
+                    text = "Back",
+                    style = TextStyle(fontSize = 14.sp, fontWeight = FontWeight.SemiBold, color = Ux4gColors.Primary600)
+                )
+            }
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            // Contextual Alert Banner
+            when (status) {
+                ApplicationStatus.ActionRequired -> {
+                    ActionRequiredBanner(onUploadDocument = onUploadDocument, isDark = isDark)
+                    Spacer(modifier = Modifier.height(12.dp))
+                }
+                ApplicationStatus.Rejected -> {
+                    RejectedBanner(isDark = isDark)
+                    Spacer(modifier = Modifier.height(12.dp))
+                }
+                ApplicationStatus.Delayed -> {
+                    DelayedBanner(isDark = isDark)
+                    Spacer(modifier = Modifier.height(12.dp))
+                }
+                else -> Unit
+            }
+
+            // Elevated Info Card Container
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .shadow(elevation = 2.dp, shape = RoundedCornerShape(14.dp))
+                    .clip(RoundedCornerShape(14.dp))
+                    .background(cardBg)
+                    .border(1.dp, cardBorder, RoundedCornerShape(14.dp))
+                    .padding(16.dp)
+            ) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = serviceName,
+                        style = TextStyle(fontSize = 16.sp, fontWeight = FontWeight.Bold, color = textPrimary)
+                    )
+                    Ux4gTag(
+                        text = status.title,
+                        colorScheme = tagColor,
+                        style = Ux4gTagStyle.Tonal
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(4.dp))
+
+                Text(
+                    text = "Application ID · $applicationId",
+                    style = TextStyle(fontSize = 12.sp, color = textSubtle)
+                )
+
+                if (status != ApplicationStatus.Approved) {
+                    Spacer(modifier = Modifier.height(12.dp))
+                    Text(
+                        text = "8 days left",
+                        style = TextStyle(fontSize = 11.sp, fontWeight = FontWeight.Medium, color = textSubtle)
+                    )
+                    Spacer(modifier = Modifier.height(4.dp))
+                    LinearProgressIndicator(
+                        progress = { 0.6f },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(6.dp)
+                            .clip(RoundedCornerShape(3.dp)),
+                        color = Ux4gColors.Primary600,
+                        trackColor = if (isDark) Ux4gColors.Neutral800 else Color(0xFFE5E7EB)
+                    )
+                }
+            }
+
+            Spacer(modifier = Modifier.height(14.dp))
+
+            // Elevated Journey Timeline Card Container
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .shadow(elevation = 2.dp, shape = RoundedCornerShape(14.dp))
+                    .clip(RoundedCornerShape(14.dp))
+                    .background(cardBg)
+                    .border(1.dp, cardBorder, RoundedCornerShape(14.dp))
+                    .padding(16.dp)
+            ) {
+                Text(
+                    text = "Application journey",
+                    style = TextStyle(fontSize = 15.sp, fontWeight = FontWeight.Bold, color = textPrimary)
+                )
+                Text(
+                    text = "Every step from submission to issuance",
+                    style = TextStyle(fontSize = 12.sp, color = textSubtle)
+                )
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                val isApproved = status == ApplicationStatus.Approved
+
+                val steps = listOf(
+                    Ux4gJourneyStep(
+                        state = Ux4gJourneyStepState.Completed,
+                        date = "07 Apr 2026, 10:24 AM",
+                        title = "Application Submitted"
+                    ),
+                    Ux4gJourneyStep(
+                        state = Ux4gJourneyStepState.Completed,
+                        date = "10 Apr 2026, 02:15 PM",
+                        title = "Documents Verified"
+                    ),
+                    Ux4gJourneyStep(
+                        state = if (isApproved) Ux4gJourneyStepState.Completed else Ux4gJourneyStepState.Current,
+                        date = "11 Apr 2026, 09:03 AM",
+                        title = "Officer Review"
+                    ),
+                    Ux4gJourneyStep(
+                        state = if (isApproved) Ux4gJourneyStepState.Current else Ux4gJourneyStepState.Upcoming,
+                        date = if (isApproved) "14 Apr 2026, 11:30 AM" else "Est. 22 Apr 2026",
+                        title = if (isApproved) "Certificate Issued" else "Certificate Will Be Issued",
+                        status = if (!isApproved) Ux4gJourneyStepStatus(
+                            text = if (status == ApplicationStatus.UnderReview) "2 days remaining" else "11 days remaining",
+                            badgeText = "Pending",
+                            badgePosition = Ux4gJourneyBadgePosition.Bottom
+                        ) else null
+                    )
+                )
+
+                Ux4gJourneyTimeline(
+                    steps = steps,
+                    orientation = Ux4gJourneyOrientation.Vertical
+                )
+            }
+
+            Spacer(modifier = Modifier.height(18.dp))
+
+            // Contextual Actions
+            when (status) {
+                ApplicationStatus.Rejected -> {
+                    Ux4gButton(
+                        text = "Reapply",
+                        variant = Ux4gButtonVariant.Primary,
+                        size = Ux4gButtonSize.Large,
+                        onClick = onReapply,
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                    Spacer(modifier = Modifier.height(10.dp))
+                    TextButton(
+                        onClick = onContactOffice,
+                        modifier = Modifier.align(Alignment.CenterHorizontally)
+                    ) {
+                        Text(
+                            text = "Contact district office",
+                            style = TextStyle(fontSize = 14.sp, color = Ux4gColors.Primary600, fontWeight = FontWeight.SemiBold)
+                        )
+                    }
+                }
+                ApplicationStatus.Delayed -> {
+                    TextButton(
+                        onClick = onEscalate,
+                        modifier = Modifier.align(Alignment.CenterHorizontally)
+                    ) {
+                        Text(
+                            text = "Escalate this application",
+                            style = TextStyle(fontSize = 14.sp, color = Color(0xFFDC2626), fontWeight = FontWeight.SemiBold)
+                        )
+                    }
+                }
+                ApplicationStatus.Approved -> {
+                    Ux4gButton(
+                        text = "Download Certificate (PDF)",
+                        variant = Ux4gButtonVariant.Primary,
+                        size = Ux4gButtonSize.Large,
+                        onClick = onDownloadPdf,
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                    Spacer(modifier = Modifier.height(10.dp))
+                    Ux4gButton(
+                        text = "Save to DigiLocker",
+                        variant = Ux4gButtonVariant.Outline,
+                        size = Ux4gButtonSize.Large,
+                        onClick = onSaveDigiLocker,
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                }
+                else -> Unit
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+        }
+
+        // Footer
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 12.dp),
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = "Powered by Digital India",
+                style = TextStyle(
+                    fontSize = 11.sp,
+                    color = Ux4gColors.Neutral400,
+                    fontWeight = FontWeight.Medium
+                )
+            )
+        }
+    }
+}
+
+@Preview(showBackground = true, widthDp = 390, heightDp = 844)
+@Composable
+fun ApplicationStatusTrackerCardPreview() {
+    ApplicationStatusTrackerCardScreen()
+}`}
+>
+  <Tabs items={['Under Review', 'Action Required', 'Rejected', 'Delayed', 'Approved']}>
+    <Tab value="Under Review">
+      <img
+        src="/images/patterns/application_status_tracker/under_review_cardstyle.svg"
+        alt="Application Status Tracker - Under Review (Card Style)"
+        className="w-full max-w-[360px] rounded-2xl border border-border shadow-sm mx-auto my-4"
+      />
+    </Tab>
+    <Tab value="Action Required">
+      <img
+        src="/images/patterns/application_status_tracker/action_required_cardstyle.svg"
+        alt="Application Status Tracker - Action Required (Card Style)"
+        className="w-full max-w-[360px] rounded-2xl border border-border shadow-sm mx-auto my-4"
+      />
+    </Tab>
+    <Tab value="Rejected">
+      <img
+        src="/images/patterns/application_status_tracker/rejected_cardstyle.svg"
+        alt="Application Status Tracker - Rejected (Card Style)"
+        className="w-full max-w-[360px] rounded-2xl border border-border shadow-sm mx-auto my-4"
+      />
+    </Tab>
+    <Tab value="Delayed">
+      <img
+        src="/images/patterns/application_status_tracker/delayed_cardstyle.svg"
+        alt="Application Status Tracker - Delayed (Card Style)"
+        className="w-full max-w-[360px] rounded-2xl border border-border shadow-sm mx-auto my-4"
+      />
+    </Tab>
+    <Tab value="Approved">
+      <img
+        src="/images/patterns/application_status_tracker/approved_cardstyle.svg"
+        alt="Application Status Tracker - Approved (Card Style)"
+        className="w-full max-w-[360px] rounded-2xl border border-border shadow-sm mx-auto my-4"
+      />
+    </Tab>
+  </Tabs>
+</ComponentPreview>
