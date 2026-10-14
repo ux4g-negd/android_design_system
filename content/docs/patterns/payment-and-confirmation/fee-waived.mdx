@@ -1,0 +1,588 @@
+---
+title: Fee Waived
+description: Concession and social entitlement fee exemption pattern presenting transparent fee breakdown, waiver discount justification, zero-balance confirmation, and immediate application progression
+---
+
+# Fee Waived
+
+An essential affirmative action and social entitlement confirmation pattern presented to citizens who are legally exempted from application, registration, or processing fees (e.g., Scheduled Caste (SC), Scheduled Tribe (ST), Persons with Disabilities (PwD), or economically weaker sections under government concession rules).
+
+The pattern prevents applicant confusion regarding payment status by explicitly communicating that a 100% waiver has been applied to their application, detailing every statutory line item (base fee, processing charges, GST) alongside the waiver adjustment, confirming a total payable balance of **Rs 0.00**, and offering a single-tap progression without requiring payment gateway checkout.
+
+---
+
+<h2><MIcon name="smartphone" /> Interactive Previews</h2>
+
+### 1. Default Style (Full Screen)
+
+Full-screen affirmative entitlement layout with concentric success badge, itemized fee waiver audit breakdown, one-tap zero-balance progression button, and optional "Pay anyway" citizen choice.
+
+<ComponentPreview
+  title="Fee Waived - Default"
+  category="Pattern · Jetpack Compose"
+  code={`package com.example.ux4g.patterns.payment
+
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material3.Divider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.ux4g.designsystemv1.components.Ux4gAppHeader
+import androidx.compose.material3.TextButton
+import com.ux4g.designsystemv1.components.Ux4gAppHeaderAction
+import com.ux4g.designsystemv1.components.Ux4gAppHeaderVariant
+import com.ux4g.designsystemv1.components.buttons.Ux4gButton
+import com.ux4g.designsystemv1.components.buttons.Ux4gButtonSize
+import com.ux4g.designsystemv1.components.buttons.Ux4gButtonVariant
+import com.ux4g.designsystemv1.foundation.Ux4gColors
+import com.ux4g.designsystemv1.foundation.Ux4gSpace
+
+/**
+ * Data model for line item in fee breakdown.
+ */
+data class FeeItem(
+    val label: String,
+    val amount: String,
+    val isDiscount: Boolean = false,
+    val isTotal: Boolean = false
+)
+
+/**
+ * Fee Waived pattern screen demonstrating affirmative action fee concession.
+ *
+ * @param categoryName Entitlement category eligible for fee waiver (e.g. SC/ST applicant).
+ * @param onProceed Callback invoked when citizen taps "Proceed without payment".
+ * @param onPayAnyway Callback invoked if citizen elects voluntary payment.
+ */
+@Composable
+fun FeeWaivedScreen(
+    categoryName: String = "SC/ST applicant",
+    onProceed: () -> Unit = {},
+    onPayAnyway: () -> Unit = {}
+) {
+    val isDark = isSystemInDarkTheme()
+    val scrollState = rememberScrollState()
+
+    val surfaceBg = if (isDark) Ux4gColors.Neutral950 else Color(0xFFF9FAFB)
+    val cardBg = if (isDark) Color(0xFF14291D) else Color(0xFFF0FDF4)
+    val cardBorder = if (isDark) Color(0xFF1E3A2B) else Color(0xFFDCFCE7)
+    val textPrimary = if (isDark) Ux4gColors.Neutral50 else Ux4gColors.Neutral900
+    val textSubtle = if (isDark) Ux4gColors.Neutral400 else Ux4gColors.Neutral600
+    val discountColor = if (isDark) Color(0xFF4ADE80) else Color(0xFF15803D)
+
+    val feeBreakdown = listOf(
+        FeeItem(label = "Application fee", amount = "Rs 30.00"),
+        FeeItem(label = "Processing charge", amount = "Rs 5.00"),
+        FeeItem(label = "GST (18%)", amount = "Rs 6.30"),
+        FeeItem(label = "Waiver applied", amount = "− Rs 41.30", isDiscount = true),
+        FeeItem(label = "Total payable", amount = "Rs 0.00", isTotal = true)
+    )
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(surfaceBg)
+    ) {
+        // 1. Official Government App Header
+        Ux4gAppHeader(
+            title = "Digital Services",
+            variant = Ux4gAppHeaderVariant.Standard,
+            navigationIcon = Icons.Filled.Menu,
+            onNavigationClick = {},
+            actions = listOf(
+                Ux4gAppHeaderAction(
+                    icon = Icons.Filled.Menu,
+                    contentDescription = "Menu",
+                    onClick = {}
+                )
+            )
+        )
+
+        // 2. Scrollable Entitlement Content
+        Column(
+            modifier = Modifier
+                .weight(1f)
+                .fillMaxWidth()
+                .verticalScroll(scrollState)
+                .padding(horizontal = 24.dp, vertical = 24.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // Concentric Green Success / Entitlement Badge
+            Box(
+                contentAlignment = Alignment.Center,
+                modifier = Modifier
+                    .size(64.dp)
+                    .clip(CircleShape)
+                    .background(if (isDark) Color(0xFF14532D) else Color(0xFFDCFCE7))
+            ) {
+                Box(
+                    contentAlignment = Alignment.Center,
+                    modifier = Modifier
+                        .size(36.dp)
+                        .clip(CircleShape)
+                        .background(if (isDark) Color(0xFF16A34A) else Color(0xFF16A34A))
+                ) {
+                    Icon(
+                        imageVector = Icons.Filled.Check,
+                        contentDescription = "Fee Waived",
+                        tint = Color.White,
+                        modifier = Modifier.size(22.dp)
+                    )
+                }
+            }
+
+            Spacer(modifier = Modifier.height(18.dp))
+
+            // Main Status Headline
+            Text(
+                text = "Fee Waived",
+                style = TextStyle(
+                    fontSize = 22.sp,
+                    fontWeight = FontWeight.ExtraBold,
+                    color = textPrimary,
+                    textAlign = TextAlign.Center
+                )
+            )
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            // Reassurance & Category Description
+            Text(
+                text = "You are eligible for fee waiver as an $categoryName. No payment required.",
+                style = TextStyle(
+                    fontSize = 13.sp,
+                    lineHeight = 19.sp,
+                    color = textSubtle,
+                    textAlign = TextAlign.Center
+                ),
+                modifier = Modifier.fillMaxWidth(0.9f)
+            )
+
+            Spacer(modifier = Modifier.height(24.dp))
+
+            // Fee Breakdown Card
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(10.dp))
+                    .background(cardBg)
+                    .border(width = 1.dp, color = cardBorder, shape = RoundedCornerShape(10.dp))
+                    .padding(horizontal = 16.dp, vertical = 14.dp)
+            ) {
+                feeBreakdown.forEachIndexed { index, item ->
+                    if (item.isTotal) {
+                        Divider(
+                            color = cardBorder,
+                            thickness = 1.dp,
+                            modifier = Modifier.padding(vertical = 10.dp)
+                        )
+                    }
+
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = if (item.isTotal) 2.dp else 5.dp),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            text = item.label,
+                            style = TextStyle(
+                                fontSize = if (item.isTotal) 14.sp else 13.sp,
+                                fontWeight = if (item.isTotal) FontWeight.Bold else FontWeight.Normal,
+                                color = if (item.isTotal) textPrimary else textSubtle
+                            )
+                        )
+                        Text(
+                            text = item.amount,
+                            style = TextStyle(
+                                fontSize = if (item.isTotal) 15.sp else 13.sp,
+                                fontWeight = if (item.isTotal) FontWeight.ExtraBold else FontWeight.Medium,
+                                color = when {
+                                    item.isDiscount -> discountColor
+                                    item.isTotal -> textPrimary
+                                    else -> textPrimary
+                                }
+                            )
+                        )
+                    }
+                }
+            }
+
+            Spacer(modifier = Modifier.height(28.dp))
+
+            // Primary Zero-Balance Progression CTA
+            Ux4gButton(
+                text = "Proceed without payment",
+                variant = Ux4gButtonVariant.Primary,
+                size = Ux4gButtonSize.Large,
+                onClick = onProceed,
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            // Secondary Voluntary Contribution Link
+            TextButton(
+                onClick = onPayAnyway,
+                contentPadding = PaddingValues(vertical = 8.dp)
+            ) {
+                Text(
+                    text = "Pay anyway",
+                    style = TextStyle(
+                        fontSize = 14.sp,
+                        fontWeight = FontWeight.SemiBold,
+                        color = Ux4gColors.Primary600
+                    )
+                )
+            }
+
+            Spacer(modifier = Modifier.height(20.dp))
+        }
+
+        // 3. Official Digital India Brand Footer
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 14.dp),
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = "Powered by Digital India",
+                style = TextStyle(
+                    fontSize = 11.sp,
+                    color = Ux4gColors.Neutral400,
+                    fontWeight = FontWeight.Medium
+                )
+            )
+        }
+    }
+}
+
+@Preview(showBackground = true, widthDp = 390, heightDp = 780)
+@Composable
+fun FeeWaivedScreenPreview() {
+    FeeWaivedScreen()
+}`}
+>
+  <img
+    src="/images/patterns/fee_waived/fee_waived.svg"
+    alt="Fee Waived - Default"
+    className="w-full max-w-[360px] rounded-2xl border border-border shadow-sm"
+  />
+</ComponentPreview>
+
+---
+
+### 2. Card Style Variant
+
+Elevated surface card variant tailored for modal sheets, multi-step application wizards, or modular summary screens where payment exemption is presented inside an independent container.
+
+<ComponentPreview
+  title="Fee Waived - Card Style"
+  category="Pattern · Jetpack Compose"
+  code={`package com.example.ux4g.patterns.payment
+
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material3.Divider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.ux4g.designsystemv1.components.Ux4gAppHeader
+import com.ux4g.designsystemv1.components.Ux4gAppHeaderAction
+import com.ux4g.designsystemv1.components.Ux4gAppHeaderVariant
+import com.ux4g.designsystemv1.components.buttons.Ux4gButton
+import com.ux4g.designsystemv1.components.buttons.Ux4gButtonSize
+import com.ux4g.designsystemv1.components.buttons.Ux4gButtonVariant
+import com.ux4g.designsystemv1.foundation.Ux4gColors
+
+/**
+ * Card Style Variant of the Fee Waived entitlement screen.
+ */
+@Composable
+fun FeeWaivedCardScreen(
+    categoryName: String = "SC/ST applicant",
+    onProceed: () -> Unit = {},
+    onPayAnyway: () -> Unit = {}
+) {
+    val isDark = isSystemInDarkTheme()
+    val scrollState = rememberScrollState()
+
+    val pageBg = if (isDark) Ux4gColors.Neutral950 else Color(0xFFF1F5F9)
+    val cardContainerBg = if (isDark) Ux4gColors.Neutral900 else Color.White
+    val cardContainerBorder = if (isDark) Ux4gColors.Neutral800 else Ux4gColors.Neutral200
+    val innerCardBg = if (isDark) Color(0xFF14291D) else Color(0xFFF0FDF4)
+    val innerCardBorder = if (isDark) Color(0xFF1E3A2B) else Color(0xFFDCFCE7)
+    val textPrimary = if (isDark) Ux4gColors.Neutral50 else Ux4gColors.Neutral900
+    val textSubtle = if (isDark) Ux4gColors.Neutral400 else Ux4gColors.Neutral600
+    val discountColor = if (isDark) Color(0xFF4ADE80) else Color(0xFF15803D)
+
+    val feeBreakdown = listOf(
+        FeeItem(label = "Application fee", amount = "Rs 30.00"),
+        FeeItem(label = "Processing charge", amount = "Rs 5.00"),
+        FeeItem(label = "GST (18%)", amount = "Rs 6.30"),
+        FeeItem(label = "Waiver applied", amount = "− Rs 41.30", isDiscount = true),
+        FeeItem(label = "Total payable", amount = "Rs 0.00", isTotal = true)
+    )
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(pageBg)
+    ) {
+        // App Header
+        Ux4gAppHeader(
+            title = "Digital Services",
+            variant = Ux4gAppHeaderVariant.Standard,
+            navigationIcon = Icons.Filled.Menu,
+            onNavigationClick = {},
+            actions = listOf(
+                Ux4gAppHeaderAction(icon = Icons.Filled.Menu, contentDescription = "Menu", onClick = {})
+            )
+        )
+
+        // Scrollable area hosting the elevated card
+        Column(
+            modifier = Modifier
+                .weight(1f)
+                .fillMaxWidth()
+                .verticalScroll(scrollState)
+                .padding(horizontal = 16.dp, vertical = 20.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            // Elevated Entitlement Card Container
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .shadow(elevation = 2.dp, shape = RoundedCornerShape(16.dp))
+                    .clip(RoundedCornerShape(16.dp))
+                    .background(cardContainerBg)
+                    .border(1.dp, cardContainerBorder, RoundedCornerShape(16.dp))
+                    .padding(horizontal = 20.dp, vertical = 24.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                // Concentric Entitlement Badge
+                Box(
+                    contentAlignment = Alignment.Center,
+                    modifier = Modifier
+                        .size(64.dp)
+                        .clip(CircleShape)
+                        .background(if (isDark) Color(0xFF14532D) else Color(0xFFDCFCE7))
+                ) {
+                    Box(
+                        contentAlignment = Alignment.Center,
+                        modifier = Modifier
+                            .size(36.dp)
+                            .clip(CircleShape)
+                            .background(Color(0xFF16A34A))
+                    ) {
+                        Icon(
+                            imageVector = Icons.Filled.Check,
+                            contentDescription = "Fee Waived",
+                            tint = Color.White,
+                            modifier = Modifier.size(22.dp)
+                        )
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                Text(
+                    text = "Fee Waived",
+                    style = TextStyle(
+                        fontSize = 22.sp,
+                        fontWeight = FontWeight.ExtraBold,
+                        color = textPrimary,
+                        textAlign = TextAlign.Center
+                    )
+                )
+
+                Spacer(modifier = Modifier.height(6.dp))
+
+                Text(
+                    text = "You are eligible for fee waiver as an $categoryName. No payment required.",
+                    style = TextStyle(
+                        fontSize = 13.sp,
+                        lineHeight = 18.sp,
+                        color = textSubtle,
+                        textAlign = TextAlign.Center
+                    ),
+                    modifier = Modifier.fillMaxWidth(0.95f)
+                )
+
+                Spacer(modifier = Modifier.height(20.dp))
+
+                // Breakdown Box
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clip(RoundedCornerShape(10.dp))
+                        .background(innerCardBg)
+                        .border(1.dp, innerCardBorder, RoundedCornerShape(10.dp))
+                        .padding(horizontal = 16.dp, vertical = 14.dp)
+                ) {
+                    feeBreakdown.forEach { item ->
+                        if (item.isTotal) {
+                            Divider(
+                                color = innerCardBorder,
+                                thickness = 1.dp,
+                                modifier = Modifier.padding(vertical = 10.dp)
+                            )
+                        }
+
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(vertical = if (item.isTotal) 2.dp else 5.dp),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Text(
+                                text = item.label,
+                                style = TextStyle(
+                                    fontSize = if (item.isTotal) 14.sp else 13.sp,
+                                    fontWeight = if (item.isTotal) FontWeight.Bold else FontWeight.Normal,
+                                    color = if (item.isTotal) textPrimary else textSubtle
+                                )
+                            )
+                            Text(
+                                text = item.amount,
+                                style = TextStyle(
+                                    fontSize = if (item.isTotal) 15.sp else 13.sp,
+                                    fontWeight = if (item.isTotal) FontWeight.ExtraBold else FontWeight.Medium,
+                                    color = when {
+                                        item.isDiscount -> discountColor
+                                        item.isTotal -> textPrimary
+                                        else -> textPrimary
+                                    }
+                                )
+                            )
+                        }
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(24.dp))
+
+                // Proceed without payment button
+                Ux4gButton(
+                    text = "Proceed without payment",
+                    variant = Ux4gButtonVariant.Primary,
+                    size = Ux4gButtonSize.Large,
+                    onClick = onProceed,
+                    modifier = Modifier.fillMaxWidth()
+                )
+
+                Spacer(modifier = Modifier.height(6.dp))
+
+                TextButton(
+                    onClick = onPayAnyway,
+                    contentPadding = PaddingValues(vertical = 6.dp)
+                ) {
+                    Text(
+                        text = "Pay anyway",
+                        style = TextStyle(
+                            fontSize = 14.sp,
+                            fontWeight = FontWeight.SemiBold,
+                            color = Ux4gColors.Primary600
+                        )
+                    )
+                }
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            Text(
+                text = "Powered by Digital India",
+                style = TextStyle(
+                    fontSize = 11.sp,
+                    color = Ux4gColors.Neutral400,
+                    fontWeight = FontWeight.Medium
+                )
+            )
+        }
+    }
+}
+
+@Preview(showBackground = true, widthDp = 390, heightDp = 780)
+@Composable
+fun FeeWaivedCardScreenPreview() {
+    FeeWaivedCardScreen()
+}`}
+>
+  <img
+    src="/images/patterns/fee_waived/fee_waived_cardstyle.svg"
+    alt="Fee Waived - Card Style"
+    className="w-full max-w-[360px] rounded-2xl border border-border shadow-sm"
+  />
+</ComponentPreview>
+

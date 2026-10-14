@@ -1,0 +1,9 @@
+{
+  "title": "Payment and Confirmation",
+  "pages": [
+    "payment-processing",
+    "payment-successful",
+    "payment-failed",
+    "fee-waived"
+  ]
+}

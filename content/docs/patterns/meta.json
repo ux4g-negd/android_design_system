@@ -5,6 +5,7 @@
     "identity-and-access",
     "application-submission",
     "service-discovery",
-    "notification"
+    "notification",
+    "payment-and-confirmation"
   ]
 }
