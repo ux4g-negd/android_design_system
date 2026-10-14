@@ -1,0 +1,439 @@
+---
+title: Search Applications
+description: Application search and filtering pattern allowing citizens to query applications by reference number or scheme name with dynamic result counts
+---
+
+# Search Applications
+
+A real-time search and query discovery pattern enabling citizens to rapidly locate specific petitions among multiple ongoing or completed government applications.
+
+The screen features a citizen greeting and application metric summary cards (*Active*, *Needs attention*, *Completed*, *Total*), segmented filter chips (`Ux4gChoiceChip`), an interactive search bar with query clear action, matching result counter (*"2 results for 'income'"*), and expandable application result cards (`Ux4gResultRow`) highlighting urgent review deadlines (*8 days left*, *Under review*) and itemized petition metadata.
+
+---
+
+<h2><MIcon name="smartphone" /> Interactive Preview</h2>
+
+### Search Results Overview
+
+Comprehensive search view demonstrating keyword-based query filtering, dynamic matching result counts, and expandable application status cards.
+
+<ComponentPreview
+  title="Search Applications - Results Overview"
+  category="Pattern · Jetpack Compose"
+  code={`package com.example.ux4g.patterns.dashboard
+
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Notifications
+import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.Divider
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.ux4g.designsystemv1.components.Ux4gAppHeader
+import com.ux4g.designsystemv1.components.Ux4gAppHeaderAction
+import com.ux4g.designsystemv1.components.Ux4gAppHeaderVariant
+import com.ux4g.designsystemv1.components.chips.Ux4gChoiceChip
+import com.ux4g.designsystemv1.components.chips.Ux4gChoiceChipSize
+import com.ux4g.designsystemv1.components.resultlist.Ux4gPillSegment
+import com.ux4g.designsystemv1.components.resultlist.Ux4gResultDetail
+import com.ux4g.designsystemv1.components.resultlist.Ux4gResultRow
+import com.ux4g.designsystemv1.foundation.Ux4gColors
+
+/**
+ * Search Applications Screen
+ *
+ * @param onTrackApplication Invoked when citizen taps 'Track' on a matching result
+ * @param onNotificationClick Invoked when citizen taps the notification bell
+ */
+@OptIn(ExperimentalLayoutApi::class, ExperimentalMaterial3Api::class)
+@Composable
+fun SearchApplicationsScreen(
+    onTrackApplication: (String) -> Unit = {},
+    onNotificationClick: () -> Unit = {}
+) {
+    val isDark = isSystemInDarkTheme()
+    val scrollState = rememberScrollState()
+
+    var selectedTabIndex by remember { mutableIntStateOf(2) } // Under Review
+    var searchQuery by remember { mutableStateOf("income") }
+
+    val surfaceBg = if (isDark) Ux4gColors.Neutral950 else Color(0xFFFAFAFA)
+    val cardBg = if (isDark) Ux4gColors.Neutral900 else Color.White
+    val borderCol = if (isDark) Ux4gColors.Neutral800 else Color(0xFFE5E7EB)
+    val textPrimary = if (isDark) Ux4gColors.Neutral50 else Ux4gColors.Neutral900
+    val textSecondary = if (isDark) Ux4gColors.Neutral400 else Ux4gColors.Neutral600
+
+    val tabs = listOf(
+        "All" to "62",
+        "Pending" to "3",
+        "Under Review" to "12",
+        "Approved" to "41",
+        "Rejected" to "6"
+    )
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(surfaceBg)
+    ) {
+        // App Header with National Branding and Profile Avatar
+        Ux4gAppHeader(
+            variant = if (isDark) Ux4gAppHeaderVariant.Dark else Ux4gAppHeaderVariant.Light,
+            title = "Government of India",
+            actions = listOf(
+                Ux4gAppHeaderAction(
+                    icon = Icons.Default.Notifications,
+                    contentDescription = "Notifications",
+                    onClick = onNotificationClick
+                )
+            ),
+            showAvatar = true,
+            avatarInitials = "R"
+        )
+
+        Divider(color = borderCol, thickness = 1.dp)
+
+        // Scrollable Body Content
+        Column(
+            modifier = Modifier
+                .weight(1f)
+                .fillMaxWidth()
+                .verticalScroll(scrollState)
+                .padding(20.dp)
+        ) {
+            // Greeting Header
+            Text(
+                text = "Good morning, Ramesh",
+                style = TextStyle(
+                    fontSize = 22.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = textPrimary
+                )
+            )
+
+            Spacer(modifier = Modifier.height(4.dp))
+
+            Text(
+                text = "Find an application by reference or service name",
+                style = TextStyle(
+                    fontSize = 13.sp,
+                    fontWeight = FontWeight.Normal,
+                    color = textSecondary
+                )
+            )
+
+            Spacer(modifier = Modifier.height(20.dp))
+
+            // 2x2 Metric Summary Grid
+            Row(modifier = Modifier.fillMaxWidth()) {
+                StatCard(
+                    value = "2",
+                    label = "Active",
+                    modifier = Modifier.weight(1f),
+                    cardBg = cardBg,
+                    borderCol = borderCol,
+                    textColor = textPrimary,
+                    subColor = textSecondary
+                )
+                Spacer(modifier = Modifier.width(12.dp))
+                StatCard(
+                    value = "1",
+                    label = "Needs attention",
+                    dotColor = Color(0xFFEF4444),
+                    modifier = Modifier.weight(1f),
+                    cardBg = cardBg,
+                    borderCol = borderCol,
+                    textColor = textPrimary,
+                    subColor = textSecondary
+                )
+            }
+
+            Spacer(modifier = Modifier.height(12.dp))
+
+            Row(modifier = Modifier.fillMaxWidth()) {
+                StatCard(
+                    value = "5",
+                    label = "Completed",
+                    modifier = Modifier.weight(1f),
+                    cardBg = cardBg,
+                    borderCol = borderCol,
+                    textColor = textPrimary,
+                    subColor = textSecondary
+                )
+                Spacer(modifier = Modifier.width(12.dp))
+                StatCard(
+                    value = "8",
+                    label = "Total",
+                    modifier = Modifier.weight(1f),
+                    cardBg = cardBg,
+                    borderCol = borderCol,
+                    textColor = textPrimary,
+                    subColor = textSecondary
+                )
+            }
+
+            Spacer(modifier = Modifier.height(24.dp))
+
+            // Section Subtitle
+            Text(
+                text = "Your applications",
+                style = TextStyle(
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = textPrimary
+                )
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // Filter Chips
+            FlowRow(
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp),
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                tabs.forEachIndexed { index, (label, count) ->
+                    val isSelected = selectedTabIndex == index
+                    Ux4gChoiceChip(
+                        text = "$label ($count)",
+                        selected = isSelected,
+                        onClick = { selectedTabIndex = index },
+                        size = Ux4gChoiceChipSize.M
+                    )
+                }
+            }
+
+            Spacer(modifier = Modifier.height(20.dp))
+
+            // Search Bar Input
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(46.dp)
+                    .clip(RoundedCornerShape(8.dp))
+                    .border(1.dp, borderCol, RoundedCornerShape(8.dp))
+                    .background(cardBg),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                TextField(
+                    value = searchQuery,
+                    onValueChange = { searchQuery = it },
+                    placeholder = {
+                        Text(
+                            text = "Search for...",
+                            fontSize = 14.sp,
+                            color = Ux4gColors.Neutral400
+                        )
+                    },
+                    singleLine = true,
+                    colors = TextFieldDefaults.colors(
+                        focusedContainerColor = Color.Transparent,
+                        unfocusedContainerColor = Color.Transparent,
+                        focusedIndicatorColor = Color.Transparent,
+                        unfocusedIndicatorColor = Color.Transparent
+                    ),
+                    modifier = Modifier.weight(1f)
+                )
+
+                if (searchQuery.isNotEmpty()) {
+                    Icon(
+                        imageVector = Icons.Default.Close,
+                        contentDescription = "Clear search",
+                        tint = textSecondary,
+                        modifier = Modifier
+                            .size(18.dp)
+                            .clickable { searchQuery = "" }
+                    )
+                    Spacer(modifier = Modifier.width(10.dp))
+                }
+
+                // Search Action Button
+                Box(
+                    modifier = Modifier
+                        .size(46.dp)
+                        .background(Ux4gColors.Primary600)
+                        .clickable { /* Execute search */ },
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Search,
+                        contentDescription = "Search",
+                        tint = Color.White,
+                        modifier = Modifier.size(20.dp)
+                    )
+                }
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // Result Count Text
+            Text(
+                text = "2 results for \\"$searchQuery\\"",
+                style = TextStyle(
+                    fontSize = 13.sp,
+                    fontWeight = FontWeight.Medium,
+                    color = textSecondary
+                )
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // Result 1 - Expanded Application Details
+            Ux4gResultRow(
+                title = "Income Certificate",
+                actionButtonText = "Track",
+                onActionPressed = { onTrackApplication("INC-2026-MH-04127") },
+                initialExpanded = true,
+                details = listOf(
+                    Ux4gResultDetail(label = "Reference Number", value = "INC-2026-MH-04127"),
+                    Ux4gResultDetail(label = "Last Updated Date", value = "10 Apr 2026"),
+                    Ux4gResultDetail(label = "Submitted Date", value = "1 Apr 2026"),
+                    Ux4gResultDetail(label = "Assigned Officer", value = "Rahul Sharma"),
+                    Ux4gResultDetail(label = "Department", value = "Revenue Department"),
+                    Ux4gResultDetail(label = "Documents", value = "ID Proof, Address Proof")
+                ),
+                metadataSegments = listOf(
+                    Ux4gPillSegment(
+                        text = "8 days left",
+                        textColor = textSecondary
+                    ),
+                    Ux4gPillSegment(
+                        text = "Under review",
+                        textColor = Color(0xFFD97706)
+                    )
+                ),
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // Result 2 - Compact Application Row
+            Ux4gResultRow(
+                title = "Income Certificate",
+                actionButtonText = "Track",
+                onActionPressed = { onTrackApplication("INC-2026-MH-04128") },
+                initialExpanded = false,
+                details = listOf(
+                    Ux4gResultDetail(label = "Reference Number", value = "INC-2026-MH-04128"),
+                    Ux4gResultDetail(label = "Last Updated Date", value = "10 Apr 2026")
+                ),
+                metadataSegments = listOf(
+                    Ux4gPillSegment(
+                        text = "8 days left",
+                        textColor = textSecondary
+                    ),
+                    Ux4gPillSegment(
+                        text = "Under review",
+                        textColor = Color(0xFFD97706)
+                    )
+                ),
+                modifier = Modifier.fillMaxWidth()
+            )
+        }
+    }
+}
+
+/**
+ * Metric summary card displaying counts and status indicator dots.
+ */
+@Composable
+private fun StatCard(
+    value: String,
+    label: String,
+    modifier: Modifier = Modifier,
+    dotColor: Color? = null,
+    cardBg: Color,
+    borderCol: Color,
+    textColor: Color,
+    subColor: Color
+) {
+    Box(
+        modifier = modifier
+            .clip(RoundedCornerShape(10.dp))
+            .background(cardBg)
+            .border(1.dp, borderCol, RoundedCornerShape(10.dp))
+            .padding(14.dp)
+    ) {
+        Column(crossAxisAlignment = CrossAxisAlignment.Start) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text(
+                    text = value,
+                    style = TextStyle(
+                        fontSize = 24.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = textColor
+                    )
+                )
+                if (dotColor != null) {
+                    Spacer(modifier = Modifier.width(6.dp))
+                    Box(
+                        modifier = Modifier
+                            .size(8.dp)
+                            .clip(CircleShape)
+                            .background(dotColor)
+                    )
+                }
+            }
+            Spacer(modifier = Modifier.height(4.dp))
+            Text(
+                text = label,
+                style = TextStyle(
+                    fontSize = 12.sp,
+                    color = subColor
+                )
+            )
+        }
+    }
+}
+
+@Preview(showBackground = true, widthDp = 360, heightDp = 1000)
+@Composable
+fun SearchApplicationsPreview() {
+    SearchApplicationsScreen()
+}`}
+>
+  <img
+    src="/images/patterns/my_applications/search_applications.svg"
+    alt="Search Applications Pattern - Results Overview"
+    className="w-full max-w-[360px] rounded-2xl border border-border shadow-sm mx-auto my-4"
+  />
+</ComponentPreview>

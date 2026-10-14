@@ -1,0 +1,307 @@
+---
+title: No Applications
+description: Empty state dashboard pattern displayed when a citizen has no active applications, offering direct initiation actions and popular service discovery
+---
+
+# No Applications
+
+An onboarding and zero-state dashboard pattern presented to citizens who have not yet initiated or submitted any public service applications.
+
+Rather than presenting an unhelpful blank screen, this pattern combines a welcoming citizen greeting, a high-clarity empty state illustration and prompt (*"No active applications"*), a primary call-to-action button (*"Start application"*), and curated access cards for high-frequency civic services (*Caste Certificate*, *Domicile Certificate*, *Income Certificate*) to accelerate citizen discovery.
+
+---
+
+<h2><MIcon name="smartphone" /> Interactive Preview</h2>
+
+### Empty State Overview
+
+Clean zero-data dashboard layout featuring national branding, a centered call-to-action prompt, and popular public service recommendation cards.
+
+<ComponentPreview
+  title="No Applications - Empty State Overview"
+  category="Pattern · Jetpack Compose"
+  code={`package com.example.ux4g.patterns.dashboard
+
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowForward
+import androidx.compose.material.icons.filled.Notifications
+import androidx.compose.material.icons.outlined.Inbox
+import androidx.compose.material3.Divider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.ux4g.designsystemv1.components.Ux4gAppHeader
+import com.ux4g.designsystemv1.components.Ux4gAppHeaderAction
+import com.ux4g.designsystemv1.components.Ux4gAppHeaderVariant
+import com.ux4g.designsystemv1.components.buttons.Ux4gButton
+import com.ux4g.designsystemv1.components.buttons.Ux4gButtonSize
+import com.ux4g.designsystemv1.components.buttons.Ux4gButtonVariant
+import com.ux4g.designsystemv1.foundation.Ux4gColors
+
+/**
+ * No Applications Empty State Dashboard Screen
+ *
+ * @param onStartApplication Invoked when citizen taps 'Start application'
+ * @param onSelectService Invoked when citizen selects a recommended service
+ * @param onNotificationClick Invoked when citizen taps the notification bell
+ */
+@Composable
+fun NoApplicationsScreen(
+    onStartApplication: () -> Unit = {},
+    onSelectService: (String) -> Unit = {},
+    onNotificationClick: () -> Unit = {}
+) {
+    val isDark = isSystemInDarkTheme()
+    val scrollState = rememberScrollState()
+
+    val surfaceBg = if (isDark) Ux4gColors.Neutral950 else Color.White
+    val cardBg = if (isDark) Ux4gColors.Neutral900 else Color.White
+    val borderCol = if (isDark) Ux4gColors.Neutral800 else Color(0xFFE5E7EB)
+    val textPrimary = if (isDark) Ux4gColors.Neutral50 else Ux4gColors.Neutral900
+    val textSecondary = if (isDark) Ux4gColors.Neutral400 else Ux4gColors.Neutral600
+    val iconTint = if (isDark) Ux4gColors.Primary300 else Ux4gColors.Primary600
+
+    val popularServices = listOf(
+        "Caste Certificate" to "SC / ST / OBC category proof",
+        "Domicile Certificate" to "Proof of residence in the state",
+        "Income Certificate" to "Proof of annual family income"
+    )
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(surfaceBg)
+    ) {
+        // App Header with National Branding and Profile Avatar
+        Ux4gAppHeader(
+            variant = if (isDark) Ux4gAppHeaderVariant.Dark else Ux4gAppHeaderVariant.Light,
+            title = "Government of India",
+            actions = listOf(
+                Ux4gAppHeaderAction(
+                    icon = Icons.Default.Notifications,
+                    contentDescription = "Notifications",
+                    onClick = onNotificationClick
+                )
+            ),
+            showAvatar = true,
+            avatarInitials = "R"
+        )
+
+        Divider(color = borderCol, thickness = 1.dp)
+
+        // Scrollable Body Content
+        Column(
+            modifier = Modifier
+                .weight(1f)
+                .fillMaxWidth()
+                .verticalScroll(scrollState)
+                .padding(20.dp)
+        ) {
+            // Greeting Header
+            Text(
+                text = "Good morning, Ramesh",
+                style = TextStyle(
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = textPrimary
+                )
+            )
+
+            Spacer(modifier = Modifier.height(4.dp))
+
+            Text(
+                text = "You haven't started any applications yet",
+                style = TextStyle(
+                    fontSize = 13.sp,
+                    fontWeight = FontWeight.Normal,
+                    color = textSecondary
+                )
+            )
+
+            Spacer(modifier = Modifier.height(40.dp))
+
+            // Centered Zero-Data Illustration & Prompt
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalAlignment = Alignment.CenterVertically
+            ) {
+                Icon(
+                    imageVector = Icons.Outlined.Inbox,
+                    contentDescription = "No Applications",
+                    tint = iconTint,
+                    modifier = Modifier.size(64.dp)
+                )
+
+                Spacer(modifier = Modifier.height(20.dp))
+
+                Text(
+                    text = "No active applications",
+                    style = TextStyle(
+                        fontSize = 18.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = textPrimary
+                    )
+                )
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                Text(
+                    text = "Start your application easily by clicking on the\nbutton below",
+                    style = TextStyle(
+                        fontSize = 13.sp,
+                        color = textSecondary,
+                        textAlign = TextAlign.Center,
+                        lineHeight = 20.sp
+                    )
+                )
+
+                Spacer(modifier = Modifier.height(24.dp))
+
+                Ux4gButton(
+                    text = "Start application",
+                    variant = Ux4gButtonVariant.Primary,
+                    size = Ux4gButtonSize.Medium,
+                    onClick = onStartApplication,
+                    backgroundColor = if (isDark) Ux4gColors.Primary900 else Color(0xFFEDE9FE),
+                    contentColor = if (isDark) Ux4gColors.Primary200 else Ux4gColors.Primary600
+                )
+            }
+
+            Spacer(modifier = Modifier.height(44.dp))
+
+            // Popular Services Discovery Section
+            Text(
+                text = "Popular services to get started",
+                style = TextStyle(
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.SemiBold,
+                    color = textPrimary
+                )
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            popularServices.forEach { (title, subtitle) ->
+                PopularServiceCard(
+                    title = title,
+                    subtitle = subtitle,
+                    onClick = { onSelectService(title) },
+                    cardBg = cardBg,
+                    borderCol = borderCol,
+                    textColor = textPrimary,
+                    subColor = textSecondary,
+                    modifier = Modifier.padding(bottom = 12.dp)
+                )
+            }
+        }
+    }
+}
+
+/**
+ * Service discovery card with direct action trigger.
+ */
+@Composable
+private fun PopularServiceCard(
+    title: String,
+    subtitle: String,
+    onClick: () -> Unit,
+    cardBg: Color,
+    borderCol: Color,
+    textColor: Color,
+    subColor: Color,
+    modifier: Modifier = Modifier
+) {
+    Box(
+        modifier = modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(12.dp))
+            .background(cardBg)
+            .border(1.dp, borderCol, RoundedCornerShape(12.dp))
+            .clickable { onClick() }
+            .padding(16.dp)
+    ) {
+        Column(modifier = Modifier.fillMaxWidth()) {
+            Text(
+                text = title,
+                style = TextStyle(
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.SemiBold,
+                    color = textColor
+                )
+            )
+
+            Spacer(modifier = Modifier.height(4.dp))
+
+            Text(
+                text = subtitle,
+                style = TextStyle(
+                    fontSize = 12.sp,
+                    color = subColor
+                )
+            )
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            Row(
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = "Start now",
+                    style = TextStyle(
+                        fontSize = 13.sp,
+                        fontWeight = FontWeight.Medium,
+                        color = Ux4gColors.Primary600
+                    )
+                )
+                Spacer(modifier = Modifier.width(4.dp))
+                Icon(
+                    imageVector = Icons.AutoMirrored.Filled.ArrowForward,
+                    contentDescription = null,
+                    tint = Ux4gColors.Primary600,
+                    modifier = Modifier.size(14.dp)
+                )
+            }
+        }
+    }
+}
+
+@Preview(showBackground = true, widthDp = 360, heightDp = 800)
+@Composable
+fun NoApplicationsPreview() {
+    NoApplicationsScreen()
+}`}
+>
+  <img
+    src="/images/patterns/my_applications/no_applications.svg"
+    alt="No Applications Pattern - Empty State Overview"
+    className="w-full max-w-[360px] rounded-2xl border border-border shadow-sm mx-auto my-4"
+  />
+</ComponentPreview>

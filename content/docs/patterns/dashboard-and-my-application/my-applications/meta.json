@@ -1,0 +1,9 @@
+{
+  "title": "My Applications",
+  "pages": [
+    "my-applications",
+    "no-applications",
+    "search-applications",
+    "bulk-actions"
+  ]
+}

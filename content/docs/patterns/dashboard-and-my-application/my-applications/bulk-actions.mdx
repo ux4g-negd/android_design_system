@@ -1,0 +1,549 @@
+---
+title: Bulk Actions
+description: Multi-select dashboard pattern allowing citizens to perform batch operations such as bulk downloading certificates or joint application tracking
+---
+
+# Bulk Actions
+
+A high-efficiency batch processing pattern designed for citizens and business representatives managing multiple ongoing or finalized government petitions.
+
+The screen equips users with granular checkbox selection controls across application cards, anchored by a sticky or prominent bulk action toolbar. The banner displays the dynamic selection tally (*"3 selected"*), a quick filter reset trigger (*"Clear filters"*), and batch execution triggers—enabling citizens to perform simultaneous actions such as **Download all** approved documents or **Track together** across active department pipelines.
+
+---
+
+<h2><MIcon name="smartphone" /> Interactive Preview</h2>
+
+### Multi-Select Overview
+
+Batch management dashboard view illustrating multi-item selection state, aggregated action controls, and itemized application entries.
+
+<ComponentPreview
+  title="Bulk Actions - Multi-Select Overview"
+  category="Pattern · Jetpack Compose"
+  code={`package com.example.ux4g.patterns.dashboard
+
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.KeyboardArrowDown
+import androidx.compose.material.icons.filled.Notifications
+import androidx.compose.material.icons.outlined.FileDownload
+import androidx.compose.material3.Divider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.ux4g.designsystemv1.components.Ux4gAppHeader
+import com.ux4g.designsystemv1.components.Ux4gAppHeaderAction
+import com.ux4g.designsystemv1.components.Ux4gAppHeaderVariant
+import com.ux4g.designsystemv1.components.buttons.Ux4gButton
+import com.ux4g.designsystemv1.components.buttons.Ux4gButtonSize
+import com.ux4g.designsystemv1.components.buttons.Ux4gButtonVariant
+import com.ux4g.designsystemv1.components.resultlist.Ux4gPillSegment
+import com.ux4g.designsystemv1.components.resultlist.Ux4gUnifiedPillTag
+import com.ux4g.designsystemv1.foundation.Ux4gColors
+
+/**
+ * Bulk Actions Dashboard Screen
+ *
+ * @param onDownloadAll Invoked when citizen taps 'Download all'
+ * @param onTrackTogether Invoked when citizen taps 'Track together'
+ * @param onNotificationClick Invoked when citizen taps the notification bell
+ */
+@Composable
+fun BulkActionsScreen(
+    onDownloadAll: (Set<Int>) -> Unit = {},
+    onTrackTogether: (Set<Int>) -> Unit = {},
+    onNotificationClick: () -> Unit = {}
+) {
+    val isDark = isSystemInDarkTheme()
+    val scrollState = rememberScrollState()
+
+    // Multi-selection state pre-selected with items 0, 1, 2
+    var selectedItems by remember { mutableStateOf(setOf(0, 1, 2)) }
+
+    val surfaceBg = if (isDark) Ux4gColors.Neutral950 else Color(0xFFFAFAFA)
+    val cardBg = if (isDark) Ux4gColors.Neutral900 else Color.White
+    val borderCol = if (isDark) Ux4gColors.Neutral800 else Color(0xFFE5E7EB)
+    val textPrimary = if (isDark) Ux4gColors.Neutral50 else Ux4gColors.Neutral900
+    val textSecondary = if (isDark) Ux4gColors.Neutral400 else Ux4gColors.Neutral600
+    val primaryPurple = if (isDark) Ux4gColors.Primary300 else Ux4gColors.Primary600
+    val toolbarBg = if (isDark) Color(0xFF2E1065) else Color(0xFFF3F0FF)
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(surfaceBg)
+    ) {
+        // App Header with National Branding and Profile Avatar
+        Ux4gAppHeader(
+            variant = if (isDark) Ux4gAppHeaderVariant.Dark else Ux4gAppHeaderVariant.Light,
+            title = "Government of India",
+            actions = listOf(
+                Ux4gAppHeaderAction(
+                    icon = Icons.Default.Notifications,
+                    contentDescription = "Notifications",
+                    onClick = onNotificationClick
+                )
+            ),
+            showAvatar = true,
+            avatarInitials = "R"
+        )
+
+        Divider(color = borderCol, thickness = 1.dp)
+
+        // Scrollable Body
+        Column(
+            modifier = Modifier
+                .weight(1f)
+                .fillMaxWidth()
+                .verticalScroll(scrollState)
+                .padding(20.dp)
+        ) {
+            // Greeting Header
+            Text(
+                text = "Good morning, Ramesh",
+                style = TextStyle(
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = textPrimary
+                )
+            )
+
+            Spacer(modifier = Modifier.height(4.dp))
+
+            Text(
+                text = "Select applications to download or track together",
+                style = TextStyle(
+                    fontSize = 13.sp,
+                    fontWeight = FontWeight.Normal,
+                    color = textSecondary
+                )
+            )
+
+            Spacer(modifier = Modifier.height(20.dp))
+
+            // 2x2 Metric Summary Grid
+            Row(modifier = Modifier.fillMaxWidth()) {
+                StatCard(
+                    value = "2",
+                    label = "Active",
+                    modifier = Modifier.weight(1f),
+                    cardBg = cardBg,
+                    borderCol = borderCol,
+                    textColor = textPrimary,
+                    subColor = textSecondary
+                )
+                Spacer(modifier = Modifier.width(12.dp))
+                StatCard(
+                    value = "1",
+                    label = "Needs attention",
+                    dotColor = Color(0xFFDC2626),
+                    modifier = Modifier.weight(1f),
+                    cardBg = cardBg,
+                    borderCol = borderCol,
+                    textColor = textPrimary,
+                    subColor = textSecondary
+                )
+            }
+
+            Spacer(modifier = Modifier.height(12.dp))
+
+            Row(modifier = Modifier.fillMaxWidth()) {
+                StatCard(
+                    value = "5",
+                    label = "Completed",
+                    modifier = Modifier.weight(1f),
+                    cardBg = cardBg,
+                    borderCol = borderCol,
+                    textColor = textPrimary,
+                    subColor = textSecondary
+                )
+                Spacer(modifier = Modifier.width(12.dp))
+                StatCard(
+                    value = "8",
+                    label = "Total",
+                    modifier = Modifier.weight(1f),
+                    cardBg = cardBg,
+                    borderCol = borderCol,
+                    textColor = textPrimary,
+                    subColor = textSecondary
+                )
+            }
+
+            Spacer(modifier = Modifier.height(24.dp))
+
+            // Section Subtitle
+            Text(
+                text = "Your applications",
+                style = TextStyle(
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = textPrimary
+                )
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // Bulk Actions Toolbar
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(12.dp))
+                    .background(toolbarBg)
+                    .padding(16.dp)
+            ) {
+                Column {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            text = "\${selectedItems.size} selected",
+                            style = TextStyle(
+                                fontSize = 15.sp,
+                                fontWeight = FontWeight.SemiBold,
+                                color = textPrimary
+                            )
+                        )
+
+                        Text(
+                            text = "Clear filters",
+                            style = TextStyle(
+                                fontSize = 14.sp,
+                                fontWeight = FontWeight.Medium,
+                                color = primaryPurple
+                            ),
+                            modifier = Modifier.clickable { selectedItems = emptySet() }
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.height(12.dp))
+
+                    Row(modifier = Modifier.fillMaxWidth()) {
+                        Ux4gButton(
+                            text = "Download all",
+                            variant = Ux4gButtonVariant.Outline,
+                            size = Ux4gButtonSize.Medium,
+                            onClick = { onDownloadAll(selectedItems) },
+                            enabled = selectedItems.isNotEmpty(),
+                            modifier = Modifier
+                                .weight(1f)
+                                .height(42.dp)
+                        )
+
+                        Spacer(modifier = Modifier.width(12.dp))
+
+                        Ux4gButton(
+                            text = "Track together",
+                            variant = Ux4gButtonVariant.Primary,
+                            size = Ux4gButtonSize.Medium,
+                            onClick = { onTrackTogether(selectedItems) },
+                            enabled = selectedItems.isNotEmpty(),
+                            modifier = Modifier
+                                .weight(1f)
+                                .height(42.dp)
+                        )
+                    }
+                }
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // Selectable Application Cards
+            SelectableApplicationCard(
+                index = 0,
+                title = "Income Certificate",
+                statusText = "2 days overdue",
+                badgeText = "Escalation available",
+                badgeColor = Color(0xFFDC2626),
+                dotColor = Color(0xFFDC2626),
+                actionText = "Track",
+                isSelected = selectedItems.contains(0),
+                onToggle = { isChecked ->
+                    selectedItems = if (isChecked) selectedItems + 0 else selectedItems - 0
+                },
+                cardBg = cardBg,
+                borderCol = borderCol,
+                textPrimary = textPrimary
+            )
+
+            SelectableApplicationCard(
+                index = 1,
+                title = "Income Certificate",
+                statusText = "4 days left",
+                badgeText = "Action needed",
+                badgeColor = Color(0xFFDC2626),
+                dotColor = Color(0xFFDC2626),
+                actionText = "Track",
+                isSelected = selectedItems.contains(1),
+                onToggle = { isChecked ->
+                    selectedItems = if (isChecked) selectedItems + 1 else selectedItems - 1
+                },
+                cardBg = cardBg,
+                borderCol = borderCol,
+                textPrimary = textPrimary
+            )
+
+            SelectableApplicationCard(
+                index = 2,
+                title = "Income Certificate",
+                statusText = "8 days left",
+                badgeText = "Under review",
+                badgeColor = Color(0xFFD97706),
+                dotColor = Color(0xFFD97706),
+                actionText = "Track",
+                isSelected = selectedItems.contains(2),
+                onToggle = { isChecked ->
+                    selectedItems = if (isChecked) selectedItems + 2 else selectedItems - 2
+                },
+                cardBg = cardBg,
+                borderCol = borderCol,
+                textPrimary = textPrimary
+            )
+
+            // Completed Card Item
+            SelectableApplicationCard(
+                index = 3,
+                title = "Birth\\nCertificate",
+                statusText = "Completed",
+                badgeText = "",
+                badgeColor = Color(0xFF16A34A),
+                dotColor = Color(0xFF16A34A),
+                actionText = "Download",
+                actionIcon = Icons.Outlined.FileDownload,
+                isSelected = selectedItems.contains(3),
+                onToggle = { isChecked ->
+                    selectedItems = if (isChecked) selectedItems + 3 else selectedItems - 3
+                },
+                cardBg = cardBg,
+                borderCol = borderCol,
+                textPrimary = textPrimary
+            )
+        }
+    }
+}
+
+/**
+ * Selectable application card with checkbox toggle and action controls.
+ */
+@Composable
+private fun SelectableApplicationCard(
+    index: Int,
+    title: String,
+    statusText: String,
+    badgeText: String,
+    badgeColor: Color,
+    dotColor: Color,
+    actionText: String,
+    actionIcon: androidx.compose.ui.graphics.vector.ImageVector? = null,
+    isSelected: Boolean,
+    onToggle: (Boolean) -> Unit,
+    cardBg: Color,
+    borderCol: Color,
+    textPrimary: Color
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 4.dp)
+            .clickable { onToggle(!isSelected) },
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        // Selection Checkbox
+        Box(
+            modifier = Modifier
+                .size(20.dp)
+                .clip(RoundedCornerShape(4.dp))
+                .background(if (isSelected) Ux4gColors.Primary600 else Color.Transparent)
+                .border(
+                    width = 1.5.dp,
+                    color = if (isSelected) Ux4gColors.Primary600 else Color(0xFFD1D5DB),
+                    shape = RoundedCornerShape(4.dp)
+                ),
+            contentAlignment = Alignment.Center
+        ) {
+            if (isSelected) {
+                Icon(
+                    imageVector = Icons.Default.Check,
+                    contentDescription = "Selected",
+                    tint = Color.White,
+                    modifier = Modifier.size(14.dp)
+                )
+            }
+        }
+
+        Spacer(modifier = Modifier.width(10.dp))
+
+        // Application Card Details
+        Box(
+            modifier = Modifier
+                .weight(1f)
+                .background(cardBg)
+                .border(width = 0.dp, color = Color.Transparent)
+                .padding(vertical = 10.dp, horizontal = 4.dp)
+        ) {
+            Column(modifier = Modifier.fillMaxWidth()) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = title.replace("\\n", " "),
+                        style = TextStyle(
+                            fontSize = 15.sp,
+                            fontWeight = FontWeight.SemiBold,
+                            color = textPrimary
+                        ),
+                        modifier = Modifier.weight(1f)
+                    )
+
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Ux4gButton(
+                            text = actionText,
+                            variant = Ux4gButtonVariant.Outline,
+                            size = Ux4gButtonSize.Small,
+                            onClick = { /* Handle action */ },
+                            modifier = Modifier.height(32.dp)
+                        )
+                        Spacer(modifier = Modifier.width(6.dp))
+                        Icon(
+                            imageVector = Icons.Default.KeyboardArrowDown,
+                            contentDescription = "Expand details",
+                            tint = Color(0xFF6B7280),
+                            modifier = Modifier.size(20.dp)
+                        )
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(6.dp))
+
+                // Status Pill Tag
+                Ux4gUnifiedPillTag(
+                    segments = listOfNotNull(
+                        Ux4gPillSegment(
+                            text = statusText,
+                            textColor = textPrimary,
+                            leading = {
+                                Box(
+                                    modifier = Modifier
+                                        .size(8.dp)
+                                        .clip(CircleShape)
+                                        .background(dotColor)
+                                )
+                            }
+                        ),
+                        if (badgeText.isNotEmpty()) {
+                            Ux4gPillSegment(
+                                text = badgeText,
+                                textColor = badgeColor
+                            )
+                        } else null
+                    ),
+                    modifier = Modifier.padding(top = 2.dp)
+                )
+
+                Spacer(modifier = Modifier.height(8.dp))
+                Divider(color = borderCol, thickness = 1.dp)
+            }
+        }
+    }
+}
+
+/**
+ * Metric summary card displaying status counts and alert indicators.
+ */
+@Composable
+private fun StatCard(
+    value: String,
+    label: String,
+    modifier: Modifier = Modifier,
+    dotColor: Color? = null,
+    cardBg: Color,
+    borderCol: Color,
+    textColor: Color,
+    subColor: Color
+) {
+    Box(
+        modifier = modifier
+            .clip(RoundedCornerShape(10.dp))
+            .background(cardBg)
+            .border(1.dp, borderCol, RoundedCornerShape(10.dp))
+            .padding(14.dp)
+    ) {
+        Column(crossAxisAlignment = CrossAxisAlignment.Start) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text(
+                    text = value,
+                    style = TextStyle(
+                        fontSize = 24.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = textColor
+                    )
+                )
+                if (dotColor != null) {
+                    Spacer(modifier = Modifier.width(6.dp))
+                    Box(
+                        modifier = Modifier
+                            .size(8.dp)
+                            .clip(CircleShape)
+                            .background(dotColor)
+                    )
+                }
+            }
+            Spacer(modifier = Modifier.height(4.dp))
+            Text(
+                text = label,
+                style = TextStyle(
+                    fontSize = 12.sp,
+                    color = subColor
+                )
+            )
+        }
+    }
+}
+
+@Preview(showBackground = true, widthDp = 360, heightDp = 1000)
+@Composable
+fun BulkActionsPreview() {
+    BulkActionsScreen()
+}`}
+>
+  <img
+    src="/images/patterns/my_applications/builk_actions.svg"
+    alt="Bulk Actions Pattern - Multi-Select Overview"
+    className="w-full max-w-[360px] rounded-2xl border border-border shadow-sm mx-auto my-4"
+  />
+</ComponentPreview>

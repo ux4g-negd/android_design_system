@@ -8,6 +8,7 @@
     "notification",
     "payment-and-confirmation",
     "status-and-tracking",
-    "consent-and-declaration"
+    "consent-and-declaration",
+    "dashboard-and-my-application"
   ]
 }
