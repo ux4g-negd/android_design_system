@@ -5,6 +5,7 @@
     "submission-acknowledgement",
     "document-scan-and-upload",
     "eligibility-check-wizard",
-    "journey-progress-indicator"
+    "journey-progress-indicator",
+    "government-form-with-validation"
   ]
 }

@@ -1,0 +1,449 @@
+---
+title: Application sent success
+description: Application completion confirmation screen acknowledging successful submission and establishing review expectations
+---
+
+# Application sent success
+
+A confirmation pattern presented to citizens immediately upon successful submission of a government form or service petition.
+
+The screen provides unequivocal positive feedback via a prominent checkmark illustration, an affirmative title (*"Application sent!"*), explicit service-level agreement (SLA) expectations (*"We will review and contact you within 3 working days."*), and paired primary/secondary navigation actions enabling citizens to either track application progress or return to their citizen dashboard.
+
+---
+
+<h2><MIcon name="smartphone" /> Interactive Previews</h2>
+
+### 1. Default Style (Full Screen)
+
+Full-screen completion pattern featuring the branded government header, centered success icon, affirmative messaging, status check and dashboard actions, and the Digital India footer.
+
+<ComponentPreview
+  title="Application sent success - Default Style"
+  category="Pattern · Jetpack Compose"
+  code={`package com.example.ux4g.patterns.application
+
+import androidx.compose.foundation.background
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.CheckCircle
+import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material3.Divider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.ux4g.designsystemv1.components.Ux4gAppHeader
+import com.ux4g.designsystemv1.components.Ux4gAppHeaderAction
+import com.ux4g.designsystemv1.components.Ux4gAppHeaderVariant
+import com.ux4g.designsystemv1.components.buttons.Ux4gButton
+import com.ux4g.designsystemv1.components.buttons.Ux4gButtonSize
+import com.ux4g.designsystemv1.components.buttons.Ux4gButtonVariant
+import com.ux4g.designsystemv1.foundation.Ux4gColors
+
+/**
+ * Application Sent Success - Full Screen Default Pattern
+ *
+ * @param onViewStatus Invoked when citizen navigates to view submitted application status
+ * @param onBackToDashboard Invoked when citizen returns to the main citizen dashboard
+ */
+@Composable
+fun ApplicationSentScreen(
+    onViewStatus: () -> Unit = {},
+    onBackToDashboard: () -> Unit = {}
+) {
+    val isDark = isSystemInDarkTheme()
+
+    val surfaceBg = if (isDark) Ux4gColors.Neutral950 else Color.White
+    val textPrimary = if (isDark) Ux4gColors.Neutral50 else Ux4gColors.Neutral900
+    val textSecondary = if (isDark) Ux4gColors.Neutral300 else Ux4gColors.Neutral600
+    val dividerColor = if (isDark) Ux4gColors.Neutral800 else Color(0xFFE5E7EB)
+
+    val successBg = if (isDark) Color(0xFF064E3B) else Color(0xFFDCFCE7)
+    val successIconTint = if (isDark) Color(0xFF34D399) else Color(0xFF16A34A)
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(surfaceBg)
+    ) {
+        // Branded National App Header
+        Ux4gAppHeader(
+            variant = if (isDark) Ux4gAppHeaderVariant.Dark else Ux4gAppHeaderVariant.Light,
+            title = "",
+            actions = listOf(
+                Ux4gAppHeaderAction(
+                    icon = Icons.Default.Menu,
+                    contentDescription = "Menu",
+                    onClick = {}
+                )
+            )
+        )
+
+        Divider(color = dividerColor, thickness = 1.dp)
+
+        // Centered Content
+        Column(
+            modifier = Modifier
+                .weight(1f)
+                .fillMaxWidth()
+                .padding(horizontal = 24.dp),
+            horizontalAlignment = Alignment.CenterVertically,
+            verticalArrangement = Arrangement.Center
+        ) {
+            // Success Circular Badge
+            Box(
+                modifier = Modifier
+                    .size(80.dp)
+                    .clip(CircleShape)
+                    .background(successBg),
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(
+                    imageVector = Icons.Default.CheckCircle,
+                    contentDescription = "Success",
+                    tint = successIconTint,
+                    modifier = Modifier.size(48.dp)
+                )
+            }
+
+            Spacer(modifier = Modifier.height(32.dp))
+
+            // Main Success Heading
+            Text(
+                text = "Application sent!",
+                style = TextStyle(
+                    fontSize = 28.sp,
+                    fontWeight = FontWeight.ExtraBold,
+                    color = textPrimary,
+                    textAlign = TextAlign.Center
+                )
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // Informational SLA Subtitle
+            Text(
+                text = "We will review and contact you within 3 working days.",
+                style = TextStyle(
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Normal,
+                    color = textSecondary,
+                    textAlign = TextAlign.Center,
+                    lineHeight = 24.sp
+                ),
+                modifier = Modifier.fillMaxWidth(0.9f)
+            )
+        }
+
+        // Actions and Footer
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 24.dp, vertical = 16.dp)
+        ) {
+            Ux4gButton(
+                text = "View application status",
+                variant = Ux4gButtonVariant.Primary,
+                size = Ux4gButtonSize.Large,
+                onClick = onViewStatus,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(48.dp)
+            )
+
+            Spacer(modifier = Modifier.height(12.dp))
+
+            Ux4gButton(
+                text = "Back to dashboard",
+                variant = Ux4gButtonVariant.Outline,
+                size = Ux4gButtonSize.Large,
+                onClick = onBackToDashboard,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(48.dp)
+            )
+
+            Spacer(modifier = Modifier.height(24.dp))
+
+            // Brand Footer
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = "Powered by Digital India",
+                    style = TextStyle(
+                        fontSize = 11.sp,
+                        color = Ux4gColors.Neutral400,
+                        fontWeight = FontWeight.Medium
+                    )
+                )
+            }
+        }
+    }
+}
+
+@Preview(showBackground = true, widthDp = 360, heightDp = 760)
+@Composable
+fun ApplicationSentPreview() {
+    ApplicationSentScreen()
+}`}
+>
+  <img
+    src="/images/patterns/government_form_with_validation/application_sent_success.svg"
+    alt="Application sent success Pattern - Default Full Screen Style"
+    className="w-full max-w-[360px] rounded-2xl border border-border shadow-sm mx-auto my-4"
+  />
+</ComponentPreview>
+
+---
+
+### 2. Card Style (Contained)
+
+Contained card layout encapsulating the submission success icon, headline, and SLA turnaround expectations within an elevated card on a branded surface.
+
+<ComponentPreview
+  title="Application sent success - Card Style"
+  category="Pattern · Jetpack Compose"
+  code={`package com.example.ux4g.patterns.application
+
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.CheckCircle
+import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material3.Divider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.ux4g.designsystemv1.components.Ux4gAppHeader
+import com.ux4g.designsystemv1.components.Ux4gAppHeaderAction
+import com.ux4g.designsystemv1.components.Ux4gAppHeaderVariant
+import com.ux4g.designsystemv1.components.buttons.Ux4gButton
+import com.ux4g.designsystemv1.components.buttons.Ux4gButtonSize
+import com.ux4g.designsystemv1.components.buttons.Ux4gButtonVariant
+import com.ux4g.designsystemv1.foundation.Ux4gColors
+
+/**
+ * Application Sent Success - Card Contained Pattern
+ *
+ * @param onViewStatus Invoked when citizen navigates to view submitted application status
+ * @param onBackToDashboard Invoked when citizen returns to the main citizen dashboard
+ */
+@Composable
+fun ApplicationSentCardScreen(
+    onViewStatus: () -> Unit = {},
+    onBackToDashboard: () -> Unit = {}
+) {
+    val isDark = isSystemInDarkTheme()
+
+    val backgroundCanvas = if (isDark) Ux4gColors.Neutral950 else Ux4gColors.Primary50
+    val cardBg = if (isDark) Ux4gColors.Neutral900 else Color.White
+    val cardBorder = if (isDark) Ux4gColors.Neutral800 else Ux4gColors.Primary100
+    val textPrimary = if (isDark) Ux4gColors.Neutral50 else Ux4gColors.Neutral900
+    val textSecondary = if (isDark) Ux4gColors.Neutral300 else Ux4gColors.Neutral600
+    val dividerColor = if (isDark) Ux4gColors.Neutral800 else Color(0xFFE5E7EB)
+
+    val successBg = if (isDark) Color(0xFF064E3B) else Color(0xFFDCFCE7)
+    val successIconTint = if (isDark) Color(0xFF34D399) else Color(0xFF16A34A)
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(backgroundCanvas)
+    ) {
+        // App Header
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(if (isDark) Ux4gColors.Neutral900 else Color.White)
+        ) {
+            Ux4gAppHeader(
+                variant = if (isDark) Ux4gAppHeaderVariant.Dark else Ux4gAppHeaderVariant.Light,
+                title = "",
+                actions = listOf(
+                    Ux4gAppHeaderAction(
+                        icon = Icons.Default.Menu,
+                        contentDescription = "Menu",
+                        onClick = {}
+                    )
+                )
+            )
+        }
+
+        Divider(color = dividerColor, thickness = 1.dp)
+
+        // Contained Card in Center
+        Box(
+            modifier = Modifier
+                .weight(1f)
+                .fillMaxWidth()
+                .padding(24.dp),
+            contentAlignment = Alignment.Center
+        ) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .shadow(elevation = 2.dp, shape = RoundedCornerShape(16.dp))
+                    .clip(RoundedCornerShape(16.dp))
+                    .background(cardBg)
+                    .border(width = 1.dp, color = cardBorder, shape = RoundedCornerShape(16.dp))
+                    .padding(32.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                Column(
+                    horizontalAlignment = Alignment.CenterVertically,
+                    verticalArrangement = Arrangement.Center
+                ) {
+                    // Success Circular Badge
+                    Box(
+                        modifier = Modifier
+                            .size(80.dp)
+                            .clip(CircleShape)
+                            .background(successBg),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.CheckCircle,
+                            contentDescription = "Success",
+                            tint = successIconTint,
+                            modifier = Modifier.size(48.dp)
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.height(32.dp))
+
+                    // Title
+                    Text(
+                        text = "Application sent!",
+                        style = TextStyle(
+                            fontSize = 28.sp,
+                            fontWeight = FontWeight.ExtraBold,
+                            color = textPrimary,
+                            textAlign = TextAlign.Center
+                        )
+                    )
+
+                    Spacer(modifier = Modifier.height(16.dp))
+
+                    // Description
+                    Text(
+                        text = "We will review and contact you within 3 working days.",
+                        style = TextStyle(
+                            fontSize = 16.sp,
+                            fontWeight = FontWeight.Normal,
+                            color = textSecondary,
+                            textAlign = TextAlign.Center,
+                            lineHeight = 24.sp
+                        )
+                    )
+                }
+            }
+        }
+
+        // Actions & Footer
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 24.dp, vertical = 16.dp)
+        ) {
+            Ux4gButton(
+                text = "View application status",
+                variant = Ux4gButtonVariant.Primary,
+                size = Ux4gButtonSize.Large,
+                onClick = onViewStatus,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(48.dp)
+            )
+
+            Spacer(modifier = Modifier.height(12.dp))
+
+            Ux4gButton(
+                text = "Back to dashboard",
+                variant = Ux4gButtonVariant.Outline,
+                size = Ux4gButtonSize.Large,
+                onClick = onBackToDashboard,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(48.dp)
+            )
+
+            Spacer(modifier = Modifier.height(24.dp))
+
+            // Footer
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = "Powered by Digital India",
+                    style = TextStyle(
+                        fontSize = 11.sp,
+                        color = Ux4gColors.Neutral400,
+                        fontWeight = FontWeight.Medium
+                    )
+                )
+            }
+        }
+    }
+}
+
+@Preview(showBackground = true, widthDp = 360, heightDp = 760)
+@Composable
+fun ApplicationSentCardPreview() {
+    ApplicationSentCardScreen()
+}`}
+>
+  <img
+    src="/images/patterns/government_form_with_validation/application_sent_success_cardstyle.svg"
+    alt="Application sent success Pattern - Card Style Variant"
+    className="w-full max-w-[360px] rounded-2xl border border-border shadow-sm mx-auto my-4"
+  />
+</ComponentPreview>

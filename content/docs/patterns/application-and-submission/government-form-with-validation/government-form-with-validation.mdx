@@ -1,0 +1,941 @@
+---
+title: Government form with validation
+description: Comprehensive government intake form pattern featuring multi-step progress, pre-filled verification data, inline field validation, draft saving, and declarative consent
+---
+
+# Government form with validation
+
+A production-grade government service intake form engineered for complex citizen applications requiring multi-stage progression, Aadhaar pre-fill verification, granular state selection, conditional declarations, and real-time auto-saving feedback.
+
+The pattern anchors user orientation via a 4-stage horizontal stepper (`Ux4gStepper`) marking the active stage (*Personal*), an affirmative auto-save status pill (`Ux4gStatusBanner`), locked trusted identity records, responsive multi-type inputs (text fields, dropdown selection, marital status radio group, optional narrative textarea, and income slider), statutory verification checkboxes, and dual primary/secondary action triggers.
+
+---
+
+<h2><MIcon name="smartphone" /> Interactive Previews</h2>
+
+### 1. Default Style (Full Screen)
+
+Full-bleed screen layout featuring the standardized national header, horizontal stepper, auto-save status banner, pre-filled Aadhaar credentials with UIDAI update hint, structured personal info inputs, and application actions.
+
+<ComponentPreview
+  title="Government form with validation - Default Style"
+  category="Pattern · Jetpack Compose"
+  code={`package com.example.ux4g.patterns.application
+
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.CheckCircle
+import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material.icons.filled.OpenInNew
+import androidx.compose.material3.Divider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.ux4g.designsystemv1.components.Ux4gAppHeader
+import com.ux4g.designsystemv1.components.Ux4gAppHeaderAction
+import com.ux4g.designsystemv1.components.Ux4gAppHeaderVariant
+import com.ux4g.designsystemv1.components.Ux4gBannerVariant
+import com.ux4g.designsystemv1.components.Ux4gCheckbox
+import com.ux4g.designsystemv1.components.Ux4gStatusBanner
+import com.ux4g.designsystemv1.components.buttons.Ux4gButton
+import com.ux4g.designsystemv1.components.buttons.Ux4gButtonSize
+import com.ux4g.designsystemv1.components.buttons.Ux4gButtonVariant
+import com.ux4g.designsystemv1.components.dropdowns.Ux4gDropdownMode
+import com.ux4g.designsystemv1.components.dropdowns.Ux4gDropdownOption
+import com.ux4g.designsystemv1.components.dropdowns.Ux4gSelectionDropdown
+import com.ux4g.designsystemv1.components.inputfield.Ux4gInputField
+import com.ux4g.designsystemv1.components.radiobutton.Ux4gRadioButton
+import com.ux4g.designsystemv1.components.radiobutton.Ux4gRadioButtonSize
+import com.ux4g.designsystemv1.components.slider.Ux4gSlider
+import com.ux4g.designsystemv1.components.slider.Ux4gSliderSize
+import com.ux4g.designsystemv1.components.stepper.Ux4gStepItem
+import com.ux4g.designsystemv1.components.stepper.Ux4gStepper
+import com.ux4g.designsystemv1.components.textarea.Ux4gTextArea
+import com.ux4g.designsystemv1.foundation.Ux4gColors
+
+/**
+ * Government Form With Validation - Full Screen Default Pattern
+ *
+ * @param onContinue Invoked when citizen proceeds to the next form stage
+ * @param onSaveDraft Invoked when citizen explicitly saves draft progress
+ * @param onBack Invoked when navigating back to the previous step
+ */
+@Composable
+fun GovernmentFormScreen(
+    onContinue: () -> Unit = {},
+    onSaveDraft: () -> Unit = {},
+    onBack: () -> Unit = {}
+) {
+    val isDark = isSystemInDarkTheme()
+    val scrollState = rememberScrollState()
+
+    // Form State
+    val fullName by remember { mutableStateOf("Ramesh Kumar") }
+    var mobileNumber by remember { mutableStateOf("") }
+    var emailAddress by remember { mutableStateOf("") }
+    var aadhaarNumber by remember { mutableStateOf("") }
+    var selectedState by remember { mutableStateOf<String?>(null) }
+    var maritalStatus by remember { mutableStateOf("Single") }
+    var applicationReason by remember { mutableStateOf("") }
+    var annualIncome by remember { mutableFloatStateOf(0f) }
+    var confirmAccuracy by remember { mutableStateOf(false) }
+    var acceptTerms by remember { mutableStateOf(false) }
+
+    val surfaceBg = if (isDark) Ux4gColors.Neutral950 else Color(0xFFFAFAFA)
+    val textPrimary = if (isDark) Ux4gColors.Neutral50 else Ux4gColors.Neutral900
+    val textSecondary = if (isDark) Ux4gColors.Neutral400 else Ux4gColors.Neutral600
+    val dividerColor = if (isDark) Ux4gColors.Neutral800 else Color(0xFFE5E7EB)
+
+    val stateOptions = listOf(
+        Ux4gDropdownOption(id = "dl", label = "Delhi"),
+        Ux4gDropdownOption(id = "mh", label = "Maharashtra"),
+        Ux4gDropdownOption(id = "up", label = "Uttar Pradesh"),
+        Ux4gDropdownOption(id = "ka", label = "Karnataka")
+    )
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(surfaceBg)
+    ) {
+        // Branded National App Header
+        Ux4gAppHeader(
+            variant = if (isDark) Ux4gAppHeaderVariant.Dark else Ux4gAppHeaderVariant.Light,
+            title = "",
+            actions = listOf(
+                Ux4gAppHeaderAction(
+                    icon = Icons.Default.Menu,
+                    contentDescription = "Menu",
+                    onClick = {}
+                )
+            )
+        )
+
+        Divider(color = dividerColor, thickness = 1.dp)
+
+        // Scrollable Form Content
+        Column(
+            modifier = Modifier
+                .weight(1f)
+                .fillMaxWidth()
+                .verticalScroll(scrollState)
+                .padding(horizontal = 16.dp, vertical = 16.dp)
+        ) {
+            // Back Navigation Link
+            Row(
+                modifier = Modifier
+                    .clickable { onBack() }
+                    .padding(vertical = 4.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Icon(
+                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                    contentDescription = "Back",
+                    tint = if (isDark) Ux4gColors.Primary300 else Ux4gColors.Primary700,
+                    modifier = Modifier.size(16.dp)
+                )
+                Spacer(modifier = Modifier.width(6.dp))
+                Text(
+                    text = "Back",
+                    style = TextStyle(
+                        fontSize = 13.sp,
+                        fontWeight = FontWeight.SemiBold,
+                        color = if (isDark) Ux4gColors.Primary300 else Ux4gColors.Primary700
+                    )
+                )
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // 4-Step Journey Progress Stepper (Active: Step 2 - Personal)
+            Ux4gStepper(
+                totalSteps = 4,
+                currentStep = 2,
+                stepSize = 20.dp,
+                steps = listOf(
+                    Ux4gStepItem(title = "Eligibility"),
+                    Ux4gStepItem(title = "Personal"),
+                    Ux4gStepItem(title = "Documents"),
+                    Ux4gStepItem(title = "Submit")
+                ),
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            Spacer(modifier = Modifier.height(20.dp))
+
+            // Auto-Save Status Banner
+            Ux4gStatusBanner(
+                variant = Ux4gBannerVariant.SuccessLight,
+                title = "Saved 3:14 PM",
+                trailingIcon = {
+                    Icon(
+                        imageVector = Icons.Default.CheckCircle,
+                        contentDescription = "Saved confirmation",
+                        tint = if (isDark) Color(0xFF34D399) else Color(0xFF059669),
+                        modifier = Modifier.size(16.dp)
+                    )
+                },
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            Spacer(modifier = Modifier.height(20.dp))
+
+            // Section Headline & Description
+            Text(
+                text = "Personal information",
+                style = TextStyle(
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = textPrimary
+                )
+            )
+
+            Spacer(modifier = Modifier.height(4.dp))
+
+            Text(
+                text = "Please enter your details.",
+                style = TextStyle(
+                    fontSize = 13.sp,
+                    fontWeight = FontWeight.Normal,
+                    color = textSecondary
+                )
+            )
+
+            Spacer(modifier = Modifier.height(20.dp))
+
+            // Pre-filled Full Name (Locked with Aadhaar hint)
+            Ux4gInputField(
+                label = "Full Name",
+                value = fullName,
+                onValueChange = {},
+                enabled = false,
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            Spacer(modifier = Modifier.height(6.dp))
+
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.clickable { /* Handle UIDAI update link */ }
+            ) {
+                Text(
+                    text = "From Aadhaar · Update via UIDAI",
+                    style = TextStyle(
+                        fontSize = 11.sp,
+                        fontWeight = FontWeight.Medium,
+                        color = if (isDark) Ux4gColors.Primary300 else Ux4gColors.Primary600
+                    )
+                )
+                Spacer(modifier = Modifier.width(4.dp))
+                Icon(
+                    imageVector = Icons.Default.OpenInNew,
+                    contentDescription = "Open UIDAI Portal",
+                    tint = if (isDark) Ux4gColors.Primary300 else Ux4gColors.Primary600,
+                    modifier = Modifier.size(12.dp)
+                )
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // Mobile Number
+            Ux4gInputField(
+                label = "Mobile number",
+                value = mobileNumber,
+                onValueChange = { mobileNumber = it },
+                placeholder = "Placeholder",
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // Email Address
+            Ux4gInputField(
+                label = "Email address",
+                value = emailAddress,
+                onValueChange = { emailAddress = it },
+                placeholder = "Placeholder",
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // Aadhaar Number
+            Ux4gInputField(
+                label = "Aadhaar number",
+                value = aadhaarNumber,
+                onValueChange = { aadhaarNumber = it },
+                placeholder = "Placeholder",
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // State of Residence Dropdown
+            Ux4gSelectionDropdown(
+                label = "State of residence",
+                placeholder = "Please select..",
+                options = stateOptions,
+                selectedOptionIds = selectedState?.let { listOf(it) } ?: emptyList(),
+                onSelectionChange = { ids -> selectedState = ids.firstOrNull() },
+                mode = Ux4gDropdownMode.Single,
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            Spacer(modifier = Modifier.height(20.dp))
+
+            // Marital Status Radio Group
+            Text(
+                text = "Your marital status",
+                style = TextStyle(
+                    fontSize = 13.sp,
+                    fontWeight = FontWeight.SemiBold,
+                    color = textPrimary
+                )
+            )
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            listOf("Single", "Married", "Divorced or widowed", "Option 4").forEach { option ->
+                Ux4gRadioButton(
+                    selected = (maritalStatus == option),
+                    onClick = { maritalStatus = option },
+                    label = option,
+                    size = Ux4gRadioButtonSize.Medium,
+                    modifier = Modifier.padding(vertical = 4.dp)
+                )
+            }
+
+            Spacer(modifier = Modifier.height(20.dp))
+
+            // Brief Reason for Application (Optional)
+            Ux4gTextArea(
+                label = "Brief reason for application (optional)",
+                value = applicationReason,
+                onValueChange = { applicationReason = it },
+                placeholder = "Placeholder",
+                minLines = 3,
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            Spacer(modifier = Modifier.height(20.dp))
+
+            // Annual Income Slider
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = "Annual Income (Lakh ₹) *",
+                    style = TextStyle(
+                        fontSize = 13.sp,
+                        fontWeight = FontWeight.SemiBold,
+                        color = textPrimary
+                    )
+                )
+                Text(
+                    text = "₹\${annualIncome.toInt()}",
+                    style = TextStyle(
+                        fontSize = 13.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = textPrimary
+                    )
+                )
+            }
+
+            Ux4gSlider(
+                value = annualIncome,
+                onValueChange = { annualIncome = it },
+                valueRange = 0f..10f,
+                steps = 9,
+                size = Ux4gSliderSize.Medium,
+                showMarksAndValues = true,
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            Spacer(modifier = Modifier.height(24.dp))
+
+            // Accuracy Confirmation Checkbox
+            Ux4gCheckbox(
+                checked = confirmAccuracy,
+                onCheckedChange = { confirmAccuracy = it },
+                label = "I confirm the above information is accurate and authorise verification.",
+                isRequired = true
+            )
+
+            Spacer(modifier = Modifier.height(12.dp))
+
+            // Terms and Conditions Checkbox
+            Ux4gCheckbox(
+                checked = acceptTerms,
+                onCheckedChange = { acceptTerms = it },
+                label = "Accept terms and conditions",
+                isRequired = true
+            )
+
+            Spacer(modifier = Modifier.height(28.dp))
+
+            // Form Submissions Actions
+            Ux4gButton(
+                text = "Continue",
+                variant = Ux4gButtonVariant.Primary,
+                size = Ux4gButtonSize.Large,
+                enabled = confirmAccuracy && acceptTerms,
+                onClick = onContinue,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(48.dp)
+            )
+
+            Spacer(modifier = Modifier.height(12.dp))
+
+            Ux4gButton(
+                text = "Save as Draft",
+                variant = Ux4gButtonVariant.Outline,
+                size = Ux4gButtonSize.Large,
+                onClick = onSaveDraft,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(48.dp)
+            )
+
+            Spacer(modifier = Modifier.height(24.dp))
+
+            // Digital India Brand Footer
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = "Powered by Digital India",
+                    style = TextStyle(
+                        fontSize = 11.sp,
+                        color = Ux4gColors.Neutral400,
+                        fontWeight = FontWeight.Medium
+                    )
+                )
+            }
+        }
+    }
+}
+
+@Preview(showBackground = true, widthDp = 360, heightDp = 1200)
+@Composable
+fun GovernmentFormPreview() {
+    GovernmentFormScreen()
+}`}
+>
+  <img
+    src="/images/patterns/government_form_with_validation/goverment_form_with_validation.svg"
+    alt="Government form with validation Pattern - Default Full Screen Style"
+    className="w-full max-w-[360px] rounded-2xl border border-border shadow-sm mx-auto my-4"
+  />
+</ComponentPreview>
+
+---
+
+### 2. Card Style (Contained)
+
+Contained layout encapsulating the stage tracker, auto-save status pill, verification inputs, statutory consent checkboxes, and dual navigation triggers inside a rounded, elevated card positioned on a branded surface.
+
+<ComponentPreview
+  title="Government form with validation - Card Style"
+  category="Pattern · Jetpack Compose"
+  code={`package com.example.ux4g.patterns.application
+
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.CheckCircle
+import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material.icons.filled.OpenInNew
+import androidx.compose.material3.Divider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.ux4g.designsystemv1.components.Ux4gAppHeader
+import com.ux4g.designsystemv1.components.Ux4gAppHeaderAction
+import com.ux4g.designsystemv1.components.Ux4gAppHeaderVariant
+import com.ux4g.designsystemv1.components.Ux4gBannerVariant
+import com.ux4g.designsystemv1.components.Ux4gCheckbox
+import com.ux4g.designsystemv1.components.Ux4gStatusBanner
+import com.ux4g.designsystemv1.components.buttons.Ux4gButton
+import com.ux4g.designsystemv1.components.buttons.Ux4gButtonSize
+import com.ux4g.designsystemv1.components.buttons.Ux4gButtonVariant
+import com.ux4g.designsystemv1.components.dropdowns.Ux4gDropdownMode
+import com.ux4g.designsystemv1.components.dropdowns.Ux4gDropdownOption
+import com.ux4g.designsystemv1.components.dropdowns.Ux4gSelectionDropdown
+import com.ux4g.designsystemv1.components.inputfield.Ux4gInputField
+import com.ux4g.designsystemv1.components.radiobutton.Ux4gRadioButton
+import com.ux4g.designsystemv1.components.radiobutton.Ux4gRadioButtonSize
+import com.ux4g.designsystemv1.components.slider.Ux4gSlider
+import com.ux4g.designsystemv1.components.slider.Ux4gSliderSize
+import com.ux4g.designsystemv1.components.stepper.Ux4gStepItem
+import com.ux4g.designsystemv1.components.stepper.Ux4gStepper
+import com.ux4g.designsystemv1.components.textarea.Ux4gTextArea
+import com.ux4g.designsystemv1.foundation.Ux4gColors
+
+/**
+ * Government Form With Validation - Card Contained Pattern
+ *
+ * @param onContinue Invoked when citizen proceeds to the next form stage
+ * @param onSaveDraft Invoked when citizen explicitly saves draft progress
+ * @param onBack Invoked when navigating back to the previous step
+ */
+@Composable
+fun GovernmentFormCardScreen(
+    onContinue: () -> Unit = {},
+    onSaveDraft: () -> Unit = {},
+    onBack: () -> Unit = {}
+) {
+    val isDark = isSystemInDarkTheme()
+    val scrollState = rememberScrollState()
+
+    // Form State
+    val fullName by remember { mutableStateOf("Ramesh Kumar") }
+    var mobileNumber by remember { mutableStateOf("") }
+    var emailAddress by remember { mutableStateOf("") }
+    var aadhaarNumber by remember { mutableStateOf("") }
+    var selectedState by remember { mutableStateOf<String?>(null) }
+    var maritalStatus by remember { mutableStateOf("Single") }
+    var applicationReason by remember { mutableStateOf("") }
+    var annualIncome by remember { mutableFloatStateOf(0f) }
+    var confirmAccuracy by remember { mutableStateOf(false) }
+    var acceptTerms by remember { mutableStateOf(false) }
+
+    val backgroundCanvas = if (isDark) Ux4gColors.Neutral950 else Ux4gColors.Primary50
+    val cardBg = if (isDark) Ux4gColors.Neutral900 else Color.White
+    val cardBorder = if (isDark) Ux4gColors.Neutral800 else Ux4gColors.Primary100
+    val textPrimary = if (isDark) Ux4gColors.Neutral50 else Ux4gColors.Neutral900
+    val textSecondary = if (isDark) Ux4gColors.Neutral400 else Ux4gColors.Neutral600
+    val dividerColor = if (isDark) Ux4gColors.Neutral800 else Color(0xFFE5E7EB)
+
+    val stateOptions = listOf(
+        Ux4gDropdownOption(id = "dl", label = "Delhi"),
+        Ux4gDropdownOption(id = "mh", label = "Maharashtra"),
+        Ux4gDropdownOption(id = "up", label = "Uttar Pradesh"),
+        Ux4gDropdownOption(id = "ka", label = "Karnataka")
+    )
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(backgroundCanvas)
+    ) {
+        // Top App Header
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(if (isDark) Ux4gColors.Neutral900 else Color.White)
+        ) {
+            Ux4gAppHeader(
+                variant = if (isDark) Ux4gAppHeaderVariant.Dark else Ux4gAppHeaderVariant.Light,
+                title = "",
+                actions = listOf(
+                    Ux4gAppHeaderAction(
+                        icon = Icons.Default.Menu,
+                        contentDescription = "Menu",
+                        onClick = {}
+                    )
+                )
+            )
+        }
+
+        Divider(color = dividerColor, thickness = 1.dp)
+
+        // Scrollable Body with Contained Card
+        Column(
+            modifier = Modifier
+                .weight(1f)
+                .fillMaxWidth()
+                .verticalScroll(scrollState)
+                .padding(horizontal = 16.dp, vertical = 20.dp)
+        ) {
+            // Contained Card Container
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .shadow(elevation = 2.dp, shape = RoundedCornerShape(16.dp))
+                    .clip(RoundedCornerShape(16.dp))
+                    .background(cardBg)
+                    .border(width = 1.dp, color = cardBorder, shape = RoundedCornerShape(16.dp))
+                    .padding(20.dp)
+            ) {
+                Column(modifier = Modifier.fillMaxWidth()) {
+                    // Back Navigation Link inside Card
+                    Row(
+                        modifier = Modifier
+                            .clickable { onBack() }
+                            .padding(vertical = 4.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = "Back",
+                            tint = if (isDark) Ux4gColors.Primary300 else Ux4gColors.Primary700,
+                            modifier = Modifier.size(16.dp)
+                        )
+                        Spacer(modifier = Modifier.width(6.dp))
+                        Text(
+                            text = "Back",
+                            style = TextStyle(
+                                fontSize = 13.sp,
+                                fontWeight = FontWeight.SemiBold,
+                                color = if (isDark) Ux4gColors.Primary300 else Ux4gColors.Primary700
+                            )
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.height(16.dp))
+
+                    // Stepper inside Card
+                    Ux4gStepper(
+                        totalSteps = 4,
+                        currentStep = 2,
+                        stepSize = 20.dp,
+                        steps = listOf(
+                            Ux4gStepItem(title = "Eligibility"),
+                            Ux4gStepItem(title = "Personal"),
+                            Ux4gStepItem(title = "Documents"),
+                            Ux4gStepItem(title = "Submit")
+                        ),
+                        modifier = Modifier.fillMaxWidth()
+                    )
+
+                    Spacer(modifier = Modifier.height(20.dp))
+
+                    // Auto-Save Status Banner inside Card
+                    Ux4gStatusBanner(
+                        variant = Ux4gBannerVariant.SuccessLight,
+                        title = "Saved 3:14 PM",
+                        trailingIcon = {
+                            Icon(
+                                imageVector = Icons.Default.CheckCircle,
+                                contentDescription = "Saved confirmation",
+                                tint = if (isDark) Color(0xFF34D399) else Color(0xFF059669),
+                                modifier = Modifier.size(16.dp)
+                            )
+                        },
+                        modifier = Modifier.fillMaxWidth()
+                    )
+
+                    Spacer(modifier = Modifier.height(20.dp))
+
+                    // Section Title & Subtitle
+                    Text(
+                        text = "Personal information",
+                        style = TextStyle(
+                            fontSize = 20.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = textPrimary
+                        )
+                    )
+
+                    Spacer(modifier = Modifier.height(4.dp))
+
+                    Text(
+                        text = "Please enter your details.",
+                        style = TextStyle(
+                            fontSize = 13.sp,
+                            fontWeight = FontWeight.Normal,
+                            color = textSecondary
+                        )
+                    )
+
+                    Spacer(modifier = Modifier.height(20.dp))
+
+                    // Full Name (Pre-filled and Locked)
+                    Ux4gInputField(
+                        label = "Full Name",
+                        value = fullName,
+                        onValueChange = {},
+                        enabled = false,
+                        modifier = Modifier.fillMaxWidth()
+                    )
+
+                    Spacer(modifier = Modifier.height(6.dp))
+
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier.clickable { /* UIDAI link */ }
+                    ) {
+                        Text(
+                            text = "From Aadhaar · Update via UIDAI",
+                            style = TextStyle(
+                                fontSize = 11.sp,
+                                fontWeight = FontWeight.Medium,
+                                color = if (isDark) Ux4gColors.Primary300 else Ux4gColors.Primary600
+                            )
+                        )
+                        Spacer(modifier = Modifier.width(4.dp))
+                        Icon(
+                            imageVector = Icons.Default.OpenInNew,
+                            contentDescription = "Open UIDAI Portal",
+                            tint = if (isDark) Ux4gColors.Primary300 else Ux4gColors.Primary600,
+                            modifier = Modifier.size(12.dp)
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.height(16.dp))
+
+                    // Mobile Number
+                    Ux4gInputField(
+                        label = "Mobile number",
+                        value = mobileNumber,
+                        onValueChange = { mobileNumber = it },
+                        placeholder = "Placeholder",
+                        modifier = Modifier.fillMaxWidth()
+                    )
+
+                    Spacer(modifier = Modifier.height(16.dp))
+
+                    // Email Address
+                    Ux4gInputField(
+                        label = "Email address",
+                        value = emailAddress,
+                        onValueChange = { emailAddress = it },
+                        placeholder = "Placeholder",
+                        modifier = Modifier.fillMaxWidth()
+                    )
+
+                    Spacer(modifier = Modifier.height(16.dp))
+
+                    // Aadhaar Number
+                    Ux4gInputField(
+                        label = "Aadhaar number",
+                        value = aadhaarNumber,
+                        onValueChange = { aadhaarNumber = it },
+                        placeholder = "Placeholder",
+                        modifier = Modifier.fillMaxWidth()
+                    )
+
+                    Spacer(modifier = Modifier.height(16.dp))
+
+                    // State of Residence
+                    Ux4gSelectionDropdown(
+                        label = "State of residence",
+                        placeholder = "Please select..",
+                        options = stateOptions,
+                        selectedOptionIds = selectedState?.let { listOf(it) } ?: emptyList(),
+                        onSelectionChange = { ids -> selectedState = ids.firstOrNull() },
+                        mode = Ux4gDropdownMode.Single,
+                        modifier = Modifier.fillMaxWidth()
+                    )
+
+                    Spacer(modifier = Modifier.height(20.dp))
+
+                    // Marital Status Radio Group
+                    Text(
+                        text = "Your marital status",
+                        style = TextStyle(
+                            fontSize = 13.sp,
+                            fontWeight = FontWeight.SemiBold,
+                            color = textPrimary
+                        )
+                    )
+
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    listOf("Single", "Married", "Divorced or widowed", "Option 4").forEach { option ->
+                        Ux4gRadioButton(
+                            selected = (maritalStatus == option),
+                            onClick = { maritalStatus = option },
+                            label = option,
+                            size = Ux4gRadioButtonSize.Medium,
+                            modifier = Modifier.padding(vertical = 4.dp)
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.height(20.dp))
+
+                    // Application Reason
+                    Ux4gTextArea(
+                        label = "Brief reason for application (optional)",
+                        value = applicationReason,
+                        onValueChange = { applicationReason = it },
+                        placeholder = "Placeholder",
+                        minLines = 3,
+                        modifier = Modifier.fillMaxWidth()
+                    )
+
+                    Spacer(modifier = Modifier.height(20.dp))
+
+                    // Annual Income Slider
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            text = "Annual Income (Lakh ₹) *",
+                            style = TextStyle(
+                                fontSize = 13.sp,
+                                fontWeight = FontWeight.SemiBold,
+                                color = textPrimary
+                            )
+                        )
+                        Text(
+                            text = "₹\${annualIncome.toInt()}",
+                            style = TextStyle(
+                                fontSize = 13.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = textPrimary
+                            )
+                        )
+                    }
+
+                    Ux4gSlider(
+                        value = annualIncome,
+                        onValueChange = { annualIncome = it },
+                        valueRange = 0f..10f,
+                        steps = 9,
+                        size = Ux4gSliderSize.Medium,
+                        showMarksAndValues = true,
+                        modifier = Modifier.fillMaxWidth()
+                    )
+
+                    Spacer(modifier = Modifier.height(24.dp))
+
+                    // Accuracy Confirmation
+                    Ux4gCheckbox(
+                        checked = confirmAccuracy,
+                        onCheckedChange = { confirmAccuracy = it },
+                        label = "I confirm the above information is accurate and authorise verification.",
+                        isRequired = true
+                    )
+
+                    Spacer(modifier = Modifier.height(12.dp))
+
+                    // Terms and Conditions
+                    Ux4gCheckbox(
+                        checked = acceptTerms,
+                        onCheckedChange = { acceptTerms = it },
+                        label = "Accept terms and conditions",
+                        isRequired = true
+                    )
+
+                    Spacer(modifier = Modifier.height(28.dp))
+
+                    // Action Buttons inside Card
+                    Ux4gButton(
+                        text = "Continue",
+                        variant = Ux4gButtonVariant.Primary,
+                        size = Ux4gButtonSize.Large,
+                        enabled = confirmAccuracy && acceptTerms,
+                        onClick = onContinue,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(48.dp)
+                    )
+
+                    Spacer(modifier = Modifier.height(12.dp))
+
+                    Ux4gButton(
+                        text = "Save as Draft",
+                        variant = Ux4gButtonVariant.Outline,
+                        size = Ux4gButtonSize.Large,
+                        onClick = onSaveDraft,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(48.dp)
+                    )
+                }
+            }
+
+            Spacer(modifier = Modifier.height(20.dp))
+
+            // Footer
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 12.dp),
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = "Powered by Digital India",
+                    style = TextStyle(
+                        fontSize = 11.sp,
+                        color = Ux4gColors.Neutral400,
+                        fontWeight = FontWeight.Medium
+                    )
+                )
+            }
+        }
+    }
+}
+
+@Preview(showBackground = true, widthDp = 360, heightDp = 1200)
+@Composable
+fun GovernmentFormCardPreview() {
+    GovernmentFormCardScreen()
+}`}
+>
+  <img
+    src="/images/patterns/government_form_with_validation/goverment_form_with_validation_cardstyle.svg"
+    alt="Government form with validation Pattern - Card Style Variant"
+    className="w-full max-w-[360px] rounded-2xl border border-border shadow-sm mx-auto my-4"
+  />
+</ComponentPreview>
