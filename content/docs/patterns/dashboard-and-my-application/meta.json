@@ -1,6 +1,7 @@
 {
   "title": "Dashboard and My Application",
   "pages": [
-    "my-applications"
+    "my-applications",
+    "pending-tasks"
   ]
 }

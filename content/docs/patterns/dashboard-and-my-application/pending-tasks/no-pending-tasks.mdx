@@ -1,0 +1,193 @@
+---
+title: No Pending Tasks
+description: Empty state task screen displayed when all citizen actions are complete and no pending tasks require intervention
+---
+
+# No Pending Tasks
+
+An affirmative empty-state pattern reassuring citizens when there are no outstanding requests, overdue documents, or pending fee obligations across their active government files.
+
+The screen communicates zero-pending status through positive feedback iconography (a vibrant green checkmark), clear reassurance copy (*"You're all caught up"*, *"All your applications are progressing smoothly"*), and an intuitive navigation fallback (`Ux4gButton` with secondary variant) directing citizens back to the dashboard overview.
+
+---
+
+<h2><MIcon name="smartphone" /> Interactive Preview</h2>
+
+### Empty State Overview
+
+Affirmative zero-state screen displaying positive status reassurance, descriptive explanation copy, and dashboard return navigation.
+
+<ComponentPreview
+  title="No Pending Tasks - Empty State Overview"
+  category="Pattern · Jetpack Compose"
+  code={`package com.example.ux4g.patterns.dashboard
+
+import androidx.compose.foundation.background
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.CheckCircle
+import androidx.compose.material.icons.filled.Notifications
+import androidx.compose.material3.Divider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.ux4g.designsystemv1.components.Ux4gAppHeader
+import com.ux4g.designsystemv1.components.Ux4gAppHeaderAction
+import com.ux4g.designsystemv1.components.Ux4gAppHeaderVariant
+import com.ux4g.designsystemv1.components.buttons.Ux4gButton
+import com.ux4g.designsystemv1.components.buttons.Ux4gButtonSize
+import com.ux4g.designsystemv1.components.buttons.Ux4gButtonVariant
+import com.ux4g.designsystemv1.foundation.Ux4gColors
+
+/**
+ * No Pending Tasks Pattern Screen
+ *
+ * @param onBack Invoked when citizen taps 'Back'
+ * @param onNotificationClick Invoked when citizen taps the notification bell
+ */
+@Composable
+fun NoPendingTasksScreen(
+    onBack: () -> Unit = {},
+    onNotificationClick: () -> Unit = {}
+) {
+    val isDark = isSystemInDarkTheme()
+    val scrollState = rememberScrollState()
+
+    val surfaceBg = if (isDark) Ux4gColors.Neutral950 else Color.White
+    val borderCol = if (isDark) Ux4gColors.Neutral800 else Color(0xFFE5E7EB)
+    val textPrimary = if (isDark) Ux4gColors.Neutral50 else Ux4gColors.Neutral900
+    val textSecondary = if (isDark) Ux4gColors.Neutral400 else Color(0xFF4B5563)
+    val greenColor = if (isDark) Color(0xFF22C55E) else Ux4gColors.Green600
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(surfaceBg)
+    ) {
+        // App Header
+        Ux4gAppHeader(
+            variant = if (isDark) Ux4gAppHeaderVariant.Dark else Ux4gAppHeaderVariant.Light,
+            title = "Government of India",
+            actions = listOf(
+                Ux4gAppHeaderAction(
+                    icon = Icons.Default.Notifications,
+                    contentDescription = "Notifications",
+                    onClick = onNotificationClick
+                )
+            ),
+            showAvatar = true,
+            avatarInitials = "R"
+        )
+
+        Divider(color = borderCol, thickness = 1.dp)
+
+        // Scrollable Body
+        Column(
+            modifier = Modifier
+                .weight(1f)
+                .fillMaxWidth()
+                .verticalScroll(scrollState)
+                .padding(20.dp)
+        ) {
+            // Title & Subtitle
+            Text(
+                text = "Pending Tasks",
+                style = TextStyle(
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.ExtraBold,
+                    color = textPrimary
+                )
+            )
+
+            Spacer(modifier = Modifier.height(4.dp))
+
+            Text(
+                text = "You're all caught up",
+                style = TextStyle(
+                    fontSize = 13.sp,
+                    fontWeight = FontWeight.Normal,
+                    color = textSecondary
+                )
+            )
+
+            Spacer(modifier = Modifier.height(64.dp))
+
+            // Centered Empty State
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Icon(
+                    imageVector = Icons.Filled.CheckCircle,
+                    contentDescription = "Completed",
+                    tint = greenColor,
+                    modifier = Modifier.size(60.dp)
+                )
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                Text(
+                    text = "No pending tasks",
+                    style = TextStyle(
+                        fontSize = 18.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = textPrimary
+                    )
+                )
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                Text(
+                    text = "You have no pending tasks right now. All\nyour applications are progressing\nsmoothly.",
+                    textAlign = TextAlign.Center,
+                    style = TextStyle(
+                        fontSize = 13.sp,
+                        lineHeight = 19.sp,
+                        color = textSecondary
+                    )
+                )
+
+                Spacer(modifier = Modifier.height(24.dp))
+
+                Ux4gButton(
+                    text = "Back",
+                    onClick = onBack,
+                    variant = Ux4gButtonVariant.Secondary,
+                    size = Ux4gButtonSize.Default
+                )
+            }
+        }
+    }
+}
+
+@Preview(showBackground = true, widthDp = 360, heightDp = 640)
+@Composable
+fun NoPendingTasksPreview() {
+    NoPendingTasksScreen()
+}`}
+>
+  <img
+    src="/images/patterns/pending_tasks/no_pending_tasks.svg"
+    alt="No Pending Tasks Pattern - Empty State Overview"
+    className="w-full max-w-[360px] rounded-2xl border border-border shadow-sm mx-auto my-4"
+  />
+</ComponentPreview>
