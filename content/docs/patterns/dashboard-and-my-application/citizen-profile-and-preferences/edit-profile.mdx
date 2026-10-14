@@ -1,0 +1,737 @@
+---
+title: Edit Profile
+description: Interactive citizen profile editing mode featuring primary save and cancel controls, UIDAI identity synchronization, linked citizen accounts, and notification preferences
+---
+
+# Edit Profile
+
+An active configuration and editing pattern allowing citizens to modify personal contact information, update multi-channel alert subscriptions, and manage linked government services.
+
+The profile header activates dual command triggers—offering an explicit **Cancel** action (`Ux4gButton` outline variant) to discard uncommitted updates and a prominent **Save changes** action (`Ux4gButton` primary variant) to persist modifications. Statutory UIDAI identity parameters remain safely locked in read-only mode, directing legal name and demographic changes to official UIDAI workflows while granting seamless citizen control over contact channels, language preferences, and notification frequencies.
+
+---
+
+<h2><MIcon name="smartphone" /> Interactive Preview</h2>
+
+### Active Editing Mode
+
+Citizen profile modification screen showing active editing action buttons, configurable contact fields, and alert channel toggles.
+
+<ComponentPreview
+  title="Edit Profile - Active Editing Mode"
+  category="Pattern · Jetpack Compose"
+  code={`package com.example.ux4g.patterns.dashboard
+
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.CheckCircle
+import androidx.compose.material.icons.filled.Notifications
+import androidx.compose.material.icons.filled.WarningAmber
+import androidx.compose.material3.Divider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.ux4g.designsystemv1.components.Ux4gAppHeader
+import com.ux4g.designsystemv1.components.Ux4gAppHeaderAction
+import com.ux4g.designsystemv1.components.Ux4gAppHeaderVariant
+import com.ux4g.designsystemv1.components.avatar_component.Ux4gAvatarSize
+import com.ux4g.designsystemv1.components.avatar_component.Ux4gProfileAvatar
+import com.ux4g.designsystemv1.components.avatar_component.Ux4gProfileBadge
+import com.ux4g.designsystemv1.components.buttons.Ux4gButton
+import com.ux4g.designsystemv1.components.buttons.Ux4gButtonSize
+import com.ux4g.designsystemv1.components.buttons.Ux4gButtonVariant
+import com.ux4g.designsystemv1.components.inputfield.Ux4gInputField
+import com.ux4g.designsystemv1.components.tag.Ux4gTag
+import com.ux4g.designsystemv1.components.tag.Ux4gTagColor
+import com.ux4g.designsystemv1.components.tag.Ux4gTagShape
+import com.ux4g.designsystemv1.components.tag.Ux4gTagSize
+import com.ux4g.designsystemv1.components.tag.Ux4gTagStyle
+import com.ux4g.designsystemv1.components.toggle.Ux4gSwitch
+import com.ux4g.designsystemv1.components.toggle.Ux4gSwitchLabelPosition
+import com.ux4g.designsystemv1.components.toggle.Ux4gSwitchSize
+import com.ux4g.designsystemv1.foundation.Ux4gColors
+
+/**
+ * Edit Profile & Preferences Screen
+ *
+ * @param onCancel Invoked when citizen cancels profile changes
+ * @param onSaveChanges Invoked when citizen saves updated profile settings
+ * @param onUpdateUidai Invoked when citizen taps 'Update via UIDAI'
+ * @param onViewDigiLocker Invoked when citizen taps 'View in DigiLocker'
+ * @param onConnectUmang Invoked when citizen taps 'Connect' for UMANG
+ * @param onChangeBankAccount Invoked when citizen taps 'Change' for DBT account
+ * @param onDeleteAccount Invoked when citizen taps 'Delete my account'
+ * @param onNotificationClick Invoked when citizen taps notification bell
+ */
+@Composable
+fun EditProfileScreen(
+    onCancel: () -> Unit = {},
+    onSaveChanges: () -> Unit = {},
+    onUpdateUidai: () -> Unit = {},
+    onViewDigiLocker: () -> Unit = {},
+    onConnectUmang: () -> Unit = {},
+    onChangeBankAccount: () -> Unit = {},
+    onDeleteAccount: () -> Unit = {},
+    onNotificationClick: () -> Unit = {}
+) {
+    val isDark = isSystemInDarkTheme()
+    val scrollState = rememberScrollState()
+
+    var emailValue by remember { mutableStateOf("ramesh.kumar@gmail.com") }
+    var mobileValue by remember { mutableStateOf("+91 98765 43210") }
+    var languageValue by remember { mutableStateOf("English") }
+
+    var smsEnabled by remember { mutableStateOf(true) }
+    var emailEnabled by remember { mutableStateOf(true) }
+    var appPushEnabled by remember { mutableStateOf(true) }
+    var whatsAppEnabled by remember { mutableStateOf(false) }
+
+    val surfaceBg = if (isDark) Ux4gColors.Neutral950 else Ux4gColors.Neutral50
+    val cardBg = if (isDark) Ux4gColors.Neutral900 else Color.White
+    val borderCol = if (isDark) Ux4gColors.Neutral800 else Color(0xFFE5E7EB)
+    val textPrimary = if (isDark) Ux4gColors.Neutral50 else Ux4gColors.Neutral900
+    val textSecondary = if (isDark) Ux4gColors.Neutral400 else Color(0xFF4B5563)
+    val textSubtle = if (isDark) Ux4gColors.Neutral500 else Color(0xFF6B7280)
+    val primaryColor = if (isDark) Ux4gColors.Primary300 else Ux4gColors.Primary600
+    val greenColor = if (isDark) Color(0xFF22C55E) else Ux4gColors.Green600
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(surfaceBg)
+    ) {
+        // App Header
+        Ux4gAppHeader(
+            variant = if (isDark) Ux4gAppHeaderVariant.Dark else Ux4gAppHeaderVariant.Light,
+            title = "Government of India",
+            actions = listOf(
+                Ux4gAppHeaderAction(
+                    icon = Icons.Default.Notifications,
+                    contentDescription = "Notifications",
+                    onClick = onNotificationClick
+                )
+            ),
+            showAvatar = true,
+            avatarInitials = "R"
+        )
+
+        Divider(color = borderCol, thickness = 1.dp)
+
+        // Scrollable Content
+        Column(
+            modifier = Modifier
+                .weight(1f)
+                .fillMaxWidth()
+                .verticalScroll(scrollState)
+                .padding(20.dp)
+        ) {
+            // Screen Title
+            Text(
+                text = "Profile & Preferences",
+                style = TextStyle(
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = textPrimary
+                )
+            )
+
+            Spacer(modifier = Modifier.height(20.dp))
+
+            // 1. Profile Summary Card (Edit Mode: Cancel + Save changes)
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(12.dp))
+                    .background(cardBg)
+                    .border(1.dp, borderCol, RoundedCornerShape(12.dp))
+                    .padding(20.dp)
+            ) {
+                Column(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Ux4gProfileAvatar(
+                        size = Ux4gAvatarSize.XL,
+                        initials = "RK",
+                        badge = Ux4gProfileBadge.Verified
+                    )
+
+                    Spacer(modifier = Modifier.height(12.dp))
+
+                    Text(
+                        text = "Ramesh Kumar",
+                        style = TextStyle(
+                            fontSize = 16.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = textPrimary
+                        )
+                    )
+
+                    Spacer(modifier = Modifier.height(10.dp))
+
+                    Row(
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Ux4gTag(
+                            text = "Mobile verified",
+                            colorScheme = Ux4gTagColor.Success,
+                            style = Ux4gTagStyle.Tonal,
+                            size = Ux4gTagSize.M,
+                            shape = Ux4gTagShape.Rectangular,
+                            leadingContent = {
+                                Icon(
+                                    imageVector = Icons.Default.CheckCircle,
+                                    contentDescription = null,
+                                    tint = greenColor,
+                                    modifier = Modifier.size(12.dp)
+                                )
+                            }
+                        )
+
+                        Ux4gTag(
+                            text = "Aadhaar linked",
+                            colorScheme = Ux4gTagColor.Success,
+                            style = Ux4gTagStyle.Tonal,
+                            size = Ux4gTagSize.M,
+                            shape = Ux4gTagShape.Rectangular,
+                            leadingContent = {
+                                Icon(
+                                    imageVector = Icons.Default.CheckCircle,
+                                    contentDescription = null,
+                                    tint = greenColor,
+                                    modifier = Modifier.size(12.dp)
+                                )
+                            }
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.height(16.dp))
+
+                    // Cancel & Save changes action buttons
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(12.dp)
+                    ) {
+                        Ux4gButton(
+                            text = "Cancel",
+                            onClick = onCancel,
+                            variant = Ux4gButtonVariant.Outline,
+                            size = Ux4gButtonSize.Default,
+                            modifier = Modifier.weight(1f)
+                        )
+
+                        Ux4gButton(
+                            text = "Save changes",
+                            onClick = onSaveChanges,
+                            variant = Ux4gButtonVariant.Primary,
+                            size = Ux4gButtonSize.Default,
+                            modifier = Modifier.weight(1f)
+                        )
+                    }
+                }
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // 2. Aadhaar-linked Information Card (Official UIDAI synced)
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(12.dp))
+                    .background(cardBg)
+                    .border(1.dp, borderCol, RoundedCornerShape(12.dp))
+                    .padding(16.dp)
+            ) {
+                Column(modifier = Modifier.fillMaxWidth()) {
+                    Text(
+                        text = "Aadhaar-linked Information",
+                        style = TextStyle(
+                            fontSize = 15.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = textPrimary
+                        )
+                    )
+
+                    Spacer(modifier = Modifier.height(4.dp))
+
+                    Text(
+                        text = "Fetched from UIDAI — update via the UIDAI portal.",
+                        style = TextStyle(
+                            fontSize = 13.sp,
+                            color = textSubtle
+                        )
+                    )
+
+                    Spacer(modifier = Modifier.height(16.dp))
+
+                    Ux4gInputField(
+                        value = "Ramesh Kumar",
+                        onValueChange = {},
+                        label = "Full name",
+                        readOnly = true,
+                        modifier = Modifier.fillMaxWidth()
+                    )
+
+                    Spacer(modifier = Modifier.height(12.dp))
+
+                    Ux4gInputField(
+                        value = "15 Aug 1990",
+                        onValueChange = {},
+                        label = "Date of birth",
+                        readOnly = true,
+                        modifier = Modifier.fillMaxWidth()
+                    )
+
+                    Spacer(modifier = Modifier.height(12.dp))
+
+                    Ux4gInputField(
+                        value = "Male",
+                        onValueChange = {},
+                        label = "Gender",
+                        readOnly = true,
+                        modifier = Modifier.fillMaxWidth()
+                    )
+
+                    Spacer(modifier = Modifier.height(12.dp))
+
+                    Ux4gInputField(
+                        value = "XXXX XXXX 4127",
+                        onValueChange = {},
+                        label = "Aadhaar number (UID)",
+                        readOnly = true,
+                        modifier = Modifier.fillMaxWidth()
+                    )
+
+                    Spacer(modifier = Modifier.height(12.dp))
+
+                    Text(
+                        text = "Update via UIDAI",
+                        style = TextStyle(
+                            fontSize = 13.sp,
+                            fontWeight = FontWeight.Medium,
+                            color = primaryColor
+                        ),
+                        modifier = Modifier.clickable { onUpdateUidai() }
+                    )
+                }
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // 3. Personal Information Card (Editable contact data)
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(12.dp))
+                    .background(cardBg)
+                    .border(1.dp, borderCol, RoundedCornerShape(12.dp))
+                    .padding(16.dp)
+            ) {
+                Column(modifier = Modifier.fillMaxWidth()) {
+                    Text(
+                        text = "Personal information",
+                        style = TextStyle(
+                            fontSize = 15.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = textPrimary
+                        )
+                    )
+
+                    Spacer(modifier = Modifier.height(16.dp))
+
+                    Ux4gInputField(
+                        value = emailValue,
+                        onValueChange = { emailValue = it },
+                        label = "Email address",
+                        modifier = Modifier.fillMaxWidth()
+                    )
+
+                    Spacer(modifier = Modifier.height(12.dp))
+
+                    Ux4gInputField(
+                        value = mobileValue,
+                        onValueChange = { mobileValue = it },
+                        label = "Mobile number",
+                        modifier = Modifier.fillMaxWidth()
+                    )
+
+                    Spacer(modifier = Modifier.height(12.dp))
+
+                    Ux4gInputField(
+                        value = languageValue,
+                        onValueChange = { languageValue = it },
+                        label = "Language preference",
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                }
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // 4. Linked Accounts Card
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(12.dp))
+                    .background(cardBg)
+                    .border(1.dp, borderCol, RoundedCornerShape(12.dp))
+                    .padding(16.dp)
+            ) {
+                Column(modifier = Modifier.fillMaxWidth()) {
+                    Text(
+                        text = "Linked accounts",
+                        style = TextStyle(
+                            fontSize = 14.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = textPrimary
+                        )
+                    )
+
+                    Spacer(modifier = Modifier.height(16.dp))
+
+                    // DigiLocker Row
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Text(
+                            text = "DigiLocker",
+                            style = TextStyle(
+                                fontSize = 13.sp,
+                                fontWeight = FontWeight.SemiBold,
+                                color = textPrimary
+                            )
+                        )
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Ux4gTag(
+                            text = "Linked",
+                            colorScheme = Ux4gTagColor.Success,
+                            style = Ux4gTagStyle.Tonal,
+                            size = Ux4gTagSize.M,
+                            shape = Ux4gTagShape.Rectangular,
+                            leadingContent = {
+                                Icon(
+                                    imageVector = Icons.Default.CheckCircle,
+                                    contentDescription = null,
+                                    tint = greenColor,
+                                    modifier = Modifier.size(12.dp)
+                                )
+                            }
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.height(4.dp))
+
+                    Text(
+                        text = "Access and share your digital documents",
+                        style = TextStyle(
+                            fontSize = 12.sp,
+                            color = textSecondary
+                        )
+                    )
+
+                    Spacer(modifier = Modifier.height(4.dp))
+
+                    Text(
+                        text = "View in DigiLocker",
+                        style = TextStyle(
+                            fontSize = 13.sp,
+                            fontWeight = FontWeight.Medium,
+                            color = primaryColor
+                        ),
+                        modifier = Modifier.clickable { onViewDigiLocker() }
+                    )
+
+                    Spacer(modifier = Modifier.height(10.dp))
+                    Divider(color = borderCol, thickness = 1.dp)
+                    Spacer(modifier = Modifier.height(10.dp))
+
+                    // UMANG App Row
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Text(
+                            text = "UMANG App",
+                            style = TextStyle(
+                                fontSize = 13.sp,
+                                fontWeight = FontWeight.SemiBold,
+                                color = textPrimary
+                            )
+                        )
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Ux4gTag(
+                            text = "Not linked",
+                            colorScheme = Ux4gTagColor.Warning,
+                            style = Ux4gTagStyle.Tonal,
+                            size = Ux4gTagSize.M,
+                            shape = Ux4gTagShape.Rectangular,
+                            leadingContent = {
+                                Icon(
+                                    imageVector = Icons.Default.WarningAmber,
+                                    contentDescription = null,
+                                    tint = Color(0xFFEA580C),
+                                    modifier = Modifier.size(12.dp)
+                                )
+                            }
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.height(4.dp))
+
+                    Text(
+                        text = "Unified access to government services",
+                        style = TextStyle(
+                            fontSize = 12.sp,
+                            color = textSecondary
+                        )
+                    )
+
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    Ux4gButton(
+                        text = "Connect",
+                        onClick = onConnectUmang,
+                        variant = Ux4gButtonVariant.Outline,
+                        size = Ux4gButtonSize.Small
+                    )
+
+                    Spacer(modifier = Modifier.height(10.dp))
+                    Divider(color = borderCol, thickness = 1.dp)
+                    Spacer(modifier = Modifier.height(10.dp))
+
+                    // Bank Account for DBT
+                    Text(
+                        text = "Bank account for DBT",
+                        style = TextStyle(
+                            fontSize = 13.sp,
+                            fontWeight = FontWeight.SemiBold,
+                            color = textPrimary
+                        )
+                    )
+
+                    Spacer(modifier = Modifier.height(4.dp))
+
+                    Text(
+                        text = "XXXXXX7842 · State Bank of India",
+                        style = TextStyle(
+                            fontSize = 12.sp,
+                            color = textSecondary
+                        )
+                    )
+
+                    Spacer(modifier = Modifier.height(4.dp))
+
+                    Text(
+                        text = "Change",
+                        style = TextStyle(
+                            fontSize = 13.sp,
+                            fontWeight = FontWeight.Medium,
+                            color = primaryColor
+                        ),
+                        modifier = Modifier.clickable { onChangeBankAccount() }
+                    )
+                }
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // 5. Notification Preferences Card
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(12.dp))
+                    .background(cardBg)
+                    .border(1.dp, borderCol, RoundedCornerShape(12.dp))
+                    .padding(16.dp)
+            ) {
+                Column(modifier = Modifier.fillMaxWidth()) {
+                    Text(
+                        text = "Notification preferences",
+                        style = TextStyle(
+                            fontSize = 15.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = textPrimary
+                        )
+                    )
+
+                    Spacer(modifier = Modifier.height(16.dp))
+
+                    NotificationToggleRow(
+                        title = "SMS",
+                        description = "Text message updates",
+                        checked = smsEnabled,
+                        onCheckedChange = { smsEnabled = it },
+                        textPrimary = textPrimary,
+                        textSecondary = textSecondary
+                    )
+
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Divider(color = borderCol, thickness = 1.dp)
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    NotificationToggleRow(
+                        title = "Email",
+                        description = "Email updates",
+                        checked = emailEnabled,
+                        onCheckedChange = { emailEnabled = it },
+                        textPrimary = textPrimary,
+                        textSecondary = textSecondary
+                    )
+
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Divider(color = borderCol, thickness = 1.dp)
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    NotificationToggleRow(
+                        title = "App push",
+                        description = "In-app alerts",
+                        checked = appPushEnabled,
+                        onCheckedChange = { appPushEnabled = it },
+                        textPrimary = textPrimary,
+                        textSecondary = textSecondary
+                    )
+
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Divider(color = borderCol, thickness = 1.dp)
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    NotificationToggleRow(
+                        title = "WhatsApp",
+                        description = "WhatsApp updates",
+                        checked = whatsAppEnabled,
+                        onCheckedChange = { whatsAppEnabled = it },
+                        textPrimary = textPrimary,
+                        textSecondary = textSecondary
+                    )
+                }
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // 6. Delete Account Danger Card
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(12.dp))
+                    .background(if (isDark) Color(0xFF2A1215) else Color(0xFFFEF2F2))
+                    .border(1.dp, if (isDark) Ux4gColors.Red900 else Color(0xFFDB372D), RoundedCornerShape(12.dp))
+                    .padding(16.dp)
+            ) {
+                Column(modifier = Modifier.fillMaxWidth()) {
+                    Text(
+                        text = "Delete account",
+                        style = TextStyle(
+                            fontSize = 14.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = textPrimary
+                        )
+                    )
+
+                    Spacer(modifier = Modifier.height(4.dp))
+
+                    Text(
+                        text = "Permanently delete your account and all data.\n30-day grace period to restore before it is final.",
+                        style = TextStyle(
+                            fontSize = 12.sp,
+                            lineHeight = 17.sp,
+                            color = textSecondary
+                        )
+                    )
+
+                    Spacer(modifier = Modifier.height(12.dp))
+
+                    Ux4gButton(
+                        text = "Delete my account",
+                        onClick = onDeleteAccount,
+                        variant = Ux4gButtonVariant.Outline,
+                        size = Ux4gButtonSize.Default,
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                }
+            }
+        }
+    }
+}
+
+/**
+ * Toggle Row item for notification settings
+ */
+@Composable
+private fun NotificationToggleRow(
+    title: String,
+    description: String,
+    checked: Boolean,
+    onCheckedChange: (Boolean) -> Unit,
+    textPrimary: Color,
+    textSecondary: Color
+) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Column(modifier = Modifier.weight(1f)) {
+            Text(
+                text = title,
+                style = TextStyle(
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.SemiBold,
+                    color = textPrimary
+                )
+            )
+            Spacer(modifier = Modifier.height(2.dp))
+            Text(
+                text = description,
+                style = TextStyle(
+                    fontSize = 12.sp,
+                    color = textSecondary
+                )
+            )
+        }
+
+        Ux4gSwitch(
+            checked = checked,
+            onCheckedChange = onCheckedChange,
+            size = Ux4gSwitchSize.S,
+            labelPosition = Ux4gSwitchLabelPosition.NoLabel
+        )
+    }
+}
+
+@Preview(showBackground = true, widthDp = 360, heightDp = 1400)
+@Composable
+fun EditProfilePreview() {
+    EditProfileScreen()
+}`}
+>
+  <img
+    src="/images/patterns/citizen_profile_and_preferences/edit_profile.svg"
+    alt="Edit Profile Pattern - Active Editing Mode"
+    className="w-full max-w-[360px] rounded-2xl border border-border shadow-sm mx-auto my-4"
+  />
+</ComponentPreview>

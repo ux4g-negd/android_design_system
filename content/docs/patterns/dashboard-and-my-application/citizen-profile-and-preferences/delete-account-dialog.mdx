@@ -1,0 +1,157 @@
+---
+title: Delete Account Dialog
+description: Destructive confirmation modal pattern protecting citizen account deletion with statutory 30-day grace period notice and explicit dual-action controls
+---
+
+# Delete Account Dialog
+
+A critical destructive action confirmation modal pattern safeguarding citizens against unintended account deletion and permanent data loss across government service registries.
+
+The dialog appears centered over a focus-trapping background scrim. It enforces clear decision hierarchy with an unambiguous title (*"Delete your account?"*), statutory policy transparency (highlighting the **30-day grace period** to restore records prior to irreversible deletion), a prominent high-contrast destructive confirmation trigger (`Ux4gButton` with danger styling), and a full-width **Cancel** action allowing citizens to safely abort the operation.
+
+---
+
+<h2><MIcon name="smartphone" /> Interactive Preview</h2>
+
+### Destructive Confirmation Modal
+
+Modal dialog displaying policy disclosure, statutory grace period advisory, and dual confirmation triggers.
+
+<ComponentPreview
+  title="Delete Account Dialog - Destructive Confirmation"
+  category="Pattern · Jetpack Compose"
+  code={`package com.example.ux4g.patterns.dashboard
+
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.ux4g.designsystemv1.components.buttons.Ux4gButton
+import com.ux4g.designsystemv1.components.buttons.Ux4gButtonSize
+import com.ux4g.designsystemv1.components.buttons.Ux4gButtonVariant
+import com.ux4g.designsystemv1.foundation.Ux4gColors
+
+/**
+ * Delete Account Confirmation Dialog Pattern
+ *
+ * @param onConfirmDelete Invoked when citizen confirms account deletion
+ * @param onCancel Invoked when citizen cancels or dismisses the dialog
+ */
+@Composable
+fun DeleteAccountDialogScreen(
+    onConfirmDelete: () -> Unit = {},
+    onCancel: () -> Unit = {}
+) {
+    val isDark = isSystemInDarkTheme()
+
+    val scrimBg = Color(0x66000000)
+    val cardBg = if (isDark) Ux4gColors.Neutral900 else Color.White
+    val borderCol = if (isDark) Ux4gColors.Red800 else Ux4gColors.Red300
+    val textPrimary = if (isDark) Ux4gColors.Neutral50 else Ux4gColors.Neutral900
+    val textSecondary = if (isDark) Ux4gColors.Neutral300 else Color(0xFF4B5563)
+    val dangerColor = Ux4gColors.Red600
+
+    // Full-screen modal overlay backdrop
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(scrimBg)
+            .padding(16.dp),
+        contentAlignment = Alignment.Center
+    ) {
+        // Modal Container Card
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .clip(RoundedCornerShape(12.dp))
+                .background(cardBg)
+                .border(1.dp, borderCol, RoundedCornerShape(12.dp))
+                .padding(horizontal = 16.dp, vertical = 24.dp)
+        ) {
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                // Header Title
+                Text(
+                    text = "Delete your account?",
+                    style = TextStyle(
+                        fontSize = 18.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = textPrimary
+                    ),
+                    textAlign = TextAlign.Center
+                )
+
+                Spacer(modifier = Modifier.height(12.dp))
+
+                // Explanatory Body Copy with Grace Period Notice
+                Text(
+                    text = "This permanently deletes your account and all associated data. You will have a 30-day grace period to restore it — after that, deletion is final and cannot be undone.",
+                    style = TextStyle(
+                        fontSize = 14.sp,
+                        lineHeight = 20.sp,
+                        color = textSecondary
+                    ),
+                    textAlign = TextAlign.Center
+                )
+
+                Spacer(modifier = Modifier.height(24.dp))
+
+                // Primary Destructive Action
+                Ux4gButton(
+                    text = "Delete account",
+                    onClick = onConfirmDelete,
+                    variant = Ux4gButtonVariant.Primary,
+                    size = Ux4gButtonSize.Default,
+                    backgroundColor = dangerColor,
+                    contentColor = Color.White,
+                    modifier = Modifier.fillMaxWidth()
+                )
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                // Secondary Cancel Action
+                Ux4gButton(
+                    text = "Cancel",
+                    onClick = onCancel,
+                    variant = Ux4gButtonVariant.Outline,
+                    size = Ux4gButtonSize.Default,
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
+        }
+    }
+}
+
+@Preview(showBackground = true, widthDp = 360, heightDp = 640)
+@Composable
+fun DeleteAccountDialogPreview() {
+    DeleteAccountDialogScreen()
+}`}
+>
+  <img
+    src="/images/patterns/citizen_profile_and_preferences/delete_account_dialog.svg"
+    alt="Delete Account Dialog Pattern - Destructive Confirmation"
+    className="w-full max-w-[360px] rounded-2xl border border-border shadow-sm mx-auto my-4"
+  />
+</ComponentPreview>

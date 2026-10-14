@@ -2,6 +2,7 @@
   "title": "Dashboard and My Application",
   "pages": [
     "my-applications",
-    "pending-tasks"
+    "pending-tasks",
+    "citizen-profile-and-preferences"
   ]
 }

@@ -1,0 +1,8 @@
+{
+  "title": "Citizen Profile and Preferences",
+  "pages": [
+    "citizen-profile",
+    "edit-profile",
+    "delete-account-dialog"
+  ]
+}
