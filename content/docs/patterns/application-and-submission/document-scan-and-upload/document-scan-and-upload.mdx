@@ -1,0 +1,1035 @@
+---
+title: Document Scan and Upload
+description: Multi-document intake pattern featuring document progress tracking, instant file verification status, DigiLocker one-tap fetching, and self-attestation compliance
+---
+
+# Document Scan and Upload
+
+A structured multi-document intake pattern designed for government schemes, statutory certificate requests, and entitlement applications requiring verifiable citizen attachments.
+
+The pattern streamlines complex document requirements by providing an overarching upload progress bar (*e.g. 1 of 4 uploaded*), real-time upload affirmation cards for completed attachments (*Aadhaar Card with file metadata, View, and Re-upload actions*), and dual acquisition pathways for pending requirements—direct camera/file scan upload alongside seamless one-tap integration with **DigiLocker** for instant statutory verification.
+
+---
+
+<h2><MIcon name="smartphone" /> Interactive Previews</h2>
+
+### 1. Default Style (Full Screen)
+
+Standard full-screen documentation stage with integrated journey stepper, quota progress tracker, dynamic document status cards, and primary submission controls.
+
+<ComponentPreview
+  title="Document Scan and Upload - Default Style"
+  category="Pattern · Jetpack Compose"
+  code={`package com.example.ux4g.patterns.application
+
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.CheckCircle
+import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material3.Divider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.LinearProgressIndicator
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.ux4g.designsystemv1.components.Ux4gAppHeader
+import com.ux4g.designsystemv1.components.Ux4gAppHeaderAction
+import com.ux4g.designsystemv1.components.Ux4gAppHeaderVariant
+import com.ux4g.designsystemv1.components.buttons.Ux4gButton
+import com.ux4g.designsystemv1.components.buttons.Ux4gButtonSize
+import com.ux4g.designsystemv1.components.buttons.Ux4gButtonVariant
+import com.ux4g.designsystemv1.components.stepper.Ux4gStepItem
+import com.ux4g.designsystemv1.components.stepper.Ux4gStepper
+import com.ux4g.designsystemv1.foundation.Ux4gColors
+
+data class DocumentRequirement(
+    val id: String,
+    val title: String,
+    val subtitle: String,
+    val isRequired: Boolean = true,
+    val isUploaded: Boolean = false,
+    val fileName: String? = null,
+    val fileSize: String? = null,
+    val uploadTimestamp: String? = null,
+    val allowsDigiLocker: Boolean = true
+)
+
+/**
+ * Document Scan and Upload - Full Screen Default Pattern
+ *
+ * @param onContinueClick Callback when citizen proceeds with uploaded documents
+ * @param onBackClick Callback to return to previous wizard step
+ * @param onUploadClick Callback to launch camera scan / file picker for requirement
+ * @param onDigiLockerClick Callback to launch DigiLocker authentication & fetch
+ * @param onViewDocument Callback to preview an uploaded PDF/JPG
+ */
+@Composable
+fun DocumentScanUploadScreen(
+    onContinueClick: () -> Unit = {},
+    onBackClick: () -> Unit = {},
+    onUploadClick: (String) -> Unit = {},
+    onDigiLockerClick: (String) -> Unit = {},
+    onViewDocument: (String) -> Unit = {}
+) {
+    val isDark = isSystemInDarkTheme()
+    val scrollState = rememberScrollState()
+
+    val surfaceBg = if (isDark) Ux4gColors.Neutral950 else Color(0xFFFAFAFA)
+    val cardBg = if (isDark) Ux4gColors.Neutral900 else Color.White
+    val cardBorder = if (isDark) Ux4gColors.Neutral800 else Color(0xFFE5E7EB)
+    val textPrimary = if (isDark) Ux4gColors.Neutral50 else Ux4gColors.Neutral900
+    val textSecondary = if (isDark) Ux4gColors.Neutral400 else Ux4gColors.Neutral500
+    val primaryColor = if (isDark) Ux4gColors.Primary300 else Ux4gColors.Primary600
+    val successBg = if (isDark) Ux4gColors.Green900 else Color(0xFFF0FDF4)
+    val successBorder = if (isDark) Ux4gColors.Green800 else Color(0xFFDCFCE7)
+    val successColor = if (isDark) Ux4gColors.Green400 else Color(0xFF16A34A)
+
+    val documents = listOf(
+        DocumentRequirement(
+            id = "aadhaar",
+            title = "Aadhaar Card",
+            subtitle = "aadhaar_card.pdf · 1.2 MB · Uploaded just now",
+            isRequired = true,
+            isUploaded = true,
+            fileName = "aadhaar_card.pdf",
+            fileSize = "1.2 MB",
+            uploadTimestamp = "Uploaded just now"
+        ),
+        DocumentRequirement(
+            id = "income_proof",
+            title = "Proof of Income",
+            subtitle = "Salary slip or income tax return",
+            isRequired = true,
+            isUploaded = false,
+            allowsDigiLocker = true
+        ),
+        DocumentRequirement(
+            id = "residence_proof",
+            title = "Residence proof",
+            subtitle = "Electricity bill, gas bill or ration card",
+            isRequired = true,
+            isUploaded = false,
+            allowsDigiLocker = true
+        ),
+        DocumentRequirement(
+            id = "caste_cert",
+            title = "Caste certificate",
+            subtitle = "SC/ST/OBC applicants only",
+            isRequired = false,
+            isUploaded = false,
+            allowsDigiLocker = false
+        )
+    )
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(surfaceBg)
+    ) {
+        // App Header
+        Ux4gAppHeader(
+            variant = Ux4gAppHeaderVariant.Light,
+            leadingWidgets = listOf("emblem", "union"),
+            actions = listOf(
+                Ux4gAppHeaderAction(
+                    icon = "menu",
+                    onClick = {}
+                )
+            ),
+            modifier = Modifier.fillMaxWidth()
+        )
+
+        Divider(
+            thickness = 1.dp,
+            color = if (isDark) Ux4gColors.Neutral800 else Color(0xFFE5E7EB)
+        )
+
+        // Scrollable Body Content
+        Column(
+            modifier = Modifier
+                .weight(1f)
+                .fillMaxWidth()
+                .verticalScroll(scrollState)
+                .padding(horizontal = 24.dp, vertical = 24.dp)
+        ) {
+            // Stepper Progression Indicator
+            Ux4gStepper(
+                totalSteps = 4,
+                currentStep = 3,
+                stepSize = 20.dp,
+                steps = listOf(
+                    Ux4gStepItem(title = "Eligibility"),
+                    Ux4gStepItem(title = "Personal"),
+                    Ux4gStepItem(title = "Documents"),
+                    Ux4gStepItem(title = "Submit")
+                ),
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            Spacer(modifier = Modifier.height(32.dp))
+
+            // Section Heading & Requirements Specs
+            Text(
+                text = "Upload documents",
+                style = TextStyle(
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = textPrimary
+                )
+            )
+
+            Spacer(modifier = Modifier.height(4.dp))
+
+            Text(
+                text = "PDF or JPG, max 5 MB each. Self-attested.",
+                style = TextStyle(
+                    fontSize = 14.sp,
+                    color = textSecondary
+                )
+            )
+
+            Spacer(modifier = Modifier.height(20.dp))
+
+            // Progress Summary & Progress Bar
+            Text(
+                text = "Required documents — 1 of 4 uploaded",
+                style = TextStyle(
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.SemiBold,
+                    color = textPrimary
+                )
+            )
+
+            Spacer(modifier = Modifier.height(10.dp))
+
+            LinearProgressIndicator(
+                progress = 0.25f,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(6.dp)
+                    .clip(RoundedCornerShape(3.dp)),
+                color = primaryColor,
+                trackColor = if (isDark) Ux4gColors.Neutral800 else Color(0xFFE5E7EB)
+            )
+
+            Spacer(modifier = Modifier.height(24.dp))
+
+            // Document Requirement Cards List
+            documents.forEach { doc ->
+                if (doc.isUploaded) {
+                    // Uploaded Card State
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clip(RoundedCornerShape(12.dp))
+                            .background(successBg)
+                            .border(1.dp, successBorder, RoundedCornerShape(12.dp))
+                            .padding(16.dp)
+                    ) {
+                        Column(modifier = Modifier.fillMaxWidth()) {
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                verticalAlignment = Alignment.Top
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Filled.CheckCircle,
+                                    contentDescription = "Uploaded",
+                                    tint = successColor,
+                                    modifier = Modifier.size(20.dp)
+                                )
+
+                                Spacer(modifier = Modifier.width(12.dp))
+
+                                Column(modifier = Modifier.weight(1f)) {
+                                    Text(
+                                        text = doc.title,
+                                        style = TextStyle(
+                                            fontSize = 16.sp,
+                                            fontWeight = FontWeight.Bold,
+                                            color = textPrimary
+                                        )
+                                    )
+
+                                    Spacer(modifier = Modifier.height(4.dp))
+
+                                    Text(
+                                        text = doc.subtitle,
+                                        style = TextStyle(
+                                            fontSize = 13.sp,
+                                            color = if (isDark) Ux4gColors.Neutral300 else Ux4gColors.Neutral700,
+                                            lineHeight = 18.sp
+                                        )
+                                    )
+                                }
+                            }
+
+                            Spacer(modifier = Modifier.height(16.dp))
+
+                            Row(
+                                horizontalArrangement = Arrangement.spacedBy(12.dp),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Ux4gButton(
+                                    text = "View",
+                                    variant = Ux4gButtonVariant.Outline,
+                                    size = Ux4gButtonSize.Small,
+                                    onClick = { onViewDocument(doc.id) },
+                                    modifier = Modifier
+                                        .width(100.dp)
+                                        .height(40.dp)
+                                )
+
+                                Ux4gButton(
+                                    text = "Re-upload",
+                                    variant = Ux4gButtonVariant.Outline,
+                                    size = Ux4gButtonSize.Small,
+                                    onClick = { onUploadClick(doc.id) },
+                                    modifier = Modifier
+                                        .width(120.dp)
+                                        .height(40.dp)
+                                )
+                            }
+                        }
+                    }
+                } else {
+                    // Pending Requirement Card State
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clip(RoundedCornerShape(12.dp))
+                            .background(cardBg)
+                            .border(1.dp, cardBorder, RoundedCornerShape(12.dp))
+                            .padding(16.dp)
+                    ) {
+                        Column(modifier = Modifier.fillMaxWidth()) {
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                verticalAlignment = Alignment.Top
+                            ) {
+                                // Empty state circle ring
+                                Box(
+                                    modifier = Modifier
+                                        .size(20.dp)
+                                        .clip(CircleShape)
+                                        .border(
+                                            1.5.dp,
+                                            if (isDark) Ux4gColors.Neutral700 else Ux4gColors.Neutral300,
+                                            CircleShape
+                                        )
+                                )
+
+                                Spacer(modifier = Modifier.width(12.dp))
+
+                                Column(modifier = Modifier.weight(1f)) {
+                                    Row(
+                                        verticalAlignment = Alignment.CenterVertically,
+                                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                                    ) {
+                                        Text(
+                                            text = doc.title,
+                                            style = TextStyle(
+                                                fontSize = 16.sp,
+                                                fontWeight = FontWeight.Bold,
+                                                color = textPrimary
+                                            )
+                                        )
+
+                                        // Status Pill Badge
+                                        if (doc.isRequired) {
+                                            Box(
+                                                modifier = Modifier
+                                                    .clip(RoundedCornerShape(4.dp))
+                                                    .background(if (isDark) Color(0xFF7F1D1D) else Color(0xFFFEE2E2))
+                                                    .padding(horizontal = 8.dp, vertical = 2.dp)
+                                            ) {
+                                                Text(
+                                                    text = "Required",
+                                                    style = TextStyle(
+                                                        fontSize = 11.sp,
+                                                        fontWeight = FontWeight.Bold,
+                                                        color = if (isDark) Color(0xFFFCA5A5) else Color(0xFF991B1B)
+                                                    )
+                                                )
+                                            }
+                                        } else {
+                                            Box(
+                                                modifier = Modifier
+                                                    .clip(RoundedCornerShape(4.dp))
+                                                    .background(if (isDark) Ux4gColors.Neutral800 else Color(0xFFF3F4F6))
+                                                    .padding(horizontal = 8.dp, vertical = 2.dp)
+                                            ) {
+                                                Text(
+                                                    text = "Optional",
+                                                    style = TextStyle(
+                                                        fontSize = 11.sp,
+                                                        fontWeight = FontWeight.Bold,
+                                                        color = if (isDark) Ux4gColors.Neutral300 else Color(0xFF374151)
+                                                    )
+                                                )
+                                            }
+                                        }
+                                    }
+
+                                    Spacer(modifier = Modifier.height(4.dp))
+
+                                    Text(
+                                        text = doc.subtitle,
+                                        style = TextStyle(
+                                            fontSize = 13.sp,
+                                            color = textSecondary,
+                                            lineHeight = 18.sp
+                                        )
+                                    )
+                                }
+                            }
+
+                            Spacer(modifier = Modifier.height(16.dp))
+
+                            // Dual Acquisition Actions: Upload & DigiLocker
+                            Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                                Ux4gButton(
+                                    text = "Upload",
+                                    variant = Ux4gButtonVariant.Primary,
+                                    size = Ux4gButtonSize.Small,
+                                    onClick = { onUploadClick(doc.id) },
+                                    modifier = Modifier
+                                        .width(100.dp)
+                                        .height(40.dp)
+                                )
+
+                                if (doc.allowsDigiLocker) {
+                                    Ux4gButton(
+                                        text = "Fetch from DigiLocker",
+                                        variant = Ux4gButtonVariant.Outline,
+                                        size = Ux4gButtonSize.Small,
+                                        onClick = { onDigiLockerClick(doc.id) },
+                                        modifier = Modifier
+                                            .width(220.dp)
+                                            .height(40.dp)
+                                    )
+                                }
+                            }
+                        }
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(16.dp))
+            }
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            // Compliance & Self-Attestation Notice
+            Text(
+                text = "All documents must be self-attested. AI flags quality issues; officers make the final call.",
+                style = TextStyle(
+                    fontSize = 13.sp,
+                    color = textSecondary,
+                    lineHeight = 18.sp
+                )
+            )
+
+            Spacer(modifier = Modifier.height(28.dp))
+
+            // Action Buttons
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                verticalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                Ux4gButton(
+                    text = "Continue",
+                    variant = Ux4gButtonVariant.Primary,
+                    size = Ux4gButtonSize.Large,
+                    onClick = onContinueClick,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(48.dp)
+                )
+
+                Ux4gButton(
+                    text = "Back",
+                    variant = Ux4gButtonVariant.Outline,
+                    size = Ux4gButtonSize.Large,
+                    onClick = onBackClick,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(48.dp)
+                )
+            }
+
+            Spacer(modifier = Modifier.height(24.dp))
+
+            // Footer Branding
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 24.dp),
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = "Powered by Digital India",
+                    style = TextStyle(
+                        fontSize = 11.sp,
+                        color = Ux4gColors.Neutral400,
+                        fontWeight = FontWeight.Medium
+                    )
+                )
+            }
+        }
+    }
+}
+
+@Preview(showBackground = true, widthDp = 360, heightDp = 760)
+@Composable
+fun DocumentScanUploadPreview() {
+    DocumentScanUploadScreen()
+}`}
+>
+  <img
+    src="/images/patterns/document_scan_and_upload/document_scan_and_upload.svg"
+    alt="Document Scan and Upload Pattern - Default Style"
+    className="w-full max-w-[360px] rounded-2xl border border-border shadow-sm mx-auto my-4"
+  />
+</ComponentPreview>
+
+---
+
+### 2. Card Style Variant
+
+Contained card layout situated over a soothing primary background canvas, organizing the multi-document upload list, DigiLocker fetch controls, and progress tally within an elevated card container.
+
+<ComponentPreview
+  title="Document Scan and Upload - Card Style Variant"
+  category="Pattern · Jetpack Compose"
+  code={`package com.example.ux4g.patterns.application
+
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.CheckCircle
+import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material3.Divider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.LinearProgressIndicator
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.ux4g.designsystemv1.components.Ux4gAppHeader
+import com.ux4g.designsystemv1.components.Ux4gAppHeaderAction
+import com.ux4g.designsystemv1.components.Ux4gAppHeaderVariant
+import com.ux4g.designsystemv1.components.buttons.Ux4gButton
+import com.ux4g.designsystemv1.components.buttons.Ux4gButtonSize
+import com.ux4g.designsystemv1.components.buttons.Ux4gButtonVariant
+import com.ux4g.designsystemv1.components.stepper.Ux4gStepItem
+import com.ux4g.designsystemv1.components.stepper.Ux4gStepper
+import com.ux4g.designsystemv1.foundation.Ux4gColors
+
+/**
+ * Document Scan and Upload - Card Style Variant Pattern
+ *
+ * @param onContinueClick Callback when citizen proceeds with uploaded documents
+ * @param onBackClick Callback to return to previous wizard step
+ * @param onUploadClick Callback to launch camera scan / file picker for requirement
+ * @param onDigiLockerClick Callback to launch DigiLocker authentication & fetch
+ * @param onViewDocument Callback to preview an uploaded PDF/JPG
+ */
+@Composable
+fun DocumentScanUploadCardScreen(
+    onContinueClick: () -> Unit = {},
+    onBackClick: () -> Unit = {},
+    onUploadClick: (String) -> Unit = {},
+    onDigiLockerClick: (String) -> Unit = {},
+    onViewDocument: (String) -> Unit = {}
+) {
+    val isDark = isSystemInDarkTheme()
+    val scrollState = rememberScrollState()
+
+    val canvasBg = if (isDark) Ux4gColors.Primary900 else Ux4gColors.Primary50
+    val cardBg = if (isDark) Ux4gColors.Neutral900 else Color.White
+    val cardBorder = if (isDark) Ux4gColors.Neutral800 else Color(0xFFE5E7EB)
+    val textPrimary = if (isDark) Ux4gColors.Neutral50 else Ux4gColors.Neutral900
+    val textSecondary = if (isDark) Ux4gColors.Neutral400 else Ux4gColors.Neutral500
+    val primaryColor = if (isDark) Ux4gColors.Primary300 else Ux4gColors.Primary600
+    val successBg = if (isDark) Ux4gColors.Green900 else Color(0xFFF0FDF4)
+    val successBorder = if (isDark) Ux4gColors.Green800 else Color(0xFFDCFCE7)
+    val successColor = if (isDark) Ux4gColors.Green400 else Color(0xFF16A34A)
+
+    val documents = listOf(
+        DocumentRequirement(
+            id = "aadhaar",
+            title = "Aadhaar Card",
+            subtitle = "aadhaar_card.pdf · 1.2 MB · Uploaded just now",
+            isRequired = true,
+            isUploaded = true,
+            fileName = "aadhaar_card.pdf",
+            fileSize = "1.2 MB",
+            uploadTimestamp = "Uploaded just now"
+        ),
+        DocumentRequirement(
+            id = "income_proof",
+            title = "Proof of Income",
+            subtitle = "Salary slip or income tax return",
+            isRequired = true,
+            isUploaded = false,
+            allowsDigiLocker = true
+        ),
+        DocumentRequirement(
+            id = "residence_proof",
+            title = "Residence proof",
+            subtitle = "Electricity bill, gas bill or ration card",
+            isRequired = true,
+            isUploaded = false,
+            allowsDigiLocker = true
+        ),
+        DocumentRequirement(
+            id = "caste_cert",
+            title = "Caste certificate",
+            subtitle = "SC/ST/OBC applicants only",
+            isRequired = false,
+            isUploaded = false,
+            allowsDigiLocker = false
+        )
+    )
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(canvasBg)
+    ) {
+        // App Header with pure white background
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(if (isDark) Ux4gColors.Neutral900 else Color.White)
+        ) {
+            Column(modifier = Modifier.fillMaxWidth()) {
+                Ux4gAppHeader(
+                    variant = Ux4gAppHeaderVariant.Light,
+                    leadingWidgets = listOf("emblem", "union"),
+                    actions = listOf(
+                        Ux4gAppHeaderAction(
+                            icon = "menu",
+                            onClick = {}
+                        )
+                    ),
+                    modifier = Modifier.fillMaxWidth()
+                )
+                Divider(
+                    thickness = 1.dp,
+                    color = if (isDark) Ux4gColors.Neutral800 else Color(0xFFE5E7EB)
+                )
+            }
+        }
+
+        // Scrollable Body Content
+        Column(
+            modifier = Modifier
+                .weight(1f)
+                .fillMaxWidth()
+                .verticalScroll(scrollState)
+                .padding(horizontal = 16.dp, vertical = 20.dp)
+        ) {
+            // Elevated Main Card Container
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .shadow(
+                        elevation = 8.dp,
+                        shape = RoundedCornerShape(16.dp),
+                        ambientColor = Color.Black.copy(alpha = 0.05f)
+                    )
+                    .clip(RoundedCornerShape(16.dp))
+                    .background(cardBg)
+                    .border(1.dp, cardBorder, RoundedCornerShape(16.dp))
+                    .padding(24.dp)
+            ) {
+                Column(modifier = Modifier.fillMaxWidth()) {
+                    // Stepper Progression Indicator
+                    Ux4gStepper(
+                        totalSteps = 4,
+                        currentStep = 3,
+                        stepSize = 20.dp,
+                        steps = listOf(
+                            Ux4gStepItem(title = "Eligibility"),
+                            Ux4gStepItem(title = "Personal"),
+                            Ux4gStepItem(title = "Documents"),
+                            Ux4gStepItem(title = "Submit")
+                        ),
+                        modifier = Modifier.fillMaxWidth()
+                    )
+
+                    Spacer(modifier = Modifier.height(32.dp))
+
+                    // Section Heading & Specs
+                    Text(
+                        text = "Upload documents",
+                        style = TextStyle(
+                            fontSize = 20.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = textPrimary
+                        )
+                    )
+
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    Text(
+                        text = "PDF or JPG, max 5 MB each.",
+                        style = TextStyle(
+                            fontSize = 14.sp,
+                            color = textSecondary
+                        )
+                    )
+
+                    Spacer(modifier = Modifier.height(20.dp))
+
+                    // Progress Summary & Progress Bar
+                    Text(
+                        text = "Required documents — 1 of 4 uploaded",
+                        style = TextStyle(
+                            fontSize = 14.sp,
+                            fontWeight = FontWeight.SemiBold,
+                            color = textPrimary
+                        )
+                    )
+
+                    Spacer(modifier = Modifier.height(10.dp))
+
+                    LinearProgressIndicator(
+                        progress = 0.25f,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(6.dp)
+                            .clip(RoundedCornerShape(3.dp)),
+                        color = primaryColor,
+                        trackColor = if (isDark) Ux4gColors.Neutral800 else Color(0xFFE5E7EB)
+                    )
+
+                    Spacer(modifier = Modifier.height(24.dp))
+
+                    // Document Requirement Cards List
+                    documents.forEach { doc ->
+                        if (doc.isUploaded) {
+                            // Uploaded Card State
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .clip(RoundedCornerShape(12.dp))
+                                    .background(successBg)
+                                    .border(1.dp, successBorder, RoundedCornerShape(12.dp))
+                                    .padding(16.dp)
+                            ) {
+                                Column(modifier = Modifier.fillMaxWidth()) {
+                                    Row(
+                                        modifier = Modifier.fillMaxWidth(),
+                                        verticalAlignment = Alignment.Top
+                                    ) {
+                                        Icon(
+                                            imageVector = Icons.Filled.CheckCircle,
+                                            contentDescription = "Uploaded",
+                                            tint = successColor,
+                                            modifier = Modifier.size(20.dp)
+                                        )
+
+                                        Spacer(modifier = Modifier.width(12.dp))
+
+                                        Column(modifier = Modifier.weight(1f)) {
+                                            Text(
+                                                text = doc.title,
+                                                style = TextStyle(
+                                                    fontSize = 16.sp,
+                                                    fontWeight = FontWeight.Bold,
+                                                    color = textPrimary
+                                                )
+                                            )
+
+                                            Spacer(modifier = Modifier.height(4.dp))
+
+                                            Text(
+                                                text = doc.subtitle,
+                                                style = TextStyle(
+                                                    fontSize = 13.sp,
+                                                    color = if (isDark) Ux4gColors.Neutral300 else Ux4gColors.Neutral700,
+                                                    lineHeight = 18.sp
+                                                )
+                                            )
+                                        }
+                                    }
+
+                                    Spacer(modifier = Modifier.height(16.dp))
+
+                                    Row(
+                                        horizontalArrangement = Arrangement.spacedBy(12.dp),
+                                        verticalAlignment = Alignment.CenterVertically
+                                    ) {
+                                        Ux4gButton(
+                                            text = "View",
+                                            variant = Ux4gButtonVariant.Outline,
+                                            size = Ux4gButtonSize.Small,
+                                            onClick = { onViewDocument(doc.id) },
+                                            modifier = Modifier
+                                                .width(100.dp)
+                                                .height(40.dp)
+                                        )
+
+                                        Ux4gButton(
+                                            text = "Re-upload",
+                                            variant = Ux4gButtonVariant.Outline,
+                                            size = Ux4gButtonSize.Small,
+                                            onClick = { onUploadClick(doc.id) },
+                                            modifier = Modifier
+                                                .width(120.dp)
+                                                .height(40.dp)
+                                        )
+                                    }
+                                }
+                            }
+                        } else {
+                            // Pending Requirement Card State
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .clip(RoundedCornerShape(12.dp))
+                                    .background(if (isDark) Ux4gColors.Neutral950 else Color(0xFFFAFAFA))
+                                    .border(1.dp, cardBorder, RoundedCornerShape(12.dp))
+                                    .padding(16.dp)
+                            ) {
+                                Column(modifier = Modifier.fillMaxWidth()) {
+                                    Row(
+                                        modifier = Modifier.fillMaxWidth(),
+                                        verticalAlignment = Alignment.Top
+                                    ) {
+                                        Box(
+                                            modifier = Modifier
+                                                .size(20.dp)
+                                                .clip(CircleShape)
+                                                .border(
+                                                    1.5.dp,
+                                                    if (isDark) Ux4gColors.Neutral700 else Ux4gColors.Neutral300,
+                                                    CircleShape
+                                                )
+                                        )
+
+                                        Spacer(modifier = Modifier.width(12.dp))
+
+                                        Column(modifier = Modifier.weight(1f)) {
+                                            Row(
+                                                verticalAlignment = Alignment.CenterVertically,
+                                                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                                            ) {
+                                                Text(
+                                                    text = doc.title,
+                                                    style = TextStyle(
+                                                        fontSize = 16.sp,
+                                                        fontWeight = FontWeight.Bold,
+                                                        color = textPrimary
+                                                    )
+                                                )
+
+                                                if (doc.isRequired) {
+                                                    Box(
+                                                        modifier = Modifier
+                                                            .clip(RoundedCornerShape(4.dp))
+                                                            .background(if (isDark) Color(0xFF7F1D1D) else Color(0xFFFEE2E2))
+                                                            .padding(horizontal = 8.dp, vertical = 2.dp)
+                                                    ) {
+                                                        Text(
+                                                            text = "Required",
+                                                            style = TextStyle(
+                                                                fontSize = 11.sp,
+                                                                fontWeight = FontWeight.Bold,
+                                                                color = if (isDark) Color(0xFFFCA5A5) else Color(0xFF991B1B)
+                                                            )
+                                                        )
+                                                    }
+                                                } else {
+                                                    Box(
+                                                        modifier = Modifier
+                                                            .clip(RoundedCornerShape(4.dp))
+                                                            .background(if (isDark) Ux4gColors.Neutral800 else Color(0xFFF3F4F6))
+                                                            .padding(horizontal = 8.dp, vertical = 2.dp)
+                                                    ) {
+                                                        Text(
+                                                            text = "Optional",
+                                                            style = TextStyle(
+                                                                fontSize = 11.sp,
+                                                                fontWeight = FontWeight.Bold,
+                                                                color = if (isDark) Ux4gColors.Neutral300 else Color(0xFF374151)
+                                                            )
+                                                        )
+                                                    }
+                                                }
+                                            }
+
+                                            Spacer(modifier = Modifier.height(4.dp))
+
+                                            Text(
+                                                text = doc.subtitle,
+                                                style = TextStyle(
+                                                    fontSize = 13.sp,
+                                                    color = textSecondary,
+                                                    lineHeight = 18.sp
+                                                )
+                                            )
+                                        }
+                                    }
+
+                                    Spacer(modifier = Modifier.height(16.dp))
+
+                                    Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                                        Ux4gButton(
+                                            text = "Upload",
+                                            variant = Ux4gButtonVariant.Primary,
+                                            size = Ux4gButtonSize.Small,
+                                            onClick = { onUploadClick(doc.id) },
+                                            modifier = Modifier
+                                                .width(100.dp)
+                                                .height(40.dp)
+                                        )
+
+                                        if (doc.allowsDigiLocker) {
+                                            Ux4gButton(
+                                                text = "Fetch from DigiLocker",
+                                                variant = Ux4gButtonVariant.Outline,
+                                                size = Ux4gButtonSize.Small,
+                                                onClick = { onDigiLockerClick(doc.id) },
+                                                modifier = Modifier
+                                                    .width(220.dp)
+                                                    .height(40.dp)
+                                            )
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+                        Spacer(modifier = Modifier.height(16.dp))
+                    }
+
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    Text(
+                        text = "All documents must be self-attested. AI flags quality issues; officers make the final call.",
+                        style = TextStyle(
+                            fontSize = 13.sp,
+                            color = textSecondary,
+                            lineHeight = 18.sp
+                        )
+                    )
+
+                    Spacer(modifier = Modifier.height(28.dp))
+
+                    // Action Buttons inside Card
+                    Column(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalArrangement = Arrangement.spacedBy(12.dp)
+                    ) {
+                        Ux4gButton(
+                            text = "Continue",
+                            variant = Ux4gButtonVariant.Primary,
+                            size = Ux4gButtonSize.Large,
+                            onClick = onContinueClick,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(48.dp)
+                        )
+
+                        Ux4gButton(
+                            text = "Back",
+                            variant = Ux4gButtonVariant.Outline,
+                            size = Ux4gButtonSize.Large,
+                            onClick = onBackClick,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(48.dp)
+                        )
+                    }
+                }
+            }
+
+            Spacer(modifier = Modifier.height(24.dp))
+
+            // Footer Branding
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 24.dp),
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = "Powered by Digital India",
+                    style = TextStyle(
+                        fontSize = 11.sp,
+                        color = Ux4gColors.Neutral400,
+                        fontWeight = FontWeight.Medium
+                    )
+                )
+            }
+        }
+    }
+}
+
+@Preview(showBackground = true, widthDp = 360, heightDp = 760)
+@Composable
+fun DocumentScanUploadCardPreview() {
+    DocumentScanUploadCardScreen()
+}`}
+>
+  <img
+    src="/images/patterns/document_scan_and_upload/document_scan_and_upload_cardstyle.svg"
+    alt="Document Scan and Upload Pattern - Card Style Variant"
+    className="w-full max-w-[360px] rounded-2xl border border-border shadow-sm mx-auto my-4"
+  />
+</ComponentPreview>

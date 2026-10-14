@@ -1,0 +1,9 @@
+{
+  "title": "Document scan and upload",
+  "pages": [
+    "document-scan-and-upload",
+    "document-upload-with-progress",
+    "document-upload-with-review",
+    "document-upload-success"
+  ]
+}
