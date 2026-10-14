@@ -1,0 +1,154 @@
+---
+title: Discard Draft Dialog
+description: Destructive confirmation modal dialogue safeguarding applicants against accidental deletion of previously saved draft applications
+---
+
+# Discard Draft Dialog
+
+A high-consequence confirmation modal built with `Ux4gModal` that intercepts citizen requests to discard active application drafts.
+
+Because discarding an in-progress citizen application permanently purges entered data and uploaded files, the pattern emphasizes the irreversible nature of the action (*"Your saved progress will be deleted. This cannot be undone."*). It pairs an explicit destructive primary trigger (**Discard and start again**) with a prominent safe retention action (**Keep my draft**) to prevent accidental loss of extensive work.
+
+---
+
+<h2><MIcon name="smartphone" /> Interactive Previews</h2>
+
+### 1. Discard Draft Confirmation Dialog
+
+Destructive confirmation modal dialogue highlighting permanent progress deletion with destructive primary and safe retention actions.
+
+<ComponentPreview
+  title="Discard Draft Dialog"
+  category="Pattern · Jetpack Compose"
+  code={`package com.example.ux4g.patterns.application
+
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.ux4g.designsystemv1.components.buttons.Ux4gButton
+import com.ux4g.designsystemv1.components.buttons.Ux4gButtonSize
+import com.ux4g.designsystemv1.components.buttons.Ux4gButtonVariant
+import com.ux4g.designsystemv1.components.modal.Ux4gModal
+import com.ux4g.designsystemv1.foundation.Ux4gColors
+
+/**
+ * Discard Draft Dialog - Jetpack Compose Pattern using Ux4gModal
+ *
+ * @param isOpen Whether the confirmation dialog is currently visible
+ * @param onDiscardAndStartAgain Callback when permanently discarding the draft
+ * @param onKeepDraft Callback when retaining the draft and closing the dialog
+ * @param onDismiss Callback when dismissing the dialog by tapping outside
+ */
+@Composable
+fun DiscardDraftDialog(
+    isOpen: Boolean = true,
+    onDiscardAndStartAgain: () -> Unit = {},
+    onKeepDraft: () -> Unit = {},
+    onDismiss: () -> Unit = {}
+) {
+    if (!isOpen) return
+
+    val isDark = isSystemInDarkTheme()
+
+    val dialogBg = if (isDark) Ux4gColors.Neutral900 else Color.White
+    val textPrimary = if (isDark) Ux4gColors.Neutral50 else Color(0xFF111827)
+    val textSecondary = if (isDark) Ux4gColors.Neutral400 else Color(0xFF4B5563)
+    val destructiveButtonBg = if (isDark) Ux4gColors.Red500 else Ux4gColors.Red600
+
+    Ux4gModal(
+        onDismiss = onDismiss,
+        showHeader = false,
+        showCloseButton = false,
+        showDividers = false,
+        showBody = true,
+        showFooter = false,
+        backgroundColor = dialogBg,
+        cornerRadius = 16.dp,
+        bodyContent = {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(8.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                // Title
+                Text(
+                    text = "Discard draft?",
+                    style = TextStyle(
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = textPrimary
+                    ),
+                    textAlign = TextAlign.Center
+                )
+
+                Spacer(modifier = Modifier.height(12.dp))
+
+                // Description
+                Text(
+                    text = "Your saved progress will be deleted.\\nThis cannot be undone.",
+                    style = TextStyle(
+                        fontSize = 14.sp,
+                        color = textSecondary,
+                        lineHeight = 20.sp
+                    ),
+                    textAlign = TextAlign.Center
+                )
+
+                Spacer(modifier = Modifier.height(24.dp))
+
+                // Destructive Primary Action
+                Ux4gButton(
+                    text = "Discard and start again",
+                    variant = Ux4gButtonVariant.Primary,
+                    size = Ux4gButtonSize.Large,
+                    onClick = onDiscardAndStartAgain,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(48.dp)
+                )
+
+                Spacer(modifier = Modifier.height(12.dp))
+
+                // Safe Secondary Action: Keep Draft
+                Ux4gButton(
+                    text = "Keep my draft",
+                    variant = Ux4gButtonVariant.Outline,
+                    size = Ux4gButtonSize.Large,
+                    onClick = onKeepDraft,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(48.dp)
+                )
+            }
+        }
+    )
+}
+
+@Preview(showBackground = true, widthDp = 360, heightDp = 760)
+@Composable
+fun DiscardDraftDialogPreview() {
+    DiscardDraftDialog()
+}`}
+>
+  <img
+    src="/images/patterns/save_and_resume/discard_draft_dialog.svg"
+    alt="Discard Draft Dialog Pattern"
+    className="w-full max-w-[360px] rounded-2xl border border-border shadow-sm mx-auto my-4"
+  />
+</ComponentPreview>

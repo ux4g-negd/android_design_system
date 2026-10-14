@@ -1,0 +1,616 @@
+---
+title: Save and Resume
+description: Draft persistence pattern enabling citizens to resume interrupted government service applications or discard previous sessions safely
+---
+
+# Save and Resume
+
+A resilient workflow pattern that safeguards applicant progress during multi-step government service requests, license applications, or certificate submissions.
+
+When citizens return to an incomplete or previously saved application, the system surfaces a prominent status banner detailing the active draft, current step milestone (`Step 3 of 5 Document Upload`), and last saved timestamp. Citizens can choose to either **Resume** exactly where they left off or **Discard** the draft to begin a fresh application.
+
+---
+
+<h2><MIcon name="smartphone" /> Interactive Previews</h2>
+
+### 1. Default Style (Full Screen)
+
+Standard full-screen application view with an expandable draft status card, quick-action controls, and ghosted form preview skeletons.
+
+<ComponentPreview
+  title="Save and Resume - Default Style"
+  category="Pattern · Jetpack Compose"
+  code={`package com.example.ux4g.patterns.application
+
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.KeyboardArrowDown
+import androidx.compose.material.icons.filled.KeyboardArrowUp
+import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material3.Divider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.ux4g.designsystemv1.components.Ux4gAppHeader
+import com.ux4g.designsystemv1.components.Ux4gAppHeaderAction
+import com.ux4g.designsystemv1.components.Ux4gAppHeaderVariant
+import com.ux4g.designsystemv1.components.buttons.Ux4gButton
+import com.ux4g.designsystemv1.components.buttons.Ux4gButtonSize
+import com.ux4g.designsystemv1.components.buttons.Ux4gButtonVariant
+import com.ux4g.designsystemv1.foundation.Ux4gColors
+
+/**
+ * Save and Resume - Full Screen Default Pattern
+ *
+ * @param onResume Callback to resume saved application draft
+ * @param onDiscard Callback to discard current draft and start fresh
+ */
+@Composable
+fun SaveAndResumeScreen(
+    onResume: () -> Unit = {},
+    onDiscard: () -> Unit = {}
+) {
+    val isDark = isSystemInDarkTheme()
+    val scrollState = rememberScrollState()
+    var isExpanded by remember { mutableStateOf(true) }
+
+    // Colors
+    val surfaceBg = if (isDark) Ux4gColors.Neutral950 else Color(0xFFFAFAFA)
+    val textPrimary = if (isDark) Ux4gColors.Neutral50 else Color(0xFF171717)
+    val textSecondary = if (isDark) Ux4gColors.Neutral300 else Color(0xFF404040)
+    val placeholderColor = if (isDark) Ux4gColors.Neutral800 else Color(0xFFE5E7EB)
+
+    val bannerBg = if (isDark) Ux4gColors.Orange900 else Color(0xFFFFF9E6)
+    val bannerBorder = if (isDark) Ux4gColors.Orange800 else Color(0xFFFFE8B3)
+    val badgeBg = if (isDark) Ux4gColors.Orange800 else Color(0xFFFFE7BF)
+    val badgeText = if (isDark) Ux4gColors.Orange300 else Color(0xFFAD4E00)
+    val discardColor = if (isDark) Ux4gColors.Red300 else Color(0xFF7A271A)
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(surfaceBg)
+    ) {
+        // App Header
+        Ux4gAppHeader(
+            variant = Ux4gAppHeaderVariant.Standard,
+            title = "Government Services Portal",
+            actions = listOf(
+                Ux4gAppHeaderAction(
+                    icon = Icons.Filled.Menu,
+                    contentDescription = "Menu",
+                    onClick = {}
+                )
+            )
+        )
+
+        Divider(
+            thickness = 1.dp,
+            color = if (isDark) Ux4gColors.Neutral800 else Ux4gColors.Neutral200
+        )
+
+        // Main Content Area
+        Column(
+            modifier = Modifier
+                .weight(1f)
+                .fillMaxWidth()
+                .verticalScroll(scrollState)
+                .padding(horizontal = 16.dp, vertical = 16.dp)
+        ) {
+            // Draft Status Banner Card
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(12.dp))
+                    .background(bannerBg)
+                    .border(1.dp, bannerBorder, RoundedCornerShape(12.dp))
+                    .padding(16.dp)
+            ) {
+                Column(modifier = Modifier.fillMaxWidth()) {
+                    // Header Row: Title and Expand/Collapse Icon
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable { isExpanded = !isExpanded },
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            text = "Income Certificate Application",
+                            style = TextStyle(
+                                fontSize = 15.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = textPrimary
+                            )
+                        )
+                        Icon(
+                            imageVector = if (isExpanded) Icons.Filled.KeyboardArrowUp else Icons.Filled.KeyboardArrowDown,
+                            contentDescription = if (isExpanded) "Collapse" else "Expand",
+                            tint = textPrimary,
+                            modifier = Modifier.size(22.dp)
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    // Step Progress Badge
+                    Box(
+                        modifier = Modifier
+                            .clip(RoundedCornerShape(4.dp))
+                            .background(badgeBg)
+                            .padding(horizontal = 8.dp, vertical = 3.dp)
+                    ) {
+                        Text(
+                            text = "Step 3 of 5 Document Upload",
+                            style = TextStyle(
+                                fontSize = 11.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = badgeText
+                            )
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    // Timestamp
+                    Text(
+                        text = "Last saved: 10 Apr 2026",
+                        style = TextStyle(
+                            fontSize = 13.sp,
+                            color = textSecondary,
+                            fontWeight = FontWeight.Normal
+                        )
+                    )
+
+                    // Expandable Action Buttons
+                    AnimatedVisibility(visible = isExpanded) {
+                        Column {
+                            Spacer(modifier = Modifier.height(16.dp))
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.spacedBy(12.dp),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                // Discard Text Button
+                                Box(
+                                    modifier = Modifier
+                                        .weight(1f)
+                                        .height(40.dp)
+                                        .clip(RoundedCornerShape(8.dp))
+                                        .clickable { onDiscard() },
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    Text(
+                                        text = "Discard",
+                                        style = TextStyle(
+                                            fontSize = 15.sp,
+                                            fontWeight = FontWeight.Bold,
+                                            color = discardColor
+                                        )
+                                    )
+                                }
+
+                                // Resume Action Button
+                                Box(modifier = Modifier.weight(1f)) {
+                                    Ux4gButton(
+                                        text = "Resume",
+                                        onClick = onResume,
+                                        variant = Ux4gButtonVariant.Primary,
+                                        size = Ux4gButtonSize.Medium,
+                                        modifier = Modifier.fillMaxWidth()
+                                    )
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            Spacer(modifier = Modifier.height(20.dp))
+
+            // Ghosted Form Skeletons
+            Row(
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Box(
+                    modifier = Modifier
+                        .size(36.dp)
+                        .clip(CircleShape)
+                        .background(placeholderColor)
+                )
+                Spacer(modifier = Modifier.width(12.dp))
+                Box(
+                    modifier = Modifier
+                        .weight(1f)
+                        .height(28.dp)
+                        .clip(RoundedCornerShape(8.dp))
+                        .background(placeholderColor)
+                )
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(120.dp)
+                    .clip(RoundedCornerShape(12.dp))
+                    .background(placeholderColor)
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(120.dp)
+                    .clip(RoundedCornerShape(12.dp))
+                    .background(placeholderColor)
+            )
+        }
+
+        // Footer Branding
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = 20.dp, top = 8.dp),
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = "Powered by Digital India",
+                style = TextStyle(
+                    fontSize = 11.sp,
+                    color = Ux4gColors.Neutral400,
+                    fontWeight = FontWeight.Medium
+                )
+            )
+        }
+    }
+}
+
+@Preview(showBackground = true, widthDp = 360, heightDp = 760)
+@Composable
+fun SaveAndResumePreview() {
+    SaveAndResumeScreen()
+}`}
+>
+  <img
+    src="/images/patterns/save_and_resume/save_and_resume.svg"
+    alt="Save and Resume Pattern - Default Style"
+    className="w-full max-w-[360px] rounded-2xl border border-border shadow-sm mx-auto my-4"
+  />
+</ComponentPreview>
+
+---
+
+### 2. Card Style Variant
+
+Contained card-based presentation featuring a subtle lavender canvas background, structured draft resume card, and soft placeholder frames.
+
+<ComponentPreview
+  title="Save and Resume - Card Style Variant"
+  category="Pattern · Jetpack Compose"
+  code={`package com.example.ux4g.patterns.application
+
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.KeyboardArrowDown
+import androidx.compose.material.icons.filled.KeyboardArrowUp
+import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material3.Divider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.ux4g.designsystemv1.components.Ux4gAppHeader
+import com.ux4g.designsystemv1.components.Ux4gAppHeaderAction
+import com.ux4g.designsystemv1.components.Ux4gAppHeaderVariant
+import com.ux4g.designsystemv1.components.buttons.Ux4gButton
+import com.ux4g.designsystemv1.components.buttons.Ux4gButtonSize
+import com.ux4g.designsystemv1.components.buttons.Ux4gButtonVariant
+import com.ux4g.designsystemv1.foundation.Ux4gColors
+
+/**
+ * Save and Resume - Card Style Variant Pattern
+ */
+@Composable
+fun SaveAndResumeCardScreen(
+    onResume: () -> Unit = {},
+    onDiscard: () -> Unit = {}
+) {
+    val isDark = isSystemInDarkTheme()
+    val scrollState = rememberScrollState()
+    var isExpanded by remember { mutableStateOf(true) }
+
+    // Palette
+    val canvasBg = if (isDark) Ux4gColors.Primary950 else Color(0xFFDCD4FF)
+    val textPrimary = if (isDark) Ux4gColors.Neutral50 else Color(0xFF171717)
+    val textSecondary = if (isDark) Ux4gColors.Neutral300 else Color(0xFF404040)
+    val placeholderColor = if (isDark) Ux4gColors.Neutral800 else Color.White.copy(alpha = 0.65f)
+
+    val bannerBg = if (isDark) Ux4gColors.Orange900 else Color(0xFFFFF9E6)
+    val bannerBorder = if (isDark) Ux4gColors.Orange800 else Color(0xFFFFE8B3)
+    val badgeBg = if (isDark) Ux4gColors.Orange800 else Color(0xFFFFE7BF)
+    val badgeText = if (isDark) Ux4gColors.Orange300 else Color(0xFFAD4E00)
+    val discardColor = if (isDark) Ux4gColors.Red300 else Color(0xFF7A271A)
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(canvasBg)
+    ) {
+        // App Header
+        Ux4gAppHeader(
+            variant = Ux4gAppHeaderVariant.Standard,
+            title = "Government Services Portal",
+            actions = listOf(
+                Ux4gAppHeaderAction(
+                    icon = Icons.Filled.Menu,
+                    contentDescription = "Menu",
+                    onClick = {}
+                )
+            )
+        )
+
+        Divider(
+            thickness = 1.dp,
+            color = if (isDark) Ux4gColors.Neutral800 else Ux4gColors.Neutral200
+        )
+
+        // Card Container Content
+        Column(
+            modifier = Modifier
+                .weight(1f)
+                .fillMaxWidth()
+                .verticalScroll(scrollState)
+                .padding(horizontal = 16.dp, vertical = 16.dp)
+        ) {
+            // Draft Status Banner Card
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(12.dp))
+                    .background(bannerBg)
+                    .border(1.dp, bannerBorder, RoundedCornerShape(12.dp))
+                    .padding(16.dp)
+            ) {
+                Column(modifier = Modifier.fillMaxWidth()) {
+                    // Header Row: Title and Expand/Collapse Icon
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable { isExpanded = !isExpanded },
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            text = "Income Certificate Application",
+                            style = TextStyle(
+                                fontSize = 15.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = textPrimary
+                            )
+                        )
+                        Icon(
+                            imageVector = if (isExpanded) Icons.Filled.KeyboardArrowUp else Icons.Filled.KeyboardArrowDown,
+                            contentDescription = if (isExpanded) "Collapse" else "Expand",
+                            tint = textPrimary,
+                            modifier = Modifier.size(22.dp)
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    // Step Progress Badge
+                    Box(
+                        modifier = Modifier
+                            .clip(RoundedCornerShape(4.dp))
+                            .background(badgeBg)
+                            .padding(horizontal = 8.dp, vertical = 3.dp)
+                    ) {
+                        Text(
+                            text = "Step 3 of 5 Document Upload",
+                            style = TextStyle(
+                                fontSize = 11.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = badgeText
+                            )
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    // Timestamp
+                    Text(
+                        text = "Last saved: 10 Apr 2026",
+                        style = TextStyle(
+                            fontSize = 13.sp,
+                            color = textSecondary,
+                            fontWeight = FontWeight.Normal
+                        )
+                    )
+
+                    // Expandable Action Buttons
+                    AnimatedVisibility(visible = isExpanded) {
+                        Column {
+                            Spacer(modifier = Modifier.height(16.dp))
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.spacedBy(12.dp),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                // Discard Text Button
+                                Box(
+                                    modifier = Modifier
+                                        .weight(1f)
+                                        .height(40.dp)
+                                        .clip(RoundedCornerShape(8.dp))
+                                        .clickable { onDiscard() },
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    Text(
+                                        text = "Discard",
+                                        style = TextStyle(
+                                            fontSize = 15.sp,
+                                            fontWeight = FontWeight.Bold,
+                                            color = discardColor
+                                        )
+                                    )
+                                }
+
+                                // Resume Action Button
+                                Box(modifier = Modifier.weight(1f)) {
+                                    Ux4gButton(
+                                        text = "Resume",
+                                        onClick = onResume,
+                                        variant = Ux4gButtonVariant.Primary,
+                                        size = Ux4gButtonSize.Medium,
+                                        modifier = Modifier.fillMaxWidth()
+                                    )
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            Spacer(modifier = Modifier.height(20.dp))
+
+            // Ghosted Form Skeletons (Translucent White in Card Style)
+            Row(
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Box(
+                    modifier = Modifier
+                        .size(36.dp)
+                        .clip(CircleShape)
+                        .background(placeholderColor)
+                )
+                Spacer(modifier = Modifier.width(12.dp))
+                Box(
+                    modifier = Modifier
+                        .weight(1f)
+                        .height(28.dp)
+                        .clip(RoundedCornerShape(8.dp))
+                        .background(placeholderColor)
+                )
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(120.dp)
+                    .clip(RoundedCornerShape(12.dp))
+                    .background(placeholderColor)
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(120.dp)
+                    .clip(RoundedCornerShape(12.dp))
+                    .background(placeholderColor)
+            )
+        }
+
+        // Footer Branding
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = 20.dp, top = 8.dp),
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = "Powered by Digital India",
+                style = TextStyle(
+                    fontSize = 11.sp,
+                    color = Ux4gColors.Neutral400,
+                    fontWeight = FontWeight.Medium
+                )
+            )
+        }
+    }
+}
+
+@Preview(showBackground = true, widthDp = 360, heightDp = 760)
+@Composable
+fun SaveAndResumeCardPreview() {
+    SaveAndResumeCardScreen()
+}`}
+>
+  <img
+    src="/images/patterns/save_and_resume/save_and_resume_cardstyle.svg"
+    alt="Save and Resume Pattern - Card Style Variant"
+    className="w-full max-w-[360px] rounded-2xl border border-border shadow-sm mx-auto my-4"
+  />
+</ComponentPreview>

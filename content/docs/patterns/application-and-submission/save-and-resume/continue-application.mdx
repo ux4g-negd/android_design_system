@@ -1,0 +1,622 @@
+---
+title: Continue Application
+description: Resumption pattern displaying step-by-step progress tracking, completion milestones, and quick-continue or start-fresh application actions
+---
+
+# Continue Application
+
+A guided resumption pattern that greets returning citizens with an audit of their saved progress across application milestones.
+
+Instead of generic draft restoration, this pattern presents an itemized checklist of application steps showing which sections have been completed, which are currently in progress, and which remain untouched. Citizens are provided clear next-step triggers to immediately **Continue from the current step** or opt to **Start fresh** if their underlying information has changed.
+
+---
+
+<h2><MIcon name="smartphone" /> Interactive Previews</h2>
+
+### 1. Default Style (Full Screen)
+
+Standard full-screen resumption screen with sequential milestone badges, step status descriptions, and primary/secondary decision actions.
+
+<ComponentPreview
+  title="Continue Application - Default Style"
+  category="Pattern · Jetpack Compose"
+  code={`package com.example.ux4g.patterns.application
+
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material3.Divider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.ux4g.designsystemv1.components.Ux4gAppHeader
+import com.ux4g.designsystemv1.components.Ux4gAppHeaderAction
+import com.ux4g.designsystemv1.components.Ux4gAppHeaderVariant
+import com.ux4g.designsystemv1.components.buttons.Ux4gButton
+import com.ux4g.designsystemv1.components.buttons.Ux4gButtonSize
+import com.ux4g.designsystemv1.components.buttons.Ux4gButtonVariant
+import com.ux4g.designsystemv1.foundation.Ux4gColors
+
+/**
+ * Step status indicator state
+ */
+enum class StepStatus {
+    Completed,
+    InProgress,
+    NotStarted
+}
+
+data class ApplicationStepItem(
+    val title: String,
+    val subtitle: String,
+    val status: StepStatus
+)
+
+/**
+ * Continue Application - Full Screen Default Pattern
+ *
+ * @param onContinue Callback to resume from the active step (e.g. Step 3)
+ * @param onStartFresh Callback to discard the draft and start a new application
+ */
+@Composable
+fun ContinueApplicationScreen(
+    onContinue: () -> Unit = {},
+    onStartFresh: () -> Unit = {}
+) {
+    val isDark = isSystemInDarkTheme()
+    val scrollState = rememberScrollState()
+
+    val surfaceBg = if (isDark) Ux4gColors.Neutral950 else Color.White
+    val textPrimary = if (isDark) Ux4gColors.Neutral50 else Color(0xFF111827)
+    val textSecondary = if (isDark) Ux4gColors.Neutral400 else Color(0xFF4B5563)
+    val dividerColor = if (isDark) Ux4gColors.Neutral800 else Ux4gColors.Neutral200
+
+    val steps = listOf(
+        ApplicationStepItem("Eligibility check", "Completed", StepStatus.Completed),
+        ApplicationStepItem("Personal information", "Completed", StepStatus.Completed),
+        ApplicationStepItem("Upload documents", "In progress - 1 of 4 uploaded", StepStatus.InProgress),
+        ApplicationStepItem("Submit", "Not started", StepStatus.NotStarted)
+    )
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(surfaceBg)
+    ) {
+        // App Header
+        Ux4gAppHeader(
+            variant = Ux4gAppHeaderVariant.Standard,
+            title = "Government Services Portal",
+            actions = listOf(
+                Ux4gAppHeaderAction(
+                    icon = Icons.Filled.Menu,
+                    contentDescription = "Menu",
+                    onClick = {}
+                )
+            )
+        )
+
+        Divider(thickness = 1.dp, color = dividerColor)
+
+        // Scrollable Content
+        Column(
+            modifier = Modifier
+                .weight(1f)
+                .fillMaxWidth()
+                .verticalScroll(scrollState)
+                .padding(horizontal = 24.dp, vertical = 32.dp)
+        ) {
+            // Title & Application Metadata
+            Text(
+                text = "Continue your\napplication?",
+                style = TextStyle(
+                    fontSize = 26.sp,
+                    fontWeight = FontWeight.ExtraBold,
+                    color = textPrimary,
+                    lineHeight = 32.sp
+                )
+            )
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            Text(
+                text = "Income Certificate · Started 10 Apr 2026",
+                style = TextStyle(
+                    fontSize = 14.sp,
+                    color = textSecondary,
+                    fontWeight = FontWeight.Normal
+                )
+            )
+
+            Spacer(modifier = Modifier.height(24.dp))
+
+            // Section Subheading
+            Text(
+                text = "Your progress",
+                style = TextStyle(
+                    fontSize = 15.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = textPrimary
+                )
+            )
+
+            Spacer(modifier = Modifier.height(20.dp))
+
+            // Milestone Step Items
+            steps.forEachIndexed { index, step ->
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    crossAlignment = Alignment.Top
+                ) {
+                    // Step Indicator
+                    when (step.status) {
+                        StepStatus.Completed -> {
+                            Box(
+                                modifier = Modifier
+                                    .size(20.dp)
+                                    .clip(CircleShape)
+                                    .background(if (isDark) Ux4gColors.Green500 else Ux4gColors.Green600),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Filled.Check,
+                                    contentDescription = "Completed",
+                                    tint = Color.White,
+                                    modifier = Modifier.size(12.dp)
+                                )
+                            }
+                        }
+                        StepStatus.InProgress -> {
+                            Box(
+                                modifier = Modifier
+                                    .size(20.dp)
+                                    .clip(CircleShape)
+                                    .background(if (isDark) Ux4gColors.Neutral900 else Color.White)
+                                    .border(
+                                        width = 2.dp,
+                                        color = if (isDark) Ux4gColors.Neutral400 else Color(0xFFD1D5DB),
+                                        shape = CircleShape
+                                    )
+                            )
+                        }
+                        StepStatus.NotStarted -> {
+                            Box(
+                                modifier = Modifier
+                                    .size(20.dp)
+                                    .clip(CircleShape)
+                                    .background(if (isDark) Ux4gColors.Neutral900 else Color.White)
+                                    .border(
+                                        width = 1.5.dp,
+                                        color = if (isDark) Ux4gColors.Neutral700 else Color(0xFFE5E7EB),
+                                        shape = CircleShape
+                                    )
+                            )
+                        }
+                    }
+
+                    Spacer(modifier = Modifier.width(14.dp))
+
+                    // Step Title & Status Subtitle
+                    Column(modifier = Modifier.weight(1f)) {
+                        Text(
+                            text = step.title,
+                            style = TextStyle(
+                                fontSize = 15.sp,
+                                fontWeight = FontWeight.SemiBold,
+                                color = textPrimary
+                            )
+                        )
+                        Spacer(modifier = Modifier.height(2.dp))
+                        Text(
+                            text = step.subtitle,
+                            style = TextStyle(
+                                fontSize = 13.sp,
+                                color = textSecondary
+                            )
+                        )
+                    }
+                }
+
+                if (index < steps.size - 1) {
+                    Spacer(modifier = Modifier.height(20.dp))
+                }
+            }
+
+            Spacer(modifier = Modifier.height(24.dp))
+
+            // Last Saved Timestamp
+            Text(
+                text = "Last saved 10 Apr 2026 at 3:12 PM",
+                style = TextStyle(
+                    fontSize = 13.sp,
+                    color = textSecondary
+                )
+            )
+        }
+
+        // Action Buttons
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 24.dp, vertical = 16.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp)
+        ) {
+            Ux4gButton(
+                text = "Continue from Step 3",
+                variant = Ux4gButtonVariant.Primary,
+                size = Ux4gButtonSize.Large,
+                onClick = onContinue,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(48.dp)
+            )
+
+            Ux4gButton(
+                text = "Start fresh",
+                variant = Ux4gButtonVariant.Outline,
+                size = Ux4gButtonSize.Large,
+                onClick = onStartFresh,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(48.dp)
+            )
+        }
+
+        // Footer Branding
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = 24.dp),
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = "Powered by Digital India",
+                style = TextStyle(
+                    fontSize = 11.sp,
+                    color = Ux4gColors.Neutral400,
+                    fontWeight = FontWeight.Medium
+                )
+            )
+        }
+    }
+}
+
+@Preview(showBackground = true, widthDp = 360, heightDp = 760)
+@Composable
+fun ContinueApplicationPreview() {
+    ContinueApplicationScreen()
+}`}
+>
+  <img
+    src="/images/patterns/save_and_resume/continue_application.svg"
+    alt="Continue Application Pattern - Default Style"
+    className="w-full max-w-[360px] rounded-2xl border border-border shadow-sm mx-auto my-4"
+  />
+</ComponentPreview>
+
+---
+
+### 2. Card Style Variant
+
+Contained card-based presentation on a soothing lavender canvas background, ideal for stepped portals, tablet layouts, or multi-modal dialogues.
+
+<ComponentPreview
+  title="Continue Application - Card Style Variant"
+  category="Pattern · Jetpack Compose"
+  code={`package com.example.ux4g.patterns.application
+
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material3.Divider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.ux4g.designsystemv1.components.Ux4gAppHeader
+import com.ux4g.designsystemv1.components.Ux4gAppHeaderAction
+import com.ux4g.designsystemv1.components.Ux4gAppHeaderVariant
+import com.ux4g.designsystemv1.components.buttons.Ux4gButton
+import com.ux4g.designsystemv1.components.buttons.Ux4gButtonSize
+import com.ux4g.designsystemv1.components.buttons.Ux4gButtonVariant
+import com.ux4g.designsystemv1.foundation.Ux4gColors
+
+/**
+ * Continue Application - Card Style Variant Pattern
+ */
+@Composable
+fun ContinueApplicationCardScreen(
+    onContinue: () -> Unit = {},
+    onStartFresh: () -> Unit = {}
+) {
+    val isDark = isSystemInDarkTheme()
+    val scrollState = rememberScrollState()
+
+    val canvasBg = if (isDark) Ux4gColors.Primary950 else Color(0xFFDCD4FF)
+    val cardBg = if (isDark) Ux4gColors.Neutral900 else Color.White
+    val cardBorder = if (isDark) Ux4gColors.Neutral800 else Ux4gColors.Neutral200
+    val textPrimary = if (isDark) Ux4gColors.Neutral50 else Color(0xFF111827)
+    val textSecondary = if (isDark) Ux4gColors.Neutral400 else Color(0xFF4B5563)
+
+    val steps = listOf(
+        ApplicationStepItem("Eligibility check", "Completed", StepStatus.Completed),
+        ApplicationStepItem("Personal information", "Completed", StepStatus.Completed),
+        ApplicationStepItem("Upload documents", "In progress - 1 of 4 uploaded", StepStatus.InProgress),
+        ApplicationStepItem("Submit", "Not started", StepStatus.NotStarted)
+    )
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(canvasBg)
+    ) {
+        // App Header
+        Ux4gAppHeader(
+            variant = Ux4gAppHeaderVariant.Standard,
+            title = "Government Services Portal",
+            actions = listOf(
+                Ux4gAppHeaderAction(
+                    icon = Icons.Filled.Menu,
+                    contentDescription = "Menu",
+                    onClick = {}
+                )
+            )
+        )
+
+        Divider(
+            thickness = 1.dp,
+            color = if (isDark) Ux4gColors.Neutral800 else Ux4gColors.Neutral200
+        )
+
+        // Card Container Content
+        Column(
+            modifier = Modifier
+                .weight(1f)
+                .fillMaxWidth()
+                .verticalScroll(scrollState)
+                .padding(16.dp)
+        ) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(16.dp))
+                    .background(cardBg)
+                    .border(1.dp, cardBorder, RoundedCornerShape(16.dp))
+                    .padding(20.dp)
+            ) {
+                Column(modifier = Modifier.fillMaxWidth()) {
+                    // Title
+                    Text(
+                        text = "Continue your application?",
+                        style = TextStyle(
+                            fontSize = 22.sp,
+                            fontWeight = FontWeight.ExtraBold,
+                            color = textPrimary,
+                            lineHeight = 28.sp
+                        )
+                    )
+
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    Text(
+                        text = "Income Certificate · Started 10 Apr 2026",
+                        style = TextStyle(
+                            fontSize = 14.sp,
+                            color = textSecondary
+                        )
+                    )
+
+                    Spacer(modifier = Modifier.height(20.dp))
+
+                    Text(
+                        text = "Your progress",
+                        style = TextStyle(
+                            fontSize = 15.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = textPrimary
+                        )
+                    )
+
+                    Spacer(modifier = Modifier.height(20.dp))
+
+                    // Progress Steps
+                    steps.forEachIndexed { index, step ->
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            crossAlignment = Alignment.Top
+                        ) {
+                            when (step.status) {
+                                StepStatus.Completed -> {
+                                    Box(
+                                        modifier = Modifier
+                                            .size(20.dp)
+                                            .clip(CircleShape)
+                                            .background(if (isDark) Ux4gColors.Green500 else Ux4gColors.Green600),
+                                        contentAlignment = Alignment.Center
+                                    ) {
+                                        Icon(
+                                            imageVector = Icons.Filled.Check,
+                                            contentDescription = "Completed",
+                                            tint = Color.White,
+                                            modifier = Modifier.size(12.dp)
+                                        )
+                                    }
+                                }
+                                StepStatus.InProgress -> {
+                                    Box(
+                                        modifier = Modifier
+                                            .size(20.dp)
+                                            .clip(CircleShape)
+                                            .background(if (isDark) Ux4gColors.Neutral800 else Color.White)
+                                            .border(
+                                                width = 2.dp,
+                                                color = if (isDark) Ux4gColors.Neutral400 else Color(0xFFD1D5DB),
+                                                shape = CircleShape
+                                            )
+                                    )
+                                }
+                                StepStatus.NotStarted -> {
+                                    Box(
+                                        modifier = Modifier
+                                            .size(20.dp)
+                                            .clip(CircleShape)
+                                            .background(if (isDark) Ux4gColors.Neutral800 else Color.White)
+                                            .border(
+                                                width = 1.5.dp,
+                                                color = if (isDark) Ux4gColors.Neutral700 else Color(0xFFE5E7EB),
+                                                shape = CircleShape
+                                            )
+                                    )
+                                }
+                            }
+
+                            Spacer(modifier = Modifier.width(14.dp))
+
+                            Column(modifier = Modifier.weight(1f)) {
+                                Text(
+                                    text = step.title,
+                                    style = TextStyle(
+                                        fontSize = 15.sp,
+                                        fontWeight = FontWeight.SemiBold,
+                                        color = textPrimary
+                                    )
+                                )
+                                Spacer(modifier = Modifier.height(2.dp))
+                                Text(
+                                    text = step.subtitle,
+                                    style = TextStyle(
+                                        fontSize = 13.sp,
+                                        color = textSecondary
+                                    )
+                                )
+                            }
+                        }
+
+                        if (index < steps.size - 1) {
+                            Spacer(modifier = Modifier.height(20.dp))
+                        }
+                    }
+
+                    Spacer(modifier = Modifier.height(24.dp))
+
+                    Text(
+                        text = "Last saved 10 Apr 2026 at 3:12 PM",
+                        style = TextStyle(
+                            fontSize = 13.sp,
+                            color = Ux4gColors.Neutral400
+                        )
+                    )
+
+                    Spacer(modifier = Modifier.height(20.dp))
+
+                    // Buttons inside card
+                    Ux4gButton(
+                        text = "Continue from Step 3",
+                        variant = Ux4gButtonVariant.Primary,
+                        size = Ux4gButtonSize.Large,
+                        onClick = onContinue,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(48.dp)
+                    )
+
+                    Spacer(modifier = Modifier.height(12.dp))
+
+                    Ux4gButton(
+                        text = "Start fresh",
+                        variant = Ux4gButtonVariant.Outline,
+                        size = Ux4gButtonSize.Large,
+                        onClick = onStartFresh,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(48.dp)
+                    )
+                }
+            }
+        }
+
+        // Footer Branding
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = 24.dp, top = 4.dp),
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = "Powered by Digital India",
+                style = TextStyle(
+                    fontSize = 11.sp,
+                    color = Ux4gColors.Neutral400,
+                    fontWeight = FontWeight.Medium
+                )
+            )
+        }
+    }
+}
+
+@Preview(showBackground = true, widthDp = 360, heightDp = 760)
+@Composable
+fun ContinueApplicationCardPreview() {
+    ContinueApplicationCardScreen()
+}`}
+>
+  <img
+    src="/images/patterns/save_and_resume/continue_application_cardstyle.svg"
+    alt="Continue Application Pattern - Card Style Variant"
+    className="w-full max-w-[360px] rounded-2xl border border-border shadow-sm mx-auto my-4"
+  />
+</ComponentPreview>

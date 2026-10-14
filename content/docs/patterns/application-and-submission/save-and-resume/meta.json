@@ -1,0 +1,12 @@
+{
+  "title": "Save and Resume",
+  "pages": [
+    "save-and-resume",
+    "continue-application",
+    "resume-application-missing-info",
+    "auto-save-form",
+    "draft-expiry-form",
+    "unsaved-changes-dialog",
+    "discard-draft-dialog"
+  ]
+}

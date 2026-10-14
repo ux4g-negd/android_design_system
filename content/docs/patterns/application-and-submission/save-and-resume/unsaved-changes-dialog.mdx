@@ -1,0 +1,309 @@
+---
+title: Unsaved Changes Dialog
+description: Confirmation modal preventing accidental data loss when citizens attempt to navigate away from forms with uncommitted edits
+---
+
+# Unsaved Changes Dialog
+
+A protective modal dialogue built with `Ux4gModal` that intercepts navigation when a citizen attempts to leave a multi-step form or portal workflow with uncommitted changes.
+
+The dialog alerts the citizen that leaving immediately will discard modifications made since their last save checkpoint. It presents two explicit pathways: **Save draft and leave** to commit pending edits and safely exit, or **Leave without saving** for situations where the applicant intentionally wishes to abandon current changes.
+
+---
+
+<h2><MIcon name="smartphone" /> Interactive Previews</h2>
+
+### 1. Default Style (Full Screen)
+
+Standard confirmation modal presenting clear impact messaging, high-prominence save draft action, and secondary discard option over a dimmed background.
+
+<ComponentPreview
+  title="Unsaved Changes Dialog - Default Style"
+  category="Pattern · Jetpack Compose"
+  code={`package com.example.ux4g.patterns.application
+
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.ux4g.designsystemv1.components.buttons.Ux4gButton
+import com.ux4g.designsystemv1.components.buttons.Ux4gButtonSize
+import com.ux4g.designsystemv1.components.buttons.Ux4gButtonVariant
+import com.ux4g.designsystemv1.components.modal.Ux4gModal
+import com.ux4g.designsystemv1.foundation.Ux4gColors
+
+/**
+ * Unsaved Changes Dialog - Jetpack Compose Pattern using Ux4gModal
+ *
+ * @param isOpen Whether the dialog is currently visible
+ * @param onSaveAndLeave Callback when saving draft and exiting
+ * @param onLeaveWithoutSaving Callback when discarding changes and exiting
+ * @param onDismiss Callback when dismissing the dialog
+ */
+@Composable
+fun UnsavedChangesDialog(
+    isOpen: Boolean = true,
+    onSaveAndLeave: () -> Unit = {},
+    onLeaveWithoutSaving: () -> Unit = {},
+    onDismiss: () -> Unit = {}
+) {
+    if (!isOpen) return
+
+    val isDark = isSystemInDarkTheme()
+
+    val dialogBg = if (isDark) Ux4gColors.Neutral900 else Color.White
+    val textPrimary = if (isDark) Ux4gColors.Neutral50 else Color(0xFF111827)
+    val textSecondary = if (isDark) Ux4gColors.Neutral400 else Color(0xFF4B5563)
+    val discardColor = if (isDark) Ux4gColors.Red300 else Ux4gColors.Red800
+
+    Ux4gModal(
+        onDismiss = onDismiss,
+        showHeader = false,
+        showCloseButton = false,
+        showDividers = false,
+        showBody = true,
+        showFooter = false,
+        backgroundColor = dialogBg,
+        cornerRadius = 16.dp,
+        bodyContent = {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(8.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                // Dialog Title
+                Text(
+                    text = "Unsaved changes",
+                    style = TextStyle(
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = textPrimary
+                    ),
+                    textAlign = TextAlign.Center
+                )
+
+                Spacer(modifier = Modifier.height(12.dp))
+
+                // Description
+                Text(
+                    text = "If you leave now, changes since your last save will be lost.",
+                    style = TextStyle(
+                        fontSize = 14.sp,
+                        color = textSecondary,
+                        lineHeight = 20.sp
+                    ),
+                    textAlign = TextAlign.Center
+                )
+
+                Spacer(modifier = Modifier.height(24.dp))
+
+                // Primary Action: Save draft and leave
+                Ux4gButton(
+                    text = "Save draft and leave",
+                    variant = Ux4gButtonVariant.Primary,
+                    size = Ux4gButtonSize.Large,
+                    onClick = onSaveAndLeave,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(48.dp)
+                )
+
+                Spacer(modifier = Modifier.height(12.dp))
+
+                // Secondary Action: Leave without saving
+                Box(
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(8.dp))
+                        .clickable { onLeaveWithoutSaving() }
+                        .padding(vertical = 8.dp, horizontal = 12.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        text = "Leave without saving",
+                        style = TextStyle(
+                            fontSize = 14.sp,
+                            fontWeight = FontWeight.Medium,
+                            color = discardColor
+                        )
+                    )
+                }
+            }
+        }
+    )
+}
+
+@Preview(showBackground = true, widthDp = 360, heightDp = 760)
+@Composable
+fun UnsavedChangesDialogPreview() {
+    UnsavedChangesDialog()
+}`}
+>
+  <img
+    src="/images/patterns/save_and_resume/unsaved_changes_dialog.svg"
+    alt="Unsaved Changes Dialog Pattern - Default Style"
+    className="w-full max-w-[360px] rounded-2xl border border-border shadow-sm mx-auto my-4"
+  />
+</ComponentPreview>
+
+---
+
+### 2. Card Style Variant
+
+Dialog presentation overlaying a card-style form canvas using `Ux4gModal`, illustrating contextual protection within layered application workflows.
+
+<ComponentPreview
+  title="Unsaved Changes Dialog - Card Style Variant"
+  category="Pattern · Jetpack Compose"
+  code={`package com.example.ux4g.patterns.application
+
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.ux4g.designsystemv1.components.buttons.Ux4gButton
+import com.ux4g.designsystemv1.components.buttons.Ux4gButtonSize
+import com.ux4g.designsystemv1.components.buttons.Ux4gButtonVariant
+import com.ux4g.designsystemv1.components.modal.Ux4gModal
+import com.ux4g.designsystemv1.foundation.Ux4gColors
+
+/**
+ * Unsaved Changes Dialog - Card Style Overlay Pattern using Ux4gModal
+ */
+@Composable
+fun UnsavedChangesDialogCardScreen(
+    isOpen: Boolean = true,
+    onSaveAndLeave: () -> Unit = {},
+    onLeaveWithoutSaving: () -> Unit = {},
+    onDismiss: () -> Unit = {}
+) {
+    if (!isOpen) return
+
+    val isDark = isSystemInDarkTheme()
+
+    val dialogBg = if (isDark) Ux4gColors.Neutral900 else Color.White
+    val textPrimary = if (isDark) Ux4gColors.Neutral50 else Color(0xFF111827)
+    val textSecondary = if (isDark) Ux4gColors.Neutral400 else Color(0xFF4B5563)
+    val discardColor = if (isDark) Ux4gColors.Red300 else Ux4gColors.Red800
+
+    Ux4gModal(
+        onDismiss = onDismiss,
+        showHeader = false,
+        showCloseButton = false,
+        showDividers = false,
+        showBody = true,
+        showFooter = false,
+        backgroundColor = dialogBg,
+        cornerRadius = 16.dp,
+        bodyContent = {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(8.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(
+                    text = "Unsaved changes",
+                    style = TextStyle(
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = textPrimary
+                    ),
+                    textAlign = TextAlign.Center
+                )
+
+                Spacer(modifier = Modifier.height(12.dp))
+
+                Text(
+                    text = "If you leave now, changes since your last save will be lost.",
+                    style = TextStyle(
+                        fontSize = 14.sp,
+                        color = textSecondary,
+                        lineHeight = 20.sp
+                    ),
+                    textAlign = TextAlign.Center
+                )
+
+                Spacer(modifier = Modifier.height(24.dp))
+
+                // Primary Action: Save draft and leave
+                Ux4gButton(
+                    text = "Save draft and leave",
+                    variant = Ux4gButtonVariant.Primary,
+                    size = Ux4gButtonSize.Large,
+                    onClick = onSaveAndLeave,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(48.dp)
+                )
+
+                Spacer(modifier = Modifier.height(12.dp))
+
+                // Secondary Action: Leave without saving
+                Box(
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(8.dp))
+                        .clickable { onLeaveWithoutSaving() }
+                        .padding(vertical = 8.dp, horizontal = 12.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        text = "Leave without saving",
+                        style = TextStyle(
+                            fontSize = 14.sp,
+                            fontWeight = FontWeight.Medium,
+                            color = discardColor
+                        )
+                    )
+                }
+            }
+        }
+    )
+}
+
+@Preview(showBackground = true, widthDp = 360, heightDp = 760)
+@Composable
+fun UnsavedChangesDialogCardPreview() {
+    UnsavedChangesDialogCardScreen()
+}`}
+>
+  <img
+    src="/images/patterns/save_and_resume/unsaved_changes_dialog_cardstyle.svg"
+    alt="Unsaved Changes Dialog Pattern - Card Style Variant"
+    className="w-full max-w-[360px] rounded-2xl border border-border shadow-sm mx-auto my-4"
+  />
+</ComponentPreview>

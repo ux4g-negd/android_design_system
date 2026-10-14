@@ -3,7 +3,7 @@
   "icon": "LayoutTemplate",
   "pages": [
     "identity-and-access",
-    "application-submission",
+    "application-and-submission",
     "service-discovery",
     "notification",
     "payment-and-confirmation",
