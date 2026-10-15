@@ -79,6 +79,7 @@ class MainActivity : ComponentActivity() {
                 val toastHostState = remember { Ux4gToastHostState() }
                 var toastAtTop by remember { mutableStateOf(true) }
                 var isFullscreenBiometricOpen by remember { mutableStateOf(false) }
+                var isFullscreenBottomNavOpen by remember { mutableStateOf(false) }
                 val scope = rememberCoroutineScope()
 
                 if (isFullscreenBiometricOpen) {
@@ -158,6 +159,11 @@ class MainActivity : ComponentActivity() {
                             )
                         }
                     }
+                } else if (isFullscreenBottomNavOpen) {
+                    LiveBottomNavScreen(
+                        onDismiss = { isFullscreenBottomNavOpen = false },
+                        toastHostState = toastHostState
+                    )
                 } else {
                     Scaffold(
                         modifier = Modifier.fillMaxSize(),
@@ -169,7 +175,8 @@ class MainActivity : ComponentActivity() {
                                 toastHostState = toastHostState,
                                 onToggleToastPosition = { toastAtTop = !toastAtTop },
                                 isToastAtTop = toastAtTop,
-                                onLaunchFullScreenBiometric = { isFullscreenBiometricOpen = true }
+                                onLaunchFullScreenBiometric = { isFullscreenBiometricOpen = true },
+                                onLaunchFullScreenBottomNav = { isFullscreenBottomNavOpen = true }
                             )
 
                             Ux4gToastHost(
@@ -194,7 +201,8 @@ fun MainContent(
     toastHostState: Ux4gToastHostState,
     onToggleToastPosition: () -> Unit,
     isToastAtTop: Boolean,
-    onLaunchFullScreenBiometric: () -> Unit = {}
+    onLaunchFullScreenBiometric: () -> Unit = {},
+    onLaunchFullScreenBottomNav: () -> Unit = {}
 ) {
     val scope = rememberCoroutineScope()
     var selectedRadio by remember { mutableStateOf(1) }
@@ -2315,246 +2323,238 @@ fun MainContent(
                     }
         }
 
-        item {
-            
-            
-                    // 17. Bottom Sheet Showcase
-                    Ux4gCard(modifier = Modifier.fillMaxWidth()) {
-                        Column(
-                            modifier = Modifier.padding(16.dp),
-                            verticalArrangement = Arrangement.spacedBy(16.dp)
-                        ) {
-                            Text(text = "Bottom Sheets", style = Ux4gTheme.typography.tS_strong)
-            
-                            var showBasicSheet by remember { mutableStateOf(false) }
-                            var showFullSheet by remember { mutableStateOf(false) }
-                            var showNonDraggableSheet by remember { mutableStateOf(false) }
-                            var showCustomContentSheet by remember { mutableStateOf(false) }
-                            var showLongContentSheet by remember { mutableStateOf(false) }
-            
-                            Ux4gButton(
-                                onClick = { showBasicSheet = true },
-                                modifier = Modifier.fillMaxWidth()
-                            ) { Text("Open Basic Bottom Sheet") }
-            
-                            Ux4gButton(
-                                onClick = { showFullSheet = true },
-                                modifier = Modifier.fillMaxWidth(),
-                                backgroundColor = Ux4gColors.primary700
-                            ) { Text("Open Full Bottom Sheet (Justified)") }
-            
-                            Ux4gButton(
-                                onClick = { showNonDraggableSheet = true },
-                                modifier = Modifier.fillMaxWidth(),
-                                backgroundColor = Ux4gColors.neutral700
-                            ) { Text("Open Non-Draggable Sheet") }
-            
-                            Ux4gButton(
-                                onClick = { showCustomContentSheet = true },
-                                modifier = Modifier.fillMaxWidth(),
-                                backgroundColor = Ux4gColors.green700
-                            ) { Text("Open Custom Content Sheet") }
-            
-                            Ux4gButton(
-                                onClick = { showLongContentSheet = true },
-                                modifier = Modifier.fillMaxWidth(),
-                                backgroundColor = Ux4gColors.cyan700
-                            ) { Text("Open Long Content Sheet") }
-            
-                            if (showBasicSheet) {
-                                Ux4gBottomSheet(
-                                    onDismissRequest = { showBasicSheet = false },
-                                    headerTitle = "Simple Sheet",
-                                    content = {
-                                        Text("This is a simple bottom sheet with just a title and body content. It automatically adjusts its height to fit the content.")
-                                    }
+        // 17. Bottom Sheet Showcase
+        Ux4gCard(modifier = Modifier.fillMaxWidth()) {
+            Column(
+                modifier = Modifier.padding(16.dp),
+                verticalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+                Text(text = "Bottom Sheets", style = Ux4gTheme.typography.tS_strong)
+
+                var showBasicSheet by remember { mutableStateOf(false) }
+                var showFullSheet by remember { mutableStateOf(false) }
+                var showNonDraggableSheet by remember { mutableStateOf(false) }
+                var showCustomContentSheet by remember { mutableStateOf(false) }
+                var showLongContentSheet by remember { mutableStateOf(false) }
+
+                Ux4gButton(
+                    onClick = { showBasicSheet = true },
+                    modifier = Modifier.fillMaxWidth()
+                ) { Text("Open Basic Bottom Sheet") }
+
+                Ux4gButton(
+                    onClick = { showFullSheet = true },
+                    modifier = Modifier.fillMaxWidth(),
+                    backgroundColor = Ux4gColors.primary700
+                ) { Text("Open Full Bottom Sheet (Justified)") }
+
+                Ux4gButton(
+                    onClick = { showNonDraggableSheet = true },
+                    modifier = Modifier.fillMaxWidth(),
+                    backgroundColor = Ux4gColors.neutral700
+                ) { Text("Open Non-Draggable Sheet") }
+
+                Ux4gButton(
+                    onClick = { showCustomContentSheet = true },
+                    modifier = Modifier.fillMaxWidth(),
+                    backgroundColor = Ux4gColors.green700
+                ) { Text("Open Custom Content Sheet") }
+
+                Ux4gButton(
+                    onClick = { showLongContentSheet = true },
+                    modifier = Modifier.fillMaxWidth(),
+                    backgroundColor = Ux4gColors.cyan700
+                ) { Text("Open Long Content Sheet") }
+
+                if (showBasicSheet) {
+                    Ux4gBottomSheet(
+                        onDismissRequest = { showBasicSheet = false },
+                        headerTitle = "Simple Sheet",
+                        content = {
+                            Text("This is a simple bottom sheet with just a title and body content. It automatically adjusts its height to fit the content.")
+                        }
+                    )
+                }
+
+                if (showFullSheet) {
+                    Ux4gBottomSheet(
+                        onDismissRequest = { showFullSheet = false },
+                        headerTitle = "Header",
+                        headerSubtleText = "Subtle text",
+                        headerIcon = Ux4gIcons.info_circle,
+                        description = "Write description here",
+                        footerType = Ux4gCardFooterType.PrimaryAndSecondary,
+                        footerAlignment = Ux4gBottomSheetFooterAlignment.Justified,
+                        primaryButtonText = "Action",
+                        secondaryButtonText = "Cancel",
+                        onPrimaryClick = { showFullSheet = false },
+                        onSecondaryClick = { showFullSheet = false },
+                        content = {
+                            Text(
+                                text = "A Drawer is a panel that slides out from the edge of the screen to show extra information or options. It follows the same footer structure as the Card component.",
+                                style = Ux4gTheme.typography.bM_default,
+                                color = Ux4gColors.neutral700
+                            )
+                        }
+                    )
+                }
+
+                if (showNonDraggableSheet) {
+                    Ux4gBottomSheet(
+                        onDismissRequest = { showNonDraggableSheet = false },
+                        headerTitle = "Non-Draggable Sheet",
+                        isDraggable = false,
+                        description = "The drag handle is hidden and swipe gestures are handled by the system (usually minimal interaction).",
+                        content = {
+                            Text("This sheet has the 'isDraggable' property set to false.")
+                        }
+                    )
+                }
+
+                if (showCustomContentSheet) {
+                    Ux4gBottomSheet(
+                        onDismissRequest = { showCustomContentSheet = false },
+                        headerTitle = "Complex Settings",
+                        description = "You can add any custom UI inside this central area.",
+                        footerType = Ux4gCardFooterType.PrimaryOnly,
+                        primaryButtonText = "Apply Settings",
+                        onPrimaryClick = { showCustomContentSheet = false },
+                        content = {
+                            Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
+                                Text("Pick your notification types:", style = Ux4gTheme.typography.tS_strong)
+                                
+                                Row(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                                ) {
+                                    var checked1 by remember { mutableStateOf(ToggleableState.On) }
+                                    var checked2 by remember { mutableStateOf(ToggleableState.Off) }
+                                    
+                                    Ux4gCheckbox(
+                                        state = checked1,
+                                        onClick = { 
+                                            checked1 = if (checked1 == ToggleableState.On) ToggleableState.Off else ToggleableState.On 
+                                        },
+                                        label = "Email"
+                                    )
+                                    Ux4gCheckbox(
+                                        state = checked2,
+                                        onClick = { 
+                                            checked2 = if (checked2 == ToggleableState.On) ToggleableState.Off else ToggleableState.On 
+                                        },
+                                        label = "Push"
+                                    )
+                                }
+                                
+                                Ux4gDivider()
+                                
+                                Text("Adjust Volume:", style = Ux4gTheme.typography.tS_strong)
+                                var volume by remember { mutableStateOf(75f) }
+                                Ux4gSlider(
+                                    value = volume,
+                                    onValueChange = { volume = it },
+                                    showMarksAndValues = true,
+                                    steps = 4
                                 )
-                            }
-            
-                            if (showFullSheet) {
-                                Ux4gBottomSheet(
-                                    onDismissRequest = { showFullSheet = false },
-                                    headerTitle = "Header",
-                                    headerSubtleText = "Subtle text",
-                                    headerIcon = Ux4gIcons.info_circle,
-                                    description = "Write description here",
-                                    footerType = Ux4gCardFooterType.PrimaryAndSecondary,
-                                    footerAlignment = Ux4gBottomSheetFooterAlignment.Justified,
-                                    primaryButtonText = "Action",
-                                    secondaryButtonText = "Cancel",
-                                    onPrimaryClick = { showFullSheet = false },
-                                    onSecondaryClick = { showFullSheet = false },
-                                    content = {
-                                        Text(
-                                            text = "A Drawer is a panel that slides out from the edge of the screen to show extra information or options. It follows the same footer structure as the Card component.",
-                                            style = Ux4gTheme.typography.bM_default,
-                                            color = Ux4gColors.neutral700
-                                        )
-                                    }
-                                )
-                            }
-            
-                            if (showNonDraggableSheet) {
-                                Ux4gBottomSheet(
-                                    onDismissRequest = { showNonDraggableSheet = false },
-                                    headerTitle = "Non-Draggable Sheet",
-                                    isDraggable = false,
-                                    description = "The drag handle is hidden and swipe gestures are handled by the system (usually minimal interaction).",
-                                    content = {
-                                        Text("This sheet has the 'isDraggable' property set to false.")
-                                    }
-                                )
-                            }
-            
-                            if (showCustomContentSheet) {
-                                Ux4gBottomSheet(
-                                    onDismissRequest = { showCustomContentSheet = false },
-                                    headerTitle = "Complex Settings",
-                                    description = "You can add any custom UI inside this central area.",
-                                    footerType = Ux4gCardFooterType.PrimaryOnly,
-                                    primaryButtonText = "Apply Settings",
-                                    onPrimaryClick = { showCustomContentSheet = false },
-                                    content = {
-                                        Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
-                                            Text("Pick your notification types:", style = Ux4gTheme.typography.tS_strong)
-                                            
-                                            Row(
-                                                modifier = Modifier.fillMaxWidth(),
-                                                horizontalArrangement = Arrangement.spacedBy(8.dp)
-                                            ) {
-                                                var checked1 by remember { mutableStateOf(ToggleableState.On) }
-                                                var checked2 by remember { mutableStateOf(ToggleableState.Off) }
-                                                
-                                                Ux4gCheckbox(
-                                                    state = checked1,
-                                                    onClick = { 
-                                                        checked1 = if (checked1 == ToggleableState.On) ToggleableState.Off else ToggleableState.On 
-                                                    },
-                                                    label = "Email"
-                                                )
-                                                Ux4gCheckbox(
-                                                    state = checked2,
-                                                    onClick = { 
-                                                        checked2 = if (checked2 == ToggleableState.On) ToggleableState.Off else ToggleableState.On 
-                                                    },
-                                                    label = "Push"
-                                                )
-                                            }
-                                            
-                                            Ux4gDivider()
-                                            
-                                            Text("Adjust Volume:", style = Ux4gTheme.typography.tS_strong)
-                                            var volume by remember { mutableStateOf(75f) }
-                                            Ux4gSlider(
-                                                value = volume,
-                                                onValueChange = { volume = it },
-                                                showMarksAndValues = true,
-                                                steps = 4
-                                            )
-                                            
-                                            Text(
-                                                "Notice how the sheet automatically expands to fit these custom components.",
-                                                style = Ux4gTheme.typography.bS_default,
-                                                color = Ux4gColors.neutral500
-                                            )
-                                        }
-                                    }
-                                )
-                            }
-            
-                            if (showLongContentSheet) {
-                                Ux4gBottomSheet(
-                                    onDismissRequest = { showLongContentSheet = false },
-                                    headerTitle = "Scrollable Content",
-                                    description = "The header and footer stay fixed. Only this middle part scrolls.",
-                                    footerType = Ux4gCardFooterType.PrimaryAndSecondary,
-                                    footerAlignment = Ux4gBottomSheetFooterAlignment.Justified,
-                                    primaryButtonText = "Got it",
-                                    secondaryButtonText = "Cancel",
-                                    onPrimaryClick = { showLongContentSheet = false },
-                                    onSecondaryClick = { showLongContentSheet = false },
-                                    content = {
-                                        Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
-                                            repeat(20) { index ->
-                                                Text(
-                                                    "Item #$index: This long text demonstrates that even when the content grows beyond the screen height, only the inner body remains scrollable while the top header and bottom buttons stay pinned.",
-                                                    style = Ux4gTheme.typography.bM_default
-                                                )
-                                                if (index < 19) Ux4gDivider()
-                                            }
-                                        }
-                                    }
+                                
+                                Text(
+                                    "Notice how the sheet automatically expands to fit these custom components.",
+                                    style = Ux4gTheme.typography.bS_default,
+                                    color = Ux4gColors.neutral500
                                 )
                             }
                         }
-                    }
+                    )
+                }
+
+                if (showLongContentSheet) {
+                    Ux4gBottomSheet(
+                        onDismissRequest = { showLongContentSheet = false },
+                        headerTitle = "Scrollable Content",
+                        description = "The header and footer stay fixed. Only this middle part scrolls.",
+                        footerType = Ux4gCardFooterType.PrimaryAndSecondary,
+                        footerAlignment = Ux4gBottomSheetFooterAlignment.Justified,
+                        primaryButtonText = "Got it",
+                        secondaryButtonText = "Cancel",
+                        onPrimaryClick = { showLongContentSheet = false },
+                        onSecondaryClick = { showLongContentSheet = false },
+                        content = {
+                            Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
+                                repeat(20) { index ->
+                                    Text(
+                                        "Item #$index: This long text demonstrates that even when the content grows beyond the screen height, only the inner body remains scrollable while the top header and bottom buttons stay pinned.",
+                                        style = Ux4gTheme.typography.bM_default
+                                    )
+                                    if (index < 19) Ux4gDivider()
+                                }
+                            }
+                        }
+                    )
+                }
+            }
         }
 
-        item {
-            
-            
-                    // 18. Capsule Stepper Showcase
-                    Ux4gCard(modifier = Modifier.fillMaxWidth()) {
-                        Column(
-                            modifier = Modifier.padding(16.dp),
-                            verticalArrangement = Arrangement.spacedBy(24.dp)
-                        ) {
-                            Text(text = "Capsule (Compact) Stepper", style = Ux4gTheme.typography.tS_strong)
-                            
-                            var capsuleStep by remember { mutableStateOf(1) }
-                            val totalSteps = 12
-            
-                            Text("Layout: Linear (Default)", style = Ux4gTheme.typography.lS_strong)
-                            Ux4gCapsuleStepper(
-                                totalSteps = totalSteps,
-                                currentStep = capsuleStep,
-                                stepLabel = "Account Setup",
-                                description = "Enter your personal details to continue.",
-                                layout = Ux4gCapsuleStepperLayout.Linear,
-                                onNext = { if (capsuleStep < totalSteps) capsuleStep++ },
-                                onPrevious = { if (capsuleStep > 1) capsuleStep-- }
-                            )
-            
-                            Ux4gDivider()
-            
-                            Text("Layout: Right Aligned", style = Ux4gTheme.typography.lS_strong)
-                            Ux4gCapsuleStepper(
-                                totalSteps = totalSteps,
-                                currentStep = capsuleStep,
-                                stepLabel = "Finalize Profile",
-                                description = "Uploading your bio and other settings.",
-                                layout = Ux4gCapsuleStepperLayout.RightAligned,
-                                onNext = { if (capsuleStep < totalSteps) capsuleStep++ },
-                                onPrevious = { if (capsuleStep > 1) capsuleStep-- }
-                            )
-            
-                            Ux4gDivider()
-            
-                            Text("Layout: Centered", style = Ux4gTheme.typography.lS_strong)
-                            Ux4gCapsuleStepper(
-                                totalSteps = totalSteps,
-                                currentStep = capsuleStep,
-                                stepLabel = "Payment Methods",
-                                description = "Review your cards and billing address.",
-                                layout = Ux4gCapsuleStepperLayout.Centered,
-                                onNext = { if (capsuleStep < totalSteps) capsuleStep++ },
-                                onPrevious = { if (capsuleStep > 1) capsuleStep-- }
-                            )
-            
-                            Ux4gDivider()
-            
-                            Text("Layout: Split", style = Ux4gTheme.typography.lS_strong)
-                            Ux4gCapsuleStepper(
-                                totalSteps = totalSteps,
-                                currentStep = capsuleStep,
-                                stepLabel = "Confirmation",
-                                description = "Almost done. Just one more click to finish your setup and start using the platform.",
-                                layout = Ux4gCapsuleStepperLayout.Split,
-                                onNext = { if (capsuleStep < totalSteps) capsuleStep++ },
-                                onPrevious = { if (capsuleStep > 1) capsuleStep-- }
-                            )
-                        }
-                    }
+        // 18. Capsule Stepper Showcase
+        Ux4gCard(modifier = Modifier.fillMaxWidth()) {
+            Column(
+                modifier = Modifier.padding(16.dp),
+                verticalArrangement = Arrangement.spacedBy(24.dp)
+            ) {
+                Text(text = "Capsule (Compact) Stepper", style = Ux4gTheme.typography.tS_strong)
+                
+                var capsuleStep by remember { mutableStateOf(1) }
+                val totalSteps = 12
+
+                Text("Layout: Linear (Default)", style = Ux4gTheme.typography.lS_strong)
+                Ux4gCapsuleStepper(
+                    totalSteps = totalSteps,
+                    currentStep = capsuleStep,
+                    stepLabel = "Account Setup",
+                    description = "Enter your personal details to continue.",
+                    layout = Ux4gCapsuleStepperLayout.Linear,
+                    onNext = { if (capsuleStep < totalSteps) capsuleStep++ },
+                    onPrevious = { if (capsuleStep > 1) capsuleStep-- }
+                )
+
+                Ux4gDivider()
+
+                Text("Layout: Right Aligned", style = Ux4gTheme.typography.lS_strong)
+                Ux4gCapsuleStepper(
+                    totalSteps = totalSteps,
+                    currentStep = capsuleStep,
+                    stepLabel = "Finalize Profile",
+                    description = "Uploading your bio and other settings.",
+                    layout = Ux4gCapsuleStepperLayout.RightAligned,
+                    onNext = { if (capsuleStep < totalSteps) capsuleStep++ },
+                    onPrevious = { if (capsuleStep > 1) capsuleStep-- }
+                )
+
+                Ux4gDivider()
+
+                Text("Layout: Centered", style = Ux4gTheme.typography.lS_strong)
+                Ux4gCapsuleStepper(
+                    totalSteps = totalSteps,
+                    currentStep = capsuleStep,
+                    stepLabel = "Payment Methods",
+                    description = "Review your cards and billing address.",
+                    layout = Ux4gCapsuleStepperLayout.Centered,
+                    onNext = { if (capsuleStep < totalSteps) capsuleStep++ },
+                    onPrevious = { if (capsuleStep > 1) capsuleStep-- }
+                )
+
+                Ux4gDivider()
+
+                Text("Layout: Split", style = Ux4gTheme.typography.lS_strong)
+                Ux4gCapsuleStepper(
+                    totalSteps = totalSteps,
+                    currentStep = capsuleStep,
+                    stepLabel = "Confirmation",
+                    description = "Almost done. Just one more click to finish your setup and start using the platform.",
+                    layout = Ux4gCapsuleStepperLayout.Split,
+                    onNext = { if (capsuleStep < totalSteps) capsuleStep++ },
+                    onPrevious = { if (capsuleStep > 1) capsuleStep-- }
+                )
+            }
         }
 
         item {
@@ -8325,6 +8325,330 @@ fun MainContent(
 
 
 
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun LiveBottomNavScreen(
+    onDismiss: () -> Unit,
+    toastHostState: Ux4gToastHostState
+) {
+    val scope = rememberCoroutineScope()
+    var selectedVariant by remember { mutableStateOf(0) }
+    var selectedTab by remember { mutableStateOf(0) }
+
+    val standardItems = listOf(
+        Ux4gBottomNavItem(key = "home", label = "Home", icon = Ux4gIcons.Home),
+        Ux4gBottomNavItem(key = "services", label = "Services", icon = Ux4gIcons.Menu),
+        Ux4gBottomNavItem(key = "status", label = "Status", icon = Ux4gIcons.Check),
+        Ux4gBottomNavItem(key = "alerts", label = "Alerts", icon = Ux4gIcons.info_circle, badge = 3),
+        Ux4gBottomNavItem(key = "profile", label = "Profile", icon = Ux4gIcons.Person)
+    )
+
+    val centreActionItems = listOf(
+        Ux4gBottomNavItem(key = "home", label = "Home", icon = Ux4gIcons.Home),
+        Ux4gBottomNavItem(key = "services", label = "Services", icon = Ux4gIcons.Menu),
+        Ux4gBottomNavItem(key = "status", label = "Status", icon = Ux4gIcons.Check),
+        Ux4gBottomNavItem(key = "alerts", label = "Alerts", icon = Ux4gIcons.info_circle)
+    )
+
+    Scaffold(
+        modifier = Modifier.fillMaxSize(),
+        containerColor = Ux4gColors.neutral50,
+        topBar = {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(Ux4gTheme.colorScheme.surface)
+                    .statusBarsPadding()
+            ) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 8.dp, vertical = 6.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    IconButton(onClick = onDismiss) {
+                        Icon(
+                            imageVector = Icons.Default.ArrowBack,
+                            contentDescription = "Back",
+                            tint = Ux4gColors.neutral900
+                        )
+                    }
+                    Column(modifier = Modifier.weight(1f)) {
+                        Text(
+                            text = "UX4G Citizen Portal",
+                            style = Ux4gTheme.typography.tS_strong,
+                            color = Ux4gColors.neutral900
+                        )
+                        Text(
+                            text = "Bottom Navigation Anchored at Screen Bottom",
+                            style = Ux4gTheme.typography.bXS_default,
+                            color = Ux4gColors.neutral600
+                        )
+                    }
+                }
+
+                // Interactive variant selector
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .horizontalScroll(rememberScrollState())
+                        .padding(horizontal = 12.dp, vertical = 6.dp),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    val variantTitles = listOf(
+                        "1. Pill (Labelled)",
+                        "2. Bar (Top-Rounded)",
+                        "3. Plain (Icon Only)",
+                        "4. Center Action (FAB)",
+                        "5. Floating Pill"
+                    )
+                    variantTitles.forEachIndexed { idx, title ->
+                        val isSelected = selectedVariant == idx
+                        Box(
+                            modifier = Modifier
+                                .clip(RoundedCornerShape(20.dp))
+                                .background(
+                                    if (isSelected) Ux4gTheme.colorScheme.primary else Ux4gColors.neutral200
+                                )
+                                .clickable {
+                                    selectedVariant = idx
+                                    selectedTab = 0
+                                }
+                                .padding(horizontal = 12.dp, vertical = 6.dp)
+                        ) {
+                            Text(
+                                text = title,
+                                style = TextStyle(
+                                    fontSize = 12.sp,
+                                    fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium,
+                                    color = if (isSelected) Color.White else Ux4gColors.neutral800
+                                )
+                            )
+                        }
+                    }
+                }
+                Ux4gDivider()
+            }
+        },
+        bottomBar = {
+            when (selectedVariant) {
+                0 -> {
+                    Ux4gBottomNavigationBar(
+                        items = standardItems,
+                        selectedIndex = selectedTab,
+                        onTabChange = { idx, _ -> selectedTab = idx },
+                        indicatorVariant = Ux4gBottomNavIndicatorVariant.Pill,
+                        variant = Ux4gBottomNavVariant.Labelled,
+                        useSafeArea = true
+                    )
+                }
+                1 -> {
+                    Ux4gBottomNavigationBar(
+                        items = standardItems,
+                        selectedIndex = selectedTab,
+                        onTabChange = { idx, _ -> selectedTab = idx },
+                        indicatorVariant = Ux4gBottomNavIndicatorVariant.Bar,
+                        variant = Ux4gBottomNavVariant.TopRounded,
+                        useSafeArea = true
+                    )
+                }
+                2 -> {
+                    Ux4gBottomNavigationBar(
+                        items = standardItems,
+                        selectedIndex = selectedTab,
+                        onTabChange = { idx, _ -> selectedTab = idx },
+                        indicatorVariant = Ux4gBottomNavIndicatorVariant.Plain,
+                        variant = Ux4gBottomNavVariant.IconOnly,
+                        showLabels = false,
+                        useSafeArea = true
+                    )
+                }
+                3 -> {
+                    Ux4gBottomNavigationBar(
+                        items = centreActionItems,
+                        selectedIndex = selectedTab,
+                        onTabChange = { idx, _ -> selectedTab = idx },
+                        variant = Ux4gBottomNavVariant.CentreAction,
+                        indicatorVariant = Ux4gBottomNavIndicatorVariant.Pill,
+                        centerAction = Ux4gBottomNavCenterAction(
+                            icon = Ux4gIcons.Add,
+                            onPressed = {
+                                scope.launch {
+                                    toastHostState.showToast(
+                                        category = Ux4gToastCategory.Success,
+                                        title = "Quick Action Triggered",
+                                        subtitle = "New citizen service request modal initiated!"
+                                    )
+                                }
+                            }
+                        ),
+                        useSafeArea = true
+                    )
+                }
+                else -> {
+                    Ux4gFloatingBottomNavBar(
+                        items = standardItems,
+                        selectedIndex = selectedTab,
+                        onTabChange = { idx, _ -> selectedTab = idx },
+                        indicatorVariant = Ux4gBottomNavIndicatorVariant.Pill,
+                        useSafeArea = true
+                    )
+                }
+            }
+        }
+    ) { innerPadding ->
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(innerPadding)
+                .verticalScroll(rememberScrollState())
+                .padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
+            when (selectedTab) {
+                0 -> {
+                    Ux4gCard(modifier = Modifier.fillMaxWidth()) {
+                        Column(
+                            modifier = Modifier.padding(16.dp),
+                            verticalArrangement = Arrangement.spacedBy(8.dp)
+                        ) {
+                            Text("Namaste, Aarav Sharma", style = Ux4gTheme.typography.tS_strong)
+                            Text(
+                                "Digital India Citizen Portal — Aadhaar Verified",
+                                style = Ux4gTheme.typography.bXS_default,
+                                color = Ux4gColors.neutral600
+                            )
+                            Spacer(modifier = Modifier.height(4.dp))
+                            Text(
+                                "This is a full live page where the Bottom Navigation Bar is practically anchored at the screen bottom with system safe insets. Tap any tab below or switch variants above to test smooth transitions without any black flash!",
+                                style = Ux4gTheme.typography.bS_default,
+                                color = Ux4gColors.neutral800
+                            )
+                        }
+                    }
+
+                    Text("Featured Public Services", style = Ux4gTheme.typography.lM_strong)
+                    listOf(
+                        "Income & Domicile Certificate",
+                        "Electricity & Water Bill Payment",
+                        "Public Grievance Redressal (CPGRAMS)"
+                    ).forEach { title ->
+                        Ux4gCard(modifier = Modifier.fillMaxWidth()) {
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(14.dp),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Box(
+                                    modifier = Modifier
+                                        .size(36.dp)
+                                        .clip(CircleShape)
+                                        .background(Ux4gTheme.colorScheme.primary.copy(alpha = 0.12f)),
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    Ux4gIconComponent(icon = Ux4gIcons.Check, contentDescription = null, tint = Ux4gTheme.colorScheme.primary)
+                                }
+                                Spacer(modifier = Modifier.width(12.dp))
+                                Text(text = title, style = Ux4gTheme.typography.lS_strong, modifier = Modifier.weight(1f))
+                                Ux4gIconComponent(icon = Ux4gIcons.arrowRight, contentDescription = null, tint = Ux4gColors.neutral400)
+                            }
+                        }
+                    }
+                }
+                1 -> {
+                    Ux4gCard(modifier = Modifier.fillMaxWidth()) {
+                        Column(
+                            modifier = Modifier.padding(16.dp),
+                            verticalArrangement = Arrangement.spacedBy(10.dp)
+                        ) {
+                            Text("Services Directory", style = Ux4gTheme.typography.tS_strong)
+                            Text("Explore state and central citizen services.", style = Ux4gTheme.typography.bS_default, color = Ux4gColors.neutral600)
+                            listOf(
+                                "Identity & Verification (DigiLocker)",
+                                "Revenue & Land Registration",
+                                "Education Scholarships",
+                                "Healthcare & Medical Insurance"
+                            ).forEach { s ->
+                                Row(
+                                    modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp),
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    Ux4gIconComponent(icon = Ux4gIcons.Check, contentDescription = null, tint = Ux4gColors.green600)
+                                    Spacer(modifier = Modifier.width(10.dp))
+                                    Text(s, style = Ux4gTheme.typography.bS_default)
+                                }
+                                Ux4gDivider()
+                            }
+                        }
+                    }
+                }
+                2 -> {
+                    Ux4gCard(modifier = Modifier.fillMaxWidth()) {
+                        Column(
+                            modifier = Modifier.padding(16.dp),
+                            verticalArrangement = Arrangement.spacedBy(12.dp)
+                        ) {
+                            Text("Track Status", style = Ux4gTheme.typography.tS_strong)
+                            Text("Real-time updates on active applications.", style = Ux4gTheme.typography.bS_default, color = Ux4gColors.neutral600)
+                            Ux4gStatusBanner(
+                                variant = Ux4gBannerVariant.SuccessLight,
+                                title = "Application Approved",
+                                subtitle = "Application #GOV-9842 verified and approved."
+                            )
+                        }
+                    }
+                }
+                3 -> {
+                    Ux4gCard(modifier = Modifier.fillMaxWidth()) {
+                        Column(
+                            modifier = Modifier.padding(16.dp),
+                            verticalArrangement = Arrangement.spacedBy(10.dp)
+                        ) {
+                            Text("Alerts & Notifications", style = Ux4gTheme.typography.tS_strong)
+                            listOf(
+                                "DigiLocker document fetched successfully (10m ago)",
+                                "Aadhaar authentication request approved (1h ago)",
+                                "Portal maintenance scheduled for Sunday 2 AM"
+                            ).forEach { msg ->
+                                Row(
+                                    modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp),
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    Ux4gIconComponent(icon = Ux4gIcons.info_circle, contentDescription = null, tint = Ux4gColors.red600)
+                                    Spacer(modifier = Modifier.width(10.dp))
+                                    Text(msg, style = Ux4gTheme.typography.bS_default)
+                                }
+                                Ux4gDivider()
+                            }
+                        }
+                    }
+                }
+                else -> {
+                    Ux4gCard(modifier = Modifier.fillMaxWidth()) {
+                        Column(
+                            modifier = Modifier.padding(16.dp),
+                            verticalArrangement = Arrangement.spacedBy(10.dp)
+                        ) {
+                            Text("Citizen Profile", style = Ux4gTheme.typography.tS_strong)
+                            Text("Aarav Sharma", style = Ux4gTheme.typography.lS_strong)
+                            Text("Phone: +91 98765-43210", style = Ux4gTheme.typography.bS_default, color = Ux4gColors.neutral600)
+                            Spacer(modifier = Modifier.height(12.dp))
+                            Button(
+                                onClick = onDismiss,
+                                modifier = Modifier.fillMaxWidth(),
+                                colors = ButtonDefaults.buttonColors(containerColor = Ux4gTheme.colorScheme.primary)
+                            ) {
+                                Text("Back to Component Showcase")
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
 
 @Preview(name = "Light", showBackground = false, showSystemUi = true)
 @Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
