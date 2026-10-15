@@ -1,0 +1,468 @@
+---
+title: Bottom Navigation Bar
+description: Accessible, responsive bottom navigation bars featuring Pill, Bar, and Plain active indicators, Top-rounded and Floating capsule shapes, Center Action buttons, and notification badges
+---
+
+# Bottom Navigation Bar (`Ux4gBottomNavigationBar`)
+
+The UX4G Bottom Navigation Bar provides intuitive primary navigation between top-level destinations in Android applications. Designed specifically for Indian public digital infrastructure and citizen-centric applications, it ensures thumb-friendly ergonomics, prominent visual indicators, and clear destination hierarchy.
+
+### Key Capabilities
+
+- **3 Indicator Variants**:
+  - `Pill`: Soft rounded capsule background highlighting the active tab.
+  - `Bar`: Clean horizontal indicator bar pinned to the top of the active tab.
+  - `Plain`: Minimalist active color tint applied directly to the icon and label.
+- **5 Layout & Shape Variants**:
+  - `Labelled`: Standard navigation bar with icons and text labels.
+  - `TopRounded`: Modern rounded top corners (`20.dp` corner radius) container.
+  - `IconOnly`: Compact navigation bar without text labels.
+  - `CentreAction`: Embedded prominent circular action button (FAB) in the center for high-priority actions.
+  - `FloatingPill`: Detached floating capsule navigation bar with elevated drop shadow.
+- **Notification Badges**: Supports integer counts (e.g., `3`), text badges (`"99+"`), and notification dot indicators.
+- **Accessibility & Safe Area**: Full Material 3 semantic roles (`Role.Tab`), accessibility descriptions, and automatic Android navigation bar safe area inset handling.
+- **Dark & Light Mode**: Built-in support for high-contrast active states across themes.
+
+Import from `com.ux4g.designsystemv1.components.*`.
+
+---
+
+<h2><MIcon name="smartphone" /> Interactive Previews</h2>
+
+### Complete Variant Matrix Overview
+
+The matrix below illustrates all combinations of indicator styles (`Pill`, `Bar`, `Plain`) across all layout and container variants (`Labelled`, `Top-rounded`, `Icon only`, `Centre action`, `Pill (floating)`).
+
+<ComponentPreview
+  title="Ux4gBottomNavigationBar - Complete Variant Matrix"
+  category="Jetpack Compose"
+  code={`val navItems = listOf(
+    Ux4gBottomNavItem(key = "home", label = "Home", icon = Ux4gIcons.Home),
+    Ux4gBottomNavItem(key = "services", label = "Services", icon = Ux4gIcons.Menu),
+    Ux4gBottomNavItem(key = "status", label = "Status", icon = Ux4gIcons.Check),
+    Ux4gBottomNavItem(key = "alerts", label = "Alerts", icon = Ux4gIcons.info_circle, badge = 3),
+    Ux4gBottomNavItem(key = "profile", label = "Profile", icon = Ux4gIcons.Person)
+)
+
+var selectedIndex by remember { mutableIntStateOf(0) }
+
+// 1. Labelled with Soft Pill Indicator
+Ux4gBottomNavigationBar(
+    items = navItems,
+    selectedIndex = selectedIndex,
+    onTabChange = { index, _ -> selectedIndex = index },
+    indicatorVariant = Ux4gBottomNavIndicatorVariant.Pill,
+    variant = Ux4gBottomNavVariant.Labelled
+)
+
+// 2. Top-Rounded with Top Bar Indicator
+Ux4gBottomNavigationBar(
+    items = navItems,
+    selectedIndex = selectedIndex,
+    onTabChange = { index, _ -> selectedIndex = index },
+    indicatorVariant = Ux4gBottomNavIndicatorVariant.Bar,
+    variant = Ux4gBottomNavVariant.TopRounded
+)
+
+// 3. Floating Pill Capsule Navigation Bar
+Ux4gFloatingBottomNavBar(
+    items = navItems,
+    selectedIndex = selectedIndex,
+    onTabChange = { index, _ -> selectedIndex = index },
+    indicatorVariant = Ux4gBottomNavIndicatorVariant.Pill
+)`}
+>
+  <div className="flex flex-col items-center justify-center py-4 bg-muted/20 rounded-xl">
+    <img
+      src="/images/components/bottom_nav_preview.png"
+      alt="UX4G Bottom Navigation Bar Complete Variant Matrix Preview"
+      className="max-w-full rounded-xl border border-border/60 shadow-sm"
+    />
+  </div>
+</ComponentPreview>
+
+---
+
+### 1. Labelled Variant with Soft Pill Indicator
+
+The standard navigation bar featuring icon and text labels with a soft rounded capsule background (`Ux4gColors.primary50`) behind the active destination.
+
+<ComponentPreview
+  title="Ux4gBottomNavigationBar - Labelled Pill Variant"
+  category="Jetpack Compose"
+  code={`var selectedIndex by remember { mutableIntStateOf(0) }
+
+val navItems = listOf(
+    Ux4gBottomNavItem(key = "home", label = "Home", icon = Ux4gIcons.Home),
+    Ux4gBottomNavItem(key = "services", label = "Services", icon = Ux4gIcons.Menu),
+    Ux4gBottomNavItem(key = "status", label = "Status", icon = Ux4gIcons.Check),
+    Ux4gBottomNavItem(key = "alerts", label = "Alerts", icon = Ux4gIcons.info_circle, badge = 3),
+    Ux4gBottomNavItem(key = "profile", label = "Profile", icon = Ux4gIcons.Person)
+)
+
+Ux4gBottomNavigationBar(
+    items = navItems,
+    selectedIndex = selectedIndex,
+    onTabChange = { index, item -> selectedIndex = index },
+    indicatorVariant = Ux4gBottomNavIndicatorVariant.Pill,
+    variant = Ux4gBottomNavVariant.Labelled
+)`}
+>
+  <div className="flex flex-col items-center justify-center py-4 bg-muted/20 rounded-xl">
+    <img
+      src="/images/components/bottom_nav_labelled_preview.png"
+      alt="UX4G Labelled Pill Navigation Preview"
+      className="max-w-full rounded-xl border border-border/60 shadow-sm"
+    />
+  </div>
+</ComponentPreview>
+
+---
+
+### 2. Top-Rounded Container with Top Bar Indicator
+
+Container featuring rounded upper corners (`20.dp` radius) and a horizontal indicator line pinned to the top edge of the selected tab.
+
+<ComponentPreview
+  title="Ux4gBarBottomNavBar - Top-Rounded Variant"
+  category="Jetpack Compose"
+  code={`var selectedIndex by remember { mutableIntStateOf(0) }
+
+val navItems = listOf(
+    Ux4gBottomNavItem(key = "home", label = "Home", icon = Ux4gIcons.Home),
+    Ux4gBottomNavItem(key = "services", label = "Services", icon = Ux4gIcons.Menu),
+    Ux4gBottomNavItem(key = "status", label = "Status", icon = Ux4gIcons.Check),
+    Ux4gBottomNavItem(key = "alerts", label = "Alerts", icon = Ux4gIcons.info_circle),
+    Ux4gBottomNavItem(key = "profile", label = "Profile", icon = Ux4gIcons.Person)
+)
+
+Ux4gBarBottomNavBar(
+    items = navItems,
+    selectedIndex = selectedIndex,
+    onTabChange = { index, item -> selectedIndex = index },
+    variant = Ux4gBottomNavVariant.TopRounded,
+    barIndicatorHeight = 3.dp,
+    barIndicatorWidth = 32.dp
+)`}
+>
+  <div className="flex flex-col items-center justify-center py-4 bg-muted/20 rounded-xl">
+    <img
+      src="/images/components/bottom_nav_toprounded_preview.png"
+      alt="UX4G Top-Rounded Bar Navigation Preview"
+      className="max-w-full rounded-xl border border-border/60 shadow-sm"
+    />
+  </div>
+</ComponentPreview>
+
+---
+
+### 3. Icon Only Navigation Bar
+
+Compact, space-saving bottom navigation bar rendering icons only without text labels. Ideal for secondary screens or high-density dashboards.
+
+<ComponentPreview
+  title="Ux4gBottomNavigationBar - Icon Only Variant"
+  category="Jetpack Compose"
+  code={`var selectedIndex by remember { mutableIntStateOf(0) }
+
+val navItems = listOf(
+    Ux4gBottomNavItem(key = "home", label = "Home", icon = Ux4gIcons.Home),
+    Ux4gBottomNavItem(key = "services", label = "Services", icon = Ux4gIcons.Menu),
+    Ux4gBottomNavItem(key = "status", label = "Status", icon = Ux4gIcons.Check),
+    Ux4gBottomNavItem(key = "alerts", label = "Alerts", icon = Ux4gIcons.info_circle),
+    Ux4gBottomNavItem(key = "profile", label = "Profile", icon = Ux4gIcons.Person)
+)
+
+Ux4gBottomNavigationBar(
+    items = navItems,
+    selectedIndex = selectedIndex,
+    onTabChange = { index, item -> selectedIndex = index },
+    variant = Ux4gBottomNavVariant.IconOnly,
+    indicatorVariant = Ux4gBottomNavIndicatorVariant.Plain
+)`}
+>
+  <div className="flex flex-col items-center justify-center py-4 bg-muted/20 rounded-xl">
+    <img
+      src="/images/components/bottom_nav_icononly_preview.png"
+      alt="UX4G Icon Only Navigation Preview"
+      className="max-w-full rounded-xl border border-border/60 shadow-sm"
+    />
+  </div>
+</ComponentPreview>
+
+---
+
+### 4. Centre Action Navigation Bar (with Prominent Action Button)
+
+Bottom bar configured with an embedded, prominent circular Action Button (Floating Action Button) in the middle slot. Perfect for citizen service submissions, grievance registration, or quick actions.
+
+<ComponentPreview
+  title="Ux4gCenterActionBottomNavBar - Centre Action Variant"
+  category="Jetpack Compose"
+  code={`var selectedIndex by remember { mutableIntStateOf(0) }
+
+// Navigation items placed on left and right of the center action button
+val navItems = listOf(
+    Ux4gBottomNavItem(key = "home", label = "Home", icon = Ux4gIcons.Home),
+    Ux4gBottomNavItem(key = "services", label = "Services", icon = Ux4gIcons.Menu),
+    Ux4gBottomNavItem(key = "status", label = "Status", icon = Ux4gIcons.Check),
+    Ux4gBottomNavItem(key = "alerts", label = "Alerts", icon = Ux4gIcons.info_circle)
+)
+
+Ux4gCenterActionBottomNavBar(
+    items = navItems,
+    selectedIndex = selectedIndex,
+    onTabChange = { index, item -> selectedIndex = index },
+    indicatorVariant = Ux4gBottomNavIndicatorVariant.Pill,
+    centerAction = Ux4gBottomNavCenterAction(
+        icon = Ux4gIcons.Add,
+        onPressed = {
+            // Trigger primary action: e.g. Open grievance form or scanner
+        },
+        size = 48.dp,
+        elevation = 4.dp
+    )
+)`}
+>
+  <div className="flex flex-col items-center justify-center py-4 bg-muted/20 rounded-xl">
+    <img
+      src="/images/components/bottom_nav_centreaction_preview.png"
+      alt="UX4G Centre Action Navigation Preview"
+      className="max-w-full rounded-xl border border-border/60 shadow-sm"
+    />
+  </div>
+</ComponentPreview>
+
+---
+
+### 5. Floating Capsule Bottom Bar (`FloatingPill`)
+
+Detached, pill-shaped floating navigation capsule elevated above the screen background with rounded borders and smooth padding.
+
+<ComponentPreview
+  title="Ux4gFloatingBottomNavBar - Floating Pill Capsule"
+  category="Jetpack Compose"
+  code={`var selectedIndex by remember { mutableIntStateOf(0) }
+
+val navItems = listOf(
+    Ux4gBottomNavItem(key = "home", label = "Home", icon = Ux4gIcons.Home),
+    Ux4gBottomNavItem(key = "services", label = "Services", icon = Ux4gIcons.Menu),
+    Ux4gBottomNavItem(key = "status", label = "Status", icon = Ux4gIcons.Check),
+    Ux4gBottomNavItem(key = "alerts", label = "Alerts", icon = Ux4gIcons.info_circle),
+    Ux4gBottomNavItem(key = "profile", label = "Profile", icon = Ux4gIcons.Person)
+)
+
+Ux4gFloatingBottomNavBar(
+    items = navItems,
+    selectedIndex = selectedIndex,
+    onTabChange = { index, item -> selectedIndex = index },
+    indicatorVariant = Ux4gBottomNavIndicatorVariant.Pill,
+    elevation = 6.dp
+)`}
+>
+  <div className="flex flex-col items-center justify-center py-4 bg-muted/20 rounded-xl">
+    <img
+      src="/images/components/bottom_nav_floatingpill_preview.png"
+      alt="UX4G Floating Pill Navigation Preview"
+      className="max-w-full rounded-xl border border-border/60 shadow-sm"
+    />
+  </div>
+</ComponentPreview>
+
+---
+
+## Complete Implementation Example
+
+The following Jetpack Compose snippet demonstrates a complete scaffold with active destination routing, notification badge updates, and center action modal handling:
+
+```kotlin
+package com.example.app.ui
+
+import androidx.compose.foundation.layout.*
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
+import com.ux4g.designsystemv1.components.*
+import com.ux4g.designsystemv1.foundation.Ux4gIcons
+import com.ux4g.designsystemv1.theme.Ux4gTheme
+
+@Composable
+fun MainAppScreen() {
+    var selectedTab by remember { mutableIntStateOf(0) }
+    var unreadAlertsCount by remember { mutableIntStateOf(3) }
+
+    val navigationItems = remember(unreadAlertsCount) {
+        listOf(
+            Ux4gBottomNavItem(
+                key = "home",
+                label = "Home",
+                icon = Ux4gIcons.Home
+            ),
+            Ux4gBottomNavItem(
+                key = "services",
+                label = "Services",
+                icon = Ux4gIcons.Menu
+            ),
+            Ux4gBottomNavItem(
+                key = "status",
+                label = "Status",
+                icon = Ux4gIcons.Check
+            ),
+            Ux4gBottomNavItem(
+                key = "alerts",
+                label = "Alerts",
+                icon = Ux4gIcons.info_circle,
+                badge = if (unreadAlertsCount > 0) unreadAlertsCount else null
+            ),
+            Ux4gBottomNavItem(
+                key = "profile",
+                label = "Profile",
+                icon = Ux4gIcons.Person
+            )
+        )
+    }
+
+    Scaffold(
+        bottomBar = {
+            Ux4gBottomNavigationBar(
+                items = navigationItems,
+                selectedIndex = selectedTab,
+                onTabChange = { index, item ->
+                    selectedTab = index
+                    if (item.key == "alerts") {
+                        unreadAlertsCount = 0 // Clear badge on read
+                    }
+                },
+                indicatorVariant = Ux4gBottomNavIndicatorVariant.Pill,
+                variant = Ux4gBottomNavVariant.Labelled,
+                elevation = 4.dp
+            )
+        }
+    ) { innerPadding ->
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(innerPadding),
+            contentAlignment = Alignment.Center
+        ) {
+            when (selectedTab) {
+                0 -> Text("Home Screen", style = Ux4gTheme.typography.hM_strong)
+                1 -> Text("Services Directory", style = Ux4gTheme.typography.hM_strong)
+                2 -> Text("Application Status Tracking", style = Ux4gTheme.typography.hM_strong)
+                3 -> Text("Notifications & Alerts", style = Ux4gTheme.typography.hM_strong)
+                4 -> Text("Citizen Profile", style = Ux4gTheme.typography.hM_strong)
+            }
+        }
+    }
+}
+```
+
+---
+
+<h2><MIcon name="settings" /> Parameters & API Reference</h2>
+
+### `Ux4gBottomNavigationBar` Props
+
+| Prop | Type | Description | Default |
+| :--- | :--- | :--- | :--- |
+| `items` | `List<Ux4gBottomNavItem>` | List of destination items to render. | **Required** |
+| `modifier` | `Modifier` | Compose layout modifier applied to the navigation bar container. | `Modifier` |
+| `selectedIndex` | `Int?` | Explicitly controlled active tab index. If `null`, internal state is used. | `null` |
+| `defaultSelectedIndex` | `Int` | Initial selected tab index when uncontrolled. | `0` |
+| `onTabChange` | `((Int, Ux4gBottomNavItem) -> Unit)?` | Callback fired when a tab is pressed. | `null` |
+| `indicatorVariant` | `Ux4gBottomNavIndicatorVariant` | Active tab indicator style (`Pill`, `Bar`, `Plain`). | `Ux4gBottomNavIndicatorVariant.Pill` |
+| `variant` | `Ux4gBottomNavVariant` | Layout preset (`Labelled`, `TopRounded`, `IconOnly`, `CentreAction`, `FloatingPill`). | `Ux4gBottomNavVariant.Labelled` |
+| `shape` | `Ux4gBottomNavShape?` | Geometric container shape override (`Rectangular`, `TopRounded`, `FloatingPill`). | `null` (inferred from `variant`) |
+| `showLabels` | `Boolean?` | Explicitly toggle text labels below icons. When `false`, behaves as `IconOnly`. | `null` |
+| `centerAction` | `Ux4gBottomNavCenterAction?` | Configuration for the middle floating action button when using `CentreAction`. | `null` |
+| `activeColor` | `Color?` | Active tab icon and label color. Defaults to `Ux4gTheme.colorScheme.primary`. | `null` |
+| `inactiveColor` | `Color?` | Inactive tab icon and label color. Defaults to `Ux4gColors.neutral600`. | `null` |
+| `pillBackgroundColor` | `Color?` | Background fill color for `Pill` indicator. Defaults to `Ux4gColors.primary50`. | `null` |
+| `barIndicatorColor` | `Color?` | Color of the top indicator bar for `Bar` variant. Defaults to `activeColor`. | `null` |
+| `barIndicatorHeight` | `Dp` | Height thickness of the top indicator bar. | `3.dp` |
+| `barIndicatorWidth` | `Dp` | Horizontal width of the top indicator bar. | `32.dp` |
+| `backgroundColor` | `Color?` | Container surface fill color. Defaults to theme surface. | `null` |
+| `borderColor` | `Color?` | Top border stroke outline color. | `null` |
+| `elevation` | `Dp` | Drop shadow elevation depth. | `4.dp` |
+| `useSafeArea` | `Boolean` | Automatically accommodates Android system navigation bar insets. | `true` |
+| `height` | `Dp?` | Custom fixed height override for tab content. | `null` (`58.dp` or `50.dp`) |
+| `labelStyle` | `TextStyle?` | Custom typography style for inactive tab labels. | `null` |
+| `activeLabelStyle` | `TextStyle?` | Custom typography style for active tab labels. | `null` |
+| `semanticLabel` | `String?` | Accessibility content description for the entire navigation bar. | `"Bottom Navigation"` |
+
+---
+
+### `Ux4gBottomNavItem` Model
+
+| Property | Type | Description | Default |
+| :--- | :--- | :--- | :--- |
+| `key` | `String?` | Unique identifier string for the tab destination. | `null` |
+| `label` | `String` | Text label displayed under the icon. | **Required** |
+| `icon` | `Ux4gIcon` | Inactive tab icon from `Ux4gIcons`. | **Required** |
+| `activeIcon` | `Ux4gIcon?` | Optional alternative icon displayed when the tab is active. | `null` |
+| `badge` | `Any?` | Notification badge: `Int` count (e.g. `3`), `String` label (`"99+"`), or `Boolean` (`true` for dot). | `null` |
+| `badgeColor` | `Color?` | Custom badge background fill color. | `Ux4gColors.red600` |
+| `badgeTextColor` | `Color?` | Custom badge text color. | `Ux4gColors.white` |
+| `disabled` | `Boolean` | Whether tab interaction is disabled. | `false` |
+| `tooltip` | `String?` | Accessibility description and tooltip string. | `null` |
+| `customIcon` | `(@Composable (isActive: Boolean, tint: Color) -> Unit)?` | Custom composable builder for dynamic icon rendering. | `null` |
+
+---
+
+### `Ux4gBottomNavCenterAction` Model
+
+| Property | Type | Description | Default |
+| :--- | :--- | :--- | :--- |
+| `icon` | `Ux4gIcon` | Icon rendered inside the circular action button. | `Ux4gIcons.Add` |
+| `onPressed` | `(() -> Unit)?` | Click handler callback triggered when the center action button is pressed. | `null` |
+| `size` | `Dp` | Diameter dimension of the circular center button. | `48.dp` |
+| `backgroundColor` | `Color?` | Background fill color. Defaults to resolved primary color. | `null` |
+| `iconColor` | `Color?` | Icon foreground color. | `Ux4gColors.white` |
+| `elevation` | `Dp` | Shadow elevation depth for the circular button. | `4.dp` |
+| `tooltip` | `String?` | Accessibility label. | `"Action"` |
+| `customContent` | `(@Composable () -> Unit)?` | Custom composable slot overriding default icon rendering. | `null` |
+
+---
+
+### Enums & Types
+
+#### `Ux4gBottomNavIndicatorVariant`
+
+| Value | Description |
+| :--- | :--- |
+| `Pill` | Soft rounded pill capsule background behind active tab item. |
+| `Bar` | Sleek horizontal bar indicator placed at the top edge of active tab item. |
+| `Plain` | Clean active color tint for icon and label without pill background or top bar. |
+
+#### `Ux4gBottomNavVariant`
+
+| Value | Description |
+| :--- | :--- |
+| `Labelled` | Standard bottom bar with icons and text labels. |
+| `TopRounded` | Bottom bar container with `20.dp` top rounded corners. |
+| `IconOnly` | Icons only without text labels. |
+| `CentreAction` | Bottom bar with prominent circular action button (FAB) in the center. |
+| `FloatingPill` | Floating capsule navigation bar detached from screen borders. |
+
+#### `Ux4gBottomNavShape`
+
+| Value | Description |
+| :--- | :--- |
+| `Rectangular` | Standard flat edge-to-edge container. |
+| `TopRounded` | Rounded top-left and top-right corners (`20.dp`). |
+| `FloatingPill` | Fully rounded capsule container with horizontal and bottom margins. |
+
+---
+
+### Convenience Composables
+
+For simpler usage without manually specifying indicators and variants, the library provides shorthand wrappers:
+
+- `Ux4gPillBottomNavBar`: Preset with `Ux4gBottomNavIndicatorVariant.Pill`.
+- `Ux4gBarBottomNavBar`: Preset with `Ux4gBottomNavIndicatorVariant.Bar`.
+- `Ux4gPlainBottomNavBar`: Preset with `Ux4gBottomNavIndicatorVariant.Plain`.
+- `Ux4gFloatingBottomNavBar`: Preset with `Ux4gBottomNavVariant.FloatingPill` and rounded capsule shape.
+- `Ux4gCenterActionBottomNavBar`: Preset with `Ux4gBottomNavVariant.CentreAction` and center action button.
