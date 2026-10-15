@@ -76,6 +76,7 @@ class MainActivity : ComponentActivity() {
                 val toastHostState = remember { Ux4gToastHostState() }
                 var toastAtTop by remember { mutableStateOf(true) }
                 var isFullscreenBiometricOpen by remember { mutableStateOf(false) }
+                var isFullscreenBottomNavOpen by remember { mutableStateOf(false) }
                 val scope = rememberCoroutineScope()
 
                 if (isFullscreenBiometricOpen) {
@@ -155,6 +156,11 @@ class MainActivity : ComponentActivity() {
                             )
                         }
                     }
+                } else if (isFullscreenBottomNavOpen) {
+                    LiveBottomNavScreen(
+                        onDismiss = { isFullscreenBottomNavOpen = false },
+                        toastHostState = toastHostState
+                    )
                 } else {
                     Scaffold(
                         modifier = Modifier.fillMaxSize(),
@@ -166,7 +172,8 @@ class MainActivity : ComponentActivity() {
                                 toastHostState = toastHostState,
                                 onToggleToastPosition = { toastAtTop = !toastAtTop },
                                 isToastAtTop = toastAtTop,
-                                onLaunchFullScreenBiometric = { isFullscreenBiometricOpen = true }
+                                onLaunchFullScreenBiometric = { isFullscreenBiometricOpen = true },
+                                onLaunchFullScreenBottomNav = { isFullscreenBottomNavOpen = true }
                             )
 
                             Ux4gToastHost(
@@ -191,7 +198,8 @@ fun MainContent(
     toastHostState: Ux4gToastHostState,
     onToggleToastPosition: () -> Unit,
     isToastAtTop: Boolean,
-    onLaunchFullScreenBiometric: () -> Unit = {}
+    onLaunchFullScreenBiometric: () -> Unit = {},
+    onLaunchFullScreenBottomNav: () -> Unit = {}
 ) {
     val scope = rememberCoroutineScope()
     var selectedRadio by remember { mutableStateOf(1) }
@@ -2379,7 +2387,321 @@ fun MainContent(
             }
         }
 
-        // 18. Capsule Stepper Showcase
+        // 18. Bottom Navigation Bar Showcase (Official 4 Core Variants & Indicators Matrix)
+        Ux4gCard(modifier = Modifier.fillMaxWidth()) {
+            Column(
+                modifier = Modifier.padding(16.dp),
+                verticalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+                // Header
+                Text(
+                    text = "Bottom Navigation Bar",
+                    style = Ux4gTheme.typography.tS_strong
+                )
+                Text(
+                    text = "Official UX4G Bottom Navigation Bar matrix showcasing all 5 layout variants across all 3 indicator types (Pill, Bar, Plain).",
+                    style = Ux4gTheme.typography.bS_default,
+                    color = Ux4gColors.neutral600
+                )
+
+                Button(
+                    onClick = onLaunchFullScreenBottomNav,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(46.dp),
+                    shape = RoundedCornerShape(8.dp),
+                    colors = ButtonDefaults.buttonColors(containerColor = Ux4gTheme.colorScheme.primary)
+                ) {
+                    Icon(imageVector = Icons.Default.OpenInNew, contentDescription = null, tint = Color.White)
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text(
+                        text = "Open Live Page (Anchored at Screen Bottom)",
+                        style = TextStyle(fontWeight = FontWeight.SemiBold, fontSize = 14.sp)
+                    )
+                }
+
+                // Indicator Selector Tabs (Pill, Bar, Plain, All Matrix)
+                var selectedIndicatorTab by remember { mutableStateOf(0) }
+                val indicatorNames = listOf("Pill", "Bar", "Plain", "All Matrix (Grid)")
+
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .horizontalScroll(rememberScrollState()),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    indicatorNames.forEachIndexed { idx, name ->
+                        val isTabActive = selectedIndicatorTab == idx
+                        Box(
+                            modifier = Modifier
+                                .clip(RoundedCornerShape(8.dp))
+                                .background(
+                                    if (isTabActive) Ux4gTheme.colorScheme.primary else Ux4gColors.neutral100
+                                )
+                                .clickable { selectedIndicatorTab = idx }
+                                .padding(horizontal = 14.dp, vertical = 8.dp)
+                        ) {
+                            Text(
+                                text = name,
+                                style = Ux4gTheme.typography.lS_strong.copy(
+                                    fontWeight = if (isTabActive) FontWeight.Bold else FontWeight.Medium
+                                ),
+                                color = if (isTabActive) Color.White else Ux4gColors.neutral800
+                            )
+                        }
+                    }
+                }
+
+                Ux4gDivider()
+
+                // Standard navigation items matching official UX4G Flutter showcase
+                val standardItems = listOf(
+                    Ux4gBottomNavItem(key = "home", label = "Home", icon = Ux4gIcons.Home),
+                    Ux4gBottomNavItem(key = "services", label = "Services", icon = Ux4gIcons.Menu),
+                    Ux4gBottomNavItem(key = "status", label = "Status", icon = Ux4gIcons.Check),
+                    Ux4gBottomNavItem(key = "alerts", label = "Alerts", icon = Ux4gIcons.info_circle, badge = 3),
+                    Ux4gBottomNavItem(key = "profile", label = "Profile", icon = Ux4gIcons.Person)
+                )
+
+                val centreActionItems = listOf(
+                    Ux4gBottomNavItem(key = "home", label = "Home", icon = Ux4gIcons.Home),
+                    Ux4gBottomNavItem(key = "services", label = "Services", icon = Ux4gIcons.Menu),
+                    Ux4gBottomNavItem(key = "status", label = "Status", icon = Ux4gIcons.Check),
+                    Ux4gBottomNavItem(key = "alerts", label = "Alerts", icon = Ux4gIcons.info_circle)
+                )
+
+                if (selectedIndicatorTab < 3) {
+                    val currentIndicator = when (selectedIndicatorTab) {
+                        0 -> Ux4gBottomNavIndicatorVariant.Pill
+                        1 -> Ux4gBottomNavIndicatorVariant.Bar
+                        else -> Ux4gBottomNavIndicatorVariant.Plain
+                    }
+                    val currentIndicatorName = indicatorNames[selectedIndicatorTab]
+
+                    Text(
+                        text = "Viewing: $currentIndicatorName Indicator",
+                        style = Ux4gTheme.typography.lM_strong,
+                        color = Ux4gTheme.colorScheme.primary
+                    )
+
+                    // 1. Labelled
+                    Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
+                        Text(text = "1. Labelled", style = Ux4gTheme.typography.lS_strong, color = Ux4gColors.neutral800)
+                        var tabIndex1 by remember { mutableStateOf(0) }
+                        Ux4gBottomNavigationBar(
+                            items = standardItems,
+                            selectedIndex = tabIndex1,
+                            onTabChange = { idx, _ -> tabIndex1 = idx },
+                            variant = Ux4gBottomNavVariant.Labelled,
+                            indicatorVariant = currentIndicator,
+                            useSafeArea = false
+                        )
+                    }
+
+                    // 2. Top-rounded
+                    Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
+                        Text(text = "2. Top-rounded", style = Ux4gTheme.typography.lS_strong, color = Ux4gColors.neutral800)
+                        var tabIndex2 by remember { mutableStateOf(0) }
+                        Ux4gBottomNavigationBar(
+                            items = standardItems,
+                            selectedIndex = tabIndex2,
+                            onTabChange = { idx, _ -> tabIndex2 = idx },
+                            variant = Ux4gBottomNavVariant.TopRounded,
+                            indicatorVariant = currentIndicator,
+                            useSafeArea = false
+                        )
+                    }
+
+                    // 3. Icon only
+                    Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
+                        Text(text = "3. Icon only", style = Ux4gTheme.typography.lS_strong, color = Ux4gColors.neutral800)
+                        var tabIndex3 by remember { mutableStateOf(0) }
+                        Ux4gBottomNavigationBar(
+                            items = standardItems,
+                            selectedIndex = tabIndex3,
+                            onTabChange = { idx, _ -> tabIndex3 = idx },
+                            variant = Ux4gBottomNavVariant.IconOnly,
+                            indicatorVariant = currentIndicator,
+                            showLabels = false,
+                            useSafeArea = false
+                        )
+                    }
+
+                    // 4. Centre action
+                    Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
+                        Text(text = "4. Centre action", style = Ux4gTheme.typography.lS_strong, color = Ux4gColors.neutral800)
+                        var tabIndex4 by remember { mutableStateOf(0) }
+                        Ux4gBottomNavigationBar(
+                            items = centreActionItems,
+                            selectedIndex = tabIndex4,
+                            onTabChange = { idx, _ -> tabIndex4 = idx },
+                            variant = Ux4gBottomNavVariant.CentreAction,
+                            indicatorVariant = currentIndicator,
+                            centerAction = Ux4gBottomNavCenterAction(
+                                icon = Ux4gIcons.Add,
+                                onPressed = {
+                                    scope.launch {
+                                        toastHostState.showToast(
+                                            category = Ux4gToastCategory.Info,
+                                            title = "Center Action Clicked",
+                                            subtitle = "Prominent (+) action button tapped!"
+                                        )
+                                    }
+                                }
+                            ),
+                            useSafeArea = false
+                        )
+                    }
+
+                    // 5. Pill (floating)
+                    Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
+                        Text(text = "5. Pill (floating)", style = Ux4gTheme.typography.lS_strong, color = Ux4gColors.neutral800)
+                        var tabIndex5 by remember { mutableStateOf(0) }
+                        Ux4gBottomNavigationBar(
+                            items = standardItems,
+                            selectedIndex = tabIndex5,
+                            onTabChange = { idx, _ -> tabIndex5 = idx },
+                            variant = Ux4gBottomNavVariant.FloatingPill,
+                            indicatorVariant = currentIndicator,
+                            useSafeArea = false
+                        )
+                    }
+                } else {
+                    // Full 5x3 Matrix View with horizontal scroll
+                    Text(
+                        text = "Complete 5 × 3 Matrix (Scroll horizontally to compare columns):",
+                        style = Ux4gTheme.typography.lM_strong,
+                        color = Ux4gTheme.colorScheme.primary
+                    )
+
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .horizontalScroll(rememberScrollState()),
+                        horizontalArrangement = Arrangement.spacedBy(20.dp)
+                    ) {
+                        listOf(
+                            Triple("Pill", Ux4gBottomNavIndicatorVariant.Pill, Ux4gTheme.colorScheme.primary),
+                            Triple("Bar", Ux4gBottomNavIndicatorVariant.Bar, Ux4gColors.primary600),
+                            Triple("Plain", Ux4gBottomNavIndicatorVariant.Plain, Ux4gColors.neutral600)
+                        ).forEach { (colName, indicatorVariant, accentColor) ->
+                            Column(
+                                modifier = Modifier
+                                    .width(360.dp)
+                                    .background(Ux4gColors.neutral50, RoundedCornerShape(12.dp))
+                                    .border(1.dp, Ux4gColors.neutral200, RoundedCornerShape(12.dp))
+                                    .padding(12.dp),
+                                verticalArrangement = Arrangement.spacedBy(16.dp)
+                            ) {
+                                // Column Header with top purple accent line
+                                Column(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    horizontalAlignment = Alignment.CenterHorizontally
+                                ) {
+                                    Box(
+                                        modifier = Modifier
+                                            .width(100.dp)
+                                            .height(3.dp)
+                                            .background(accentColor, RoundedCornerShape(2.dp))
+                                    )
+                                    Spacer(modifier = Modifier.height(6.dp))
+                                    Text(
+                                        text = colName,
+                                        style = Ux4gTheme.typography.tS_strong,
+                                        color = Ux4gColors.neutral900
+                                    )
+                                }
+
+                                // 1. Labelled
+                                Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                                    Text(text = "Labelled", style = Ux4gTheme.typography.lS_strong, color = Ux4gColors.neutral700)
+                                    var idx1 by remember { mutableStateOf(0) }
+                                    Ux4gBottomNavigationBar(
+                                        items = standardItems,
+                                        selectedIndex = idx1,
+                                        onTabChange = { i, _ -> idx1 = i },
+                                        variant = Ux4gBottomNavVariant.Labelled,
+                                        indicatorVariant = indicatorVariant,
+                                        useSafeArea = false
+                                    )
+                                }
+
+                                // 2. Top-rounded
+                                Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                                    Text(text = "Top-rounded", style = Ux4gTheme.typography.lS_strong, color = Ux4gColors.neutral700)
+                                    var idx2 by remember { mutableStateOf(0) }
+                                    Ux4gBottomNavigationBar(
+                                        items = standardItems,
+                                        selectedIndex = idx2,
+                                        onTabChange = { i, _ -> idx2 = i },
+                                        variant = Ux4gBottomNavVariant.TopRounded,
+                                        indicatorVariant = indicatorVariant,
+                                        useSafeArea = false
+                                    )
+                                }
+
+                                // 3. Icon only
+                                Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                                    Text(text = "Icon only", style = Ux4gTheme.typography.lS_strong, color = Ux4gColors.neutral700)
+                                    var idx3 by remember { mutableStateOf(0) }
+                                    Ux4gBottomNavigationBar(
+                                        items = standardItems,
+                                        selectedIndex = idx3,
+                                        onTabChange = { i, _ -> idx3 = i },
+                                        variant = Ux4gBottomNavVariant.IconOnly,
+                                        indicatorVariant = indicatorVariant,
+                                        showLabels = false,
+                                        useSafeArea = false
+                                    )
+                                }
+
+                                // 4. Centre action
+                                Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                                    Text(text = "Centre action", style = Ux4gTheme.typography.lS_strong, color = Ux4gColors.neutral700)
+                                    var idx4 by remember { mutableStateOf(0) }
+                                    Ux4gBottomNavigationBar(
+                                        items = centreActionItems,
+                                        selectedIndex = idx4,
+                                        onTabChange = { i, _ -> idx4 = i },
+                                        variant = Ux4gBottomNavVariant.CentreAction,
+                                        indicatorVariant = indicatorVariant,
+                                        centerAction = Ux4gBottomNavCenterAction(
+                                            icon = Ux4gIcons.Add,
+                                            onPressed = {
+                                                scope.launch {
+                                                    toastHostState.showToast(
+                                                        category = Ux4gToastCategory.Info,
+                                                        title = "Center Action",
+                                                        subtitle = "$colName (+) FAB clicked"
+                                                    )
+                                                }
+                                            }
+                                        ),
+                                        useSafeArea = false
+                                    )
+                                }
+
+                                // 5. Pill (floating)
+                                Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                                    Text(text = "Pill (floating)", style = Ux4gTheme.typography.lS_strong, color = Ux4gColors.neutral700)
+                                    var idx5 by remember { mutableStateOf(0) }
+                                    Ux4gBottomNavigationBar(
+                                        items = standardItems,
+                                        selectedIndex = idx5,
+                                        onTabChange = { i, _ -> idx5 = i },
+                                        variant = Ux4gBottomNavVariant.FloatingPill,
+                                        indicatorVariant = indicatorVariant,
+                                        useSafeArea = false
+                                    )
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        // 19. Capsule Stepper Showcase
         Ux4gCard(modifier = Modifier.fillMaxWidth()) {
             Column(
                 modifier = Modifier.padding(16.dp),
@@ -8145,6 +8467,330 @@ fun MainContent(
 
 
 
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun LiveBottomNavScreen(
+    onDismiss: () -> Unit,
+    toastHostState: Ux4gToastHostState
+) {
+    val scope = rememberCoroutineScope()
+    var selectedVariant by remember { mutableStateOf(0) }
+    var selectedTab by remember { mutableStateOf(0) }
+
+    val standardItems = listOf(
+        Ux4gBottomNavItem(key = "home", label = "Home", icon = Ux4gIcons.Home),
+        Ux4gBottomNavItem(key = "services", label = "Services", icon = Ux4gIcons.Menu),
+        Ux4gBottomNavItem(key = "status", label = "Status", icon = Ux4gIcons.Check),
+        Ux4gBottomNavItem(key = "alerts", label = "Alerts", icon = Ux4gIcons.info_circle, badge = 3),
+        Ux4gBottomNavItem(key = "profile", label = "Profile", icon = Ux4gIcons.Person)
+    )
+
+    val centreActionItems = listOf(
+        Ux4gBottomNavItem(key = "home", label = "Home", icon = Ux4gIcons.Home),
+        Ux4gBottomNavItem(key = "services", label = "Services", icon = Ux4gIcons.Menu),
+        Ux4gBottomNavItem(key = "status", label = "Status", icon = Ux4gIcons.Check),
+        Ux4gBottomNavItem(key = "alerts", label = "Alerts", icon = Ux4gIcons.info_circle)
+    )
+
+    Scaffold(
+        modifier = Modifier.fillMaxSize(),
+        containerColor = Ux4gColors.neutral50,
+        topBar = {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(Ux4gTheme.colorScheme.surface)
+                    .statusBarsPadding()
+            ) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 8.dp, vertical = 6.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    IconButton(onClick = onDismiss) {
+                        Icon(
+                            imageVector = Icons.Default.ArrowBack,
+                            contentDescription = "Back",
+                            tint = Ux4gColors.neutral900
+                        )
+                    }
+                    Column(modifier = Modifier.weight(1f)) {
+                        Text(
+                            text = "UX4G Citizen Portal",
+                            style = Ux4gTheme.typography.tS_strong,
+                            color = Ux4gColors.neutral900
+                        )
+                        Text(
+                            text = "Bottom Navigation Anchored at Screen Bottom",
+                            style = Ux4gTheme.typography.bXS_default,
+                            color = Ux4gColors.neutral600
+                        )
+                    }
+                }
+
+                // Interactive variant selector
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .horizontalScroll(rememberScrollState())
+                        .padding(horizontal = 12.dp, vertical = 6.dp),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    val variantTitles = listOf(
+                        "1. Pill (Labelled)",
+                        "2. Bar (Top-Rounded)",
+                        "3. Plain (Icon Only)",
+                        "4. Center Action (FAB)",
+                        "5. Floating Pill"
+                    )
+                    variantTitles.forEachIndexed { idx, title ->
+                        val isSelected = selectedVariant == idx
+                        Box(
+                            modifier = Modifier
+                                .clip(RoundedCornerShape(20.dp))
+                                .background(
+                                    if (isSelected) Ux4gTheme.colorScheme.primary else Ux4gColors.neutral200
+                                )
+                                .clickable {
+                                    selectedVariant = idx
+                                    selectedTab = 0
+                                }
+                                .padding(horizontal = 12.dp, vertical = 6.dp)
+                        ) {
+                            Text(
+                                text = title,
+                                style = TextStyle(
+                                    fontSize = 12.sp,
+                                    fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium,
+                                    color = if (isSelected) Color.White else Ux4gColors.neutral800
+                                )
+                            )
+                        }
+                    }
+                }
+                Ux4gDivider()
+            }
+        },
+        bottomBar = {
+            when (selectedVariant) {
+                0 -> {
+                    Ux4gBottomNavigationBar(
+                        items = standardItems,
+                        selectedIndex = selectedTab,
+                        onTabChange = { idx, _ -> selectedTab = idx },
+                        indicatorVariant = Ux4gBottomNavIndicatorVariant.Pill,
+                        variant = Ux4gBottomNavVariant.Labelled,
+                        useSafeArea = true
+                    )
+                }
+                1 -> {
+                    Ux4gBottomNavigationBar(
+                        items = standardItems,
+                        selectedIndex = selectedTab,
+                        onTabChange = { idx, _ -> selectedTab = idx },
+                        indicatorVariant = Ux4gBottomNavIndicatorVariant.Bar,
+                        variant = Ux4gBottomNavVariant.TopRounded,
+                        useSafeArea = true
+                    )
+                }
+                2 -> {
+                    Ux4gBottomNavigationBar(
+                        items = standardItems,
+                        selectedIndex = selectedTab,
+                        onTabChange = { idx, _ -> selectedTab = idx },
+                        indicatorVariant = Ux4gBottomNavIndicatorVariant.Plain,
+                        variant = Ux4gBottomNavVariant.IconOnly,
+                        showLabels = false,
+                        useSafeArea = true
+                    )
+                }
+                3 -> {
+                    Ux4gBottomNavigationBar(
+                        items = centreActionItems,
+                        selectedIndex = selectedTab,
+                        onTabChange = { idx, _ -> selectedTab = idx },
+                        variant = Ux4gBottomNavVariant.CentreAction,
+                        indicatorVariant = Ux4gBottomNavIndicatorVariant.Pill,
+                        centerAction = Ux4gBottomNavCenterAction(
+                            icon = Ux4gIcons.Add,
+                            onPressed = {
+                                scope.launch {
+                                    toastHostState.showToast(
+                                        category = Ux4gToastCategory.Success,
+                                        title = "Quick Action Triggered",
+                                        subtitle = "New citizen service request modal initiated!"
+                                    )
+                                }
+                            }
+                        ),
+                        useSafeArea = true
+                    )
+                }
+                else -> {
+                    Ux4gFloatingBottomNavBar(
+                        items = standardItems,
+                        selectedIndex = selectedTab,
+                        onTabChange = { idx, _ -> selectedTab = idx },
+                        indicatorVariant = Ux4gBottomNavIndicatorVariant.Pill,
+                        useSafeArea = true
+                    )
+                }
+            }
+        }
+    ) { innerPadding ->
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(innerPadding)
+                .verticalScroll(rememberScrollState())
+                .padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
+            when (selectedTab) {
+                0 -> {
+                    Ux4gCard(modifier = Modifier.fillMaxWidth()) {
+                        Column(
+                            modifier = Modifier.padding(16.dp),
+                            verticalArrangement = Arrangement.spacedBy(8.dp)
+                        ) {
+                            Text("Namaste, Aarav Sharma", style = Ux4gTheme.typography.tS_strong)
+                            Text(
+                                "Digital India Citizen Portal — Aadhaar Verified",
+                                style = Ux4gTheme.typography.bXS_default,
+                                color = Ux4gColors.neutral600
+                            )
+                            Spacer(modifier = Modifier.height(4.dp))
+                            Text(
+                                "This is a full live page where the Bottom Navigation Bar is practically anchored at the screen bottom with system safe insets. Tap any tab below or switch variants above to test smooth transitions without any black flash!",
+                                style = Ux4gTheme.typography.bS_default,
+                                color = Ux4gColors.neutral800
+                            )
+                        }
+                    }
+
+                    Text("Featured Public Services", style = Ux4gTheme.typography.lM_strong)
+                    listOf(
+                        "Income & Domicile Certificate",
+                        "Electricity & Water Bill Payment",
+                        "Public Grievance Redressal (CPGRAMS)"
+                    ).forEach { title ->
+                        Ux4gCard(modifier = Modifier.fillMaxWidth()) {
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(14.dp),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Box(
+                                    modifier = Modifier
+                                        .size(36.dp)
+                                        .clip(CircleShape)
+                                        .background(Ux4gTheme.colorScheme.primary.copy(alpha = 0.12f)),
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    Ux4gIconComponent(icon = Ux4gIcons.Check, contentDescription = null, tint = Ux4gTheme.colorScheme.primary)
+                                }
+                                Spacer(modifier = Modifier.width(12.dp))
+                                Text(text = title, style = Ux4gTheme.typography.lS_strong, modifier = Modifier.weight(1f))
+                                Ux4gIconComponent(icon = Ux4gIcons.arrowRight, contentDescription = null, tint = Ux4gColors.neutral400)
+                            }
+                        }
+                    }
+                }
+                1 -> {
+                    Ux4gCard(modifier = Modifier.fillMaxWidth()) {
+                        Column(
+                            modifier = Modifier.padding(16.dp),
+                            verticalArrangement = Arrangement.spacedBy(10.dp)
+                        ) {
+                            Text("Services Directory", style = Ux4gTheme.typography.tS_strong)
+                            Text("Explore state and central citizen services.", style = Ux4gTheme.typography.bS_default, color = Ux4gColors.neutral600)
+                            listOf(
+                                "Identity & Verification (DigiLocker)",
+                                "Revenue & Land Registration",
+                                "Education Scholarships",
+                                "Healthcare & Medical Insurance"
+                            ).forEach { s ->
+                                Row(
+                                    modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp),
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    Ux4gIconComponent(icon = Ux4gIcons.Check, contentDescription = null, tint = Ux4gColors.green600)
+                                    Spacer(modifier = Modifier.width(10.dp))
+                                    Text(s, style = Ux4gTheme.typography.bS_default)
+                                }
+                                Ux4gDivider()
+                            }
+                        }
+                    }
+                }
+                2 -> {
+                    Ux4gCard(modifier = Modifier.fillMaxWidth()) {
+                        Column(
+                            modifier = Modifier.padding(16.dp),
+                            verticalArrangement = Arrangement.spacedBy(12.dp)
+                        ) {
+                            Text("Track Status", style = Ux4gTheme.typography.tS_strong)
+                            Text("Real-time updates on active applications.", style = Ux4gTheme.typography.bS_default, color = Ux4gColors.neutral600)
+                            Ux4gStatusBanner(
+                                variant = Ux4gBannerVariant.SuccessLight,
+                                title = "Application Approved",
+                                subtitle = "Application #GOV-9842 verified and approved."
+                            )
+                        }
+                    }
+                }
+                3 -> {
+                    Ux4gCard(modifier = Modifier.fillMaxWidth()) {
+                        Column(
+                            modifier = Modifier.padding(16.dp),
+                            verticalArrangement = Arrangement.spacedBy(10.dp)
+                        ) {
+                            Text("Alerts & Notifications", style = Ux4gTheme.typography.tS_strong)
+                            listOf(
+                                "DigiLocker document fetched successfully (10m ago)",
+                                "Aadhaar authentication request approved (1h ago)",
+                                "Portal maintenance scheduled for Sunday 2 AM"
+                            ).forEach { msg ->
+                                Row(
+                                    modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp),
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    Ux4gIconComponent(icon = Ux4gIcons.info_circle, contentDescription = null, tint = Ux4gColors.red600)
+                                    Spacer(modifier = Modifier.width(10.dp))
+                                    Text(msg, style = Ux4gTheme.typography.bS_default)
+                                }
+                                Ux4gDivider()
+                            }
+                        }
+                    }
+                }
+                else -> {
+                    Ux4gCard(modifier = Modifier.fillMaxWidth()) {
+                        Column(
+                            modifier = Modifier.padding(16.dp),
+                            verticalArrangement = Arrangement.spacedBy(10.dp)
+                        ) {
+                            Text("Citizen Profile", style = Ux4gTheme.typography.tS_strong)
+                            Text("Aarav Sharma", style = Ux4gTheme.typography.lS_strong)
+                            Text("Phone: +91 98765-43210", style = Ux4gTheme.typography.bS_default, color = Ux4gColors.neutral600)
+                            Spacer(modifier = Modifier.height(12.dp))
+                            Button(
+                                onClick = onDismiss,
+                                modifier = Modifier.fillMaxWidth(),
+                                colors = ButtonDefaults.buttonColors(containerColor = Ux4gTheme.colorScheme.primary)
+                            ) {
+                                Text("Back to Component Showcase")
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
 
 @Preview(name = "Light", showBackground = false, showSystemUi = true)
 @Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
