@@ -3069,6 +3069,421 @@ fun MainContent(
             }
         }
 
+        // 17C. Floating Action Button & Speed-Dial Showcase (Ux4gFab)
+        Ux4gCard(modifier = Modifier.fillMaxWidth()) {
+            Column(
+                modifier = Modifier.padding(16.dp),
+                verticalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+                // Header
+                Text(
+                    text = "Floating Action Button (FAB) & Speed-Dial",
+                    style = Ux4gTheme.typography.tS_strong
+                )
+                Text(
+                    text = "High-emphasis circular and pill-shaped action triggers with 5 core variants (Icon, Labelled, Joined Menu, Spaced Menu, Labelled Menu), 2 color themes (Brand, Surface), and 3 standard sizes.",
+                    style = Ux4gTheme.typography.bS_default,
+                    color = Ux4gColors.neutral600
+                )
+
+                // State holders for interactive playground
+                var selectedVariant by remember { mutableStateOf(Ux4gFabVariant.Icon) }
+                var selectedTheme by remember { mutableStateOf(Ux4gFabColorTheme.Brand) }
+                var selectedSize by remember { mutableStateOf(Ux4gFabSize.Medium) }
+                var isDisabled by remember { mutableStateOf(false) }
+                var showLabelIcon by remember { mutableStateOf(true) }
+                var showScreenOverlay by remember { mutableStateOf(false) }
+                var lastActionFeedback by remember { mutableStateOf("No action tapped yet") }
+
+                // Interactive Controls
+                Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                    Text("Select Variant:", style = Ux4gTheme.typography.lS_strong, color = Ux4gTheme.colorScheme.primary)
+                    Row(
+                        modifier = Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()),
+                        horizontalArrangement = Arrangement.spacedBy(6.dp)
+                    ) {
+                        listOf(
+                            Ux4gFabVariant.Icon to "Icon",
+                            Ux4gFabVariant.Labelled to "Labelled",
+                            Ux4gFabVariant.MenuJoined to "Joined Menu",
+                            Ux4gFabVariant.MenuSpaced to "Spaced Menu",
+                            Ux4gFabVariant.MenuLabelled to "Labelled Menu"
+                        ).forEach { (variant, title) ->
+                            Ux4gButton(
+                                onClick = { selectedVariant = variant },
+                                text = title,
+                                variant = if (selectedVariant == variant) Ux4gButtonVariant.Primary else Ux4gButtonVariant.Outline,
+                                size = Ux4gButtonSize.Small
+                            )
+                        }
+                    }
+                }
+
+                // Controls Row (Theme, Size, Disabled)
+                Row(
+                    modifier = Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text("Theme:", style = Ux4gTheme.typography.bS_strong)
+                    Ux4gButton(
+                        onClick = { selectedTheme = Ux4gFabColorTheme.Brand },
+                        text = "Brand",
+                        variant = if (selectedTheme == Ux4gFabColorTheme.Brand) Ux4gButtonVariant.Primary else Ux4gButtonVariant.Outline,
+                        size = Ux4gButtonSize.Small
+                    )
+                    Ux4gButton(
+                        onClick = { selectedTheme = Ux4gFabColorTheme.Surface },
+                        text = "Surface",
+                        variant = if (selectedTheme == Ux4gFabColorTheme.Surface) Ux4gButtonVariant.Primary else Ux4gButtonVariant.Outline,
+                        size = Ux4gButtonSize.Small
+                    )
+
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text("Size:", style = Ux4gTheme.typography.bS_strong)
+                    listOf(
+                        Ux4gFabSize.Small to "S (44dp)",
+                        Ux4gFabSize.Medium to "M (56dp)",
+                        Ux4gFabSize.Large to "L (64dp)"
+                    ).forEach { (s, label) ->
+                        Ux4gButton(
+                            onClick = { selectedSize = s },
+                            text = label,
+                            variant = if (selectedSize == s) Ux4gButtonVariant.Primary else Ux4gButtonVariant.Outline,
+                            size = Ux4gButtonSize.Small
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Ux4gButton(
+                        onClick = { isDisabled = !isDisabled },
+                        text = if (isDisabled) "Disabled: ON" else "Disabled: OFF",
+                        variant = if (isDisabled) Ux4gButtonVariant.Secondary else Ux4gButtonVariant.Outline,
+                        size = Ux4gButtonSize.Small
+                    )
+                }
+
+                // Feedback banner
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clip(RoundedCornerShape(8.dp))
+                        .background(Ux4gColors.primary50)
+                        .padding(10.dp)
+                ) {
+                    Text(
+                        text = "Last Action Event: $lastActionFeedback",
+                        style = Ux4gTheme.typography.bS_default,
+                        color = Ux4gColors.primary800
+                    )
+                }
+
+                // Interactive Live Playground Box
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(280.dp)
+                        .clip(RoundedCornerShape(12.dp))
+                        .background(if (selectedTheme == Ux4gFabColorTheme.Surface) Ux4gColors.gray100 else Ux4gColors.neutral50)
+                        .border(1.dp, Color(0xFFE2E8F0), RoundedCornerShape(12.dp))
+                        .padding(20.dp),
+                    contentAlignment = Alignment.BottomEnd
+                ) {
+                    Ux4gFab(
+                        variant = selectedVariant,
+                        colorTheme = selectedTheme,
+                        size = selectedSize,
+                        disabled = isDisabled,
+                        label = "Create New",
+                        showIcon = showLabelIcon,
+                        onClick = {
+                            lastActionFeedback = "Main FAB tapped (${selectedVariant.name})"
+                        },
+                        onToggle = { isOpen ->
+                            lastActionFeedback = "Speed-dial toggled: ${if (isOpen) "OPEN" else "CLOSED"}"
+                        },
+                        actions = listOf(
+                            Ux4gFabActionItem(
+                                id = "new_doc",
+                                label = "New Document",
+                                iconVector = Icons.Filled.Add,
+                                onClick = { lastActionFeedback = "Action tapped: New Document" }
+                            ),
+                            Ux4gFabActionItem(
+                                id = "chat",
+                                label = "Send Message",
+                                iconVector = Icons.Outlined.ChatBubbleOutline,
+                                onClick = { lastActionFeedback = "Action tapped: Send Message" }
+                            ),
+                            Ux4gFabActionItem(
+                                id = "share",
+                                label = "Share Link",
+                                iconVector = Icons.Outlined.Share,
+                                onClick = { lastActionFeedback = "Action tapped: Share Link" }
+                            ),
+                            Ux4gFabActionItem(
+                                id = "contact",
+                                label = "Call Hotline",
+                                iconVector = Icons.Outlined.Phone,
+                                onClick = { lastActionFeedback = "Action tapped: Call Hotline" }
+                            )
+                        )
+                    )
+                }
+
+                Ux4gDivider()
+
+                // ── Section A: Core Variants Gallery (Brand vs Surface) ───────
+                Text(
+                    text = "Core Variants Showcase (Brand & Surface Themes):",
+                    style = Ux4gTheme.typography.lS_strong,
+                    color = Ux4gTheme.colorScheme.primary
+                )
+
+                // 1. Icon-Only Circular FAB
+                Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                    Text("1. Icon-Only Circular FAB (Ux4gFabVariant.Icon)", style = Ux4gTheme.typography.bS_strong)
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(16.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                            Ux4gFab(
+                                variant = Ux4gFabVariant.Icon,
+                                colorTheme = Ux4gFabColorTheme.Brand,
+                                onClick = { lastActionFeedback = "Icon FAB Brand clicked" }
+                            )
+                            Text("Brand", style = Ux4gTheme.typography.bS_default, color = Ux4gColors.neutral600)
+                        }
+                        Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                            Ux4gFab(
+                                variant = Ux4gFabVariant.Icon,
+                                colorTheme = Ux4gFabColorTheme.Surface,
+                                onClick = { lastActionFeedback = "Icon FAB Surface clicked" }
+                            )
+                            Text("Surface", style = Ux4gTheme.typography.bS_default, color = Ux4gColors.neutral600)
+                        }
+                        Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                            Ux4gFab(
+                                variant = Ux4gFabVariant.Icon,
+                                colorTheme = Ux4gFabColorTheme.Brand,
+                                disabled = true
+                            )
+                            Text("Disabled", style = Ux4gTheme.typography.bS_default, color = Ux4gColors.neutral600)
+                        }
+                    }
+                }
+
+                // 2. Extended Labelled Pill FAB
+                Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                    Text("2. Extended Labelled Pill FAB (Ux4gFabVariant.Labelled)", style = Ux4gTheme.typography.bS_strong)
+                    Row(
+                        modifier = Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()),
+                        horizontalArrangement = Arrangement.spacedBy(12.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Ux4gFab(
+                            variant = Ux4gFabVariant.Labelled,
+                            colorTheme = Ux4gFabColorTheme.Brand,
+                            label = "Add Entry",
+                            showIcon = true,
+                            onClick = { lastActionFeedback = "Labelled Brand clicked" }
+                        )
+                        Ux4gFab(
+                            variant = Ux4gFabVariant.Labelled,
+                            colorTheme = Ux4gFabColorTheme.Surface,
+                            label = "Filter Records",
+                            showIcon = true,
+                            onClick = { lastActionFeedback = "Labelled Surface clicked" }
+                        )
+                        Ux4gFab(
+                            variant = Ux4gFabVariant.Labelled,
+                            colorTheme = Ux4gFabColorTheme.Brand,
+                            label = "Text Only",
+                            showIcon = false,
+                            onClick = { lastActionFeedback = "Labelled Text-Only clicked" }
+                        )
+                    }
+                }
+
+                // 3. Sizing Matrix (Small, Medium, Large)
+                Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                    Text("3. Sizing Presets (Small 44dp, Medium 56dp, Large 64dp)", style = Ux4gTheme.typography.bS_strong)
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(16.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                            Ux4gFab(
+                                variant = Ux4gFabVariant.Icon,
+                                size = Ux4gFabSize.Small,
+                                onClick = { lastActionFeedback = "Small FAB clicked" }
+                            )
+                            Text("Small (44dp)", style = Ux4gTheme.typography.bS_default, color = Ux4gColors.neutral600)
+                        }
+                        Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                            Ux4gFab(
+                                variant = Ux4gFabVariant.Icon,
+                                size = Ux4gFabSize.Medium,
+                                onClick = { lastActionFeedback = "Medium FAB clicked" }
+                            )
+                            Text("Medium (56dp)", style = Ux4gTheme.typography.bS_default, color = Ux4gColors.neutral600)
+                        }
+                        Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                            Ux4gFab(
+                                variant = Ux4gFabVariant.Icon,
+                                size = Ux4gFabSize.Large,
+                                onClick = { lastActionFeedback = "Large FAB clicked" }
+                            )
+                            Text("Large (64dp)", style = Ux4gTheme.typography.bS_default, color = Ux4gColors.neutral600)
+                        }
+                    }
+                }
+
+                // 4. Speed-Dial 3 Variants Side-by-Side (Expanded Preview)
+                Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                    Text("4. Speed-Dial Styles (Joined Capsule, Spaced Circles, Labelled Pills)", style = Ux4gTheme.typography.bS_strong)
+                    Row(
+                        modifier = Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()),
+                        horizontalArrangement = Arrangement.spacedBy(24.dp),
+                        verticalAlignment = Alignment.Bottom
+                    ) {
+                        // Joined Capsule Menu
+                        Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                            Text("MenuJoined", style = Ux4gTheme.typography.bS_strong, color = Ux4gColors.primary600)
+                            Ux4gFab(
+                                variant = Ux4gFabVariant.MenuJoined,
+                                colorTheme = Ux4gFabColorTheme.Brand,
+                                defaultOpen = false,
+                                onToggle = { isOpen -> lastActionFeedback = "MenuJoined toggled: $isOpen" },
+                                actions = listOf(
+                                    Ux4gFabActionItem(id = "add", iconVector = Icons.Filled.Add, onClick = { lastActionFeedback = "Joined -> Add tapped" }),
+                                    Ux4gFabActionItem(id = "chat", iconVector = Icons.Outlined.ChatBubbleOutline, onClick = { lastActionFeedback = "Joined -> Chat tapped" }),
+                                    Ux4gFabActionItem(id = "share", iconVector = Icons.Outlined.Share, onClick = { lastActionFeedback = "Joined -> Share tapped" })
+                                )
+                            )
+                        }
+
+                        // Spaced Circular Menu
+                        Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                            Text("MenuSpaced", style = Ux4gTheme.typography.bS_strong, color = Ux4gColors.primary600)
+                            Ux4gFab(
+                                variant = Ux4gFabVariant.MenuSpaced,
+                                colorTheme = Ux4gFabColorTheme.Brand,
+                                defaultOpen = false,
+                                onToggle = { isOpen -> lastActionFeedback = "MenuSpaced toggled: $isOpen" },
+                                actions = listOf(
+                                    Ux4gFabActionItem(id = "add", iconVector = Icons.Filled.Add, onClick = { lastActionFeedback = "Spaced -> Add tapped" }),
+                                    Ux4gFabActionItem(id = "chat", iconVector = Icons.Outlined.ChatBubbleOutline, onClick = { lastActionFeedback = "Spaced -> Chat tapped" }),
+                                    Ux4gFabActionItem(id = "call", iconVector = Icons.Outlined.Phone, onClick = { lastActionFeedback = "Spaced -> Call tapped" })
+                                )
+                            )
+                        }
+
+                        // Labelled Pill Menu
+                        Column(horizontalAlignment = Alignment.End, verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                            Text("MenuLabelled", style = Ux4gTheme.typography.bS_strong, color = Ux4gColors.primary600)
+                            Ux4gFab(
+                                variant = Ux4gFabVariant.MenuLabelled,
+                                colorTheme = Ux4gFabColorTheme.Brand,
+                                defaultOpen = false,
+                                onToggle = { isOpen -> lastActionFeedback = "MenuLabelled toggled: $isOpen" },
+                                actions = listOf(
+                                    Ux4gFabActionItem(id = "doc", label = "Add Application", iconVector = Icons.Filled.Add, onClick = { lastActionFeedback = "Labelled -> Add Application tapped" }),
+                                    Ux4gFabActionItem(id = "query", label = "Help Desk", iconVector = Icons.Outlined.ChatBubbleOutline, onClick = { lastActionFeedback = "Labelled -> Help Desk tapped" }),
+                                    Ux4gFabActionItem(id = "share", label = "Share Page", iconVector = Icons.Outlined.Share, onClick = { lastActionFeedback = "Labelled -> Share Page tapped" })
+                                )
+                            )
+                        }
+                    }
+                }
+
+                // 5. Full-Screen Floating Overlay Trigger
+                Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                    Text("5. Screen Overlay & Backdrop Scrim:", style = Ux4gTheme.typography.bS_strong)
+                    Ux4gButton(
+                        onClick = { showScreenOverlay = true },
+                        text = "Preview Floating FAB with Backdrop Scrim",
+                        variant = Ux4gButtonVariant.Primary,
+                        size = Ux4gButtonSize.Medium,
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                }
+
+                // Full-Screen Floating Overlay Modal
+                if (showScreenOverlay) {
+                    androidx.compose.ui.window.Dialog(
+                        onDismissRequest = { showScreenOverlay = false },
+                        properties = androidx.compose.ui.window.DialogProperties(usePlatformDefaultWidth = false)
+                    ) {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .background(Color.Black.copy(alpha = 0.5f))
+                        ) {
+                            // Top Bar inside dialog
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(16.dp)
+                                    .align(Alignment.TopCenter),
+                                horizontalArrangement = Arrangement.SpaceBetween,
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Text(
+                                    text = "Screen Overlay FAB Demo",
+                                    style = Ux4gTheme.typography.tS_strong,
+                                    color = Color.White
+                                )
+                                Ux4gButton(
+                                    onClick = { showScreenOverlay = false },
+                                    text = "Close Preview",
+                                    variant = Ux4gButtonVariant.Secondary,
+                                    size = Ux4gButtonSize.Small
+                                )
+                            }
+
+                            // FAB anchored at BottomRight
+                            Ux4gFab(
+                                position = Ux4gFabPosition.BottomRight,
+                                variant = Ux4gFabVariant.MenuLabelled,
+                                colorTheme = Ux4gFabColorTheme.Brand,
+                                defaultOpen = true,
+                                showBackdrop = false,
+                                onToggle = { isOpen ->
+                                    if (!isOpen) {
+                                        showScreenOverlay = false
+                                    }
+                                },
+                                actions = listOf(
+                                    Ux4gFabActionItem(
+                                        id = "new",
+                                        label = "New Citizen Registration",
+                                        iconVector = Icons.Filled.Add,
+                                        onClick = { showScreenOverlay = false }
+                                    ),
+                                    Ux4gFabActionItem(
+                                        id = "inbox",
+                                        label = "Citizen Support",
+                                        iconVector = Icons.Outlined.ChatBubbleOutline,
+                                        onClick = { showScreenOverlay = false }
+                                    ),
+                                    Ux4gFabActionItem(
+                                        id = "share",
+                                        label = "Export Portal Data",
+                                        iconVector = Icons.Outlined.Share,
+                                        onClick = { showScreenOverlay = false }
+                                    )
+                                )
+                            )
+                        }
+                    }
+                }
+            }
+        }
+
         // 18. Bottom Navigation Bar Showcase (Official 4 Core Variants & Indicators Matrix)
         Ux4gCard(modifier = Modifier.fillMaxWidth()) {
             Column(
