@@ -1,0 +1,484 @@
+---
+title: Floating Action Button (FAB)
+description: Floating Action Button (FAB) and speed-dial expandable menu system featuring Icon, Labelled, MenuJoined, MenuSpaced, and MenuLabelled variants with Brand and Surface themes
+---
+
+# Floating Action Button (`Ux4gFab`)
+
+The UX4G Floating Action Button (FAB) represents the primary, high-priority promotional action on a screen. Anchored prominently above app content, it provides rapid one-tap access to creation workflows, service requests, or expandable speed-dial menus.
+
+### Key Capabilities
+
+- **5 Layout & Speed-Dial Variants**:
+  - `Icon`: Standard circular floating action button with icon only.
+  - `Labelled`: Extended pill-shaped FAB with text label and optional leading/trailing icon.
+  - `MenuJoined`: Speed-dial menu where action items are joined inside a single elevated vertical capsule.
+  - `MenuSpaced`: Speed-dial menu where action items are rendered as separate circular floating buttons.
+  - `MenuLabelled`: Speed-dial menu where action items are individual pill buttons with icons and descriptive text labels.
+- **2 Color Themes**:
+  - `Brand`: High-emphasis solid purple fill (`Ux4gColors.primary600`) with white icon and text.
+  - `Surface`: Elevated white surface (`Ux4gColors.neutral0`) with primary purple icon/text and subtle border outline.
+- **3 Size Presets**:
+  - `Small`: Compact `44.dp` diameter button for high-density layouts.
+  - `Medium`: Standard `56.dp` diameter button (Material standard).
+  - `Large`: Prominent `64.dp` diameter button.
+- **Speed-Dial Animation & Scrim**: Smooth crossfade/rotation between trigger icon (e.g. `+`) and dismiss icon (`×`), staggered entrance transitions for menu items, and optional background backdrop scrim.
+- **Flexible Positioning**: Inline flow (`Ux4gFabPosition.None`) or anchored layout overlay (`BottomRight`, `BottomLeft`, `BottomCenter`, `TopRight`, `TopLeft`).
+
+Import from `com.ux4g.designsystemv1.components.*`.
+
+---
+
+<h2><MIcon name="smartphone" /> Interactive Previews</h2>
+
+### Complete Variant Overview
+
+The UX4G Floating Action Button supports standalone action buttons as well as speed-dial expandable menus that reveal secondary actions upon tapping.
+
+<ComponentPreview
+  title="Ux4gFab - Floating Action Button Suite"
+  category="Jetpack Compose"
+  code={`// 1. Standard Circular Icon FAB
+Ux4gFab(
+    variant = Ux4gFabVariant.Icon,
+    iconVector = Icons.Filled.Add,
+    onClick = { /* Handle action */ }
+)
+
+// 2. Extended Labelled FAB
+Ux4gFab(
+    variant = Ux4gFabVariant.Labelled,
+    label = "New Grievance",
+    iconVector = Icons.Filled.Add,
+    onClick = { /* Handle action */ }
+)
+
+// 3. Speed-Dial Menu (Joined Capsule)
+Ux4gFab(
+    variant = Ux4gFabVariant.MenuJoined,
+    actions = listOf(
+        Ux4gFabActionItem(id = "add", label = "Add", iconVector = Icons.Filled.Add),
+        Ux4gFabActionItem(id = "chat", label = "Chat Support", iconVector = Icons.Outlined.ChatBubbleOutline),
+        Ux4gFabActionItem(id = "call", label = "Call Helpline", iconVector = Icons.Outlined.Phone)
+    )
+)`}
+>
+  <div className="flex flex-col items-center justify-center py-4 bg-muted/20 rounded-xl">
+    <img
+      src="/images/components/fab_preview.png"
+      alt="UX4G Floating Action Button Suite Preview"
+      className="max-w-full rounded-xl border border-border/60 shadow-sm"
+    />
+  </div>
+</ComponentPreview>
+
+---
+
+### 1. Standard Circular Icon FAB (`Ux4gFabVariant.Icon`)
+
+Standard circular floating action button with icon only. Used for the single most common high-frequency action on a screen.
+
+<ComponentPreview
+  title="Ux4gFab - Icon Variant"
+  category="Jetpack Compose"
+  code={`Ux4gFab(
+    variant = Ux4gFabVariant.Icon,
+    iconVector = Icons.Filled.Add,
+    colorTheme = Ux4gFabColorTheme.Brand,
+    size = Ux4gFabSize.Medium,
+    contentDescription = "Create new application",
+    onClick = {
+        // Handle create action
+    }
+)`}
+>
+  <div className="flex flex-col items-center justify-center py-4 bg-muted/20 rounded-xl">
+    <img
+      src="/images/components/fab_icon_preview.png"
+      alt="UX4G Icon FAB Preview"
+      className="max-w-full rounded-xl border border-border/60 shadow-sm"
+    />
+  </div>
+</ComponentPreview>
+
+---
+
+### 2. Extended Labelled FAB (`Ux4gFabVariant.Labelled`)
+
+Pill-shaped extended floating action button displaying both an icon and a text label. Offers maximum clarity when introducing new primary actions.
+
+<ComponentPreview
+  title="Ux4gFab - Extended Labelled Variant"
+  category="Jetpack Compose"
+  code={`Ux4gFab(
+    variant = Ux4gFabVariant.Labelled,
+    label = "Register Grievance",
+    iconVector = Icons.Filled.Add,
+    colorTheme = Ux4gFabColorTheme.Brand,
+    size = Ux4gFabSize.Medium,
+    onClick = {
+        // Open grievance registration form
+    }
+)`}
+>
+  <div className="flex flex-col items-center justify-center py-4 bg-muted/20 rounded-xl">
+    <img
+      src="/images/components/fab_labelled_preview.png"
+      alt="UX4G Labelled FAB Preview"
+      className="max-w-full rounded-xl border border-border/60 shadow-sm"
+    />
+  </div>
+</ComponentPreview>
+
+---
+
+### 3. Joined Capsule Speed-Dial (`Ux4gFabVariant.MenuJoined`)
+
+Speed-dial variant where secondary actions are stacked vertically inside a continuous, rounded capsule surface above the main action button.
+
+<ComponentPreview
+  title="Ux4gFab - MenuJoined Variant"
+  category="Jetpack Compose"
+  code={`val actions = listOf(
+    Ux4gFabActionItem(
+        id = "new_doc",
+        label = "Upload Document",
+        iconVector = Icons.Outlined.UploadFile,
+        onClick = { /* Handle doc upload */ }
+    ),
+    Ux4gFabActionItem(
+        id = "feedback",
+        label = "Submit Feedback",
+        iconVector = Icons.Outlined.RateReview,
+        onClick = { /* Handle feedback */ }
+    ),
+    Ux4gFabActionItem(
+        id = "help",
+        label = "Helpdesk",
+        iconVector = Icons.Outlined.HelpOutline,
+        onClick = { /* Handle help */ }
+    )
+)
+
+Ux4gFab(
+    variant = Ux4gFabVariant.MenuJoined,
+    colorTheme = Ux4gFabColorTheme.Brand,
+    actions = actions,
+    showBackdrop = true,
+    onToggle = { isOpen ->
+        // Track menu state
+    }
+)`}
+>
+  <div className="flex flex-col items-center justify-center py-4 bg-muted/20 rounded-xl">
+    <img
+      src="/images/components/fab_menujoined_preview.png"
+      alt="UX4G Menu Joined Speed-Dial Preview"
+      className="max-w-full rounded-xl border border-border/60 shadow-sm"
+    />
+  </div>
+</ComponentPreview>
+
+---
+
+### 4. Spaced Circular Speed-Dial (`Ux4gFabVariant.MenuSpaced`)
+
+Speed-dial variant displaying independent circular action buttons separated by comfortable vertical gaps with staggered spring-like pop animations.
+
+<ComponentPreview
+  title="Ux4gFab - MenuSpaced Variant"
+  category="Jetpack Compose"
+  code={`val speedDialActions = listOf(
+    Ux4gFabActionItem(
+        id = "share",
+        label = "Share",
+        iconVector = Icons.Outlined.Share,
+        onClick = { /* Share link */ }
+    ),
+    Ux4gFabActionItem(
+        id = "message",
+        label = "Message",
+        iconVector = Icons.Outlined.ChatBubbleOutline,
+        onClick = { /* Open chat */ }
+    ),
+    Ux4gFabActionItem(
+        id = "call",
+        label = "Call Helpline",
+        iconVector = Icons.Outlined.Phone,
+        onClick = { /* Initiate call */ }
+    )
+)
+
+Ux4gFab(
+    variant = Ux4gFabVariant.MenuSpaced,
+    colorTheme = Ux4gFabColorTheme.Brand,
+    actions = speedDialActions,
+    showBackdrop = true
+)`}
+>
+  <div className="flex flex-col items-center justify-center py-4 bg-muted/20 rounded-xl">
+    <img
+      src="/images/components/fab_menuspaced_preview.png"
+      alt="UX4G Menu Spaced Speed-Dial Preview"
+      className="max-w-full rounded-xl border border-border/60 shadow-sm"
+    />
+  </div>
+</ComponentPreview>
+
+---
+
+### 5. Labelled Speed-Dial Menu (`Ux4gFabVariant.MenuLabelled`)
+
+Speed-dial menu displaying individual pill buttons complete with both icon and text label for crystal-clear action recognition.
+
+<ComponentPreview
+  title="Ux4gFab - MenuLabelled Variant"
+  category="Jetpack Compose"
+  code={`val labelledActions = listOf(
+    Ux4gFabActionItem(
+        id = "apply",
+        label = "Apply for Scheme",
+        iconVector = Icons.Filled.Add,
+        onClick = { /* Apply */ }
+    ),
+    Ux4gFabActionItem(
+        id = "track",
+        label = "Track Status",
+        iconVector = Icons.Outlined.Assignment,
+        onClick = { /* Track */ }
+    ),
+    Ux4gFabActionItem(
+        id = "support",
+        label = "Citizen Support",
+        iconVector = Icons.Outlined.SupportAgent,
+        onClick = { /* Support */ }
+    )
+)
+
+Ux4gFab(
+    variant = Ux4gFabVariant.MenuLabelled,
+    colorTheme = Ux4gFabColorTheme.Brand,
+    actions = labelledActions,
+    showBackdrop = true
+)`}
+>
+  <div className="flex flex-col items-center justify-center py-4 bg-muted/20 rounded-xl">
+    <img
+      src="/images/components/fab_menulabelled_preview.png"
+      alt="UX4G Menu Labelled Speed-Dial Preview"
+      className="max-w-full rounded-xl border border-border/60 shadow-sm"
+    />
+  </div>
+</ComponentPreview>
+
+---
+
+### 6. Surface Color Theme (`Ux4gFabColorTheme.Surface`)
+
+Elevated white container with primary purple icon and clean border outline. Provides high visual contrast against dark or vibrant backgrounds.
+
+<ComponentPreview
+  title="Ux4gFab - Surface Color Theme"
+  category="Jetpack Compose"
+  code={`Ux4gFab(
+    variant = Ux4gFabVariant.Labelled,
+    label = "Quick Filter",
+    iconVector = Icons.Outlined.FilterList,
+    colorTheme = Ux4gFabColorTheme.Surface,
+    size = Ux4gFabSize.Medium,
+    onClick = {
+        // Open quick filter sheet
+    }
+)`}
+>
+  <div className="flex flex-col items-center justify-center py-4 bg-muted/20 rounded-xl">
+    <img
+      src="/images/components/fab_surface_preview.png"
+      alt="UX4G Surface Theme FAB Preview"
+      className="max-w-full rounded-xl border border-border/60 shadow-sm"
+    />
+  </div>
+</ComponentPreview>
+
+---
+
+## Complete Implementation Example
+
+The following Jetpack Compose snippet demonstrates a citizen dashboard integrating an anchored `Ux4gFab` speed-dial menu inside a `Scaffold`:
+
+```kotlin
+package com.example.app.ui
+
+import androidx.compose.foundation.layout.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.outlined.*
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
+import com.ux4g.designsystemv1.components.*
+import com.ux4g.designsystemv1.theme.Ux4gTheme
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun CitizenDashboardScreen() {
+    var isMenuOpen by remember { mutableStateOf(false) }
+
+    val fabActions = remember {
+        listOf(
+            Ux4gFabActionItem(
+                id = "complaint",
+                label = "File Grievance",
+                iconVector = Icons.Outlined.ReportProblem,
+                onClick = { /* Navigate to grievance flow */ }
+            ),
+            Ux4gFabActionItem(
+                id = "appointment",
+                label = "Book Appointment",
+                iconVector = Icons.Outlined.CalendarMonth,
+                onClick = { /* Navigate to booking flow */ }
+            ),
+            Ux4gFabActionItem(
+                id = "emergency",
+                label = "Emergency Helpline",
+                iconVector = Icons.Outlined.Call,
+                onClick = { /* Direct emergency call */ }
+            )
+        )
+    }
+
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = { Text("Citizen Portal", style = Ux4gTheme.typography.hM_strong) }
+            )
+        },
+        floatingActionButton = {
+            Ux4gFab(
+                variant = Ux4gFabVariant.MenuLabelled,
+                colorTheme = Ux4gFabColorTheme.Brand,
+                size = Ux4gFabSize.Medium,
+                actions = fabActions,
+                isOpen = isMenuOpen,
+                onToggle = { isMenuOpen = it },
+                showBackdrop = true,
+                onBackdropClick = { isMenuOpen = false }
+            )
+        }
+    ) { innerPadding ->
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(innerPadding)
+                .padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
+            Text(
+                text = "Welcome to National Citizen Services",
+                style = Ux4gTheme.typography.hL_strong
+            )
+            Text(
+                text = "Tap the floating action button at the bottom-right to initiate new citizen service requests.",
+                style = Ux4gTheme.typography.bM_default
+            )
+        }
+    }
+}
+```
+
+---
+
+<h2><MIcon name="settings" /> Parameters & API Reference</h2>
+
+### `Ux4gFab` Props
+
+| Prop | Type | Description | Default |
+| :--- | :--- | :--- | :--- |
+| `modifier` | `Modifier` | Compose layout modifier applied to the FAB container. | `Modifier` |
+| `variant` | `Ux4gFabVariant` | Layout variant: `Icon`, `Labelled`, `MenuJoined`, `MenuSpaced`, `MenuLabelled`. | `Ux4gFabVariant.Icon` |
+| `colorTheme` | `Ux4gFabColorTheme` | Color theme styling: `Brand` (solid purple) or `Surface` (elevated white). | `Ux4gFabColorTheme.Brand` |
+| `label` | `String` | Text label rendered in `Labelled` FAB variant. | `"Button"` |
+| `showIcon` | `Boolean` | Whether to display the icon alongside the label. | `true` |
+| `icon` | `Ux4gIcon?` | Optional icon token from `Ux4gIcons`. | `null` |
+| `iconVector` | `ImageVector?` | Primary icon vector shown on trigger button. | `Icons.Filled.Add` |
+| `iconComposable` | `(@Composable () -> Unit)?` | Custom composable slot for primary icon. | `null` |
+| `activeIcon` | `Ux4gIcon?` | Optional alternative icon token shown when menu is open. | `null` |
+| `activeIconVector` | `ImageVector?` | Icon vector displayed when speed-dial is expanded. | `Icons.Filled.Close` |
+| `activeIconComposable` | `(@Composable () -> Unit)?` | Custom composable slot for active open icon. | `null` |
+| `actions` | `List<Ux4gFabActionItem>` | List of action items rendered in speed-dial menus. | `Ux4gFabDefaults.defaultActions` |
+| `isOpen` | `Boolean?` | Controlled expansion state for speed-dial menu. | `null` |
+| `defaultOpen` | `Boolean` | Initial uncontrolled expansion state. | `false` |
+| `onToggle` | `((Boolean) -> Unit)?` | Callback triggered when the speed-dial menu is toggled. | `null` |
+| `onClick` | `(() -> Unit)?` | Click handler callback for single action buttons (`Icon`, `Labelled`). | `null` |
+| `position` | `Ux4gFabPosition` | Screen anchoring preset: `None`, `BottomRight`, `BottomLeft`, `BottomCenter`, etc. | `Ux4gFabPosition.None` |
+| `alignment` | `Alignment.Horizontal?` | Horizontal alignment override for speed-dial action stack. | `null` |
+| `offset` | `PaddingValues` | Margin offset applied when positioned via `Ux4gFabPosition`. | `PaddingValues(24.dp)` |
+| `showBackdrop` | `Boolean` | Whether to display a dimming backdrop scrim behind open speed-dial menu. | `false` |
+| `onBackdropClick` | `(() -> Unit)?` | Click listener callback for backdrop dismissal. | `null` |
+| `disabled` | `Boolean` | Whether the button is disabled. | `false` |
+| `size` | `Ux4gFabSize` | Sizing preset: `Small` (44dp), `Medium` (56dp), `Large` (64dp). | `Ux4gFabSize.Medium` |
+| `backgroundColor` | `Color?` | Custom surface background color override. | `null` |
+| `contentColor` | `Color?` | Custom foreground content color override. | `null` |
+| `elevation` | `Dp?` | Drop-shadow elevation override. | `null` (`6.dp`) |
+| `animated` | `Boolean` | Enables smooth scale, fade, and rotation transitions. | `true` |
+| `labelStyle` | `TextStyle?` | Custom text typography style for the label. | `null` |
+| `tooltip` | `String?` | Accessibility tooltip text. | `null` |
+| `contentDescription` | `String?` | Accessibility description for screen readers. | `null` |
+
+---
+
+### `Ux4gFabActionItem` Model
+
+| Property | Type | Description | Default |
+| :--- | :--- | :--- | :--- |
+| `id` | `String` | Unique identifier string for the action item. | **Required** |
+| `label` | `String?` | Descriptive label displayed on the action button or tooltip. | `null` |
+| `icon` | `Ux4gIcon?` | Optional icon token from `Ux4gIcons`. | `null` |
+| `iconVector` | `ImageVector?` | Icon vector displayed inside the action button. | `null` |
+| `iconComposable` | `(@Composable () -> Unit)?` | Custom composable slot for icon. | `null` |
+| `onClick` | `(() -> Unit)?` | Click handler callback triggered when the action item is pressed. | `null` |
+| `backgroundColor` | `Color?` | Custom background color override for this item. | `null` |
+| `contentColor` | `Color?` | Custom foreground content color override for this item. | `null` |
+| `disabled` | `Boolean` | Whether the action item is disabled. | `false` |
+| `tooltip` | `String?` | Accessibility label and tooltip string. | `null` |
+
+---
+
+### Enums & Types
+
+#### `Ux4gFabVariant`
+
+| Value | Description |
+| :--- | :--- |
+| `Icon` | Standard circular button with icon only. |
+| `Labelled` | Extended pill button with icon and text label. |
+| `MenuJoined` | Speed-dial menu where secondary actions are joined in a single continuous capsule surface. |
+| `MenuSpaced` | Speed-dial menu where secondary actions appear as individual spaced circular buttons. |
+| `MenuLabelled` | Speed-dial menu where secondary actions appear as individual pill buttons with icons and labels. |
+
+#### `Ux4gFabColorTheme`
+
+| Value | Description |
+| :--- | :--- |
+| `Brand` | Filled primary brand purple background (`Ux4gColors.primary600`) with white foreground. |
+| `Surface` | Elevated white surface background (`Ux4gColors.neutral0`) with primary purple content and subtle border. |
+
+#### `Ux4gFabSize`
+
+| Value | Diameter | Icon Size | Font Size |
+| :--- | :--- | :--- | :--- |
+| `Small` | `44.dp` | `20.dp` | `13.sp` |
+| `Medium` | `56.dp` | `24.dp` | `15.sp` |
+| `Large` | `64.dp` | `28.dp` | `16.sp` |
+
+#### `Ux4gFabPosition`
+
+| Value | Behavior |
+| :--- | :--- |
+| `None` | Flows inline without absolute positioning. |
+| `BottomRight` | Anchored at bottom-right corner with configured padding offset. |
+| `BottomLeft` | Anchored at bottom-left corner with configured padding offset. |
+| `BottomCenter` | Anchored at bottom-center with configured padding offset. |
+| `TopRight` | Anchored at top-right corner with configured padding offset. |
+| `TopLeft` | Anchored at top-left corner with configured padding offset. |
