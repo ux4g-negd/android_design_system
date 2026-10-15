@@ -2222,167 +2222,493 @@ fun MainContent(
                 modifier = Modifier.padding(16.dp),
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                Text(text = "Bottom Sheets", style = Ux4gTheme.typography.tS_strong)
+                Text(
+                    text = "Bottom Sheet (Ux4gBottomSheet)",
+                    style = Ux4gTheme.typography.tS_strong
+                )
 
-                var showBasicSheet by remember { mutableStateOf(false) }
-                var showFullSheet by remember { mutableStateOf(false) }
+                // State holders for all Bottom Sheet variants
+                var activeSizeSheet by remember { mutableStateOf<Ux4gBottomSheetSize?>(null) }
+                var showHeaderDescSheet by remember { mutableStateOf(false) }
+                var showHeaderIconSheet by remember { mutableStateOf(false) }
+                var showNoHeaderSheet by remember { mutableStateOf(false) }
+
+                var activeFooterAlignSheet by remember { mutableStateOf<Ux4gBottomSheetFooterAlignment?>(null) }
+                var showDestructiveSheet by remember { mutableStateOf(false) }
+                var showNoFooterSheet by remember { mutableStateOf(false) }
+
+                var showDividersSheet by remember { mutableStateOf(false) }
                 var showNonDraggableSheet by remember { mutableStateOf(false) }
-                var showCustomContentSheet by remember { mutableStateOf(false) }
+                var showCustomFormSheet by remember { mutableStateOf(false) }
                 var showLongContentSheet by remember { mutableStateOf(false) }
 
-                Ux4gButton(
-                    onClick = { showBasicSheet = true },
-                    modifier = Modifier.fillMaxWidth()
-                ) { Text("Open Basic Bottom Sheet") }
-
-                Ux4gButton(
-                    onClick = { showFullSheet = true },
-                    modifier = Modifier.fillMaxWidth(),
-                    backgroundColor = Ux4gColors.primary700
-                ) { Text("Open Full Bottom Sheet (Justified)") }
-
-                Ux4gButton(
-                    onClick = { showNonDraggableSheet = true },
-                    modifier = Modifier.fillMaxWidth(),
-                    backgroundColor = Ux4gColors.neutral700
-                ) { Text("Open Non-Draggable Sheet") }
-
-                Ux4gButton(
-                    onClick = { showCustomContentSheet = true },
-                    modifier = Modifier.fillMaxWidth(),
-                    backgroundColor = Ux4gColors.green700
-                ) { Text("Open Custom Content Sheet") }
-
-                Ux4gButton(
-                    onClick = { showLongContentSheet = true },
-                    modifier = Modifier.fillMaxWidth(),
-                    backgroundColor = Ux4gColors.cyan700
-                ) { Text("Open Long Content Sheet") }
-
-                if (showBasicSheet) {
-                    Ux4gBottomSheet(
-                        onDismissRequest = { showBasicSheet = false },
-                        headerTitle = "Simple Sheet",
-                        content = {
-                            Text("This is a simple bottom sheet with just a title and body content. It automatically adjusts its height to fit the content.")
-                        }
+                // ── 1. Size Presets ──────────────────────────────────────────
+                Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                    Text(
+                        text = "1. Size Presets (Figma Height Variants)",
+                        style = Ux4gTheme.typography.lS_strong,
+                        color = Ux4gTheme.colorScheme.primary
                     )
+                    Text(
+                        text = "Heights derived from screen ratio presets: Peek (26%), Half (50%), Expanded (75%), Full (94%).",
+                        style = Ux4gTheme.typography.bXS_default,
+                        color = Ux4gTheme.colorScheme.onSurface.copy(alpha = 0.6f)
+                    )
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        Ux4gButton(
+                            onClick = { activeSizeSheet = Ux4gBottomSheetSize.Peek },
+                            text = "Peek",
+                            variant = Ux4gButtonVariant.Outline,
+                            size = Ux4gButtonSize.Small,
+                            modifier = Modifier.weight(1f)
+                        )
+                        Ux4gButton(
+                            onClick = { activeSizeSheet = Ux4gBottomSheetSize.Half },
+                            text = "Half",
+                            variant = Ux4gButtonVariant.Outline,
+                            size = Ux4gButtonSize.Small,
+                            modifier = Modifier.weight(1f)
+                        )
+                        Ux4gButton(
+                            onClick = { activeSizeSheet = Ux4gBottomSheetSize.Expanded },
+                            text = "Expanded",
+                            variant = Ux4gButtonVariant.Outline,
+                            size = Ux4gButtonSize.Small,
+                            modifier = Modifier.weight(1f)
+                        )
+                        Ux4gButton(
+                            onClick = { activeSizeSheet = Ux4gBottomSheetSize.Full },
+                            text = "Full",
+                            variant = Ux4gButtonVariant.Outline,
+                            size = Ux4gButtonSize.Small,
+                            modifier = Modifier.weight(1f)
+                        )
+                    }
                 }
 
-                if (showFullSheet) {
+                // ── 2. Header Variations ─────────────────────────────────────
+                Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                    Text(
+                        text = "2. Header Variations",
+                        style = Ux4gTheme.typography.lS_strong,
+                        color = Ux4gTheme.colorScheme.primary
+                    )
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        Ux4gButton(
+                            onClick = { showHeaderDescSheet = true },
+                            text = "Title + Description",
+                            variant = Ux4gButtonVariant.Outline,
+                            size = Ux4gButtonSize.Small,
+                            modifier = Modifier.weight(1f)
+                        )
+                        Ux4gButton(
+                            onClick = { showHeaderIconSheet = true },
+                            text = "Icon + Subtle Text",
+                            variant = Ux4gButtonVariant.Outline,
+                            size = Ux4gButtonSize.Small,
+                            modifier = Modifier.weight(1f)
+                        )
+                        Ux4gButton(
+                            onClick = { showNoHeaderSheet = true },
+                            text = "No Header",
+                            variant = Ux4gButtonVariant.Outline,
+                            size = Ux4gButtonSize.Small,
+                            modifier = Modifier.weight(1f)
+                        )
+                    }
+                }
+
+                // ── 3. Footer Variations ─────────────────────────────────────
+                Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                    Text(
+                        text = "3. Footer Variations (Alignments & Destructive)",
+                        style = Ux4gTheme.typography.lS_strong,
+                        color = Ux4gTheme.colorScheme.primary
+                    )
+                    Text(
+                        text = "Split is the UX4G default — both action buttons stretch 50/50 across the row.",
+                        style = Ux4gTheme.typography.bXS_default,
+                        color = Ux4gTheme.colorScheme.onSurface.copy(alpha = 0.6f)
+                    )
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        Ux4gButton(
+                            onClick = { activeFooterAlignSheet = Ux4gBottomSheetFooterAlignment.Split },
+                            text = "Split",
+                            variant = Ux4gButtonVariant.Outline,
+                            size = Ux4gButtonSize.Small,
+                            modifier = Modifier.weight(1f)
+                        )
+                        Ux4gButton(
+                            onClick = { activeFooterAlignSheet = Ux4gBottomSheetFooterAlignment.Left },
+                            text = "Left",
+                            variant = Ux4gButtonVariant.Outline,
+                            size = Ux4gButtonSize.Small,
+                            modifier = Modifier.weight(1f)
+                        )
+                        Ux4gButton(
+                            onClick = { activeFooterAlignSheet = Ux4gBottomSheetFooterAlignment.Centered },
+                            text = "Centered",
+                            variant = Ux4gButtonVariant.Outline,
+                            size = Ux4gButtonSize.Small,
+                            modifier = Modifier.weight(1f)
+                        )
+                        Ux4gButton(
+                            onClick = { activeFooterAlignSheet = Ux4gBottomSheetFooterAlignment.Right },
+                            text = "Right",
+                            variant = Ux4gButtonVariant.Outline,
+                            size = Ux4gButtonSize.Small,
+                            modifier = Modifier.weight(1f)
+                        )
+                    }
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        Ux4gButton(
+                            onClick = { showDestructiveSheet = true },
+                            text = "Destructive Action",
+                            variant = Ux4gButtonVariant.Outline,
+                            size = Ux4gButtonSize.Small,
+                            modifier = Modifier.weight(1f)
+                        )
+                        Ux4gButton(
+                            onClick = { showNoFooterSheet = true },
+                            text = "No Footer",
+                            variant = Ux4gButtonVariant.Outline,
+                            size = Ux4gButtonSize.Small,
+                            modifier = Modifier.weight(1f)
+                        )
+                    }
+                }
+
+                // ── 4. Dividers & Behaviors ──────────────────────────────────
+                Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                    Text(
+                        text = "4. Options & Behaviors",
+                        style = Ux4gTheme.typography.lS_strong,
+                        color = Ux4gTheme.colorScheme.primary
+                    )
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        Ux4gButton(
+                            onClick = { showDividersSheet = true },
+                            text = "Dividers",
+                            variant = Ux4gButtonVariant.Outline,
+                            size = Ux4gButtonSize.Small,
+                            modifier = Modifier.weight(1f)
+                        )
+                        Ux4gButton(
+                            onClick = { showNonDraggableSheet = true },
+                            text = "Non-Draggable",
+                            variant = Ux4gButtonVariant.Outline,
+                            size = Ux4gButtonSize.Small,
+                            modifier = Modifier.weight(1f)
+                        )
+                    }
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        Ux4gButton(
+                            onClick = { showCustomFormSheet = true },
+                            text = "Interactive Form",
+                            variant = Ux4gButtonVariant.Outline,
+                            size = Ux4gButtonSize.Small,
+                            modifier = Modifier.weight(1f)
+                        )
+                        Ux4gButton(
+                            onClick = { showLongContentSheet = true },
+                            text = "Scrollable Body",
+                            variant = Ux4gButtonVariant.Outline,
+                            size = Ux4gButtonSize.Small,
+                            modifier = Modifier.weight(1f)
+                        )
+                    }
+                }
+
+                // ── Modal Sheet Dialogs ──────────────────────────────────────
+
+                // Active Size Preset Sheet
+                activeSizeSheet?.let { size ->
                     Ux4gBottomSheet(
-                        onDismissRequest = { showFullSheet = false },
-                        headerTitle = "Header",
-                        headerSubtleText = "Subtle text",
-                        headerIcon = Ux4gIcons.info_circle,
-                        description = "Write description here",
-                        footerType = Ux4gCardFooterType.PrimaryAndSecondary,
-                        footerAlignment = Ux4gBottomSheetFooterAlignment.Justified,
-                        primaryButtonText = "Action",
+                        onDismissRequest = { activeSizeSheet = null },
+                        size = size,
+                        headerTitle = "Size = ${size.name} (${(size.ratio * 100).toInt()}%)",
+                        description = "Demonstrating Figma preset: peek 26%, half 50%, expanded 75%, full 94%.",
+                        primaryButtonText = "Confirm",
                         secondaryButtonText = "Cancel",
-                        onPrimaryClick = { showFullSheet = false },
-                        onSecondaryClick = { showFullSheet = false },
-                        content = {
+                        onPrimaryClick = { activeSizeSheet = null },
+                        onSecondaryClick = { activeSizeSheet = null }
+                    ) {
+                        Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
                             Text(
-                                text = "A Drawer is a panel that slides out from the edge of the screen to show extra information or options. It follows the same footer structure as the Card component.",
-                                style = Ux4gTheme.typography.bM_default,
-                                color = Ux4gColors.neutral700
+                                text = "Current preset ratio: ${size.ratio}",
+                                style = Ux4gTheme.typography.tS_strong
+                            )
+                            repeat(8) { idx ->
+                                Text(
+                                    text = "Line #${idx + 1}: Notice the sheet height matches the exact preset height while keeping the action buttons pinned at the bottom.",
+                                    style = Ux4gTheme.typography.bS_default,
+                                    color = Ux4gTheme.colorScheme.onSurface.copy(alpha = 0.75f)
+                                )
+                            }
+                        }
+                    }
+                }
+
+                // Header Variation: Title + Description
+                if (showHeaderDescSheet) {
+                    Ux4gBottomSheet(
+                        onDismissRequest = { showHeaderDescSheet = false },
+                        size = Ux4gBottomSheetSize.Half,
+                        headerTitle = "Header",
+                        description = "Write description here",
+                        primaryButtonText = "Confirm",
+                        secondaryButtonText = "Cancel",
+                        onPrimaryClick = { showHeaderDescSheet = false },
+                        onSecondaryClick = { showHeaderDescSheet = false }
+                    ) {
+                        Text(
+                            text = "This variant showcases the title and subtitle description block aligned under the top drag handle.",
+                            style = Ux4gTheme.typography.bM_default,
+                            color = Ux4gTheme.colorScheme.onSurface.copy(alpha = 0.8f)
+                        )
+                    }
+                }
+
+                // Header Variation: Icon + Subtle Text
+                if (showHeaderIconSheet) {
+                    Ux4gBottomSheet(
+                        onDismissRequest = { showHeaderIconSheet = false },
+                        size = Ux4gBottomSheetSize.Half,
+                        headerIcon = Ux4gIcons.info_circle,
+                        headerTitle = "Header with Icon",
+                        headerSubtleText = "Subtle text",
+                        description = "The description aligns neatly under the title when a leading icon is present.",
+                        primaryButtonText = "Confirm",
+                        secondaryButtonText = "Cancel",
+                        onPrimaryClick = { showHeaderIconSheet = false },
+                        onSecondaryClick = { showHeaderIconSheet = false }
+                    ) {
+                        Text(
+                            text = "Leading icon, bold title, subtle status tag on the right, and close icon in the top header row.",
+                            style = Ux4gTheme.typography.bM_default,
+                            color = Ux4gTheme.colorScheme.onSurface.copy(alpha = 0.8f)
+                        )
+                    }
+                }
+
+                // Header Variation: No Header
+                if (showNoHeaderSheet) {
+                    Ux4gBottomSheet(
+                        onDismissRequest = { showNoHeaderSheet = false },
+                        size = Ux4gBottomSheetSize.Peek,
+                        showHeader = false,
+                        primaryButtonText = "Got it",
+                        showSecondaryButton = false,
+                        onPrimaryClick = { showNoHeaderSheet = false }
+                    ) {
+                        Text(
+                            text = "showHeader = false hides the header row entirely — ideal for simple action sheets or quick prompts.",
+                            style = Ux4gTheme.typography.bS_default,
+                            color = Ux4gTheme.colorScheme.onSurface.copy(alpha = 0.85f)
+                        )
+                    }
+                }
+
+                // Footer Variation: Alignments (Split, Left, Centered, Right)
+                activeFooterAlignSheet?.let { align ->
+                    Ux4gBottomSheet(
+                        onDismissRequest = { activeFooterAlignSheet = null },
+                        size = Ux4gBottomSheetSize.Peek,
+                        headerTitle = "Footer Alignment: ${align.name}",
+                        footerAlignment = align,
+                        primaryButtonText = "Confirm",
+                        secondaryButtonText = "Cancel",
+                        onPrimaryClick = { activeFooterAlignSheet = null },
+                        onSecondaryClick = { activeFooterAlignSheet = null }
+                    ) {
+                        Text(
+                            text = "Notice the footer button arrangement: ${align.name}.",
+                            style = Ux4gTheme.typography.bS_default,
+                            color = Ux4gTheme.colorScheme.onSurface.copy(alpha = 0.75f)
+                        )
+                    }
+                }
+
+                // Footer Variation: Destructive Action
+                if (showDestructiveSheet) {
+                    Ux4gBottomSheet(
+                        onDismissRequest = { showDestructiveSheet = false },
+                        size = Ux4gBottomSheetSize.Peek,
+                        headerTitle = "Delete this item?",
+                        description = "This action cannot be undone.",
+                        isDestructive = true,
+                        primaryButtonText = "Delete",
+                        secondaryButtonText = "Cancel",
+                        onPrimaryClick = { showDestructiveSheet = false },
+                        onSecondaryClick = { showDestructiveSheet = false }
+                    ) {
+                        Text(
+                            text = "isDestructive = true renders the primary action in the danger/error theme color (red500).",
+                            style = Ux4gTheme.typography.bS_default,
+                            color = Ux4gTheme.colorScheme.onSurface.copy(alpha = 0.75f)
+                        )
+                    }
+                }
+
+                // Footer Variation: No Footer
+                if (showNoFooterSheet) {
+                    Ux4gBottomSheet(
+                        onDismissRequest = { showNoFooterSheet = false },
+                        size = Ux4gBottomSheetSize.Half,
+                        headerTitle = "No Footer Sheet",
+                        description = "The sheet renders without bottom action buttons.",
+                        showFooter = false
+                    ) {
+                        Text(
+                            text = "showFooter = false allows the content area to occupy the full bottom of the sheet.",
+                            style = Ux4gTheme.typography.bM_default,
+                            color = Ux4gTheme.colorScheme.onSurface.copy(alpha = 0.8f)
+                        )
+                    }
+                }
+
+                // Dividers
+                if (showDividersSheet) {
+                    Ux4gBottomSheet(
+                        onDismissRequest = { showDividersSheet = false },
+                        size = Ux4gBottomSheetSize.Half,
+                        headerTitle = "Dividers Enabled",
+                        description = "Figma dividers rendered below header and above pinned footer.",
+                        showHeaderDivider = true,
+                        showBottomDivider = true,
+                        primaryButtonText = "Confirm",
+                        secondaryButtonText = "Cancel",
+                        onPrimaryClick = { showDividersSheet = false },
+                        onSecondaryClick = { showDividersSheet = false }
+                    ) {
+                        Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                            Text(
+                                text = "Notice the top divider under the header and the bottom divider separating content from the footer.",
+                                style = Ux4gTheme.typography.bS_default,
+                                color = Ux4gTheme.colorScheme.onSurface.copy(alpha = 0.75f)
                             )
                         }
-                    )
+                    }
                 }
 
+                // Non-Draggable Sheet
                 if (showNonDraggableSheet) {
                     Ux4gBottomSheet(
                         onDismissRequest = { showNonDraggableSheet = false },
+                        size = Ux4gBottomSheetSize.Half,
                         headerTitle = "Non-Draggable Sheet",
                         isDraggable = false,
-                        description = "The drag handle is hidden and swipe gestures are handled by the system (usually minimal interaction).",
-                        content = {
-                            Text("This sheet has the 'isDraggable' property set to false.")
-                        }
-                    )
+                        showDragHandle = false,
+                        description = "The drag handle is hidden.",
+                        primaryButtonText = "Close",
+                        showSecondaryButton = false,
+                        onPrimaryClick = { showNonDraggableSheet = false }
+                    ) {
+                        Text(
+                            text = "This sheet has isDraggable = false and showDragHandle = false.",
+                            style = Ux4gTheme.typography.bM_default
+                        )
+                    }
                 }
 
-                if (showCustomContentSheet) {
+                // Interactive Form Sheet
+                if (showCustomFormSheet) {
                     Ux4gBottomSheet(
-                        onDismissRequest = { showCustomContentSheet = false },
-                        headerTitle = "Complex Settings",
-                        description = "You can add any custom UI inside this central area.",
-                        footerType = Ux4gCardFooterType.PrimaryOnly,
-                        primaryButtonText = "Apply Settings",
-                        onPrimaryClick = { showCustomContentSheet = false },
-                        content = {
-                            Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
-                                Text("Pick your notification types:", style = Ux4gTheme.typography.tS_strong)
-                                
-                                Row(
-                                    modifier = Modifier.fillMaxWidth(),
-                                    horizontalArrangement = Arrangement.spacedBy(8.dp)
-                                ) {
-                                    var checked1 by remember { mutableStateOf(ToggleableState.On) }
-                                    var checked2 by remember { mutableStateOf(ToggleableState.Off) }
-                                    
-                                    Ux4gCheckbox(
-                                        state = checked1,
-                                        onClick = { 
-                                            checked1 = if (checked1 == ToggleableState.On) ToggleableState.Off else ToggleableState.On 
-                                        },
-                                        label = "Email"
-                                    )
-                                    Ux4gCheckbox(
-                                        state = checked2,
-                                        onClick = { 
-                                            checked2 = if (checked2 == ToggleableState.On) ToggleableState.Off else ToggleableState.On 
-                                        },
-                                        label = "Push"
-                                    )
-                                }
-                                
-                                Ux4gDivider()
-                                
-                                Text("Adjust Volume:", style = Ux4gTheme.typography.tS_strong)
-                                var volume by remember { mutableStateOf(75f) }
-                                Ux4gSlider(
-                                    value = volume,
-                                    onValueChange = { volume = it },
-                                    showMarksAndValues = true,
-                                    steps = 4
+                        onDismissRequest = { showCustomFormSheet = false },
+                        size = Ux4gBottomSheetSize.Half,
+                        headerTitle = "Notification Preferences",
+                        description = "You can add any interactive UI inside the scrollable body.",
+                        primaryButtonText = "Save Changes",
+                        secondaryButtonText = "Discard",
+                        onPrimaryClick = { showCustomFormSheet = false },
+                        onSecondaryClick = { showCustomFormSheet = false }
+                    ) {
+                        Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
+                            Text("Pick your notification types:", style = Ux4gTheme.typography.tS_strong)
+
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                            ) {
+                                var checked1 by remember { mutableStateOf(ToggleableState.On) }
+                                var checked2 by remember { mutableStateOf(ToggleableState.Off) }
+
+                                Ux4gCheckbox(
+                                    state = checked1,
+                                    onClick = {
+                                        checked1 = if (checked1 == ToggleableState.On) ToggleableState.Off else ToggleableState.On
+                                    },
+                                    label = "Email"
                                 )
-                                
-                                Text(
-                                    "Notice how the sheet automatically expands to fit these custom components.",
-                                    style = Ux4gTheme.typography.bS_default,
-                                    color = Ux4gColors.neutral500
+                                Ux4gCheckbox(
+                                    state = checked2,
+                                    onClick = {
+                                        checked2 = if (checked2 == ToggleableState.On) ToggleableState.Off else ToggleableState.On
+                                    },
+                                    label = "Push"
                                 )
                             }
+
+                            Ux4gDivider()
+
+                            Text("Adjust Volume:", style = Ux4gTheme.typography.tS_strong)
+                            var volume by remember { mutableStateOf(75f) }
+                            Ux4gSlider(
+                                value = volume,
+                                onValueChange = { volume = it },
+                                showMarksAndValues = true,
+                                steps = 4
+                            )
+
+                            Text(
+                                "Notice how the middle body area smoothly manages scrolling while keeping header and footer pinned.",
+                                style = Ux4gTheme.typography.bS_default,
+                                color = Ux4gColors.neutral500
+                            )
                         }
-                    )
+                    }
                 }
 
+                // Long Scrollable Content Sheet
                 if (showLongContentSheet) {
                     Ux4gBottomSheet(
                         onDismissRequest = { showLongContentSheet = false },
-                        headerTitle = "Scrollable Content",
-                        description = "The header and footer stay fixed. Only this middle part scrolls.",
-                        footerType = Ux4gCardFooterType.PrimaryAndSecondary,
-                        footerAlignment = Ux4gBottomSheetFooterAlignment.Justified,
+                        size = Ux4gBottomSheetSize.Expanded,
+                        headerTitle = "Scrollable Body Demo",
+                        description = "The header and footer stay pinned while only this middle part scrolls.",
                         primaryButtonText = "Got it",
                         secondaryButtonText = "Cancel",
                         onPrimaryClick = { showLongContentSheet = false },
-                        onSecondaryClick = { showLongContentSheet = false },
-                        content = {
-                            Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
-                                repeat(20) { index ->
-                                    Text(
-                                        "Item #$index: This long text demonstrates that even when the content grows beyond the screen height, only the inner body remains scrollable while the top header and bottom buttons stay pinned.",
-                                        style = Ux4gTheme.typography.bM_default
-                                    )
-                                    if (index < 19) Ux4gDivider()
-                                }
+                        onSecondaryClick = { showLongContentSheet = false }
+                    ) {
+                        Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
+                            repeat(20) { index ->
+                                Text(
+                                    text = "Item #$index: This long text demonstrates that even when content exceeds the sheet height, only the inner body scrolls while top header and bottom buttons stay fixed.",
+                                    style = Ux4gTheme.typography.bM_default
+                                )
+                                if (index < 19) Ux4gDivider()
                             }
                         }
-                    )
+                    }
                 }
             }
         }
