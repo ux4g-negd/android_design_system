@@ -74,7 +74,7 @@ for (key in localProperties.stringPropertyNames()) {
     project.extensions.extraProperties.set(key, localProperties.getProperty(key))
 }
 
-val libVersion = "1.0.5"
+val libVersion = "1.0.7"
 project.version = libVersion
 project.group = "io.github.ux4g-negd"
 
