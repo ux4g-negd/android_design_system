@@ -1,11 +1,17 @@
 package com.ux4g.designsystemv1.components
 
 import android.content.res.Configuration
+import androidx.activity.compose.BackHandler
 import androidx.compose.animation.*
+import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.EaseOutCubic
+import androidx.compose.animation.core.FastOutLinearInEasing
+import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -23,6 +29,8 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.graphicsLayer
+import kotlinx.coroutines.launch
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
@@ -571,8 +579,49 @@ fun Ux4gSideMenuModal(
     scrimColor: Color = Color(0x80000000)
 ) {
     if (isOpen) {
+        val coroutineScope = rememberCoroutineScope()
+        val initialOffset = if (position == Ux4gSideMenuPosition.Left) -1f else 1f
+        val animOffset = remember { Animatable(initialOffset) }
+        val scrimAlpha = remember { Animatable(0f) }
+        var isClosing by remember { mutableStateOf(false) }
+
+        fun triggerClose() {
+            if (isClosing) return
+            isClosing = true
+            coroutineScope.launch {
+                launch {
+                    scrimAlpha.animateTo(
+                        targetValue = 0f,
+                        animationSpec = tween(durationMillis = 240, easing = FastOutLinearInEasing)
+                    )
+                }
+                animOffset.animateTo(
+                    targetValue = initialOffset,
+                    animationSpec = tween(durationMillis = 280, easing = FastOutLinearInEasing)
+                )
+                onDismissRequest()
+            }
+        }
+
+        LaunchedEffect(Unit) {
+            launch {
+                scrimAlpha.animateTo(
+                    targetValue = 0.5f,
+                    animationSpec = tween(durationMillis = 280, easing = LinearOutSlowInEasing)
+                )
+            }
+            animOffset.animateTo(
+                targetValue = 0f,
+                animationSpec = tween(durationMillis = 320, easing = EaseOutCubic)
+            )
+        }
+
+        BackHandler {
+            triggerClose()
+        }
+
         Dialog(
-            onDismissRequest = onDismissRequest,
+            onDismissRequest = { triggerClose() },
             properties = DialogProperties(
                 usePlatformDefaultWidth = false,
                 decorFitsSystemWindows = false
@@ -581,70 +630,70 @@ fun Ux4gSideMenuModal(
             Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(scrimColor)
-                    .clickable(onClick = onDismissRequest)
-            ) {
-                val slideOffset = if (position == Ux4gSideMenuPosition.Left) -1 else 1
-
-                AnimatedVisibility(
-                    visible = true,
-                    enter = slideInHorizontally(
-                        initialOffsetX = { fullWidth -> fullWidth * slideOffset },
-                        animationSpec = tween(durationMillis = 280)
-                    ) + fadeIn(animationSpec = tween(280)),
-                    exit = slideOutHorizontally(
-                        targetOffsetX = { fullWidth -> fullWidth * slideOffset },
-                        animationSpec = tween(durationMillis = 280)
-                    ) + fadeOut(animationSpec = tween(280)),
-                    modifier = Modifier.align(
-                        if (position == Ux4gSideMenuPosition.Left) Alignment.CenterStart else Alignment.CenterEnd
+                    .background(Color.Black.copy(alpha = scrimAlpha.value))
+                    .clickable(
+                        interactionSource = remember { MutableInteractionSource() },
+                        indication = null,
+                        onClick = { triggerClose() }
                     )
-                ) {
-                    Box(modifier = Modifier.clickable(enabled = false) { /* Absorb clicks inside drawer */ }) {
-                        Ux4gSideMenu(
-                            onClose = onDismissRequest,
-                            position = position,
-                            width = width,
-                            headerType = headerType,
-                            title = title,
-                            subtitle = subtitle,
-                            logo = logo,
-                            avatarInitials = avatarInitials,
-                            avatarColor = avatarColor,
-                            avatarTextColor = avatarTextColor,
-                            userMetaText = userMetaText,
-                            userActionButtonText = userActionButtonText,
-                            onUserActionButtonPressed = onUserActionButtonPressed,
-                            showCloseButton = showCloseButton,
-                            customHeader = customHeader,
-                            showHeaderDivider = showHeaderDivider,
-                            showSearch = showSearch,
-                            searchPlaceholder = searchPlaceholder,
-                            searchQuery = searchQuery,
-                            onSearchChanged = onSearchChanged,
-                            autoFilterOnSearch = autoFilterOnSearch,
-                            sections = sections,
-                            items = items,
-                            selectedKey = selectedKey,
-                            defaultSelectedKey = defaultSelectedKey,
-                            onItemSelected = { item ->
-                                onItemSelected?.invoke(item)
-                                onDismissRequest()
-                            },
-                            actionCard = actionCard,
-                            footerItems = footerItems,
-                            showSignOut = showSignOut,
-                            signOutLabel = signOutLabel,
-                            onSignOut = {
-                                onSignOut?.invoke()
-                                onDismissRequest()
-                            },
-                            bottomBranding = bottomBranding,
-                            customFooter = customFooter,
-                            showFooterDivider = showFooterDivider,
-                            backgroundColor = backgroundColor
+            ) {
+                Box(
+                    modifier = Modifier
+                        .align(
+                            if (position == Ux4gSideMenuPosition.Left) Alignment.CenterStart else Alignment.CenterEnd
                         )
-                    }
+                        .graphicsLayer {
+                            translationX = size.width * animOffset.value
+                        }
+                        .clickable(
+                            interactionSource = remember { MutableInteractionSource() },
+                            indication = null,
+                            enabled = false
+                        ) { /* Absorb clicks inside menu */ }
+                ) {
+                    Ux4gSideMenu(
+                        onClose = { triggerClose() },
+                        position = position,
+                        width = width,
+                        headerType = headerType,
+                        title = title,
+                        subtitle = subtitle,
+                        logo = logo,
+                        avatarInitials = avatarInitials,
+                        avatarColor = avatarColor,
+                        avatarTextColor = avatarTextColor,
+                        userMetaText = userMetaText,
+                        userActionButtonText = userActionButtonText,
+                        onUserActionButtonPressed = onUserActionButtonPressed,
+                        showCloseButton = showCloseButton,
+                        customHeader = customHeader,
+                        showHeaderDivider = showHeaderDivider,
+                        showSearch = showSearch,
+                        searchPlaceholder = searchPlaceholder,
+                        searchQuery = searchQuery,
+                        onSearchChanged = onSearchChanged,
+                        autoFilterOnSearch = autoFilterOnSearch,
+                        sections = sections,
+                        items = items,
+                        selectedKey = selectedKey,
+                        defaultSelectedKey = defaultSelectedKey,
+                        onItemSelected = { item ->
+                            onItemSelected?.invoke(item)
+                            triggerClose()
+                        },
+                        actionCard = actionCard,
+                        footerItems = footerItems,
+                        showSignOut = showSignOut,
+                        signOutLabel = signOutLabel,
+                        onSignOut = {
+                            onSignOut?.invoke()
+                            triggerClose()
+                        },
+                        bottomBranding = bottomBranding,
+                        customFooter = customFooter,
+                        showFooterDivider = showFooterDivider,
+                        backgroundColor = backgroundColor
+                    )
                 }
             }
         }
