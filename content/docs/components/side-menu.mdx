@@ -1,0 +1,401 @@
+---
+title: Side Menu & Navigation Drawer
+description: Slide-out navigation drawer with physics-based smooth animation, government branding headers, officer mailbox, citizen profile summaries, department switchers, and action cards
+---
+
+# Side Menu & Navigation Drawer (`Ux4gSideMenu` / `Ux4gDrawer`)
+
+The UX4G Side Menu (Navigation Drawer) is an edge-docked sliding navigation surface that provides hierarchical destination routing for complex Indian public digital services, officer workflows, and citizen self-service portals.
+
+Built strictly to UX4G design tokens, it features physics-based slide animation, drag gesture dismissal, Android system back-press handling, customizable header styles, search-as-you-type filtering, expandable accordion sub-menus, and action banner cards.
+
+### Key Capabilities
+
+- **5 Standard Preset Templates (`Ux4gSideMenuPresets`)**:
+  - `Standard`: Government branding header with national emblem, portal title, search bar, and structured navigation sections.
+  - `OfficerInbox`: Administrative workflow drawer featuring officer profile, unread inbox count badges, and review folders.
+  - `CitizenProfile`: Prominent citizen profile summary card with status tags, account shortcuts, and "View profile" CTA.
+  - `DepartmentSwitcher`: Multi-department selection menu with distinct department cards and access request shortcuts.
+  - `ActionRequired`: Priority-focused drawer with alert cards (e.g., Aadhaar e-KYC verification) and nested application workflows.
+- **Physics-Based Sliding Animation & Gestures**: Smooth left-to-right drawer movement with animated scrim fade, tap-to-dismiss, and physical back gesture support via `Ux4gSideMenuModal`.
+- **Flexible Header Variations (`Ux4gSideMenuHeaderType`)**:
+  - `Standard`: Government emblem/logo with official department title and subtitle.
+  - `CompactUser`: User initials avatar, name, and email/department subtitle.
+  - `ProminentUser`: Elevated profile card with role, verified badge, and quick action button.
+  - `Plain`: Minimal clean title, subtitle, and close button.
+  - `None`: Completely custom header or no header.
+- **Accordion Sub-Navigation**: Nested items support expandable and collapsible groups (`defaultExpanded = true`).
+- **Interactive Search Filter**: Built-in search field with automatic real-time filtering of navigation items.
+- **Cross-Framework Parity**: Includes `Ux4gDrawer` as a direct alias for `Ux4gSideMenu` matching Flutter design system conventions.
+
+Import from `com.ux4g.designsystemv1.components.*`.
+
+---
+
+<h2><MIcon name="smartphone" /> Interactive Previews</h2>
+
+### 1. Standard Government Navigation (`Ux4gSideMenuPresets.Standard`)
+
+Standard government portal navigation drawer featuring national emblem branding, portal title, live search bar, section dividers, and official footer branding.
+
+<ComponentPreview
+  title="Ux4gSideMenu - Standard Government Preset"
+  category="Jetpack Compose"
+  code={`var isDrawerOpen by remember { mutableStateOf(false) }
+
+// Using the pre-configured Standard preset
+Ux4gSideMenuPresets.Standard(
+    onClose = { isDrawerOpen = false },
+    onItemSelected = { item ->
+        println("Selected: \${item.label}")
+        isDrawerOpen = false
+    },
+    onSignOut = {
+        // Handle sign out
+    }
+)`}
+>
+  <div className="flex flex-col items-center justify-center py-4 bg-muted/20 rounded-xl">
+    <img
+      src="/images/components/side_menu_standard_preview.svg"
+      alt="UX4G Standard Government Side Menu Preview"
+      className="max-w-md w-full rounded-xl border border-border/60 shadow-sm"
+    />
+  </div>
+</ComponentPreview>
+
+---
+
+### 2. Officer Inbox Navigation (`Ux4gSideMenuPresets.OfficerInbox`)
+
+Administrative workflow drawer for department officers featuring a compact user header, unread inbox counter badges, categorized folders, and customizable inbox actions.
+
+<ComponentPreview
+  title="Ux4gSideMenu - Officer Inbox Preset"
+  category="Jetpack Compose"
+  code={`Ux4gSideMenuPresets.OfficerInbox(
+    name = "Ramesh Kumar",
+    email = "ramesh.kumar@gov.in",
+    division = "Kanpur division",
+    selectedKey = "inbox",
+    onClose = { /* Close drawer */ },
+    onItemSelected = { item ->
+        // Navigate to selected folder
+    },
+    onCustomizeInbox = {
+        // Open inbox filter preferences
+    }
+)`}
+>
+  <div className="flex flex-col items-center justify-center py-4 bg-muted/20 rounded-xl">
+    <img
+      src="/images/components/side_menu_officerinbox_preview.svg"
+      alt="UX4G Officer Inbox Side Menu Preview"
+      className="max-w-md w-full rounded-xl border border-border/60 shadow-sm"
+    />
+  </div>
+</ComponentPreview>
+
+---
+
+### 3. Citizen Profile Menu (`Ux4gSideMenuPresets.CitizenProfile`)
+
+Citizen-centric navigation drawer featuring a prominent user profile header card with application counters, status tags, profile settings, and application tracking shortcuts.
+
+<ComponentPreview
+  title="Ux4gSideMenu - Citizen Profile Preset"
+  category="Jetpack Compose"
+  code={`Ux4gSideMenuPresets.CitizenProfile(
+    name = "Ramesh Kumar",
+    role = "Citizen",
+    metaText = "12 applications · 3 actions required",
+    onViewProfile = {
+        // Navigate to full citizen profile screen
+    },
+    onClose = { /* Close drawer */ },
+    onItemSelected = { item ->
+        // Handle navigation item
+    },
+    onSignOut = {
+        // Log citizen out
+    }
+)`}
+>
+  <div className="flex flex-col items-center justify-center py-4 bg-muted/20 rounded-xl">
+    <img
+      src="/images/components/side_menu_citizenprofile_preview.svg"
+      alt="UX4G Citizen Profile Side Menu Preview"
+      className="max-w-md w-full rounded-xl border border-border/60 shadow-sm"
+    />
+  </div>
+</ComponentPreview>
+
+---
+
+### 4. Department Switcher Menu (`Ux4gSideMenuPresets.DepartmentSwitcher`)
+
+Multi-department workspace selection drawer displaying department cards with avatar initials, pending application tags, and footer shortcuts to request department access.
+
+<ComponentPreview
+  title="Ux4gSideMenu - Department Switcher Preset"
+  category="Jetpack Compose"
+  code={`Ux4gSideMenuPresets.DepartmentSwitcher(
+    title = "Departments",
+    subtitle = "Choose a department to work in.",
+    selectedDepartmentKey = "dept-revenue",
+    onSelectDepartment = { departmentItem ->
+        println("Switched to department: \${departmentItem.label}")
+    },
+    onRequestAccess = {
+        // Open access request modal
+    },
+    onSettings = { /* Open department settings */ },
+    onHelp = { /* Open support */ }
+)`}
+>
+  <div className="flex flex-col items-center justify-center py-4 bg-muted/20 rounded-xl">
+    <img
+      src="/images/components/side_menu_departmentswitcher_preview.svg"
+      alt="UX4G Department Switcher Side Menu Preview"
+      className="max-w-md w-full rounded-xl border border-border/60 shadow-sm"
+    />
+  </div>
+</ComponentPreview>
+
+---
+
+### 5. Action Required & Workflows Menu (`Ux4gSideMenuPresets.ActionRequired`)
+
+Workflow-driven drawer combining nested multi-level application lists with a prominent `ActionCard` banner prompting citizens or officers to complete urgent prerequisites (such as Aadhaar e-KYC).
+
+<ComponentPreview
+  title="Ux4gSideMenu - Action Required Preset"
+  category="Jetpack Compose"
+  code={`Ux4gSideMenuPresets.ActionRequired(
+    title = "Revenue Department",
+    subtitle = "Kanpur division",
+    onVerifyAadhaar = {
+        // Initiate Aadhaar OTP verification flow
+    },
+    onItemSelected = { item ->
+        // Handle item selection
+    },
+    onClose = { /* Close drawer */ }
+)`}
+>
+  <div className="flex flex-col items-center justify-center py-4 bg-muted/20 rounded-xl">
+    <img
+      src="/images/components/side_menu_actionrequired_preview.svg"
+      alt="UX4G Action Required Side Menu Preview"
+      className="max-w-md w-full rounded-xl border border-border/60 shadow-sm"
+    />
+  </div>
+</ComponentPreview>
+
+---
+
+## Complete Implementation Example
+
+The following Jetpack Compose snippet demonstrates a complete citizen portal screen integrating `Ux4gSideMenuModal` with an app bar hamburger icon, physics slide animation, and scrim dismiss:
+
+```kotlin
+package com.example.app.ui
+
+import androidx.compose.foundation.layout.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material.icons.outlined.*
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
+import com.ux4g.designsystemv1.components.*
+import com.ux4g.designsystemv1.foundation.Ux4gColors
+import com.ux4g.designsystemv1.theme.Ux4gTheme
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun CitizenPortalWithDrawerScreen() {
+    var isDrawerOpen by remember { mutableStateOf(false) }
+    var selectedDestination by remember { mutableStateOf("dashboard") }
+
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = { Text("Revenue Department", style = Ux4gTheme.typography.hM_strong) },
+                navigationIcon = {
+                    IconButton(onClick = { isDrawerOpen = true }) {
+                        Icon(
+                            imageVector = Icons.Filled.Menu,
+                            contentDescription = "Open navigation menu",
+                            tint = Ux4gTheme.colorScheme.primary
+                        )
+                    }
+                }
+            )
+        }
+    ) { innerPadding ->
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(innerPadding)
+                .padding(16.dp)
+        ) {
+            Text(
+                text = "Active Screen: \$selectedDestination",
+                style = Ux4gTheme.typography.hL_strong
+            )
+        }
+
+        // Modal Slide-Out Drawer with physics animation & scrim
+        Ux4gSideMenuModal(
+            isOpen = isDrawerOpen,
+            onDismissRequest = { isDrawerOpen = false },
+            headerType = Ux4gSideMenuHeaderType.Standard,
+            title = "Revenue Department",
+            subtitle = "Government of India",
+            selectedKey = selectedDestination,
+            onItemSelected = { item ->
+                selectedDestination = item.key ?: item.label
+                isDrawerOpen = false
+            },
+            actionCard = Ux4gSideMenuActionCard(
+                title = "Verify your Aadhaar",
+                description = "Complete identity verification to access all digital services.",
+                buttonText = "Verify now",
+                onButtonPressed = {
+                    isDrawerOpen = false
+                    // Start Aadhaar verification flow
+                }
+            ),
+            bottomBranding = Ux4gSideMenuBottomBranding(
+                title = "Digital India Initiative",
+                subtitle = "Empowering citizens"
+            ),
+            showSignOut = true,
+            onSignOut = {
+                isDrawerOpen = false
+                // Handle citizen logout
+            }
+        )
+    }
+}
+```
+
+---
+
+<h2><MIcon name="settings" /> Parameters & API Reference</h2>
+
+### `Ux4gSideMenu` Props
+
+| Prop | Type | Description | Default |
+| :--- | :--- | :--- | :--- |
+| `modifier` | `Modifier` | Compose layout modifier applied to the drawer container. | `Modifier` |
+| `onClose` | `(() -> Unit)?` | Callback triggered when the top close icon button is clicked. | `null` |
+| `position` | `Ux4gSideMenuPosition` | Drawer dock side: `Ux4gSideMenuPosition.Left` or `Right`. | `Ux4gSideMenuPosition.Left` |
+| `width` | `Dp?` | Custom width of the drawer container. | `null` (82% of screen, max `340.dp`) |
+| `headerType` | `Ux4gSideMenuHeaderType` | Header preset: `Standard`, `CompactUser`, `ProminentUser`, `Plain`, `None`. | `Ux4gSideMenuHeaderType.Standard` |
+| `title` | `String` | Primary header title or department name. | `"Revenue Department"` |
+| `subtitle` | `String?` | Secondary subtitle or government affiliation. | `"Government of India"` |
+| `logo` | `(@Composable () -> Unit)?` | Custom leading composable slot for department emblem or seal. | `null` |
+| `avatarInitials` | `String?` | 2-letter initials for user/department avatar (e.g. `"RK"`). | `null` |
+| `avatarColor` | `Color?` | Background fill color of the avatar. | `null` |
+| `userMetaText` | `String?` | Supporting metadata in `ProminentUser` header (e.g. `"12 applications"`). | `null` |
+| `userActionButtonText` | `String?` | Action button label in `ProminentUser` header. | `"View profile"` |
+| `onUserActionButtonPressed` | `(() -> Unit)?` | Click handler for `ProminentUser` header action button. | `null` |
+| `showCloseButton` | `Boolean` | Whether to display the top-right close icon button. | `true` |
+| `showHeaderDivider` | `Boolean` | Whether to display a divider line below the header. | `true` |
+| `showSearch` | `Boolean` | Whether to render the search input bar. | `true` |
+| `searchPlaceholder` | `String` | Placeholder text inside search bar. | `"Search for..."` |
+| `searchQuery` | `String?` | External controlled search query string. | `null` |
+| `onSearchChanged` | `((String) -> Unit)?` | Callback fired when search query changes. | `null` |
+| `autoFilterOnSearch` | `Boolean` | Automatically filters sections and items based on search input. | `true` |
+| `sections` | `List<Ux4gSideMenuSection>?` | List of navigation sections containing navigation items. | `null` (uses default sections) |
+| `items` | `List<Ux4gSideMenuItem>?` | Flat list of navigation items (wrapped in single section automatically). | `null` |
+| `selectedKey` | `String?` | Key of the currently active navigation item. | `null` |
+| `defaultSelectedKey` | `String?` | Initial selected key when uncontrolled. | `"dashboard"` |
+| `onItemSelected` | `((Ux4gSideMenuItem) -> Unit)?` | Callback triggered when a navigation item is tapped. | `null` |
+| `actionCard` | `Ux4gSideMenuActionCard?` | Configuration for embedded priority banner card. | `null` |
+| `footerItems` | `List<Ux4gSideMenuItem>?` | Secondary utility items placed in the footer row. | `null` |
+| `showSignOut` | `Boolean` | Whether to display the "Sign out" action item at bottom. | `true` |
+| `signOutLabel` | `String` | Label text for sign out action item. | `"Sign out"` |
+| `onSignOut` | `(() -> Unit)?` | Click listener callback for sign out action. | `null` |
+| `bottomBranding` | `Ux4gSideMenuBottomBranding?` | Official branding block displayed at bottom of drawer. | `null` |
+| `backgroundColor` | `Color?` | Surface background color of the drawer. | `null` (theme surface) |
+| `elevation` | `Dp` | Drop shadow elevation depth. | `16.dp` |
+
+---
+
+### `Ux4gSideMenuModal` Props
+
+| Prop | Type | Description | Default |
+| :--- | :--- | :--- | :--- |
+| `isOpen` | `Boolean` | Controls the visibility of the modal drawer. | **Required** |
+| `onDismissRequest` | `() -> Unit` | Callback invoked when scrim is tapped, swiped closed, or back button pressed. | **Required** |
+| `scrimColor` | `Color` | Color of the background scrim obscuring underlying content. | `Color(0x80000000)` |
+| `position` | `Ux4gSideMenuPosition` | Side from which the modal drawer slides out (`Left` or `Right`). | `Ux4gSideMenuPosition.Left` |
+| *(All `Ux4gSideMenu` props)* | — | Supports all header, search, item, action card, and footer properties. | — |
+
+---
+
+### `Ux4gSideMenuItem` Model
+
+| Property | Type | Description | Default |
+| :--- | :--- | :--- | :--- |
+| `key` | `String?` | Unique identifier string for navigation routing. | `null` |
+| `label` | `String` | Primary text label of the navigation item. | **Required** |
+| `subtitle` | `String?` | Secondary muted text label (used in department cards). | `null` |
+| `icon` | `Ux4gIcon?` | Icon token from `Ux4gIcons`. | `null` |
+| `iconVector` | `ImageVector?` | Icon vector from Material Icons. | `null` |
+| `badge` | `Any?` | Badge value: `Int` count (e.g. `9`), `String` (`"New"`), or `Boolean`. | `null` |
+| `badgeColor` | `Color?` | Badge background color. | `Ux4gColors.primary600` |
+| `active` | `Boolean?` | Explicit active selection state override. | `null` |
+| `defaultExpanded` | `Boolean` | Whether child sub-items are expanded by default. | `false` |
+| `children` | `List<Ux4gSideMenuItem>?` | Nested child items for expandable accordion menus. | `null` |
+| `avatarInitials` | `String?` | Avatar initials displayed when `isCard = true`. | `null` |
+| `tag` | `String?` | Chip badge tag displayed inside department card tiles. | `null` |
+| `isCard` | `Boolean` | Renders item as an elevated department switcher card. | `false` |
+| `onTap` | `(() -> Unit)?` | Custom tap click listener callback. | `null` |
+
+---
+
+### `Ux4gSideMenuActionCard` Model
+
+| Property | Type | Description | Default |
+| :--- | :--- | :--- | :--- |
+| `title` | `String` | Primary headline for urgent action. | **Required** |
+| `description` | `String` | Descriptive explanation text. | **Required** |
+| `buttonText` | `String` | Label for the action button CTA. | `"Verify now"` |
+| `onButtonPressed` | `(() -> Unit)?` | Click listener callback for the action button. | `null` |
+| `icon` | `ImageVector?` | Optional leading alert icon. | `Icons.Outlined.Shield` |
+
+---
+
+### `Ux4gSideMenuBottomBranding` Model
+
+| Property | Type | Description | Default |
+| :--- | :--- | :--- | :--- |
+| `title` | `String` | Official department or initiative name. | **Required** |
+| `subtitle` | `String?` | Division, portal, or government attribution. | `null` |
+| `logoComposable` | `(@Composable () -> Unit)?` | Custom emblem or seal composable. | `null` |
+
+---
+
+### Enums & Types
+
+#### `Ux4gSideMenuHeaderType`
+
+| Value | Description |
+| :--- | :--- |
+| `Standard` | Official government emblem, department title, and subtitle. |
+| `CompactUser` | User avatar initials, citizen/officer name, and email or division subtitle. |
+| `ProminentUser` | Full profile summary card with role tag, application stats, and "View profile" button. |
+| `Plain` | Clean title, subtitle, and close button without avatars or emblems. |
+| `None` | Omits the header block entirely. |
+
+#### `Ux4gSideMenuPosition`
+
+| Value | Description |
+| :--- | :--- |
+| `Left` | Drawer is docked at the left edge and slides in from the left. |
+| `Right` | Drawer is docked at the right edge and slides in from the right. |
