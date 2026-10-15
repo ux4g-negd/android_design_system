@@ -1,0 +1,298 @@
+---
+title: Rate your Experience
+description: Citizen feedback rating pattern utilizing the Ux4gFeedbackFormStar component suite with interactive 5-star rating, improvement tags, multiline feedback, and both default full-screen and elevated card-style variants
+---
+
+# Rate your Experience
+
+A post-service citizen feedback pattern that prompts citizens to evaluate their digital experience immediately following the completion of a public service workflow (such as document issuance, license renewal, or appointment booking).
+
+This pattern integrates the official **`Ux4gFeedbackFormStar`** component, featuring an interactive 5-star scoring scale with dynamic sentiment color thresholds (accent red for critical ratings 1–2, warm yellow for positive ratings 3–5), selectable improvement category chips (*"Content accuracy"*, *"Visual design"*, *"Performance"*, *"Navigation"*), an optional multiline comment field, and responsive submit and skip actions.
+
+The pattern is available in two structural configurations:
+1. **Default Style**: Clean, direct layout situated on a pure neutral background with `Ux4gAppHeader`, embedded `Ux4gFeedbackFormStar`, and Digital India branding.
+2. **Card Style**: An elevated presentation placed on a soft lavender background (`Ux4gColors.primary100` / `0xFFF2EFFF` in light mode, `primary800` in dark mode) with centered feedback form and footer attribution.
+
+---
+
+<h2><MIcon name="smartphone" /> Interactive Previews</h2>
+
+### 1. Default Style (Full Screen)
+
+Standard feedback collection screen on a white canvas with official portal header, structured `Ux4gFeedbackFormStar` component, responsive submit action, and citizen skip option.
+
+<ComponentPreview
+  title="Rate your Experience - Default"
+  category="Pattern · Jetpack Compose"
+  code={`package com.example.ux4g.patterns.feedback
+
+import androidx.compose.foundation.background
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.ux4g.designsystemv1.components.Ux4gAppHeader
+import com.ux4g.designsystemv1.components.Ux4gAppHeaderVariant
+import com.ux4g.designsystemv1.components.Ux4gDivider
+import com.ux4g.designsystemv1.components.feedback.Ux4gFeedbackFormStar
+import com.ux4g.designsystemv1.foundation.Ux4gColors
+import com.ux4g.designsystemv1.foundation.Ux4gSpace
+
+val defaultImprovementOptions = listOf(
+    "Content accuracy",
+    "Visual design",
+    "Performance",
+    "Navigation"
+)
+
+/**
+ * Rate your Experience Screen - Default Style
+ *
+ * Utilizes the Ux4gFeedbackFormStar component from the UX4G Design System.
+ *
+ * @param onSubmit Invoked when citizen submits rating, selected tags, and comments
+ * @param onSkip Invoked when citizen skips feedback
+ */
+@Composable
+fun RateExperienceScreen(
+    onSubmit: (rating: Int, tags: List<String>, comment: String) -> Unit = { _, _, _ -> },
+    onSkip: () -> Unit = {}
+) {
+    val isDark = isSystemInDarkTheme()
+    val screenBackground = if (isDark) Ux4gColors.neutral900 else Ux4gColors.neutral0
+    val headerDividerColor = if (isDark) Ux4gColors.neutral700 else Ux4gColors.neutral300
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(screenBackground)
+    ) {
+        // App Header
+        Ux4gAppHeader(
+            title = "",
+            variant = Ux4gAppHeaderVariant.Light,
+            height = 64.dp,
+            horizontalPadding = Ux4gSpace.Space16
+        )
+        Ux4gDivider(
+            color = headerDividerColor,
+            thickness = 1.dp
+        )
+
+        Column(
+            modifier = Modifier
+                .weight(1f)
+                .verticalScroll(rememberScrollState())
+                .padding(horizontal = 16.dp, vertical = 20.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            // Star Feedback Form Component
+            Ux4gFeedbackFormStar(
+                modifier = Modifier.fillMaxWidth(),
+                title = "Rate your experience",
+                improvementTitle = "What can we improve?",
+                improvementOptions = defaultImprovementOptions,
+                commentPlaceholder = "Tell us more about your experience",
+                submitButtonText = "Submit",
+                skipButtonText = "Skip",
+                onSubmit = onSubmit,
+                onSkip = onSkip
+            )
+        }
+
+        // Powered by Digital India Footer
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = 16.dp),
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = "Powered by - Digital India",
+                style = TextStyle(
+                    fontSize = 11.sp,
+                    color = Color(0xFF6B7280),
+                    fontWeight = FontWeight.Medium
+                )
+            )
+        }
+    }
+}
+
+@Preview(name = "Light Mode", showBackground = true)
+@Composable
+fun PreviewRateExperienceScreenLight() {
+    RateExperienceScreen()
+}
+
+@Preview(name = "Dark Mode", showBackground = true)
+@Composable
+fun PreviewRateExperienceScreenDark() {
+    RateExperienceScreen()
+}`}
+>
+  <div className="flex flex-col items-center justify-center py-2">
+    <img
+      src="/images/patterns/rate_your_experience/rate_your_experience.svg"
+      alt="UX4G Rate your Experience Default Pattern Preview"
+      className="max-w-full rounded-xl border border-border/60 shadow-sm"
+    />
+  </div>
+</ComponentPreview>
+
+---
+
+### 2. Card Style (Contained Card)
+
+Card-contained rating variant situated on a soft lavender canvas (`Ux4gColors.primary100`) with the official `Ux4gFeedbackFormStar` component and citizen controls.
+
+<ComponentPreview
+  title="Rate your Experience - Card Style"
+  category="Pattern · Jetpack Compose"
+  code={`package com.example.ux4g.patterns.feedback
+
+import androidx.compose.foundation.background
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.ux4g.designsystemv1.components.Ux4gAppHeader
+import com.ux4g.designsystemv1.components.Ux4gAppHeaderVariant
+import com.ux4g.designsystemv1.components.Ux4gDivider
+import com.ux4g.designsystemv1.components.feedback.Ux4gFeedbackFormStar
+import com.ux4g.designsystemv1.foundation.Ux4gColors
+import com.ux4g.designsystemv1.foundation.Ux4gSpace
+
+val cardImprovementOptions = listOf(
+    "Content accuracy",
+    "Visual design",
+    "Performance",
+    "Navigation"
+)
+
+/**
+ * Rate your Experience Screen - Card Style Variant
+ *
+ * Hosted on a soft lavender canvas (Ux4gColors.primary100) using Ux4gFeedbackFormStar.
+ *
+ * @param onSubmit Invoked when citizen submits rating, selected tags, and comments
+ * @param onSkip Invoked when citizen skips feedback
+ */
+@Composable
+fun RateExperienceCardScreen(
+    onSubmit: (rating: Int, tags: List<String>, comment: String) -> Unit = { _, _, _ -> },
+    onSkip: () -> Unit = {}
+) {
+    val isDark = isSystemInDarkTheme()
+    val screenBackground = if (isDark) Ux4gColors.primary800 else Color(0xFFF2EFFF)
+    val headerDividerColor = if (isDark) Ux4gColors.neutral700 else Ux4gColors.neutral300
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(screenBackground)
+    ) {
+        // App Header
+        Ux4gAppHeader(
+            title = "",
+            variant = Ux4gAppHeaderVariant.Light,
+            height = 64.dp,
+            horizontalPadding = Ux4gSpace.Space16
+        )
+        Ux4gDivider(
+            color = headerDividerColor,
+            thickness = 1.dp
+        )
+
+        Column(
+            modifier = Modifier
+                .weight(1f)
+                .verticalScroll(rememberScrollState())
+                .padding(horizontal = 16.dp, vertical = 20.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            // Star Feedback Form Component
+            Ux4gFeedbackFormStar(
+                modifier = Modifier.fillMaxWidth(),
+                title = "Rate your experience",
+                improvementTitle = "What can we improve?",
+                improvementOptions = cardImprovementOptions,
+                commentPlaceholder = "Tell us more about your experience",
+                submitButtonText = "Submit",
+                skipButtonText = "Skip",
+                onSubmit = onSubmit,
+                onSkip = onSkip
+            )
+        }
+
+        // Powered by Digital India Footer
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = 16.dp),
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = "Powered by - Digital India",
+                style = TextStyle(
+                    fontSize = 11.sp,
+                    color = Color(0xFF6B7280),
+                    fontWeight = FontWeight.Medium
+                )
+            )
+        }
+    }
+}
+
+@Preview(name = "Card Style Light Mode", showBackground = true)
+@Composable
+fun PreviewRateExperienceCardScreenLight() {
+    RateExperienceCardScreen()
+}
+
+@Preview(name = "Card Style Dark Mode", showBackground = true)
+@Composable
+fun PreviewRateExperienceCardScreenDark() {
+    RateExperienceCardScreen()
+}`}
+>
+  <div className="flex flex-col items-center justify-center py-2">
+    <img
+      src="/images/patterns/rate_your_experience/rate_your_experience_cardstyle.svg"
+      alt="UX4G Rate your Experience Card Style Pattern Preview"
+      className="max-w-full rounded-xl border border-border/60 shadow-sm"
+    />
+  </div>
+</ComponentPreview>
