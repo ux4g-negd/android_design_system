@@ -1,0 +1,646 @@
+---
+title: FAQ Detail
+description: Structured citizen FAQ and troubleshooting disclosure pattern featuring hierarchical breadcrumbs, expandable accordion panels, and both default full-screen and elevated card-style variants
+---
+
+# FAQ Detail
+
+A contextual citizen assistance pattern that presents detailed troubleshooting guidance organized under specific public service categories (*Application Issues*, *Documents and Uploads*, *Payments and Fees*).
+
+The pattern includes hierarchical breadcrumbs (`Home > Help > Application Issues`) that anchor citizens within the knowledge taxonomy, coupled with an interactive accordion list (`Ux4gAccordionGroup`). Citizens can expand individual questions to read step-by-step procedures, SLA expectations, and appeal mechanisms without being overwhelmed by dense text walls.
+
+The pattern is available in two structural configurations:
+1. **Default Style**: Clean, direct layout situated on a neutral white canvas featuring the official government portal header, breadcrumb navigation, expandable question accordion with dividers, and Digital India branding.
+2. **Card Style**: An elevated card variant situated on a soft lavender canvas (`0xFFE2DCFF` / `Ux4gColors.primary100` in light mode, `primary800` in dark mode) with enclosed card container and footer attribution.
+
+---
+
+<h2><MIcon name="smartphone" /> Interactive Previews</h2>
+
+### 1. Default Style (Full Screen)
+
+Standard citizen assistance layout on a clean neutral background with portal header, breadcrumbs, and expandable FAQ accordions.
+
+<ComponentPreview
+  title="FAQ Detail - Default"
+  category="Pattern · Jetpack Compose"
+  code={`package com.example.ux4g.patterns.support
+
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkVertically
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
+import androidx.compose.material.icons.filled.KeyboardArrowDown
+import androidx.compose.material.icons.filled.KeyboardArrowUp
+import androidx.compose.material.icons.outlined.Home
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.ux4g.designsystemv1.components.Ux4gAppHeader
+import com.ux4g.designsystemv1.components.Ux4gAppHeaderVariant
+import com.ux4g.designsystemv1.components.Ux4gDivider
+import com.ux4g.designsystemv1.foundation.Ux4gColors
+import com.ux4g.designsystemv1.foundation.Ux4gSpace
+
+/**
+ * FAQ Item Model
+ */
+data class FaqItem(
+    val id: String,
+    val question: String,
+    val answer: String
+)
+
+val defaultFaqList = listOf(
+    FaqItem(
+        id = "faq_track",
+        question = "How do I track my application ?",
+        answer = "Sign in to the portal, open My Applications, and tap your active application. The Status Tracker shows every milestone — Submitted, Documents Verified, Under Review, Decision. SLA timer shows expected completion date."
+    ),
+    FaqItem(
+        id = "faq_rejected",
+        question = "My application was rejected — what next?",
+        answer = "If your application was rejected, you can review the rejection reason in your application details. You may reapply after addressing the issues mentioned, or file a grievance if you believe the decision was incorrect."
+    ),
+    FaqItem(
+        id = "faq_upload",
+        question = "How do I upload missing documents?",
+        answer = "Go to My Applications, select the application, and tap \\"Upload Documents\\". You can upload scanned copies or photos of the required documents. Supported formats: PDF, JPG, PNG (max 5MB each)."
+    ),
+    FaqItem(
+        id = "faq_cert",
+        question = "When will I receive my certificate?",
+        answer = "Certificate issuance typically takes 7-15 working days after approval. You will receive an SMS and email notification once your certificate is ready for download."
+    ),
+    FaqItem(
+        id = "faq_officer",
+        question = "How do I contact a Revenue officer?",
+        answer = "You can contact the Revenue officer through the Help section in the app, or visit your nearest Tehsil office during working hours (10 AM - 5 PM, Mon-Fri)."
+    )
+)
+
+/**
+ * Color tokens for FAQ Detail Screen
+ */
+data class FaqDetailColors(
+    val screenBackground: Color,
+    val breadcrumbMuted: Color,
+    val breadcrumbActive: Color,
+    val questionColor: Color,
+    val answerColor: Color,
+    val chevronColor: Color,
+    val dividerColor: Color,
+    val headerDivider: Color
+)
+
+val LightFaqDetailColors = FaqDetailColors(
+    screenBackground = Ux4gColors.neutral0,
+    breadcrumbMuted = Ux4gColors.neutral600,
+    breadcrumbActive = Ux4gColors.primary600,
+    questionColor = Ux4gColors.neutral900,
+    answerColor = Ux4gColors.neutral700,
+    chevronColor = Ux4gColors.neutral700,
+    dividerColor = Ux4gColors.neutral200,
+    headerDivider = Ux4gColors.neutral300
+)
+
+val DarkFaqDetailColors = FaqDetailColors(
+    screenBackground = Ux4gColors.neutral900,
+    breadcrumbMuted = Ux4gColors.neutral400,
+    breadcrumbActive = Ux4gColors.primary300,
+    questionColor = Ux4gColors.neutral50,
+    answerColor = Ux4gColors.neutral300,
+    chevronColor = Ux4gColors.neutral400,
+    dividerColor = Ux4gColors.neutral700,
+    headerDivider = Ux4gColors.neutral700
+)
+
+/**
+ * FAQ Detail Screen - Default Style
+ *
+ * @param faqs List of FAQ items to display
+ * @param onBreadcrumbClick Invoked when citizen navigates via breadcrumbs
+ */
+@Composable
+fun FaqDetailScreen(
+    faqs: List<FaqItem> = defaultFaqList,
+    onBreadcrumbClick: (String) -> Unit = {}
+) {
+    val isDark = isSystemInDarkTheme()
+    val colors = if (isDark) DarkFaqDetailColors else LightFaqDetailColors
+
+    var expandedIndex by remember { mutableStateOf<Int?>(0) }
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(colors.screenBackground)
+    ) {
+        // App Header
+        Column {
+            Ux4gAppHeader(
+                title = "",
+                variant = Ux4gAppHeaderVariant.Light,
+                height = 64.dp,
+                horizontalPadding = Ux4gSpace.Space16
+            )
+            Ux4gDivider(
+                color = colors.headerDivider,
+                thickness = 1.dp
+            )
+        }
+
+        // Scrollable FAQ Content
+        Column(
+            modifier = Modifier
+                .weight(1f)
+                .verticalScroll(rememberScrollState())
+                .padding(horizontal = 16.dp, vertical = 20.dp)
+        ) {
+            // Breadcrumbs: Home > Help > Application Issues
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Icon(
+                    imageVector = Icons.Outlined.Home,
+                    contentDescription = "Home",
+                    tint = colors.breadcrumbMuted,
+                    modifier = Modifier
+                        .size(16.dp)
+                        .clickable { onBreadcrumbClick("Home") }
+                )
+                Spacer(modifier = Modifier.width(4.dp))
+                Text(
+                    text = "Home",
+                    style = TextStyle(
+                        fontSize = 14.sp,
+                        fontWeight = FontWeight.Medium,
+                        color = colors.breadcrumbMuted
+                    ),
+                    modifier = Modifier.clickable { onBreadcrumbClick("Home") }
+                )
+                Icon(
+                    imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                    contentDescription = null,
+                    tint = colors.breadcrumbMuted,
+                    modifier = Modifier
+                        .size(16.dp)
+                        .padding(horizontal = 2.dp)
+                )
+                Text(
+                    text = "Help",
+                    style = TextStyle(
+                        fontSize = 14.sp,
+                        fontWeight = FontWeight.Medium,
+                        color = colors.breadcrumbMuted
+                    ),
+                    modifier = Modifier.clickable { onBreadcrumbClick("Help") }
+                )
+                Icon(
+                    imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                    contentDescription = null,
+                    tint = colors.breadcrumbMuted,
+                    modifier = Modifier
+                        .size(16.dp)
+                        .padding(horizontal = 2.dp)
+                )
+                Text(
+                    text = "Application Issues",
+                    style = TextStyle(
+                        fontSize = 14.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = colors.breadcrumbActive
+                    )
+                )
+            }
+
+            Spacer(modifier = Modifier.height(24.dp))
+
+            // Expandable Accordion List
+            Column(modifier = Modifier.fillMaxWidth()) {
+                faqs.forEachIndexed { index, item ->
+                    val isExpanded = expandedIndex == index
+
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable {
+                                expandedIndex = if (isExpanded) null else index
+                            }
+                    ) {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(vertical = 14.dp),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.Top
+                        ) {
+                            Text(
+                                text = item.question,
+                                style = TextStyle(
+                                    fontSize = 15.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    color = colors.questionColor
+                                ),
+                                modifier = Modifier.weight(1f)
+                            )
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Icon(
+                                imageVector = if (isExpanded) Icons.Filled.KeyboardArrowUp else Icons.Filled.KeyboardArrowDown,
+                                contentDescription = if (isExpanded) "Collapse answer" else "Expand answer",
+                                tint = colors.chevronColor,
+                                modifier = Modifier.size(22.dp)
+                            )
+                        }
+
+                        AnimatedVisibility(
+                            visible = isExpanded,
+                            enter = fadeIn() + expandVertically(),
+                            exit = fadeOut() + shrinkVertically()
+                        ) {
+                            Text(
+                                text = item.answer,
+                                style = TextStyle(
+                                    fontSize = 14.sp,
+                                    color = colors.answerColor,
+                                    lineHeight = 22.sp
+                                ),
+                                modifier = Modifier.padding(bottom = 16.dp)
+                            )
+                        }
+
+                        Ux4gDivider(
+                            color = colors.dividerColor,
+                            thickness = 1.dp
+                        )
+                    }
+                }
+            }
+
+            Spacer(modifier = Modifier.height(24.dp))
+        }
+
+        // Powered by Digital India Footer
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = 16.dp),
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = "Powered by - Digital India",
+                style = TextStyle(
+                    fontSize = 11.sp,
+                    color = Color(0xFF6B7280),
+                    fontWeight = FontWeight.Medium
+                )
+            )
+        }
+    }
+}
+
+@Preview(name = "Light Mode", showBackground = true)
+@Composable
+fun PreviewFaqDetailScreenLight() {
+    FaqDetailScreen()
+}
+
+@Preview(name = "Dark Mode", showBackground = true)
+@Composable
+fun PreviewFaqDetailScreenDark() {
+    FaqDetailScreen()
+}`}
+>
+  <div className="flex flex-col items-center justify-center py-2">
+    <img
+      src="/images/patterns/faq_detail/faq_detail.svg"
+      alt="UX4G FAQ Detail Default Pattern Preview"
+      className="max-w-full rounded-xl border border-border/60 shadow-sm"
+    />
+  </div>
+</ComponentPreview>
+
+---
+
+### 2. Card Style (Contained Card)
+
+Card-contained support layout situated on a soft lavender canvas (`0xFFE2DCFF` / `Ux4gColors.primary100`) with breadcrumb and expandable FAQ accordions enclosed within a rounded surface.
+
+<ComponentPreview
+  title="FAQ Detail - Card Style"
+  category="Pattern · Jetpack Compose"
+  code={`package com.example.ux4g.patterns.support
+
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkVertically
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
+import androidx.compose.material.icons.filled.KeyboardArrowDown
+import androidx.compose.material.icons.filled.KeyboardArrowUp
+import androidx.compose.material.icons.outlined.Home
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.ux4g.designsystemv1.components.Ux4gAppHeader
+import com.ux4g.designsystemv1.components.Ux4gAppHeaderVariant
+import com.ux4g.designsystemv1.components.Ux4gDivider
+import com.ux4g.designsystemv1.foundation.Ux4gColors
+import com.ux4g.designsystemv1.foundation.Ux4gSpace
+
+/**
+ * FAQ Detail Screen - Card Style Variant
+ *
+ * @param faqs List of FAQ items to display
+ * @param onBreadcrumbClick Invoked when citizen navigates via breadcrumbs
+ */
+@Composable
+fun FaqDetailCardScreen(
+    faqs: List<FaqItem> = defaultFaqList,
+    onBreadcrumbClick: (String) -> Unit = {}
+) {
+    val isDark = isSystemInDarkTheme()
+
+    // Tinted lavender canvas vs contained white card
+    val screenBackground = if (isDark) Ux4gColors.primary800 else Color(0xFFE2DCFF)
+    val cardBackground = if (isDark) Ux4gColors.neutral800 else Ux4gColors.neutral0
+    val cardBorder = if (isDark) Ux4gColors.neutral700 else Ux4gColors.neutral200
+    val breadcrumbMuted = if (isDark) Ux4gColors.neutral400 else Ux4gColors.neutral600
+    val breadcrumbActive = if (isDark) Ux4gColors.primary300 else Ux4gColors.primary600
+    val questionColor = if (isDark) Ux4gColors.neutral50 else Ux4gColors.neutral900
+    val answerColor = if (isDark) Ux4gColors.neutral300 else Ux4gColors.neutral700
+    val chevronColor = if (isDark) Ux4gColors.neutral400 else Ux4gColors.neutral700
+    val dividerColor = if (isDark) Ux4gColors.neutral700 else Ux4gColors.neutral200
+    val headerDivider = if (isDark) Ux4gColors.neutral700 else Ux4gColors.neutral300
+
+    var expandedIndex by remember { mutableStateOf<Int?>(0) }
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(screenBackground)
+    ) {
+        // App Header
+        Column {
+            Ux4gAppHeader(
+                title = "",
+                variant = Ux4gAppHeaderVariant.Light,
+                height = 64.dp,
+                horizontalPadding = Ux4gSpace.Space16
+            )
+            Ux4gDivider(
+                color = headerDivider,
+                thickness = 1.dp
+            )
+        }
+
+        // Scrollable Card Container
+        Column(
+            modifier = Modifier
+                .weight(1f)
+                .verticalScroll(rememberScrollState())
+                .padding(horizontal = 16.dp, vertical = 20.dp)
+        ) {
+            // Elevated Main Card
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .shadow(elevation = 6.dp, shape = RoundedCornerShape(16.dp))
+                    .clip(RoundedCornerShape(16.dp))
+                    .background(cardBackground)
+                    .border(1.dp, cardBorder, RoundedCornerShape(16.dp))
+                    .padding(20.dp)
+            ) {
+                Column {
+                    // Breadcrumbs: Home > Help > Application Issues
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Icon(
+                            imageVector = Icons.Outlined.Home,
+                            contentDescription = "Home",
+                            tint = breadcrumbMuted,
+                            modifier = Modifier
+                                .size(16.dp)
+                                .clickable { onBreadcrumbClick("Home") }
+                        )
+                        Spacer(modifier = Modifier.width(4.dp))
+                        Text(
+                            text = "Home",
+                            style = TextStyle(
+                                fontSize = 14.sp,
+                                fontWeight = FontWeight.Medium,
+                                color = breadcrumbMuted
+                            ),
+                            modifier = Modifier.clickable { onBreadcrumbClick("Home") }
+                        )
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                            contentDescription = null,
+                            tint = breadcrumbMuted,
+                            modifier = Modifier
+                                .size(16.dp)
+                                .padding(horizontal = 2.dp)
+                        )
+                        Text(
+                            text = "Help",
+                            style = TextStyle(
+                                fontSize = 14.sp,
+                                fontWeight = FontWeight.Medium,
+                                color = breadcrumbMuted
+                            ),
+                            modifier = Modifier.clickable { onBreadcrumbClick("Help") }
+                        )
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                            contentDescription = null,
+                            tint = breadcrumbMuted,
+                            modifier = Modifier
+                                .size(16.dp)
+                                .padding(horizontal = 2.dp)
+                        )
+                        Text(
+                            text = "Application Issues",
+                            style = TextStyle(
+                                fontSize = 14.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = breadcrumbActive
+                            )
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.height(24.dp))
+
+                    // Accordion List Inside Card
+                    Column(modifier = Modifier.fillMaxWidth()) {
+                        faqs.forEachIndexed { index, item ->
+                            val isExpanded = expandedIndex == index
+
+                            Column(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .clickable {
+                                        expandedIndex = if (isExpanded) null else index
+                                    }
+                            ) {
+                                Row(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(vertical = 14.dp),
+                                    horizontalArrangement = Arrangement.SpaceBetween,
+                                    verticalAlignment = Alignment.Top
+                                ) {
+                                    Text(
+                                        text = item.question,
+                                        style = TextStyle(
+                                            fontSize = 15.sp,
+                                            fontWeight = FontWeight.Bold,
+                                            color = questionColor
+                                        ),
+                                        modifier = Modifier.weight(1f)
+                                    )
+                                    Spacer(modifier = Modifier.width(8.dp))
+                                    Icon(
+                                        imageVector = if (isExpanded) Icons.Filled.KeyboardArrowUp else Icons.Filled.KeyboardArrowDown,
+                                        contentDescription = if (isExpanded) "Collapse answer" else "Expand answer",
+                                        tint = chevronColor,
+                                        modifier = Modifier.size(22.dp)
+                                    )
+                                }
+
+                                AnimatedVisibility(
+                                    visible = isExpanded,
+                                    enter = fadeIn() + expandVertically(),
+                                    exit = fadeOut() + shrinkVertically()
+                                ) {
+                                    Text(
+                                        text = item.answer,
+                                        style = TextStyle(
+                                            fontSize = 14.sp,
+                                            color = answerColor,
+                                            lineHeight = 22.sp
+                                        ),
+                                        modifier = Modifier.padding(bottom = 16.dp)
+                                    )
+                                }
+
+                                Ux4gDivider(
+                                    color = dividerColor,
+                                    thickness = 1.dp
+                                )
+                            }
+                        }
+                    }
+                }
+            }
+
+            Spacer(modifier = Modifier.height(20.dp))
+        }
+
+        // Powered by Digital India Footer
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = 16.dp),
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = "Powered by - Digital India",
+                style = TextStyle(
+                    fontSize = 11.sp,
+                    color = Color(0xFF6B7280),
+                    fontWeight = FontWeight.Medium
+                )
+            )
+        }
+    }
+}
+
+@Preview(name = "Card Style Light Mode", showBackground = true)
+@Composable
+fun PreviewFaqDetailCardScreenLight() {
+    FaqDetailCardScreen()
+}
+
+@Preview(name = "Card Style Dark Mode", showBackground = true)
+@Composable
+fun PreviewFaqDetailCardScreenDark() {
+    FaqDetailCardScreen()
+}`}
+>
+  <div className="flex flex-col items-center justify-center py-2">
+    <img
+      src="/images/patterns/faq_detail/faq_detail_cardstyle.svg"
+      alt="UX4G FAQ Detail Card Style Pattern Preview"
+      className="max-w-full rounded-xl border border-border/60 shadow-sm"
+    />
+  </div>
+</ComponentPreview>

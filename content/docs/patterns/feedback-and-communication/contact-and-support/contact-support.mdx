@@ -1,0 +1,642 @@
+---
+title: Contact Support
+description: Comprehensive multi-channel citizen support directory pattern featuring phone, live chat, email, CSC walk-in channels, and both default full-screen and elevated card-style variants
+---
+
+# Contact Support
+
+A multi-channel assistance directory pattern that provides citizens with multiple accessible touchpoints for resolving escalations, clarifying procedural queries, and obtaining personalized support.
+
+The pattern organizes support avenues into distinct channel cards—toll-free telephone support, real-time live chat with SLA wait indicators, asynchronous email inquiries, and physical Common Service Centre (CSC) walk-in locator buttons—alongside an integrated grievance escalation link (*"File a complaint about this portal"*).
+
+The pattern is available in two structural configurations:
+1. **Default Style**: Clean, direct layout situated on a neutral white canvas featuring the official government portal header, channel action cards with direct CTAs, and Digital India branding.
+2. **Card Style**: An elevated card variant situated on a soft lavender canvas (`0xFFE2DCFF` / `Ux4gColors.primary100` in light mode, `primary800` in dark mode) with enclosed card container and footer attribution.
+
+---
+
+<h2><MIcon name="smartphone" /> Interactive Previews</h2>
+
+### 1. Default Style (Full Screen)
+
+Standard citizen assistance layout on a clean neutral background with portal header, multi-channel support cards, and escalation options.
+
+<ComponentPreview
+  title="Contact Support - Default"
+  category="Pattern · Jetpack Compose"
+  code={`package com.example.ux4g.patterns.support
+
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.ChatBubbleOutline
+import androidx.compose.material.icons.outlined.DirectionsWalk
+import androidx.compose.material.icons.outlined.MailOutline
+import androidx.compose.material.icons.outlined.Phone
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.ux4g.designsystemv1.components.Ux4gAppHeader
+import com.ux4g.designsystemv1.components.Ux4gAppHeaderVariant
+import com.ux4g.designsystemv1.components.Ux4gDivider
+import com.ux4g.designsystemv1.components.buttons.Ux4gButton
+import com.ux4g.designsystemv1.components.buttons.Ux4gButtonSize
+import com.ux4g.designsystemv1.components.buttons.Ux4gButtonVariant
+import com.ux4g.designsystemv1.foundation.Ux4gColors
+import com.ux4g.designsystemv1.foundation.Ux4gSpace
+
+/**
+ * Support Channel Data Model
+ */
+data class SupportChannel(
+    val id: String,
+    val title: String,
+    val subtitle: String,
+    val buttonText: String,
+    val isOutline: Boolean = false,
+    val icon: ImageVector
+)
+
+val defaultSupportChannels = listOf(
+    SupportChannel(
+        id = "phone",
+        title = "Phone Support",
+        subtitle = "1800-XXX-XXXX · Toll free · Mon-Sat 9AM-6PM",
+        buttonText = "Call Now",
+        icon = Icons.Outlined.Phone
+    ),
+    SupportChannel(
+        id = "chat",
+        title = "Live Chat",
+        subtitle = "Available now · Estimated wait 1-2 minutes",
+        buttonText = "Start Chat",
+        icon = Icons.Outlined.ChatBubbleOutline
+    ),
+    SupportChannel(
+        id = "email",
+        title = "Email Support",
+        subtitle = "Response within 2 working days",
+        buttonText = "Send Email",
+        icon = Icons.Outlined.MailOutline
+    ),
+    SupportChannel(
+        id = "csc",
+        title = "Walk-in Centre",
+        subtitle = "Visit your nearest Common Service Centre",
+        buttonText = "Find CSC",
+        isOutline = true,
+        icon = Icons.Outlined.DirectionsWalk
+    )
+)
+
+/**
+ * Color tokens for Contact Support Screen
+ */
+data class ContactSupportColors(
+    val screenBackground: Color,
+    val titleColor: Color,
+    val subtitleColor: Color,
+    val cardBackground: Color,
+    val cardBorder: Color,
+    val iconBgColor: Color,
+    val iconTintColor: Color,
+    val channelTitleColor: Color,
+    val channelSubtitleColor: Color,
+    val complaintLinkColor: Color,
+    val headerDivider: Color
+)
+
+val LightContactSupportColors = ContactSupportColors(
+    screenBackground = Ux4gColors.neutral0,
+    titleColor = Ux4gColors.neutral900,
+    subtitleColor = Ux4gColors.neutral700,
+    cardBackground = Ux4gColors.neutral0,
+    cardBorder = Ux4gColors.neutral200,
+    iconBgColor = Color(0xFFEDE9FE),
+    iconTintColor = Color(0xFF432CBB),
+    channelTitleColor = Ux4gColors.neutral900,
+    channelSubtitleColor = Ux4gColors.neutral700,
+    complaintLinkColor = Color(0xFF432CBB),
+    headerDivider = Ux4gColors.neutral300
+)
+
+val DarkContactSupportColors = ContactSupportColors(
+    screenBackground = Ux4gColors.neutral900,
+    titleColor = Ux4gColors.neutral50,
+    subtitleColor = Ux4gColors.neutral300,
+    cardBackground = Ux4gColors.neutral800,
+    cardBorder = Ux4gColors.neutral700,
+    iconBgColor = Ux4gColors.primary900,
+    iconTintColor = Ux4gColors.primary300,
+    channelTitleColor = Ux4gColors.neutral50,
+    channelSubtitleColor = Ux4gColors.neutral400,
+    complaintLinkColor = Ux4gColors.primary300,
+    headerDivider = Ux4gColors.neutral700
+)
+
+/**
+ * Contact Support Screen - Default Style
+ *
+ * @param channels List of customer support channels
+ * @param onChannelAction Invoked when citizen taps a channel CTA
+ * @param onComplaintClick Invoked when citizen taps complaint link
+ */
+@Composable
+fun ContactSupportScreen(
+    channels: List<SupportChannel> = defaultSupportChannels,
+    onChannelAction: (SupportChannel) -> Unit = {},
+    onComplaintClick: () -> Unit = {}
+) {
+    val isDark = isSystemInDarkTheme()
+    val colors = if (isDark) DarkContactSupportColors else LightContactSupportColors
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(colors.screenBackground)
+    ) {
+        // App Header
+        Column {
+            Ux4gAppHeader(
+                title = "",
+                variant = Ux4gAppHeaderVariant.Light,
+                height = 64.dp,
+                horizontalPadding = Ux4gSpace.Space16
+            )
+            Ux4gDivider(
+                color = colors.headerDivider,
+                thickness = 1.dp
+            )
+        }
+
+        // Scrollable Support Directory Content
+        Column(
+            modifier = Modifier
+                .weight(1f)
+                .verticalScroll(rememberScrollState())
+                .padding(horizontal = 16.dp, vertical = 20.dp)
+        ) {
+            // Heading & Subtitle
+            Text(
+                text = "Still need help?",
+                style = TextStyle(
+                    fontSize = 22.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = colors.titleColor
+                )
+            )
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            Text(
+                text = "Contact our support team — we are here to help.",
+                style = TextStyle(
+                    fontSize = 14.sp,
+                    color = colors.subtitleColor,
+                    lineHeight = 20.sp
+                )
+            )
+
+            Spacer(modifier = Modifier.height(24.dp))
+
+            // Channel Cards List
+            channels.forEach { channel ->
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .shadow(elevation = 2.dp, shape = RoundedCornerShape(10.dp))
+                        .clip(RoundedCornerShape(10.dp))
+                        .background(colors.cardBackground)
+                        .border(1.dp, colors.cardBorder, RoundedCornerShape(10.dp))
+                        .padding(14.dp)
+                ) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        // Circular Icon Badge
+                        Box(
+                            modifier = Modifier
+                                .size(40.dp)
+                                .clip(CircleShape)
+                                .background(colors.iconBgColor),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Icon(
+                                imageVector = channel.icon,
+                                contentDescription = channel.title,
+                                tint = colors.iconTintColor,
+                                modifier = Modifier.size(20.dp)
+                            )
+                        }
+
+                        Spacer(modifier = Modifier.width(12.dp))
+
+                        // Title & Subtitle Info
+                        Column(modifier = Modifier.weight(1f)) {
+                            Text(
+                                text = channel.title,
+                                style = TextStyle(
+                                    fontSize = 14.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    color = colors.channelTitleColor
+                                )
+                            )
+                            Spacer(modifier = Modifier.height(2.dp))
+                            Text(
+                                text = channel.subtitle,
+                                style = TextStyle(
+                                    fontSize = 12.sp,
+                                    color = colors.channelSubtitleColor,
+                                    lineHeight = 16.sp
+                                )
+                            )
+                        }
+
+                        Spacer(modifier = Modifier.width(8.dp))
+
+                        // Action Button
+                        Ux4gButton(
+                            text = channel.buttonText,
+                            onClick = { onChannelAction(channel) },
+                            variant = if (channel.isOutline) Ux4gButtonVariant.Outline else Ux4gButtonVariant.Primary,
+                            size = Ux4gButtonSize.Small
+                        )
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(12.dp))
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // File a Complaint Link
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 8.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = "File a complaint about this portal",
+                    style = TextStyle(
+                        fontSize = 15.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = colors.complaintLinkColor
+                    ),
+                    modifier = Modifier.clickable(onClick = onComplaintClick)
+                )
+            }
+
+            Spacer(modifier = Modifier.height(24.dp))
+        }
+
+        // Powered by Digital India Footer
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = 16.dp),
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = "Powered by - Digital India",
+                style = TextStyle(
+                    fontSize = 11.sp,
+                    color = Color(0xFF6B7280),
+                    fontWeight = FontWeight.Medium
+                )
+            )
+        }
+    }
+}
+
+@Preview(name = "Light Mode", showBackground = true)
+@Composable
+fun PreviewContactSupportScreenLight() {
+    ContactSupportScreen()
+}
+
+@Preview(name = "Dark Mode", showBackground = true)
+@Composable
+fun PreviewContactSupportScreenDark() {
+    ContactSupportScreen()
+}`}
+>
+  <div className="flex flex-col items-center justify-center py-2">
+    <img
+      src="/images/patterns/contact_support/contact_support.svg"
+      alt="UX4G Contact Support Default Pattern Preview"
+      className="max-w-full rounded-xl border border-border/60 shadow-sm"
+    />
+  </div>
+</ComponentPreview>
+
+---
+
+### 2. Card Style (Contained Card)
+
+Card-contained support layout situated on a soft lavender canvas (`0xFFE2DCFF` / `Ux4gColors.primary100`) with multi-channel touchpoints enclosed within a rounded surface.
+
+<ComponentPreview
+  title="Contact Support - Card Style"
+  category="Pattern · Jetpack Compose"
+  code={`package com.example.ux4g.patterns.support
+
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.ChatBubbleOutline
+import androidx.compose.material.icons.outlined.DirectionsWalk
+import androidx.compose.material.icons.outlined.MailOutline
+import androidx.compose.material.icons.outlined.Phone
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.ux4g.designsystemv1.components.Ux4gAppHeader
+import com.ux4g.designsystemv1.components.Ux4gAppHeaderVariant
+import com.ux4g.designsystemv1.components.Ux4gDivider
+import com.ux4g.designsystemv1.components.buttons.Ux4gButton
+import com.ux4g.designsystemv1.components.buttons.Ux4gButtonSize
+import com.ux4g.designsystemv1.components.buttons.Ux4gButtonVariant
+import com.ux4g.designsystemv1.foundation.Ux4gColors
+import com.ux4g.designsystemv1.foundation.Ux4gSpace
+
+/**
+ * Contact Support Screen - Card Style Variant
+ *
+ * @param channels List of customer support channels
+ * @param onChannelAction Invoked when citizen taps a channel CTA
+ * @param onComplaintClick Invoked when citizen taps complaint link
+ */
+@Composable
+fun ContactSupportCardScreen(
+    channels: List<SupportChannel> = defaultSupportChannels,
+    onChannelAction: (SupportChannel) -> Unit = {},
+    onComplaintClick: () -> Unit = {}
+) {
+    val isDark = isSystemInDarkTheme()
+
+    // Tinted lavender canvas vs contained white card
+    val screenBackground = if (isDark) Ux4gColors.primary800 else Color(0xFFE2DCFF)
+    val cardBackground = if (isDark) Ux4gColors.neutral800 else Ux4gColors.neutral0
+    val cardBorder = if (isDark) Ux4gColors.neutral700 else Ux4gColors.neutral200
+    val titleColor = if (isDark) Ux4gColors.neutral50 else Ux4gColors.neutral900
+    val subtitleColor = if (isDark) Ux4gColors.neutral300 else Ux4gColors.neutral700
+    val innerCardBg = if (isDark) Ux4gColors.neutral900 else Ux4gColors.neutral50
+    val innerCardBorder = if (isDark) Ux4gColors.neutral700 else Ux4gColors.neutral200
+    val iconBgColor = if (isDark) Ux4gColors.primary900 else Color(0xFFEDE9FE)
+    val iconTintColor = if (isDark) Ux4gColors.primary300 else Color(0xFF432CBB)
+    val channelTitleColor = if (isDark) Ux4gColors.neutral50 else Ux4gColors.neutral900
+    val channelSubtitleColor = if (isDark) Ux4gColors.neutral400 else Ux4gColors.neutral700
+    val complaintLinkColor = if (isDark) Ux4gColors.primary300 else Color(0xFF432CBB)
+    val headerDivider = if (isDark) Ux4gColors.neutral700 else Ux4gColors.neutral300
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(screenBackground)
+    ) {
+        // App Header
+        Column {
+            Ux4gAppHeader(
+                title = "",
+                variant = Ux4gAppHeaderVariant.Light,
+                height = 64.dp,
+                horizontalPadding = Ux4gSpace.Space16
+            )
+            Ux4gDivider(
+                color = headerDivider,
+                thickness = 1.dp
+            )
+        }
+
+        // Scrollable Area Containing Elevated Card
+        Column(
+            modifier = Modifier
+                .weight(1f)
+                .verticalScroll(rememberScrollState())
+                .padding(horizontal = 16.dp, vertical = 20.dp)
+        ) {
+            // Elevated Main Card Container
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .shadow(elevation = 6.dp, shape = RoundedCornerShape(16.dp))
+                    .clip(RoundedCornerShape(16.dp))
+                    .background(cardBackground)
+                    .border(1.dp, cardBorder, RoundedCornerShape(16.dp))
+                    .padding(20.dp)
+            ) {
+                Column {
+                    // Heading & Subtitle
+                    Text(
+                        text = "Still need help?",
+                        style = TextStyle(
+                            fontSize = 22.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = titleColor
+                        )
+                    )
+
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    Text(
+                        text = "Contact our support team — we are here to help.",
+                        style = TextStyle(
+                            fontSize = 14.sp,
+                            color = subtitleColor,
+                            lineHeight = 20.sp
+                        )
+                    )
+
+                    Spacer(modifier = Modifier.height(24.dp))
+
+                    // Nested Support Channel Cards
+                    channels.forEach { channel ->
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clip(RoundedCornerShape(10.dp))
+                                .background(innerCardBg)
+                                .border(1.dp, innerCardBorder, RoundedCornerShape(10.dp))
+                                .padding(14.dp)
+                        ) {
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                // Circular Icon Badge
+                                Box(
+                                    modifier = Modifier
+                                        .size(40.dp)
+                                        .clip(CircleShape)
+                                        .background(iconBgColor),
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    Icon(
+                                        imageVector = channel.icon,
+                                        contentDescription = channel.title,
+                                        tint = iconTintColor,
+                                        modifier = Modifier.size(20.dp)
+                                    )
+                                }
+
+                                Spacer(modifier = Modifier.width(12.dp))
+
+                                // Title & Subtitle Info
+                                Column(modifier = Modifier.weight(1f)) {
+                                    Text(
+                                        text = channel.title,
+                                        style = TextStyle(
+                                            fontSize = 14.sp,
+                                            fontWeight = FontWeight.Bold,
+                                            color = channelTitleColor
+                                        )
+                                    )
+                                    Spacer(modifier = Modifier.height(2.dp))
+                                    Text(
+                                        text = channel.subtitle,
+                                        style = TextStyle(
+                                            fontSize = 12.sp,
+                                            color = channelSubtitleColor,
+                                            lineHeight = 16.sp
+                                        )
+                                    )
+                                }
+
+                                Spacer(modifier = Modifier.width(8.dp))
+
+                                // Action Button
+                                Ux4gButton(
+                                    text = channel.buttonText,
+                                    onClick = { onChannelAction(channel) },
+                                    variant = if (channel.isOutline) Ux4gButtonVariant.Outline else Ux4gButtonVariant.Primary,
+                                    size = Ux4gButtonSize.Small
+                                )
+                            }
+                        }
+
+                        Spacer(modifier = Modifier.height(12.dp))
+                    }
+
+                    Spacer(modifier = Modifier.height(16.dp))
+
+                    // File a Complaint Link
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 8.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            text = "File a complaint about this portal",
+                            style = TextStyle(
+                                fontSize = 15.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = complaintLinkColor
+                            ),
+                            modifier = Modifier.clickable(onClick = onComplaintClick)
+                        )
+                    }
+                }
+            }
+
+            Spacer(modifier = Modifier.height(20.dp))
+        }
+
+        // Powered by Digital India Footer
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = 16.dp),
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = "Powered by - Digital India",
+                style = TextStyle(
+                    fontSize = 11.sp,
+                    color = Color(0xFF6B7280),
+                    fontWeight = FontWeight.Medium
+                )
+            )
+        }
+    }
+}
+
+@Preview(name = "Card Style Light Mode", showBackground = true)
+@Composable
+fun PreviewContactSupportCardScreenLight() {
+    ContactSupportCardScreen()
+}
+
+@Preview(name = "Card Style Dark Mode", showBackground = true)
+@Composable
+fun PreviewContactSupportCardScreenDark() {
+    ContactSupportCardScreen()
+}`}
+>
+  <div className="flex flex-col items-center justify-center py-2">
+    <img
+      src="/images/patterns/contact_support/contact_support_cardstyle.svg"
+      alt="UX4G Contact Support Card Style Pattern Preview"
+      className="max-w-full rounded-xl border border-border/60 shadow-sm"
+    />
+  </div>
+</ComponentPreview>

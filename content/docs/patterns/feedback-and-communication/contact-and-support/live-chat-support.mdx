@@ -1,0 +1,553 @@
+---
+title: Live Chat Support
+description: Real-time citizen support pattern featuring live agent queue status, estimated wait times, direct chat session launch, and both default full-screen and elevated card-style variants
+---
+
+# Live Chat Support
+
+A real-time citizen assistance pattern that connects citizens directly with public service support representatives to resolve immediate blockers during application submission or benefit claims.
+
+The pattern displays real-time agent availability and queue metrics (*"Queue agent available · Estimated wait time: 1-2 mins"*) inside a prominent status card. Citizens can initiate an immediate interactive chat session with a single tap or choose an asynchronous fallback channel (*"Email support instead"*).
+
+The pattern is available in two structural configurations:
+1. **Default Style**: Clean, direct layout situated on a neutral white canvas featuring the official government portal header, live queue status indicator, action buttons, and Digital India branding.
+2. **Card Style**: An elevated card variant situated on a soft lavender canvas (`0xFFE2DCFF` / `Ux4gColors.primary100` in light mode, `primary800` in dark mode) with enclosed card container and footer attribution.
+
+---
+
+<h2><MIcon name="smartphone" /> Interactive Previews</h2>
+
+### 1. Default Style (Full Screen)
+
+Standard citizen assistance layout on a clean neutral background with portal header, queue status indicator, and chat session actions.
+
+<ComponentPreview
+  title="Live Chat Support - Default"
+  category="Pattern · Jetpack Compose"
+  code={`package com.example.ux4g.patterns.support
+
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.CheckCircle
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.ux4g.designsystemv1.components.Ux4gAppHeader
+import com.ux4g.designsystemv1.components.Ux4gAppHeaderVariant
+import com.ux4g.designsystemv1.components.Ux4gDivider
+import com.ux4g.designsystemv1.components.buttons.Ux4gButton
+import com.ux4g.designsystemv1.components.buttons.Ux4gButtonSize
+import com.ux4g.designsystemv1.components.buttons.Ux4gButtonVariant
+import com.ux4g.designsystemv1.foundation.Ux4gColors
+import com.ux4g.designsystemv1.foundation.Ux4gSpace
+
+/**
+ * Color tokens for Live Chat Support Screen
+ */
+data class LiveChatColors(
+    val screenBackground: Color,
+    val titleColor: Color,
+    val subtitleColor: Color,
+    val bodyTextColor: Color,
+    val statusCardBg: Color,
+    val statusCardBorder: Color,
+    val statusIconColor: Color,
+    val statusTitleColor: Color,
+    val statusSubtitleColor: Color,
+    val headerDivider: Color
+)
+
+val LightLiveChatColors = LiveChatColors(
+    screenBackground = Ux4gColors.neutral0,
+    titleColor = Ux4gColors.neutral900,
+    subtitleColor = Ux4gColors.neutral700,
+    bodyTextColor = Ux4gColors.neutral700,
+    statusCardBg = Ux4gColors.green50,
+    statusCardBorder = Ux4gColors.green300,
+    statusIconColor = Ux4gColors.green600,
+    statusTitleColor = Ux4gColors.green800,
+    statusSubtitleColor = Ux4gColors.green800,
+    headerDivider = Ux4gColors.neutral300
+)
+
+val DarkLiveChatColors = LiveChatColors(
+    screenBackground = Ux4gColors.neutral900,
+    titleColor = Ux4gColors.neutral50,
+    subtitleColor = Ux4gColors.neutral300,
+    bodyTextColor = Ux4gColors.neutral300,
+    statusCardBg = Ux4gColors.green900,
+    statusCardBorder = Ux4gColors.green600,
+    statusIconColor = Ux4gColors.green400,
+    statusTitleColor = Ux4gColors.green300,
+    statusSubtitleColor = Ux4gColors.green300,
+    headerDivider = Ux4gColors.neutral700
+)
+
+/**
+ * Live Chat Support Screen - Default Style
+ *
+ * @param onStartChat Invoked when citizen taps "Start Chat Session"
+ * @param onEmailSupport Invoked when citizen taps "Email support instead"
+ */
+@Composable
+fun LiveChatSupportScreen(
+    onStartChat: () -> Unit = {},
+    onEmailSupport: () -> Unit = {}
+) {
+    val isDark = isSystemInDarkTheme()
+    val colors = if (isDark) DarkLiveChatColors else LightLiveChatColors
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(colors.screenBackground)
+    ) {
+        // App Header
+        Column {
+            Ux4gAppHeader(
+                title = "",
+                variant = Ux4gAppHeaderVariant.Light,
+                height = 64.dp,
+                horizontalPadding = Ux4gSpace.Space16
+            )
+            Ux4gDivider(
+                color = colors.headerDivider,
+                thickness = 1.dp
+            )
+        }
+
+        // Scrollable Chat Information Content
+        Column(
+            modifier = Modifier
+                .weight(1f)
+                .verticalScroll(rememberScrollState())
+                .padding(horizontal = 16.dp, vertical = 20.dp)
+        ) {
+            // Heading & Subtitle
+            Text(
+                text = "Live Chat Support",
+                style = TextStyle(
+                    fontSize = 22.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = colors.titleColor
+                )
+            )
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            Text(
+                text = "Chat with a support agent for real-time help with your application.",
+                style = TextStyle(
+                    fontSize = 14.sp,
+                    color = colors.subtitleColor,
+                    lineHeight = 20.sp
+                )
+            )
+
+            Spacer(modifier = Modifier.height(24.dp))
+
+            // Queue Status Card
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(12.dp))
+                    .background(colors.statusCardBg)
+                    .border(1.dp, colors.statusCardBorder, RoundedCornerShape(12.dp))
+                    .padding(14.dp)
+            ) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.Top
+                ) {
+                    Icon(
+                        imageVector = Icons.Filled.CheckCircle,
+                        contentDescription = "Agent available",
+                        tint = colors.statusIconColor,
+                        modifier = Modifier.size(22.dp)
+                    )
+
+                    Spacer(modifier = Modifier.width(10.dp))
+
+                    Column {
+                        Text(
+                            text = "Queue agent available",
+                            style = TextStyle(
+                                fontSize = 14.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = colors.statusTitleColor
+                            )
+                        )
+                        Spacer(modifier = Modifier.height(2.dp))
+                        Text(
+                            text = "Estimated wait time: 1-2 mins",
+                            style = TextStyle(
+                                fontSize = 12.sp,
+                                color = colors.statusSubtitleColor
+                            )
+                        )
+                    }
+                }
+            }
+
+            Spacer(modifier = Modifier.height(24.dp))
+
+            // Informational Description
+            Text(
+                text = "Connect now to discuss your application with our support team. Average response time under 2 minutes.",
+                style = TextStyle(
+                    fontSize = 14.sp,
+                    color = colors.bodyTextColor,
+                    lineHeight = 20.sp
+                )
+            )
+
+            Spacer(modifier = Modifier.height(32.dp))
+
+            // Action Buttons
+            Ux4gButton(
+                text = "Start Chat Session",
+                onClick = onStartChat,
+                variant = Ux4gButtonVariant.Primary,
+                size = Ux4gButtonSize.Large,
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            Spacer(modifier = Modifier.height(12.dp))
+
+            Ux4gButton(
+                text = "Email support instead",
+                onClick = onEmailSupport,
+                variant = Ux4gButtonVariant.Outline,
+                size = Ux4gButtonSize.Large,
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            Spacer(modifier = Modifier.height(24.dp))
+        }
+
+        // Powered by Digital India Footer
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = 16.dp),
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = "Powered by - Digital India",
+                style = TextStyle(
+                    fontSize = 11.sp,
+                    color = Color(0xFF6B7280),
+                    fontWeight = FontWeight.Medium
+                )
+            )
+        }
+    }
+}
+
+@Preview(name = "Light Mode", showBackground = true)
+@Composable
+fun PreviewLiveChatSupportScreenLight() {
+    LiveChatSupportScreen()
+}
+
+@Preview(name = "Dark Mode", showBackground = true)
+@Composable
+fun PreviewLiveChatSupportScreenDark() {
+    LiveChatSupportScreen()
+}`}
+>
+  <div className="flex flex-col items-center justify-center py-2">
+    <img
+      src="/images/patterns/live_chat_support/live_chat_support.svg"
+      alt="UX4G Live Chat Support Default Pattern Preview"
+      className="max-w-full rounded-xl border border-border/60 shadow-sm"
+    />
+  </div>
+</ComponentPreview>
+
+---
+
+### 2. Card Style (Contained Card)
+
+Card-contained support layout situated on a soft lavender canvas (`0xFFE2DCFF` / `Ux4gColors.primary100`) with agent queue status and launch buttons enclosed within a rounded surface.
+
+<ComponentPreview
+  title="Live Chat Support - Card Style"
+  category="Pattern · Jetpack Compose"
+  code={`package com.example.ux4g.patterns.support
+
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.CheckCircle
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.ux4g.designsystemv1.components.Ux4gAppHeader
+import com.ux4g.designsystemv1.components.Ux4gAppHeaderVariant
+import com.ux4g.designsystemv1.components.Ux4gDivider
+import com.ux4g.designsystemv1.components.buttons.Ux4gButton
+import com.ux4g.designsystemv1.components.buttons.Ux4gButtonSize
+import com.ux4g.designsystemv1.components.buttons.Ux4gButtonVariant
+import com.ux4g.designsystemv1.foundation.Ux4gColors
+import com.ux4g.designsystemv1.foundation.Ux4gSpace
+
+/**
+ * Live Chat Support Screen - Card Style Variant
+ *
+ * @param onStartChat Invoked when citizen taps "Start Chat Session"
+ * @param onEmailSupport Invoked when citizen taps "Email support instead"
+ */
+@Composable
+fun LiveChatSupportCardScreen(
+    onStartChat: () -> Unit = {},
+    onEmailSupport: () -> Unit = {}
+) {
+    val isDark = isSystemInDarkTheme()
+
+    // Tinted lavender canvas vs contained white card
+    val screenBackground = if (isDark) Ux4gColors.primary800 else Color(0xFFE2DCFF)
+    val cardBackground = if (isDark) Ux4gColors.neutral800 else Ux4gColors.neutral0
+    val cardBorder = if (isDark) Ux4gColors.neutral700 else Ux4gColors.neutral200
+    val titleColor = if (isDark) Ux4gColors.neutral50 else Ux4gColors.neutral900
+    val subtitleColor = if (isDark) Ux4gColors.neutral300 else Ux4gColors.neutral700
+    val bodyTextColor = if (isDark) Ux4gColors.neutral300 else Ux4gColors.neutral700
+    val statusCardBg = if (isDark) Ux4gColors.green900 else Ux4gColors.green50
+    val statusCardBorder = if (isDark) Ux4gColors.green600 else Ux4gColors.green300
+    val statusIconColor = if (isDark) Ux4gColors.green400 else Ux4gColors.green600
+    val statusTitleColor = if (isDark) Ux4gColors.green300 else Ux4gColors.green800
+    val statusSubtitleColor = if (isDark) Ux4gColors.green300 else Ux4gColors.green800
+    val headerDivider = if (isDark) Ux4gColors.neutral700 else Ux4gColors.neutral300
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(screenBackground)
+    ) {
+        // App Header
+        Column {
+            Ux4gAppHeader(
+                title = "",
+                variant = Ux4gAppHeaderVariant.Light,
+                height = 64.dp,
+                horizontalPadding = Ux4gSpace.Space16
+            )
+            Ux4gDivider(
+                color = headerDivider,
+                thickness = 1.dp
+            )
+        }
+
+        // Scrollable Area Containing Elevated Card
+        Column(
+            modifier = Modifier
+                .weight(1f)
+                .verticalScroll(rememberScrollState())
+                .padding(horizontal = 16.dp, vertical = 20.dp)
+        ) {
+            // Elevated Main Card Container
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .shadow(elevation = 6.dp, shape = RoundedCornerShape(16.dp))
+                    .clip(RoundedCornerShape(16.dp))
+                    .background(cardBackground)
+                    .border(1.dp, cardBorder, RoundedCornerShape(16.dp))
+                    .padding(20.dp)
+            ) {
+                Column {
+                    // Heading & Subtitle
+                    Text(
+                        text = "Live Chat Support",
+                        style = TextStyle(
+                            fontSize = 22.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = titleColor
+                        )
+                    )
+
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    Text(
+                        text = "Chat with a support agent for real-time help with your application.",
+                        style = TextStyle(
+                            fontSize = 14.sp,
+                            color = subtitleColor,
+                            lineHeight = 20.sp
+                        )
+                    )
+
+                    Spacer(modifier = Modifier.height(24.dp))
+
+                    // Queue Status Card
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clip(RoundedCornerShape(12.dp))
+                            .background(statusCardBg)
+                            .border(1.dp, statusCardBorder, RoundedCornerShape(12.dp))
+                            .padding(14.dp)
+                    ) {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            verticalAlignment = Alignment.Top
+                        ) {
+                            Icon(
+                                imageVector = Icons.Filled.CheckCircle,
+                                contentDescription = "Agent available",
+                                tint = statusIconColor,
+                                modifier = Modifier.size(22.dp)
+                            )
+
+                            Spacer(modifier = Modifier.width(10.dp))
+
+                            Column {
+                                Text(
+                                    text = "Queue agent available",
+                                    style = TextStyle(
+                                        fontSize = 14.sp,
+                                        fontWeight = FontWeight.Bold,
+                                        color = statusTitleColor
+                                    )
+                                )
+                                Spacer(modifier = Modifier.height(2.dp))
+                                Text(
+                                    text = "Estimated wait time: 1-2 mins",
+                                    style = TextStyle(
+                                        fontSize = 12.sp,
+                                        color = statusSubtitleColor
+                                    )
+                                )
+                            }
+                        }
+                    }
+
+                    Spacer(modifier = Modifier.height(24.dp))
+
+                    // Informational Description
+                    Text(
+                        text = "Connect now to discuss your application with our support team. Average response time under 2 minutes.",
+                        style = TextStyle(
+                            fontSize = 14.sp,
+                            color = bodyTextColor,
+                            lineHeight = 20.sp
+                        )
+                    )
+
+                    Spacer(modifier = Modifier.height(32.dp))
+
+                    // Action Buttons
+                    Ux4gButton(
+                        text = "Start Chat Session",
+                        onClick = onStartChat,
+                        variant = Ux4gButtonVariant.Primary,
+                        size = Ux4gButtonSize.Large,
+                        modifier = Modifier.fillMaxWidth()
+                    )
+
+                    Spacer(modifier = Modifier.height(12.dp))
+
+                    Ux4gButton(
+                        text = "Email support instead",
+                        onClick = onEmailSupport,
+                        variant = Ux4gButtonVariant.Outline,
+                        size = Ux4gButtonSize.Large,
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                }
+            }
+
+            Spacer(modifier = Modifier.height(20.dp))
+        }
+
+        // Powered by Digital India Footer
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = 16.dp),
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = "Powered by - Digital India",
+                style = TextStyle(
+                    fontSize = 11.sp,
+                    color = Color(0xFF6B7280),
+                    fontWeight = FontWeight.Medium
+                )
+            )
+        }
+    }
+}
+
+@Preview(name = "Card Style Light Mode", showBackground = true)
+@Composable
+fun PreviewLiveChatSupportCardScreenLight() {
+    LiveChatSupportCardScreen()
+}
+
+@Preview(name = "Card Style Dark Mode", showBackground = true)
+@Composable
+fun PreviewLiveChatSupportCardScreenDark() {
+    LiveChatSupportCardScreen()
+}`}
+>
+  <div className="flex flex-col items-center justify-center py-2">
+    <img
+      src="/images/patterns/live_chat_support/live_chat_support_cardstyle.svg"
+      alt="UX4G Live Chat Support Card Style Pattern Preview"
+      className="max-w-full rounded-xl border border-border/60 shadow-sm"
+    />
+  </div>
+</ComponentPreview>

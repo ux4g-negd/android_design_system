@@ -1,0 +1,562 @@
+---
+title: File a Complaint
+description: Official citizen grievance and complaint filing pattern featuring structured subject, category classification, detailed narrative textarea, and both default full-screen and elevated card-style variants
+---
+
+# File a Complaint
+
+An official grievance submission pattern that allows citizens to register formal complaints and service disputes directly with administrative authorities.
+
+The pattern captures structured incident metadata including a concise subject header (`Ux4gInputField`), grievance classification taxonomy (`Ux4gSelectionDropdown`), and an expansive multi-line narrative description (`Ux4gTextArea`) detailing the timeline, expectations, and nature of the bottleneck.
+
+The pattern is available in two structural configurations:
+1. **Default Style**: Clean, direct layout situated on a neutral white canvas featuring the official government portal header, structured grievance form, action buttons, and Digital India branding.
+2. **Card Style**: An elevated card variant situated on a soft lavender canvas (`0xFFE2DCFF` / `Ux4gColors.primary100` in light mode, `primary800` in dark mode) with enclosed card container and footer attribution.
+
+---
+
+<h2><MIcon name="smartphone" /> Interactive Previews</h2>
+
+### 1. Default Style (Full Screen)
+
+Standard citizen assistance layout on a clean neutral background with portal header, structured grievance intake fields, and submission actions.
+
+<ComponentPreview
+  title="File a Complaint - Default"
+  category="Pattern · Jetpack Compose"
+  code={`package com.example.ux4g.patterns.support
+
+import androidx.compose.foundation.background
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.ux4g.designsystemv1.components.Ux4gAppHeader
+import com.ux4g.designsystemv1.components.Ux4gAppHeaderVariant
+import com.ux4g.designsystemv1.components.Ux4gDivider
+import com.ux4g.designsystemv1.components.buttons.Ux4gButton
+import com.ux4g.designsystemv1.components.buttons.Ux4gButtonSize
+import com.ux4g.designsystemv1.components.buttons.Ux4gButtonVariant
+import com.ux4g.designsystemv1.components.dropdowns.Ux4gDropdownMode
+import com.ux4g.designsystemv1.components.dropdowns.Ux4gDropdownOption
+import com.ux4g.designsystemv1.components.dropdowns.Ux4gSelectionDropdown
+import com.ux4g.designsystemv1.components.inputfield.Ux4gInputField
+import com.ux4g.designsystemv1.components.textarea.Ux4gTextArea
+import com.ux4g.designsystemv1.foundation.Ux4gColors
+import com.ux4g.designsystemv1.foundation.Ux4gSpace
+
+/**
+ * Color tokens for File a Complaint Screen
+ */
+data class FileComplaintColors(
+    val screenBackground: Color,
+    val titleColor: Color,
+    val subtitleColor: Color,
+    val fieldLabelColor: Color,
+    val headerDivider: Color
+)
+
+val LightFileComplaintColors = FileComplaintColors(
+    screenBackground = Ux4gColors.neutral0,
+    titleColor = Ux4gColors.neutral900,
+    subtitleColor = Ux4gColors.neutral700,
+    fieldLabelColor = Ux4gColors.neutral900,
+    headerDivider = Ux4gColors.neutral300
+)
+
+val DarkFileComplaintColors = FileComplaintColors(
+    screenBackground = Ux4gColors.neutral900,
+    titleColor = Ux4gColors.neutral50,
+    subtitleColor = Ux4gColors.neutral300,
+    fieldLabelColor = Ux4gColors.neutral50,
+    headerDivider = Ux4gColors.neutral700
+)
+
+val complaintCategories = listOf(
+    Ux4gDropdownOption("1", "Application Processing Delay"),
+    Ux4gDropdownOption("2", "Technical Glitch or Error"),
+    Ux4gDropdownOption("3", "Officer Misconduct or Unresponsiveness"),
+    Ux4gDropdownOption("4", "Payment Failure or Billing Issue"),
+    Ux4gDropdownOption("5", "Incorrect Certificate or Document Data")
+)
+
+/**
+ * File a Complaint Screen - Default Style
+ *
+ * @param onSubmit Invoked when citizen submits complaint
+ * @param onCancel Invoked when citizen cancels
+ */
+@Composable
+fun FileComplaintScreen(
+    onSubmit: (subject: String, categoryId: String, description: String) -> Unit = { _, _, _ -> },
+    onCancel: () -> Unit = {}
+) {
+    val isDark = isSystemInDarkTheme()
+    val colors = if (isDark) DarkFileComplaintColors else LightFileComplaintColors
+
+    var subject by remember { mutableStateOf("") }
+    var selectedCategoryIds by remember { mutableStateOf<List<String>>(emptyList()) }
+    var description by remember { mutableStateOf("") }
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(colors.screenBackground)
+    ) {
+        // App Header
+        Column {
+            Ux4gAppHeader(
+                title = "",
+                variant = Ux4gAppHeaderVariant.Light,
+                height = 64.dp,
+                horizontalPadding = Ux4gSpace.Space16
+            )
+            Ux4gDivider(
+                color = colors.headerDivider,
+                thickness = 1.dp
+            )
+        }
+
+        // Scrollable Complaint Form Content
+        Column(
+            modifier = Modifier
+                .weight(1f)
+                .verticalScroll(rememberScrollState())
+                .padding(horizontal = 16.dp, vertical = 20.dp)
+        ) {
+            // Heading & Subtitle
+            Text(
+                text = "File a complaint",
+                style = TextStyle(
+                    fontSize = 22.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = colors.titleColor
+                )
+            )
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            Text(
+                text = "Submit your grievance regarding any portal service or transaction.",
+                style = TextStyle(
+                    fontSize = 14.sp,
+                    color = colors.subtitleColor,
+                    lineHeight = 20.sp
+                )
+            )
+
+            Spacer(modifier = Modifier.height(24.dp))
+
+            // Subject Input Field
+            Text(
+                text = "Subject",
+                style = TextStyle(
+                    fontSize = 13.sp,
+                    fontWeight = FontWeight.SemiBold,
+                    color = colors.fieldLabelColor
+                )
+            )
+            Spacer(modifier = Modifier.height(6.dp))
+            Ux4gInputField(
+                value = subject,
+                onValueChange = { subject = it },
+                placeholder = "Briefly describe the issue",
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            Spacer(modifier = Modifier.height(20.dp))
+
+            // Category Dropdown
+            Text(
+                text = "Category",
+                style = TextStyle(
+                    fontSize = 13.sp,
+                    fontWeight = FontWeight.SemiBold,
+                    color = colors.fieldLabelColor
+                )
+            )
+            Spacer(modifier = Modifier.height(6.dp))
+            Ux4gSelectionDropdown(
+                options = complaintCategories,
+                selectedOptionIds = selectedCategoryIds,
+                onSelectionChange = { selectedCategoryIds = it },
+                placeholder = "Select Category",
+                mode = Ux4gDropdownMode.Single,
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            Spacer(modifier = Modifier.height(20.dp))
+
+            // Description Text Area
+            Text(
+                text = "Description",
+                style = TextStyle(
+                    fontSize = 13.sp,
+                    fontWeight = FontWeight.SemiBold,
+                    color = colors.fieldLabelColor
+                )
+            )
+            Spacer(modifier = Modifier.height(6.dp))
+            Ux4gTextArea(
+                value = description,
+                onValueChange = { description = it },
+                placeholder = "Tell us what happened, when, and what you expect",
+                minLines = 4,
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            Spacer(modifier = Modifier.height(28.dp))
+
+            // Action Buttons
+            Ux4gButton(
+                text = "Submit complaint",
+                onClick = {
+                    onSubmit(subject, selectedCategoryIds.firstOrNull() ?: "", description)
+                },
+                variant = Ux4gButtonVariant.Primary,
+                size = Ux4gButtonSize.Large,
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            Spacer(modifier = Modifier.height(12.dp))
+
+            Ux4gButton(
+                text = "Cancel",
+                onClick = onCancel,
+                variant = Ux4gButtonVariant.Outline,
+                size = Ux4gButtonSize.Large,
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            Spacer(modifier = Modifier.height(24.dp))
+        }
+
+        // Powered by Digital India Footer
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = 16.dp),
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = "Powered by - Digital India",
+                style = TextStyle(
+                    fontSize = 11.sp,
+                    color = Color(0xFF6B7280),
+                    fontWeight = FontWeight.Medium
+                )
+            )
+        }
+    }
+}
+
+@Preview(name = "Light Mode", showBackground = true)
+@Composable
+fun PreviewFileComplaintScreenLight() {
+    FileComplaintScreen()
+}
+
+@Preview(name = "Dark Mode", showBackground = true)
+@Composable
+fun PreviewFileComplaintScreenDark() {
+    FileComplaintScreen()
+}`}
+>
+  <div className="flex flex-col items-center justify-center py-2">
+    <img
+      src="/images/patterns/file_a_complaint/file_a_complaint.svg"
+      alt="UX4G File a Complaint Default Pattern Preview"
+      className="max-w-full rounded-xl border border-border/60 shadow-sm"
+    />
+  </div>
+</ComponentPreview>
+
+---
+
+### 2. Card Style (Contained Card)
+
+Card-contained grievance filing layout situated on a soft lavender canvas (`0xFFE2DCFF` / `Ux4gColors.primary100`) with intake fields enclosed within a rounded surface.
+
+<ComponentPreview
+  title="File a Complaint - Card Style"
+  category="Pattern · Jetpack Compose"
+  code={`package com.example.ux4g.patterns.support
+
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.ux4g.designsystemv1.components.Ux4gAppHeader
+import com.ux4g.designsystemv1.components.Ux4gAppHeaderVariant
+import com.ux4g.designsystemv1.components.Ux4gDivider
+import com.ux4g.designsystemv1.components.buttons.Ux4gButton
+import com.ux4g.designsystemv1.components.buttons.Ux4gButtonSize
+import com.ux4g.designsystemv1.components.buttons.Ux4gButtonVariant
+import com.ux4g.designsystemv1.components.dropdowns.Ux4gDropdownMode
+import com.ux4g.designsystemv1.components.dropdowns.Ux4gSelectionDropdown
+import com.ux4g.designsystemv1.components.inputfield.Ux4gInputField
+import com.ux4g.designsystemv1.components.textarea.Ux4gTextArea
+import com.ux4g.designsystemv1.foundation.Ux4gColors
+import com.ux4g.designsystemv1.foundation.Ux4gSpace
+
+/**
+ * File a Complaint Screen - Card Style Variant
+ *
+ * @param onSubmit Invoked when citizen submits complaint
+ * @param onCancel Invoked when citizen cancels
+ */
+@Composable
+fun FileComplaintCardScreen(
+    onSubmit: (subject: String, categoryId: String, description: String) -> Unit = { _, _, _ -> },
+    onCancel: () -> Unit = {}
+) {
+    val isDark = isSystemInDarkTheme()
+
+    // Tinted lavender canvas vs contained white card
+    val screenBackground = if (isDark) Ux4gColors.primary800 else Color(0xFFE2DCFF)
+    val cardBackground = if (isDark) Ux4gColors.neutral800 else Ux4gColors.neutral0
+    val cardBorder = if (isDark) Ux4gColors.neutral700 else Ux4gColors.neutral200
+    val titleColor = if (isDark) Ux4gColors.neutral50 else Ux4gColors.neutral900
+    val subtitleColor = if (isDark) Ux4gColors.neutral300 else Ux4gColors.neutral700
+    val fieldLabelColor = if (isDark) Ux4gColors.neutral50 else Ux4gColors.neutral900
+    val headerDivider = if (isDark) Ux4gColors.neutral700 else Ux4gColors.neutral300
+
+    var subject by remember { mutableStateOf("") }
+    var selectedCategoryIds by remember { mutableStateOf<List<String>>(emptyList()) }
+    var description by remember { mutableStateOf("") }
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(screenBackground)
+    ) {
+        // App Header
+        Column {
+            Ux4gAppHeader(
+                title = "",
+                variant = Ux4gAppHeaderVariant.Light,
+                height = 64.dp,
+                horizontalPadding = Ux4gSpace.Space16
+            )
+            Ux4gDivider(
+                color = headerDivider,
+                thickness = 1.dp
+            )
+        }
+
+        // Scrollable Area Containing Elevated Card
+        Column(
+            modifier = Modifier
+                .weight(1f)
+                .verticalScroll(rememberScrollState())
+                .padding(horizontal = 16.dp, vertical = 20.dp)
+        ) {
+            // Elevated Main Card Container
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .shadow(elevation = 6.dp, shape = RoundedCornerShape(16.dp))
+                    .clip(RoundedCornerShape(16.dp))
+                    .background(cardBackground)
+                    .border(1.dp, cardBorder, RoundedCornerShape(16.dp))
+                    .padding(20.dp)
+            ) {
+                Column {
+                    // Heading & Subtitle
+                    Text(
+                        text = "File a complaint",
+                        style = TextStyle(
+                            fontSize = 22.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = titleColor
+                        )
+                    )
+
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    Text(
+                        text = "Submit your grievance regarding any portal service or transaction.",
+                        style = TextStyle(
+                            fontSize = 14.sp,
+                            color = subtitleColor,
+                            lineHeight = 20.sp
+                        )
+                    )
+
+                    Spacer(modifier = Modifier.height(24.dp))
+
+                    // Subject Field
+                    Text(
+                        text = "Subject",
+                        style = TextStyle(
+                            fontSize = 13.sp,
+                            fontWeight = FontWeight.SemiBold,
+                            color = fieldLabelColor
+                        )
+                    )
+                    Spacer(modifier = Modifier.height(6.dp))
+                    Ux4gInputField(
+                        value = subject,
+                        onValueChange = { subject = it },
+                        placeholder = "Briefly describe the issue",
+                        modifier = Modifier.fillMaxWidth()
+                    )
+
+                    Spacer(modifier = Modifier.height(20.dp))
+
+                    // Category Dropdown
+                    Text(
+                        text = "Category",
+                        style = TextStyle(
+                            fontSize = 13.sp,
+                            fontWeight = FontWeight.SemiBold,
+                            color = fieldLabelColor
+                        )
+                    )
+                    Spacer(modifier = Modifier.height(6.dp))
+                    Ux4gSelectionDropdown(
+                        options = complaintCategories,
+                        selectedOptionIds = selectedCategoryIds,
+                        onSelectionChange = { selectedCategoryIds = it },
+                        placeholder = "Select Category",
+                        mode = Ux4gDropdownMode.Single,
+                        modifier = Modifier.fillMaxWidth()
+                    )
+
+                    Spacer(modifier = Modifier.height(20.dp))
+
+                    // Description Field
+                    Text(
+                        text = "Description",
+                        style = TextStyle(
+                            fontSize = 13.sp,
+                            fontWeight = FontWeight.SemiBold,
+                            color = fieldLabelColor
+                        )
+                    )
+                    Spacer(modifier = Modifier.height(6.dp))
+                    Ux4gTextArea(
+                        value = description,
+                        onValueChange = { description = it },
+                        placeholder = "Tell us what happened, when, and what you expect",
+                        minLines = 4,
+                        modifier = Modifier.fillMaxWidth()
+                    )
+
+                    Spacer(modifier = Modifier.height(28.dp))
+
+                    // Action Buttons
+                    Ux4gButton(
+                        text = "Submit complaint",
+                        onClick = {
+                            onSubmit(subject, selectedCategoryIds.firstOrNull() ?: "", description)
+                        },
+                        variant = Ux4gButtonVariant.Primary,
+                        size = Ux4gButtonSize.Large,
+                        modifier = Modifier.fillMaxWidth()
+                    )
+
+                    Spacer(modifier = Modifier.height(12.dp))
+
+                    Ux4gButton(
+                        text = "Cancel",
+                        onClick = onCancel,
+                        variant = Ux4gButtonVariant.Outline,
+                        size = Ux4gButtonSize.Large,
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                }
+            }
+
+            Spacer(modifier = Modifier.height(20.dp))
+        }
+
+        // Powered by Digital India Footer
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = 16.dp),
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = "Powered by - Digital India",
+                style = TextStyle(
+                    fontSize = 11.sp,
+                    color = Color(0xFF6B7280),
+                    fontWeight = FontWeight.Medium
+                )
+            )
+        }
+    }
+}
+
+@Preview(name = "Card Style Light Mode", showBackground = true)
+@Composable
+fun PreviewFileComplaintCardScreenLight() {
+    FileComplaintCardScreen()
+}
+
+@Preview(name = "Card Style Dark Mode", showBackground = true)
+@Composable
+fun PreviewFileComplaintCardScreenDark() {
+    FileComplaintCardScreen()
+}`}
+>
+  <div className="flex flex-col items-center justify-center py-2">
+    <img
+      src="/images/patterns/file_a_complaint/file_a_complaint_cardstyle.svg"
+      alt="UX4G File a Complaint Card Style Pattern Preview"
+      className="max-w-full rounded-xl border border-border/60 shadow-sm"
+    />
+  </div>
+</ComponentPreview>

@@ -1,0 +1,560 @@
+---
+title: Was This Helpful Alert
+description: Floating micro-feedback alert pattern providing lightweight binary helpfulness prompts on citizen knowledge base articles with both default and elevated card-style variants
+---
+
+# Was This Helpful Alert
+
+A lightweight in-situ feedback collection pattern that prompts citizens to rate the utility and clarity of knowledge base articles, scheme advisories, or transaction guidelines immediately after reading.
+
+The pattern overlays a non-intrusive floating alert card at the bottom of the article view (*"Was this helpful?"*), presenting binary thumbs-up/thumbs-down response actions (`Ux4gButton` with outline styling). This provides immediate editorial feedback to government content teams without interrupting the citizen's browsing workflow.
+
+The pattern is available in two structural configurations:
+1. **Default Style**: Clean, direct layout situated on a neutral white canvas featuring the official government portal header, simulated help article content, bottom floating feedback card, and Digital India branding.
+2. **Card Style**: An elevated card variant situated on a soft lavender canvas (`0xFFE2DCFF` / `Ux4gColors.primary100` in light mode, `primary800` in dark mode) with enclosed card container and footer attribution.
+
+---
+
+<h2><MIcon name="smartphone" /> Interactive Previews</h2>
+
+### 1. Default Style (Full Screen)
+
+Standard article layout on a clean neutral background with portal header, informational article body, and floating bottom helpfulness prompt.
+
+<ComponentPreview
+  title="Was This Helpful Alert - Default"
+  category="Pattern · Jetpack Compose"
+  code={`package com.example.ux4g.patterns.support
+
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.ThumbDown
+import androidx.compose.material.icons.outlined.ThumbUp
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.ux4g.designsystemv1.components.Ux4gAppHeader
+import com.ux4g.designsystemv1.components.Ux4gAppHeaderVariant
+import com.ux4g.designsystemv1.components.Ux4gDivider
+import com.ux4g.designsystemv1.components.buttons.Ux4gButton
+import com.ux4g.designsystemv1.components.buttons.Ux4gButtonSize
+import com.ux4g.designsystemv1.components.buttons.Ux4gButtonVariant
+import com.ux4g.designsystemv1.foundation.Ux4gColors
+import com.ux4g.designsystemv1.foundation.Ux4gSpace
+
+/**
+ * Color tokens for Was This Helpful Alert Screen
+ */
+data class WasThisHelpfulColors(
+    val screenBackground: Color,
+    val breadcrumbColor: Color,
+    val articleTitleColor: Color,
+    val articleBodyColor: Color,
+    val alertBgColor: Color,
+    val alertBorderColor: Color,
+    val alertTitleColor: Color,
+    val headerDivider: Color
+)
+
+val LightWasThisHelpfulColors = WasThisHelpfulColors(
+    screenBackground = Ux4gColors.neutral50,
+    breadcrumbColor = Ux4gColors.neutral500,
+    articleTitleColor = Ux4gColors.neutral900,
+    articleBodyColor = Ux4gColors.neutral700,
+    alertBgColor = Ux4gColors.neutral0,
+    alertBorderColor = Ux4gColors.neutral200,
+    alertTitleColor = Ux4gColors.neutral900,
+    headerDivider = Ux4gColors.neutral300
+)
+
+val DarkWasThisHelpfulColors = WasThisHelpfulColors(
+    screenBackground = Ux4gColors.neutral900,
+    breadcrumbColor = Ux4gColors.neutral400,
+    articleTitleColor = Ux4gColors.neutral50,
+    articleBodyColor = Ux4gColors.neutral200,
+    alertBgColor = Ux4gColors.neutral800,
+    alertBorderColor = Ux4gColors.neutral700,
+    alertTitleColor = Ux4gColors.neutral50,
+    headerDivider = Ux4gColors.neutral700
+)
+
+/**
+ * Was This Helpful Alert Screen - Default Style
+ *
+ * @param onFeedbackSubmit Invoked with true for "Yes", false for "No"
+ */
+@Composable
+fun WasThisHelpfulScreen(
+    onFeedbackSubmit: (Boolean) -> Unit = {}
+) {
+    val isDark = isSystemInDarkTheme()
+    val colors = if (isDark) DarkWasThisHelpfulColors else LightWasThisHelpfulColors
+
+    var selectedFeedback by remember { mutableStateOf<Boolean?>(null) }
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(colors.screenBackground)
+    ) {
+        // App Header
+        Column {
+            Ux4gAppHeader(
+                title = "",
+                variant = Ux4gAppHeaderVariant.Light,
+                height = 64.dp,
+                horizontalPadding = Ux4gSpace.Space16
+            )
+            Ux4gDivider(
+                color = colors.headerDivider,
+                thickness = 1.dp
+            )
+        }
+
+        // Main Content Area with Article and Floating Alert
+        Box(
+            modifier = Modifier
+                .weight(1f)
+                .fillMaxWidth()
+        ) {
+            // Scrollable Article Content
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .verticalScroll(rememberScrollState())
+                    .padding(horizontal = 16.dp, vertical = 20.dp)
+            ) {
+                Text(
+                    text = "SUPPORT > REGISTRATION",
+                    style = TextStyle(
+                        fontSize = 12.sp,
+                        fontWeight = FontWeight.SemiBold,
+                        color = colors.breadcrumbColor,
+                        letterSpacing = 0.5.sp
+                    )
+                )
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                Text(
+                    text = "How to update your registered mobile number?",
+                    style = TextStyle(
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = colors.articleTitleColor,
+                        lineHeight = 28.sp
+                    )
+                )
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                Text(
+                    text = "To update your mobile number, log in to your account dashboard and navigate to Account Settings. Under the Profile tab, locate your phone number, click Edit, enter the new mobile number, and verify using the OTP sent to your new number.",
+                    style = TextStyle(
+                        fontSize = 14.sp,
+                        color = colors.articleBodyColor,
+                        lineHeight = 22.sp
+                    )
+                )
+
+                Spacer(modifier = Modifier.height(120.dp))
+            }
+
+            // Bottom Floating Feedback Card
+            Box(
+                modifier = Modifier
+                    .align(Alignment.BottomCenter)
+                    .fillMaxWidth()
+                    .padding(16.dp)
+                    .shadow(elevation = 6.dp, shape = RoundedCornerShape(16.dp))
+                    .clip(RoundedCornerShape(16.dp))
+                    .background(colors.alertBgColor)
+                    .border(1.dp, colors.alertBorderColor, RoundedCornerShape(16.dp))
+                    .padding(16.dp)
+            ) {
+                Column {
+                    Text(
+                        text = "Was this helpful?",
+                        style = TextStyle(
+                            fontSize = 15.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = colors.alertTitleColor
+                        )
+                    )
+
+                    Spacer(modifier = Modifier.height(12.dp))
+
+                    Row(
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Ux4gButton(
+                            text = "Yes",
+                            onClick = {
+                                selectedFeedback = true
+                                onFeedbackSubmit(true)
+                            },
+                            variant = if (selectedFeedback == true) Ux4gButtonVariant.Primary else Ux4gButtonVariant.Outline,
+                            size = Ux4gButtonSize.Small,
+                            icon = {
+                                Icon(
+                                    imageVector = Icons.Outlined.ThumbUp,
+                                    contentDescription = "Helpful",
+                                    modifier = Modifier.size(16.dp)
+                                )
+                            }
+                        )
+
+                        Ux4gButton(
+                            text = "No",
+                            onClick = {
+                                selectedFeedback = false
+                                onFeedbackSubmit(false)
+                            },
+                            variant = if (selectedFeedback == false) Ux4gButtonVariant.Primary else Ux4gButtonVariant.Outline,
+                            size = Ux4gButtonSize.Small,
+                            icon = {
+                                Icon(
+                                    imageVector = Icons.Outlined.ThumbDown,
+                                    contentDescription = "Not helpful",
+                                    modifier = Modifier.size(16.dp)
+                                )
+                            }
+                        )
+                    }
+                }
+            }
+        }
+
+        // Powered by Digital India Footer
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = 16.dp),
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = "Powered by - Digital India",
+                style = TextStyle(
+                    fontSize = 11.sp,
+                    color = Color(0xFF6B7280),
+                    fontWeight = FontWeight.Medium
+                )
+            )
+        }
+    }
+}
+
+@Preview(name = "Light Mode", showBackground = true)
+@Composable
+fun PreviewWasThisHelpfulScreenLight() {
+    WasThisHelpfulScreen()
+}
+
+@Preview(name = "Dark Mode", showBackground = true)
+@Composable
+fun PreviewWasThisHelpfulScreenDark() {
+    WasThisHelpfulScreen()
+}`}
+>
+  <div className="flex flex-col items-center justify-center py-2">
+    <img
+      src="/images/patterns/was_this_helpful_alert/was_this_helpful_alert.svg"
+      alt="UX4G Was This Helpful Alert Default Pattern Preview"
+      className="max-w-full rounded-xl border border-border/60 shadow-sm"
+    />
+  </div>
+</ComponentPreview>
+
+---
+
+### 2. Card Style (Contained Card)
+
+Card-contained support layout situated on a soft lavender canvas (`0xFFE2DCFF` / `Ux4gColors.primary100`) with article text and floating helpfulness prompt enclosed within a rounded surface.
+
+<ComponentPreview
+  title="Was This Helpful Alert - Card Style"
+  category="Pattern · Jetpack Compose"
+  code={`package com.example.ux4g.patterns.support
+
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.ThumbDown
+import androidx.compose.material.icons.outlined.ThumbUp
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.ux4g.designsystemv1.components.Ux4gAppHeader
+import com.ux4g.designsystemv1.components.Ux4gAppHeaderVariant
+import com.ux4g.designsystemv1.components.Ux4gDivider
+import com.ux4g.designsystemv1.components.buttons.Ux4gButton
+import com.ux4g.designsystemv1.components.buttons.Ux4gButtonSize
+import com.ux4g.designsystemv1.components.buttons.Ux4gButtonVariant
+import com.ux4g.designsystemv1.foundation.Ux4gColors
+import com.ux4g.designsystemv1.foundation.Ux4gSpace
+
+/**
+ * Was This Helpful Alert Screen - Card Style Variant
+ *
+ * @param onFeedbackSubmit Invoked with true for "Yes", false for "No"
+ */
+@Composable
+fun WasThisHelpfulCardScreen(
+    onFeedbackSubmit: (Boolean) -> Unit = {}
+) {
+    val isDark = isSystemInDarkTheme()
+
+    // Tinted lavender canvas vs contained white card
+    val screenBackground = if (isDark) Ux4gColors.primary800 else Color(0xFFE2DCFF)
+    val cardBackground = if (isDark) Ux4gColors.neutral800 else Ux4gColors.neutral0
+    val cardBorder = if (isDark) Ux4gColors.neutral700 else Ux4gColors.neutral200
+    val breadcrumbColor = if (isDark) Ux4gColors.neutral400 else Ux4gColors.neutral500
+    val articleTitleColor = if (isDark) Ux4gColors.neutral50 else Ux4gColors.neutral900
+    val articleBodyColor = if (isDark) Ux4gColors.neutral200 else Ux4gColors.neutral700
+    val alertBgColor = if (isDark) Ux4gColors.neutral900 else Ux4gColors.neutral50
+    val alertBorderColor = if (isDark) Ux4gColors.neutral700 else Ux4gColors.neutral200
+    val alertTitleColor = if (isDark) Ux4gColors.neutral50 else Ux4gColors.neutral900
+    val headerDivider = if (isDark) Ux4gColors.neutral700 else Ux4gColors.neutral300
+
+    var selectedFeedback by remember { mutableStateOf<Boolean?>(null) }
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(screenBackground)
+    ) {
+        // App Header
+        Column {
+            Ux4gAppHeader(
+                title = "",
+                variant = Ux4gAppHeaderVariant.Light,
+                height = 64.dp,
+                horizontalPadding = Ux4gSpace.Space16
+            )
+            Ux4gDivider(
+                color = headerDivider,
+                thickness = 1.dp
+            )
+        }
+
+        // Scrollable Area Containing Elevated Card
+        Column(
+            modifier = Modifier
+                .weight(1f)
+                .verticalScroll(rememberScrollState())
+                .padding(horizontal = 16.dp, vertical = 20.dp)
+        ) {
+            // Elevated Main Card Container
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .shadow(elevation = 6.dp, shape = RoundedCornerShape(16.dp))
+                    .clip(RoundedCornerShape(16.dp))
+                    .background(cardBackground)
+                    .border(1.dp, cardBorder, RoundedCornerShape(16.dp))
+                    .padding(20.dp)
+            ) {
+                Column {
+                    Text(
+                        text = "SUPPORT > REGISTRATION",
+                        style = TextStyle(
+                            fontSize = 12.sp,
+                            fontWeight = FontWeight.SemiBold,
+                            color = breadcrumbColor,
+                            letterSpacing = 0.5.sp
+                        )
+                    )
+
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    Text(
+                        text = "How to update your registered mobile number?",
+                        style = TextStyle(
+                            fontSize = 20.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = articleTitleColor,
+                            lineHeight = 28.sp
+                        )
+                    )
+
+                    Spacer(modifier = Modifier.height(16.dp))
+
+                    Text(
+                        text = "To update your mobile number, log in to your account dashboard and navigate to Account Settings. Under the Profile tab, locate your phone number, click Edit, enter the new mobile number, and verify using the OTP sent to your new number.",
+                        style = TextStyle(
+                            fontSize = 14.sp,
+                            color = articleBodyColor,
+                            lineHeight = 22.sp
+                        )
+                    )
+
+                    Spacer(modifier = Modifier.height(28.dp))
+
+                    // Nested Helpful Feedback Prompt Card
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clip(RoundedCornerShape(12.dp))
+                            .background(alertBgColor)
+                            .border(1.dp, alertBorderColor, RoundedCornerShape(12.dp))
+                            .padding(16.dp)
+                    ) {
+                        Column {
+                            Text(
+                                text = "Was this helpful?",
+                                style = TextStyle(
+                                    fontSize = 15.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    color = alertTitleColor
+                                )
+                            )
+
+                            Spacer(modifier = Modifier.height(12.dp))
+
+                            Row(
+                                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Ux4gButton(
+                                    text = "Yes",
+                                    onClick = {
+                                        selectedFeedback = true
+                                        onFeedbackSubmit(true)
+                                    },
+                                    variant = if (selectedFeedback == true) Ux4gButtonVariant.Primary else Ux4gButtonVariant.Outline,
+                                    size = Ux4gButtonSize.Small,
+                                    icon = {
+                                        Icon(
+                                            imageVector = Icons.Outlined.ThumbUp,
+                                            contentDescription = "Helpful",
+                                            modifier = Modifier.size(16.dp)
+                                        )
+                                    }
+                                )
+
+                                Ux4gButton(
+                                    text = "No",
+                                    onClick = {
+                                        selectedFeedback = false
+                                        onFeedbackSubmit(false)
+                                    },
+                                    variant = if (selectedFeedback == false) Ux4gButtonVariant.Primary else Ux4gButtonVariant.Outline,
+                                    size = Ux4gButtonSize.Small,
+                                    icon = {
+                                        Icon(
+                                            imageVector = Icons.Outlined.ThumbDown,
+                                            contentDescription = "Not helpful",
+                                            modifier = Modifier.size(16.dp)
+                                        )
+                                    }
+                                )
+                            }
+                        }
+                    }
+                }
+            }
+
+            Spacer(modifier = Modifier.height(20.dp))
+        }
+
+        // Powered by Digital India Footer
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = 16.dp),
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = "Powered by - Digital India",
+                style = TextStyle(
+                    fontSize = 11.sp,
+                    color = Color(0xFF6B7280),
+                    fontWeight = FontWeight.Medium
+                )
+            )
+        }
+    }
+}
+
+@Preview(name = "Card Style Light Mode", showBackground = true)
+@Composable
+fun PreviewWasThisHelpfulCardScreenLight() {
+    WasThisHelpfulCardScreen()
+}
+
+@Preview(name = "Card Style Dark Mode", showBackground = true)
+@Composable
+fun PreviewWasThisHelpfulCardScreenDark() {
+    WasThisHelpfulCardScreen()
+}`}
+>
+  <div className="flex flex-col items-center justify-center py-2">
+    <img
+      src="/images/patterns/was_this_helpful_alert/was_this_helpful_alert_cardstyle.svg"
+      alt="UX4G Was This Helpful Alert Card Style Pattern Preview"
+      className="max-w-full rounded-xl border border-border/60 shadow-sm"
+    />
+  </div>
+</ComponentPreview>

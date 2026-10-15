@@ -1,0 +1,580 @@
+---
+title: Find Service Center
+description: Physical service centre locator pattern featuring PIN code/city search, nearby CSC address cards, operational hours, and both default full-screen and elevated card-style variants
+---
+
+# Find Service Center
+
+A location discovery pattern that assists citizens who require physical, in-person support in locating their nearest Common Service Centre (CSC) or administrative facilitation desk.
+
+The pattern pairs a geographic search bar (`Ux4gSearchField` with voice search and instant submit) with structured facility cards that display precise venue naming (*"CSC Sector 12 — Pune City"*), full civic address (*"45 Patel Nagar, Sector 12, Pune 411001"*), spatial proximity (*"1.2 km away"*), and verified operating hours (*"Open Mon-Sat 9 AM – 6 PM"*).
+
+The pattern is available in two structural configurations:
+1. **Default Style**: Clean, direct layout situated on a neutral white canvas featuring the official government portal header, location search bar, nearby centre card, navigation actions, and Digital India branding.
+2. **Card Style**: An elevated card variant situated on a soft lavender canvas (`0xFFE2DCFF` / `Ux4gColors.primary100` in light mode, `primary800` in dark mode) with enclosed card container and footer attribution.
+
+---
+
+<h2><MIcon name="smartphone" /> Interactive Previews</h2>
+
+### 1. Default Style (Full Screen)
+
+Standard citizen assistance layout on a clean neutral background with portal header, dedicated PIN code search, and nearby CSC details.
+
+<ComponentPreview
+  title="Find Service Center - Default"
+  category="Pattern · Jetpack Compose"
+  code={`package com.example.ux4g.patterns.support
+
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.ux4g.designsystemv1.components.Ux4gAppHeader
+import com.ux4g.designsystemv1.components.Ux4gAppHeaderVariant
+import com.ux4g.designsystemv1.components.Ux4gDivider
+import com.ux4g.designsystemv1.components.buttons.Ux4gButton
+import com.ux4g.designsystemv1.components.buttons.Ux4gButtonSize
+import com.ux4g.designsystemv1.components.buttons.Ux4gButtonVariant
+import com.ux4g.designsystemv1.components.searchfield.Ux4gSearchField
+import com.ux4g.designsystemv1.components.searchfield.Ux4gSearchFieldVariant
+import com.ux4g.designsystemv1.foundation.Ux4gColors
+import com.ux4g.designsystemv1.foundation.Ux4gSpace
+
+/**
+ * Service Center Data Model
+ */
+data class ServiceCenter(
+    val id: String,
+    val name: String,
+    val address: String,
+    val distance: String,
+    val hours: String
+)
+
+val sampleServiceCenter = ServiceCenter(
+    id = "csc_pune_12",
+    name = "CSC Sector 12 — Pune City",
+    address = "45 Patel Nagar, Sector 12, Pune 411001",
+    distance = "1.2 km away",
+    hours = "Open Mon-Sat 9 AM – 6 PM"
+)
+
+/**
+ * Color tokens for Find Service Center Screen
+ */
+data class FindServiceCenterColors(
+    val screenBackground: Color,
+    val titleColor: Color,
+    val subtitleColor: Color,
+    val cardBackground: Color,
+    val cardBorder: Color,
+    val centerTitleColor: Color,
+    val centerAddressColor: Color,
+    val centerHoursColor: Color,
+    val headerDivider: Color
+)
+
+val LightFindServiceCenterColors = FindServiceCenterColors(
+    screenBackground = Ux4gColors.neutral0,
+    titleColor = Ux4gColors.neutral900,
+    subtitleColor = Ux4gColors.neutral700,
+    cardBackground = Color(0xFFF9FAFB),
+    cardBorder = Color(0xFFF3F4F6),
+    centerTitleColor = Ux4gColors.neutral900,
+    centerAddressColor = Color(0xFF374151),
+    centerHoursColor = Color(0xFF6B7280),
+    headerDivider = Ux4gColors.neutral300
+)
+
+val DarkFindServiceCenterColors = FindServiceCenterColors(
+    screenBackground = Ux4gColors.neutral900,
+    titleColor = Ux4gColors.neutral50,
+    subtitleColor = Ux4gColors.neutral300,
+    cardBackground = Ux4gColors.neutral800,
+    cardBorder = Ux4gColors.neutral700,
+    centerTitleColor = Ux4gColors.neutral50,
+    centerAddressColor = Color(0xFFD1D5DB),
+    centerHoursColor = Color(0xFF9CA3AF),
+    headerDivider = Ux4gColors.neutral700
+)
+
+/**
+ * Find Service Center Screen - Default Style
+ *
+ * @param center Nearest service centre data
+ * @param onSearchSubmit Invoked when citizen searches for PIN code or city
+ * @param onGetDirections Invoked when citizen taps "Get directions"
+ * @param onViewAllCenters Invoked when citizen taps "View all centres"
+ */
+@Composable
+fun FindServiceCenterScreen(
+    center: ServiceCenter = sampleServiceCenter,
+    onSearchSubmit: (String) -> Unit = {},
+    onGetDirections: (ServiceCenter) -> Unit = {},
+    onViewAllCenters: () -> Unit = {}
+) {
+    val isDark = isSystemInDarkTheme()
+    val colors = if (isDark) DarkFindServiceCenterColors else LightFindServiceCenterColors
+
+    var searchQuery by remember { mutableStateOf("") }
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(colors.screenBackground)
+    ) {
+        // App Header
+        Column {
+            Ux4gAppHeader(
+                title = "",
+                variant = Ux4gAppHeaderVariant.Light,
+                height = 64.dp,
+                horizontalPadding = Ux4gSpace.Space16
+            )
+            Ux4gDivider(
+                color = colors.headerDivider,
+                thickness = 1.dp
+            )
+        }
+
+        // Scrollable Facility Discovery Content
+        Column(
+            modifier = Modifier
+                .weight(1f)
+                .verticalScroll(rememberScrollState())
+                .padding(horizontal = 16.dp, vertical = 20.dp)
+        ) {
+            // Heading & Subtitle
+            Text(
+                text = "Find your nearest Service Centre",
+                style = TextStyle(
+                    fontSize = 22.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = colors.titleColor
+                )
+            )
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            Text(
+                text = "Locate a Common Service Centre (CSC) near you for in-person help.",
+                style = TextStyle(
+                    fontSize = 14.sp,
+                    color = colors.subtitleColor,
+                    lineHeight = 20.sp
+                )
+            )
+
+            Spacer(modifier = Modifier.height(24.dp))
+
+            // Search Field
+            Ux4gSearchField(
+                value = searchQuery,
+                onValueChange = { searchQuery = it },
+                placeholder = "Enter PIN code or city",
+                variant = Ux4gSearchFieldVariant.SearchWithSubmit,
+                showVoiceIcon = true,
+                showClearIcon = true,
+                onClearClick = { searchQuery = "" },
+                onSubmitClick = { onSearchSubmit(searchQuery) },
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            Spacer(modifier = Modifier.height(20.dp))
+
+            // Nearby Facility Result Card
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .shadow(elevation = 2.dp, shape = RoundedCornerShape(12.dp))
+                    .clip(RoundedCornerShape(12.dp))
+                    .background(colors.cardBackground)
+                    .border(1.dp, colors.cardBorder, RoundedCornerShape(12.dp))
+                    .padding(16.dp)
+            ) {
+                Column {
+                    Text(
+                        text = center.name,
+                        style = TextStyle(
+                            fontSize = 16.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = colors.centerTitleColor
+                        )
+                    )
+                    Spacer(modifier = Modifier.height(6.dp))
+                    Text(
+                        text = center.address,
+                        style = TextStyle(
+                            fontSize = 14.sp,
+                            fontWeight = FontWeight.Medium,
+                            color = colors.centerAddressColor
+                        )
+                    )
+                    Spacer(modifier = Modifier.height(6.dp))
+                    Text(
+                        text = "\${center.distance} · \${center.hours}",
+                        style = TextStyle(
+                            fontSize = 12.sp,
+                            color = colors.centerHoursColor
+                        )
+                    )
+                }
+            }
+
+            Spacer(modifier = Modifier.height(28.dp))
+
+            // Action Buttons
+            Ux4gButton(
+                text = "Get directions",
+                onClick = { onGetDirections(center) },
+                variant = Ux4gButtonVariant.Primary,
+                size = Ux4gButtonSize.Large,
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            Spacer(modifier = Modifier.height(12.dp))
+
+            Ux4gButton(
+                text = "View all centres",
+                onClick = onViewAllCenters,
+                variant = Ux4gButtonVariant.Outline,
+                size = Ux4gButtonSize.Large,
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            Spacer(modifier = Modifier.height(24.dp))
+        }
+
+        // Powered by Digital India Footer
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = 16.dp),
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = "Powered by - Digital India",
+                style = TextStyle(
+                    fontSize = 11.sp,
+                    color = Color(0xFF6B7280),
+                    fontWeight = FontWeight.Medium
+                )
+            )
+        }
+    }
+}
+
+@Preview(name = "Light Mode", showBackground = true)
+@Composable
+fun PreviewFindServiceCenterScreenLight() {
+    FindServiceCenterScreen()
+}
+
+@Preview(name = "Dark Mode", showBackground = true)
+@Composable
+fun PreviewFindServiceCenterScreenDark() {
+    FindServiceCenterScreen()
+}`}
+>
+  <div className="flex flex-col items-center justify-center py-2">
+    <img
+      src="/images/patterns/find_service_center/find_service_center.svg"
+      alt="UX4G Find Service Center Default Pattern Preview"
+      className="max-w-full rounded-xl border border-border/60 shadow-sm"
+    />
+  </div>
+</ComponentPreview>
+
+---
+
+### 2. Card Style (Contained Card)
+
+Card-contained locator layout situated on a soft lavender canvas (`0xFFE2DCFF` / `Ux4gColors.primary100`) with location search, CSC address card, and direction CTAs enclosed within a rounded surface.
+
+<ComponentPreview
+  title="Find Service Center - Card Style"
+  category="Pattern · Jetpack Compose"
+  code={`package com.example.ux4g.patterns.support
+
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.ux4g.designsystemv1.components.Ux4gAppHeader
+import com.ux4g.designsystemv1.components.Ux4gAppHeaderVariant
+import com.ux4g.designsystemv1.components.Ux4gDivider
+import com.ux4g.designsystemv1.components.buttons.Ux4gButton
+import com.ux4g.designsystemv1.components.buttons.Ux4gButtonSize
+import com.ux4g.designsystemv1.components.buttons.Ux4gButtonVariant
+import com.ux4g.designsystemv1.components.searchfield.Ux4gSearchField
+import com.ux4g.designsystemv1.components.searchfield.Ux4gSearchFieldVariant
+import com.ux4g.designsystemv1.foundation.Ux4gColors
+import com.ux4g.designsystemv1.foundation.Ux4gSpace
+
+/**
+ * Find Service Center Screen - Card Style Variant
+ *
+ * @param center Nearest service centre data
+ * @param onSearchSubmit Invoked when citizen searches for PIN code or city
+ * @param onGetDirections Invoked when citizen taps "Get directions"
+ * @param onViewAllCenters Invoked when citizen taps "View all centres"
+ */
+@Composable
+fun FindServiceCenterCardScreen(
+    center: ServiceCenter = sampleServiceCenter,
+    onSearchSubmit: (String) -> Unit = {},
+    onGetDirections: (ServiceCenter) -> Unit = {},
+    onViewAllCenters: () -> Unit = {}
+) {
+    val isDark = isSystemInDarkTheme()
+
+    // Tinted lavender canvas vs contained white card
+    val screenBackground = if (isDark) Ux4gColors.primary800 else Color(0xFFE2DCFF)
+    val cardBackground = if (isDark) Ux4gColors.neutral800 else Ux4gColors.neutral0
+    val cardBorder = if (isDark) Ux4gColors.neutral700 else Ux4gColors.neutral200
+    val titleColor = if (isDark) Ux4gColors.neutral50 else Ux4gColors.neutral900
+    val subtitleColor = if (isDark) Ux4gColors.neutral300 else Ux4gColors.neutral700
+    val innerCardBg = if (isDark) Ux4gColors.neutral900 else Color(0xFFF9FAFB)
+    val innerCardBorder = if (isDark) Ux4gColors.neutral700 else Color(0xFFF3F4F6)
+    val centerTitleColor = if (isDark) Ux4gColors.neutral50 else Ux4gColors.neutral900
+    val centerAddressColor = if (isDark) Color(0xFFD1D5DB) else Color(0xFF374151)
+    val centerHoursColor = if (isDark) Color(0xFF9CA3AF) else Color(0xFF6B7280)
+    val headerDivider = if (isDark) Ux4gColors.neutral700 else Ux4gColors.neutral300
+
+    var searchQuery by remember { mutableStateOf("") }
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(screenBackground)
+    ) {
+        // App Header
+        Column {
+            Ux4gAppHeader(
+                title = "",
+                variant = Ux4gAppHeaderVariant.Light,
+                height = 64.dp,
+                horizontalPadding = Ux4gSpace.Space16
+            )
+            Ux4gDivider(
+                color = headerDivider,
+                thickness = 1.dp
+            )
+        }
+
+        // Scrollable Area Containing Elevated Card
+        Column(
+            modifier = Modifier
+                .weight(1f)
+                .verticalScroll(rememberScrollState())
+                .padding(horizontal = 16.dp, vertical = 20.dp)
+        ) {
+            // Elevated Main Card Container
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .shadow(elevation = 6.dp, shape = RoundedCornerShape(16.dp))
+                    .clip(RoundedCornerShape(16.dp))
+                    .background(cardBackground)
+                    .border(1.dp, cardBorder, RoundedCornerShape(16.dp))
+                    .padding(20.dp)
+            ) {
+                Column {
+                    // Heading & Subtitle
+                    Text(
+                        text = "Find your nearest Service Centre",
+                        style = TextStyle(
+                            fontSize = 22.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = titleColor
+                        )
+                    )
+
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    Text(
+                        text = "Locate a Common Service Centre (CSC) near you for in-person help.",
+                        style = TextStyle(
+                            fontSize = 14.sp,
+                            color = subtitleColor,
+                            lineHeight = 20.sp
+                        )
+                    )
+
+                    Spacer(modifier = Modifier.height(24.dp))
+
+                    // Search Field
+                    Ux4gSearchField(
+                        value = searchQuery,
+                        onValueChange = { searchQuery = it },
+                        placeholder = "Enter PIN code or city",
+                        variant = Ux4gSearchFieldVariant.SearchWithSubmit,
+                        showVoiceIcon = true,
+                        showClearIcon = true,
+                        onClearClick = { searchQuery = "" },
+                        onSubmitClick = { onSearchSubmit(searchQuery) },
+                        modifier = Modifier.fillMaxWidth()
+                    )
+
+                    Spacer(modifier = Modifier.height(20.dp))
+
+                    // Nested Nearby Centre Card
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clip(RoundedCornerShape(12.dp))
+                            .background(innerCardBg)
+                            .border(1.dp, innerCardBorder, RoundedCornerShape(12.dp))
+                            .padding(16.dp)
+                    ) {
+                        Column {
+                            Text(
+                                text = center.name,
+                                style = TextStyle(
+                                    fontSize = 16.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    color = centerTitleColor
+                                )
+                            )
+                            Spacer(modifier = Modifier.height(6.dp))
+                            Text(
+                                text = center.address,
+                                style = TextStyle(
+                                    fontSize = 14.sp,
+                                    fontWeight = FontWeight.Medium,
+                                    color = centerAddressColor
+                                )
+                            )
+                            Spacer(modifier = Modifier.height(6.dp))
+                            Text(
+                                text = "\${center.distance} · \${center.hours}",
+                                style = TextStyle(
+                                    fontSize = 12.sp,
+                                    color = centerHoursColor
+                                )
+                            )
+                        }
+                    }
+
+                    Spacer(modifier = Modifier.height(28.dp))
+
+                    // Action Buttons
+                    Ux4gButton(
+                        text = "Get directions",
+                        onClick = { onGetDirections(center) },
+                        variant = Ux4gButtonVariant.Primary,
+                        size = Ux4gButtonSize.Large,
+                        modifier = Modifier.fillMaxWidth()
+                    )
+
+                    Spacer(modifier = Modifier.height(12.dp))
+
+                    Ux4gButton(
+                        text = "View all centres",
+                        onClick = onViewAllCenters,
+                        variant = Ux4gButtonVariant.Outline,
+                        size = Ux4gButtonSize.Large,
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                }
+            }
+
+            Spacer(modifier = Modifier.height(20.dp))
+        }
+
+        // Powered by Digital India Footer
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = 16.dp),
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = "Powered by - Digital India",
+                style = TextStyle(
+                    fontSize = 11.sp,
+                    color = Color(0xFF6B7280),
+                    fontWeight = FontWeight.Medium
+                )
+            )
+        }
+    }
+}
+
+@Preview(name = "Card Style Light Mode", showBackground = true)
+@Composable
+fun PreviewFindServiceCenterCardScreenLight() {
+    FindServiceCenterCardScreen()
+}
+
+@Preview(name = "Card Style Dark Mode", showBackground = true)
+@Composable
+fun PreviewFindServiceCenterCardScreenDark() {
+    FindServiceCenterCardScreen()
+}`}
+>
+  <div className="flex flex-col items-center justify-center py-2">
+    <img
+      src="/images/patterns/find_service_center/find_service_center_cardstyle.svg"
+      alt="UX4G Find Service Center Card Style Pattern Preview"
+      className="max-w-full rounded-xl border border-border/60 shadow-sm"
+    />
+  </div>
+</ComponentPreview>
