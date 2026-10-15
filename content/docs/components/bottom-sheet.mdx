@@ -1,0 +1,360 @@
+---
+title: Bottom Sheet
+description: Modal and persistent bottom sheets featuring Peek, Half, Expanded, and Full height presets, pinned action button footers, scrollable content bodies, and drag handles
+---
+
+# Bottom Sheet (`Ux4gBottomSheet`)
+
+The UX4G Bottom Sheet is an edge-anchored modal surface designed to present secondary tasks, detailed summaries, selection workflows, or contextual actions without navigating away from the current screen.
+
+Built strictly to UX4G design tokens, it offers overflow-proof responsive scrolling with pinned footer action buttons, a rounded top container (`16.dp`), customizable header elements (icon, title, subtitle, close button), and full Dark/Light mode theme integration.
+
+### Key Capabilities
+
+- **4 Standard Height Presets (`Ux4gBottomSheetSize`)**:
+  - `Peek` (`0.26f` / 26% screen height): Quick alerts, confirmation prompts, or minimal single-card summaries.
+  - `Half` (`0.50f` / 50% screen height — default): Standard interactive workflows, short forms, or selection lists.
+  - `Expanded` (`0.75f` / 75% screen height): Multi-step verification summaries, document previews, or detailed lists.
+  - `Full` (`0.94f` / 94% screen height): Comprehensive multi-step forms, terms and conditions, or full-page workflows.
+  - Custom explicit height (`height: Dp?`) support.
+- **Pinned Bottom Action Footers**: The footer buttons remain anchored at the bottom of the screen while the middle body content scrolls smoothly, preventing action buttons from being pushed off-screen.
+- **Flexible Footer Arrangements (`Ux4gBottomSheetFooterAlignment`)**:
+  - `Split` / `Justified`: Dual buttons sharing equal 50% width side-by-side.
+  - `Left`, `Centered`, `Right`: Standard horizontal button alignments.
+  - Destructive action styling (`isDestructive = true`).
+- **Complete Header Controls**: Integrated drag handle indicator pill (`32×4dp`), leading icon or composable, headline, subtle text, and dismiss close button.
+- **Modal & Persistent Layouts**: `Ux4gBottomSheet` for modal overlays and `Ux4gBottomSheetLayout` for inline/embedded sheet designs.
+
+Import from `com.ux4g.designsystemv1.components.*`.
+
+---
+
+<h2><MIcon name="smartphone" /> Interactive Previews</h2>
+
+### 1. Peek Variant (`Ux4gBottomSheetSize.Peek` — 26% Height)
+
+Compact bottom sheet anchored to the bottom occupying 26% screen height. Ideal for quick status confirmations, single-step prompts, or simple actions.
+
+<ComponentPreview
+  title="Ux4gBottomSheet - Peek Variant (26% Height)"
+  category="Jetpack Compose"
+  code={`var showSheet by remember { mutableStateOf(false) }
+
+if (showSheet) {
+    Ux4gBottomSheet(
+        onDismissRequest = { showSheet = false },
+        size = Ux4gBottomSheetSize.Peek,
+        headerTitle = "Peek (26% Height)",
+        description = "A modal bottom sheet is an interactive overlay anchored to the bottom of the screen.",
+        primaryButtonText = "Confirm & Continue",
+        secondaryButtonText = "Cancel",
+        footerAlignment = Ux4gBottomSheetFooterAlignment.Split,
+        onPrimaryClick = {
+            // Confirm action
+            showSheet = false
+        },
+        onSecondaryClick = { showSheet = false }
+    ) {
+        Text(
+            text = "Application Summary",
+            style = Ux4gTheme.typography.hS_strong,
+            modifier = Modifier.padding(bottom = 12.dp)
+        )
+        SummaryItemCard("Step 1: Document verification completed")
+    }
+}`}
+>
+  <div className="flex flex-col items-center justify-center py-4 bg-muted/20 rounded-xl">
+    <img
+      src="/images/components/bottom_sheet_peek_preview.png"
+      alt="UX4G Peek Bottom Sheet Preview"
+      className="max-w-xl w-full rounded-xl border border-border/60 shadow-sm"
+    />
+  </div>
+</ComponentPreview>
+
+---
+
+### 2. Half Variant (`Ux4gBottomSheetSize.Half` — 50% Height)
+
+Standard bottom sheet occupying 50% of the screen height. Provides balanced space for medium-length checklist summaries, selection menus, or service details.
+
+<ComponentPreview
+  title="Ux4gBottomSheet - Half Variant (50% Height)"
+  category="Jetpack Compose"
+  code={`var showSheet by remember { mutableStateOf(false) }
+
+if (showSheet) {
+    Ux4gBottomSheet(
+        onDismissRequest = { showSheet = false },
+        size = Ux4gBottomSheetSize.Half,
+        headerTitle = "Half (50% Height)",
+        description = "A modal bottom sheet is an interactive overlay anchored to the bottom of the screen.",
+        primaryButtonText = "Confirm & Continue",
+        secondaryButtonText = "Cancel",
+        footerAlignment = Ux4gBottomSheetFooterAlignment.Split,
+        onPrimaryClick = { showSheet = false },
+        onSecondaryClick = { showSheet = false }
+    ) {
+        Text(
+            text = "Application Summary",
+            style = Ux4gTheme.typography.hS_strong,
+            modifier = Modifier.padding(bottom = 12.dp)
+        )
+        (1..5).forEach { index ->
+            SummaryItemCard("Step \$index: Document verification completed")
+            Spacer(modifier = Modifier.height(8.dp))
+        }
+    }
+}`}
+>
+  <div className="flex flex-col items-center justify-center py-4 bg-muted/20 rounded-xl">
+    <img
+      src="/images/components/bottom_sheet_half_preview.png"
+      alt="UX4G Half Bottom Sheet Preview"
+      className="max-w-xl w-full rounded-xl border border-border/60 shadow-sm"
+    />
+  </div>
+</ComponentPreview>
+
+---
+
+### 3. Expanded Variant (`Ux4gBottomSheetSize.Expanded` — 75% Height)
+
+Expanded bottom sheet occupying 75% of the screen height. Pinned action buttons at the bottom ensure smooth scrolling through longer application reviews and verification sequences.
+
+<ComponentPreview
+  title="Ux4gBottomSheet - Expanded Variant (75% Height)"
+  category="Jetpack Compose"
+  code={`var showSheet by remember { mutableStateOf(false) }
+
+if (showSheet) {
+    Ux4gBottomSheet(
+        onDismissRequest = { showSheet = false },
+        size = Ux4gBottomSheetSize.Expanded,
+        headerTitle = "Expanded (75% Height)",
+        description = "A modal bottom sheet is an interactive overlay anchored to the bottom of the screen.",
+        primaryButtonText = "Confirm & Continue",
+        secondaryButtonText = "Cancel",
+        footerAlignment = Ux4gBottomSheetFooterAlignment.Split,
+        onPrimaryClick = { showSheet = false },
+        onSecondaryClick = { showSheet = false }
+    ) {
+        Text(
+            text = "Application Summary",
+            style = Ux4gTheme.typography.hS_strong,
+            modifier = Modifier.padding(bottom = 12.dp)
+        )
+        (1..6).forEach { index ->
+            SummaryItemCard("Step \$index: Document verification completed")
+            Spacer(modifier = Modifier.height(8.dp))
+        }
+    }
+}`}
+>
+  <div className="flex flex-col items-center justify-center py-4 bg-muted/20 rounded-xl">
+    <img
+      src="/images/components/bottom_sheet_expanded_preview.png"
+      alt="UX4G Expanded Bottom Sheet Preview"
+      className="max-w-xl w-full rounded-xl border border-border/60 shadow-sm"
+    />
+  </div>
+</ComponentPreview>
+
+---
+
+### 4. Full Variant (`Ux4gBottomSheetSize.Full` — 94% Height)
+
+Near full-screen bottom sheet occupying 94% of the screen height. Ideal for multi-step citizen registration flows, scheme guidelines, or deep document audits while retaining sheet dismissal gestures.
+
+<ComponentPreview
+  title="Ux4gBottomSheet - Full Variant (94% Height)"
+  category="Jetpack Compose"
+  code={`var showSheet by remember { mutableStateOf(false) }
+
+if (showSheet) {
+    Ux4gBottomSheet(
+        onDismissRequest = { showSheet = false },
+        size = Ux4gBottomSheetSize.Full,
+        headerTitle = "Full (94% Height)",
+        description = "A modal bottom sheet is an interactive overlay anchored to the bottom of the screen.",
+        primaryButtonText = "Confirm & Continue",
+        secondaryButtonText = "Cancel",
+        footerAlignment = Ux4gBottomSheetFooterAlignment.Split,
+        onPrimaryClick = { showSheet = false },
+        onSecondaryClick = { showSheet = false }
+    ) {
+        Text(
+            text = "Application Summary",
+            style = Ux4gTheme.typography.hS_strong,
+            modifier = Modifier.padding(bottom = 12.dp)
+        )
+        (1..6).forEach { index ->
+            SummaryItemCard("Step \$index: Document verification completed")
+            Spacer(modifier = Modifier.height(8.dp))
+        }
+    }
+}`}
+>
+  <div className="flex flex-col items-center justify-center py-4 bg-muted/20 rounded-xl">
+    <img
+      src="/images/components/bottom_sheet_full_preview.png"
+      alt="UX4G Full Bottom Sheet Preview"
+      className="max-w-xl w-full rounded-xl border border-border/60 shadow-sm"
+    />
+  </div>
+</ComponentPreview>
+
+---
+
+## Complete Implementation Example
+
+The following Jetpack Compose snippet demonstrates a citizen application status screen launching an interactive modal `Ux4gBottomSheet`:
+
+```kotlin
+package com.example.app.ui
+
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.CheckCircle
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
+import com.ux4g.designsystemv1.components.*
+import com.ux4g.designsystemv1.foundation.Ux4gColors
+import com.ux4g.designsystemv1.theme.Ux4gTheme
+
+@Composable
+fun ApplicationReviewScreen() {
+    var isSheetOpen by remember { mutableStateOf(false) }
+
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp),
+        contentAlignment = Alignment.Center
+    ) {
+        Button(onClick = { isSheetOpen = true }) {
+            Text("Review Application Steps")
+        }
+
+        if (isSheetOpen) {
+            Ux4gBottomSheet(
+                onDismissRequest = { isSheetOpen = false },
+                size = Ux4gBottomSheetSize.Half,
+                headerTitle = "Application Summary",
+                description = "Review verified milestones before proceeding with submission.",
+                primaryButtonText = "Confirm & Continue",
+                secondaryButtonText = "Cancel",
+                footerAlignment = Ux4gBottomSheetFooterAlignment.Split,
+                onPrimaryClick = {
+                    isSheetOpen = false
+                    // Submit verified application
+                },
+                onSecondaryClick = { isSheetOpen = false }
+            ) {
+                Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                    listOf(
+                        "Document verification completed",
+                        "Aadhaar e-KYC authenticated",
+                        "Bank account linked via DBT",
+                        "Income certificate validated",
+                        "Final review pending signature"
+                    ).forEachIndexed { index, text ->
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .background(
+                                    color = Ux4gColors.neutral50,
+                                    shape = RoundedCornerShape(8.dp)
+                                )
+                                .padding(horizontal = 12.dp, vertical = 10.dp),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(8.dp)
+                        ) {
+                            Icon(
+                                imageVector = Icons.Outlined.CheckCircle,
+                                contentDescription = null,
+                                tint = Ux4gColors.green600,
+                                modifier = Modifier.size(18.dp)
+                            )
+                            Text(
+                                text = "Step \${index + 1}: \$text",
+                                style = Ux4gTheme.typography.bS_default
+                            )
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+```
+
+---
+
+<h2><MIcon name="settings" /> Parameters & API Reference</h2>
+
+### `Ux4gBottomSheet` Props
+
+| Prop | Type | Description | Default |
+| :--- | :--- | :--- | :--- |
+| `onDismissRequest` | `() -> Unit` | Callback fired when the sheet is dismissed (scrim tap, drag down, or close button). | **Required** |
+| `modifier` | `Modifier` | Compose layout modifier applied to the root sheet container. | `Modifier` |
+| `sheetState` | `SheetState` | Material 3 sheet state managing expansion and collapse. | `rememberModalBottomSheetState(skipPartiallyExpanded = true)` |
+| `size` | `Ux4gBottomSheetSize` | Height preset: `Peek` (26%), `Half` (50%), `Expanded` (75%), `Full` (94%). | `Ux4gBottomSheetSize.Half` |
+| `height` | `Dp?` | Explicit height in Dp. Overrides `size` preset if provided. | `null` |
+| `isDraggable` | `Boolean` | Whether the sheet can be swiped/dragged to dismiss. | `true` |
+| `showDragHandle` | `Boolean` | Whether to display the top drag handle indicator pill (`32×4dp`). | `true` |
+| `showHeader` | `Boolean` | Whether to render the top header block. | `true` |
+| `headerTitle` | `String?` | Primary headline text shown in the header. | `null` |
+| `headerSubtleText` | `String?` | Small muted badge text displayed to the right of the title. | `null` |
+| `headerIcon` | `Ux4gIcon?` | Optional leading icon from `Ux4gIcons`. | `null` |
+| `headerIconComposable` | `(@Composable () -> Unit)?` | Custom leading composable slot for header icon. | `null` |
+| `description` | `String?` | Secondary descriptive text displayed below the title. | `null` |
+| `showCloseButton` | `Boolean` | Whether to render the top-right close icon button. | `true` |
+| `onCloseClick` | `(() -> Unit)?` | Custom close button callback (defaults to `onDismissRequest`). | `null` |
+| `showHeaderDivider` | `Boolean` | Whether to display a divider line below the header. | `false` |
+| `showBottomDivider` | `Boolean` | Whether to display a divider line above the pinned footer. | `false` |
+| `scrollable` | `Boolean` | Enables built-in vertical scrolling for middle body content. | `true` |
+| `contentPadding` | `PaddingValues` | Inner padding surrounding body content. | `PaddingValues(horizontal = 16.dp, vertical = 12.dp)` |
+| `showFooter` | `Boolean` | Whether to render the pinned bottom footer row. | `true` |
+| `footerAlignment` | `Ux4gBottomSheetFooterAlignment` | Horizontal alignment of footer buttons: `Split`, `Left`, `Centered`, `Right`. | `Ux4gBottomSheetFooterAlignment.Split` |
+| `showPrimaryButton` | `Boolean` | Whether to show the filled primary action button. | `true` |
+| `showSecondaryButton` | `Boolean` | Whether to show the outlined secondary action button. | `true` |
+| `primaryButtonText` | `String` | Label text for the filled primary button. | `"Confirm"` |
+| `secondaryButtonText` | `String` | Label text for the outlined secondary button. | `"Cancel"` |
+| `onPrimaryClick` | `() -> Unit` | Click callback for the primary button. | `onDismissRequest` |
+| `onSecondaryClick` | `() -> Unit` | Click callback for the secondary button. | `onDismissRequest` |
+| `isDestructive` | `Boolean` | Renders primary button in destructive error red color. | `false` |
+| `footerContent` | `(@Composable () -> Unit)?` | Custom composable slot overriding default footer buttons. | `null` |
+| `containerColor` | `Color` | Surface background fill color. | `Ux4gTheme.colorScheme.surface` |
+| `scrimColor` | `Color` | Color of the background scrim overlay. | `Color(0xFF0F172A).copy(alpha = 0.5f)` |
+| `cornerRadius` | `Dp` | Corner rounding radius for top-left and top-right edges. | `16.dp` |
+| `content` | `@Composable ColumnScope.() -> Unit` | Main scrollable body content slot of the bottom sheet. | **Required** |
+
+---
+
+### Enums & Types
+
+#### `Ux4gBottomSheetSize`
+
+| Variant | Screen Height Ratio | Description |
+| :--- | :--- | :--- |
+| `Peek` | `0.26f` (26%) | Compact height for quick prompts, status toasts, or single cards. |
+| `Half` | `0.50f` (50%) | Balanced half-screen height for standard citizen tasks and forms (default). |
+| `Expanded` | `0.75f` (75%) | Spacious three-quarter screen height for detailed summaries and checklists. |
+| `Full` | `0.94f` (94%) | Maximum-height sheet for comprehensive document reviews and audits. |
+
+#### `Ux4gBottomSheetFooterAlignment`
+
+| Value | Behavior |
+| :--- | :--- |
+| `Split` / `Justified` | Both buttons take equal width (`50%` each) and fill the container side-by-side. |
+| `Left` | Buttons aligned to the start/left edge. |
+| `Centered` | Buttons centered horizontally within the footer. |
+| `Right` | Buttons aligned to the end/right edge. |
