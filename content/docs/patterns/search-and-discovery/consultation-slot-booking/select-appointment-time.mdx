@@ -1,0 +1,308 @@
+---
+title: Select Appointment Time
+description: Multi-status interactive appointment date and time selection pattern featuring a full calendar slot grid, date statuses (available, no slots, public holidays, weekly offs), time picker bottom sheet, and confirmation workflow
+---
+
+# Select Appointment Time
+
+An interactive calendar scheduling and consultation slot selection pattern designed for government appointments, legal consultations, and public officer meetings.
+
+The screen provides citizens with full temporal visibility over booking availability. An intuitive date & time picker trigger summarizes the active selection (`"18 Oct 2026 · 10:00 AM"`), while the underlying calendar slot grid (`Ux4gTimeslot`) maps daily statuses across standard government conventions: available booking days, fully booked dates (*No slots*), statutory gazetted holidays (*Public holiday*), and non-working weekends (*Weekly off*). Tapping an open calendar date seamlessly presents available morning and afternoon intervals in an accessible time-slot sheet, concluding with a primary action button (`Ux4gButton`) to advance into final confirmation.
+
+---
+
+<h2><MIcon name="smartphone" /> Interactive Preview</h2>
+
+### Appointment Time Selection Overview
+
+Calendar slot selection screen displaying practitioner details, appointment date trigger, interactive monthly slot grid with status indicators, and booking continuation controls.
+
+<ComponentPreview
+  title="Select Appointment Time"
+  category="Pattern · Jetpack Compose"
+  code={`package com.example.ux4g.patterns.discovery
+
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.CalendarToday
+import androidx.compose.material.icons.filled.KeyboardArrowDown
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.ux4g.designsystemv1.components.Ux4gAppHeader
+import com.ux4g.designsystemv1.components.Ux4gAppHeaderVariant
+import com.ux4g.designsystemv1.components.buttons.Ux4gButton
+import com.ux4g.designsystemv1.components.buttons.Ux4gButtonSize
+import com.ux4g.designsystemv1.components.buttons.Ux4gButtonVariant
+import com.ux4g.designsystemv1.components.timeslot.SlotDateEntry
+import com.ux4g.designsystemv1.components.timeslot.SlotDateStatus
+import com.ux4g.designsystemv1.components.timeslot.SlotPickerViewMode
+import com.ux4g.designsystemv1.components.timeslot.SlotTimeEntry
+import com.ux4g.designsystemv1.components.timeslot.SlotTimeStatus
+import com.ux4g.designsystemv1.components.timeslot.Ux4gTimeslot
+import com.ux4g.designsystemv1.components.timeslot.Ux4gTimeslotData
+import com.ux4g.designsystemv1.foundation.Ux4gColors
+import com.ux4g.designsystemv1.foundation.Ux4gSpace
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
+
+/**
+ * Color tokens for Select Appointment Time Screen
+ */
+data class SelectAppointmentTimeColors(
+    val screenBackground: Color,
+    val surfaceBackground: Color,
+    val border: Color,
+    val title: Color,
+    val subtleText: Color,
+    val mutedText: Color,
+    val triggerBg: Color,
+    val triggerBorder: Color,
+    val triggerActiveText: Color
+)
+
+val LightSelectAppointmentTimeColors = SelectAppointmentTimeColors(
+    screenBackground = Ux4gColors.neutral50,
+    surfaceBackground = Ux4gColors.neutral0,
+    border = Ux4gColors.neutral200,
+    title = Ux4gColors.neutral900,
+    subtleText = Ux4gColors.neutral700,
+    mutedText = Ux4gColors.neutral500,
+    triggerBg = Ux4gColors.neutral0,
+    triggerBorder = Ux4gColors.neutral200,
+    triggerActiveText = Ux4gColors.neutral900
+)
+
+val DarkSelectAppointmentTimeColors = SelectAppointmentTimeColors(
+    screenBackground = Ux4gColors.neutral950,
+    surfaceBackground = Ux4gColors.neutral900,
+    border = Ux4gColors.neutral800,
+    title = Ux4gColors.neutral50,
+    subtleText = Ux4gColors.neutral200,
+    mutedText = Ux4gColors.neutral400,
+    triggerBg = Ux4gColors.neutral900,
+    triggerBorder = Ux4gColors.neutral800,
+    triggerActiveText = Ux4gColors.neutral50
+)
+
+/**
+ * Select Appointment Time Screen
+ *
+ * @param onBack Invoked when citizen taps header back action
+ * @param onContinue Invoked when citizen proceeds with selected slot
+ */
+@Composable
+fun SelectAppointmentTimeScreen(
+    onBack: () -> Unit = {},
+    onContinue: (date: LocalDate, slot: SlotTimeEntry) -> Unit = { _, _ -> }
+) {
+    val isDark = isSystemInDarkTheme()
+    val colors = if (isDark) DarkSelectAppointmentTimeColors else LightSelectAppointmentTimeColors
+    val scrollState = rememberScrollState()
+
+    val today = remember { LocalDate.now() }
+    var selectedDate by remember { mutableStateOf<LocalDate?>(null) }
+    var selectedSlot by remember { mutableStateOf<SlotTimeEntry?>(null) }
+
+    val slotData = remember(today) {
+        Ux4gTimeslotData(
+            year = today.year,
+            month = today.monthValue,
+            today = today,
+            selectedDate = selectedDate,
+            weeklyOffWeekdays = listOf(6, 7),
+            dates = listOf(
+                SlotDateEntry(today.plusDays(2), SlotDateStatus.PublicHoliday),
+                SlotDateEntry(today.plusDays(4), SlotDateStatus.NoSlots)
+            ),
+            allowTapOnPublicHoliday = false,
+            allowTapOnWeeklyOff = false,
+            viewMode = SlotPickerViewMode.Expanded
+        )
+    }
+
+    val defaultTimeSlots = remember {
+        listOf(
+            SlotTimeEntry("9:00 AM", slotCount = 4, status = SlotTimeStatus.Available),
+            SlotTimeEntry("9:30 AM", slotCount = 6, status = SlotTimeStatus.Available),
+            SlotTimeEntry("10:00 AM", slotCount = 3, status = SlotTimeStatus.Available),
+            SlotTimeEntry("10:30 AM", slotCount = 0, status = SlotTimeStatus.NoSlots),
+            SlotTimeEntry("11:00 AM", slotCount = 8, status = SlotTimeStatus.Available),
+            SlotTimeEntry("11:30 AM", slotCount = 5, status = SlotTimeStatus.Available),
+            SlotTimeEntry("2:00 PM", slotCount = 5, status = SlotTimeStatus.Available),
+            SlotTimeEntry("2:30 PM", slotCount = 2, status = SlotTimeStatus.Limited),
+            SlotTimeEntry("3:00 PM", slotCount = 1, status = SlotTimeStatus.Limited)
+        )
+    }
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(colors.screenBackground)
+    ) {
+        // App Header - filled purple
+        Ux4gAppHeader(
+            title = "National Services Portal",
+            variant = Ux4gAppHeaderVariant.Filled,
+            showBackButton = true,
+            onBackPressed = onBack,
+            backgroundColor = Ux4gColors.primary600,
+            modifier = Modifier.fillMaxWidth()
+        )
+
+        // Scrollable Content
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .verticalScroll(scrollState)
+                .padding(16.dp)
+        ) {
+            Text(
+                text = "Select appointment time",
+                style = TextStyle(
+                    fontSize = 22.sp,
+                    fontWeight = FontWeight.ExtraBold,
+                    color = colors.title
+                )
+            )
+
+            Spacer(modifier = Modifier.height(4.dp))
+
+            Text(
+                text = "Adv. M. Sharma · 30-minute slot",
+                style = TextStyle(
+                    fontSize = 13.sp,
+                    color = colors.subtleText
+                )
+            )
+
+            Spacer(modifier = Modifier.height(20.dp))
+
+            Text(
+                text = "Appointment date & time",
+                style = TextStyle(
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.SemiBold,
+                    color = colors.title
+                )
+            )
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            // Tap to pick date & time trigger display
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(8.dp))
+                    .background(colors.triggerBg)
+                    .border(1.dp, colors.triggerBorder, RoundedCornerShape(8.dp))
+                    .padding(horizontal = 16.dp, vertical = 12.dp)
+            ) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    val dateFormatted = selectedDate?.format(DateTimeFormatter.ofPattern("d MMM yyyy"))
+                    val displayText = if (dateFormatted != null && selectedSlot != null) {
+                        dateFormatted + " · " + (selectedSlot?.time ?: "")
+                    } else {
+                        "Tap on calendar to pick date & time"
+                    }
+
+                    Text(
+                        text = displayText,
+                        style = TextStyle(
+                            fontSize = 14.sp,
+                            color = if (selectedDate != null) colors.triggerActiveText else colors.mutedText
+                        ),
+                        modifier = Modifier.weight(1f)
+                    )
+
+                    Icon(
+                        imageVector = Icons.Default.KeyboardArrowDown,
+                        contentDescription = "Select Date & Time",
+                        tint = colors.subtleText,
+                        modifier = Modifier.size(20.dp)
+                    )
+                }
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // Calendar SlotGrid Component
+            Ux4gTimeslot(
+                data = slotData,
+                timeSlotProvider = { defaultTimeSlots },
+                onDateSelected = { date ->
+                    selectedDate = date
+                },
+                onSlotConfirmed = { date, slot ->
+                    selectedDate = date
+                    selectedSlot = slot
+                },
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            Spacer(modifier = Modifier.height(24.dp))
+
+            // Primary Continue Action
+            Ux4gButton(
+                text = "Continue",
+                onClick = {
+                    if (selectedDate != null && selectedSlot != null) {
+                        onContinue(selectedDate!!, selectedSlot!!)
+                    }
+                },
+                variant = Ux4gButtonVariant.Primary,
+                size = Ux4gButtonSize.Medium,
+                enabled = selectedDate != null && selectedSlot != null,
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+        }
+    }
+}
+
+@Preview(showBackground = true, widthDp = 390, heightDp = 860)
+@Composable
+fun SelectAppointmentTimePreview() {
+    SelectAppointmentTimeScreen()
+}`}
+>
+  <img
+    src="/images/patterns/consultation_slot_booking/select_appointment_time.svg"
+    alt="Select Appointment Time Pattern"
+    className="w-full max-w-[360px] rounded-2xl border border-border shadow-sm mx-auto my-4"
+  />
+</ComponentPreview>

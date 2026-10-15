@@ -1,0 +1,348 @@
+---
+title: Appointment Confirm
+description: Consultation booking success pattern featuring verified status indicators, statutory booking reference number, logistics summary card, directions navigation, and calendar synchronization
+---
+
+# Appointment Confirm
+
+A post-booking success acknowledgement pattern confirming finalized consultation reservations, delivering reference audit numbers, and offering post-booking next actions.
+
+The pattern reassures the citizen upon completion of their appointment reservation. A prominent success badge pairs with an explicit reference code (*"APPT-2026-04127"*) and omnichannel dispatch notification (*"We've sent details to your email and SMS"*). An appointment summary card consolidates time, practitioner, venue, and required documents to bring (*Aadhaar, case papers, ID proof*). Actionable primary and secondary buttons (`Ux4gButton`) enable instant route navigation (**Get directions**) and digital device synchronization (**Add to calendar**).
+
+---
+
+<h2><MIcon name="smartphone" /> Interactive Preview</h2>
+
+### Appointment Confirmation Overview
+
+Post-booking success screen displaying reference credentials, consultation logistics summary card, navigation routing, and calendar export actions.
+
+<ComponentPreview
+  title="Appointment Confirm"
+  category="Pattern · Jetpack Compose"
+  code={`package com.example.ux4g.patterns.discovery
+
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.CalendarToday
+import androidx.compose.material.icons.filled.CheckCircle
+import androidx.compose.material.icons.filled.Directions
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.ux4g.designsystemv1.components.Ux4gAppHeader
+import com.ux4g.designsystemv1.components.Ux4gAppHeaderVariant
+import com.ux4g.designsystemv1.components.buttons.Ux4gButton
+import com.ux4g.designsystemv1.components.buttons.Ux4gButtonSize
+import com.ux4g.designsystemv1.components.buttons.Ux4gButtonVariant
+import com.ux4g.designsystemv1.foundation.Ux4gColors
+import com.ux4g.designsystemv1.foundation.Ux4gSpace
+
+/**
+ * Color tokens for Appointment Confirm Screen
+ */
+data class AppointmentConfirmColors(
+    val screenBackground: Color,
+    val surfaceBackground: Color,
+    val border: Color,
+    val title: Color,
+    val subtleText: Color,
+    val successBg: Color,
+    val successIcon: Color,
+    val cardBg: Color,
+    val cardBorder: Color,
+    val labelText: Color,
+    val valueText: Color,
+    val calendarBtnBorder: Color,
+    val calendarBtnText: Color
+)
+
+val LightAppointmentConfirmColors = AppointmentConfirmColors(
+    screenBackground = Ux4gColors.neutral50,
+    surfaceBackground = Ux4gColors.neutral0,
+    border = Ux4gColors.neutral200,
+    title = Ux4gColors.neutral900,
+    subtleText = Ux4gColors.neutral700,
+    successBg = Ux4gColors.green100,
+    successIcon = Ux4gColors.green600,
+    cardBg = Ux4gColors.neutral50,
+    cardBorder = Ux4gColors.neutral200,
+    labelText = Ux4gColors.neutral700,
+    valueText = Ux4gColors.neutral900,
+    calendarBtnBorder = Ux4gColors.primary300,
+    calendarBtnText = Ux4gColors.primary600
+)
+
+val DarkAppointmentConfirmColors = AppointmentConfirmColors(
+    screenBackground = Ux4gColors.neutral950,
+    surfaceBackground = Ux4gColors.neutral900,
+    border = Ux4gColors.neutral800,
+    title = Ux4gColors.neutral50,
+    subtleText = Ux4gColors.neutral200,
+    successBg = Ux4gColors.green800,
+    successIcon = Ux4gColors.green300,
+    cardBg = Ux4gColors.neutral900,
+    cardBorder = Ux4gColors.neutral800,
+    labelText = Ux4gColors.neutral200,
+    valueText = Ux4gColors.neutral50,
+    calendarBtnBorder = Ux4gColors.primary400,
+    calendarBtnText = Ux4gColors.primary300
+)
+
+/**
+ * Appointment Confirm Screen
+ *
+ * @param onBack Invoked when citizen taps header back action
+ * @param onGetDirections Invoked when citizen requests GPS/map directions
+ * @param onAddToCalendar Invoked when citizen exports appointment event to calendar
+ */
+@Composable
+fun AppointmentConfirmScreen(
+    onBack: () -> Unit = {},
+    onGetDirections: () -> Unit = {},
+    onAddToCalendar: () -> Unit = {}
+) {
+    val isDark = isSystemInDarkTheme()
+    val colors = if (isDark) DarkAppointmentConfirmColors else LightAppointmentConfirmColors
+    val scrollState = rememberScrollState()
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(colors.screenBackground)
+    ) {
+        // App Header - filled purple
+        Ux4gAppHeader(
+            title = "National Services Portal",
+            variant = Ux4gAppHeaderVariant.Filled,
+            showBackButton = true,
+            onBackPressed = onBack,
+            backgroundColor = Ux4gColors.primary600,
+            modifier = Modifier.fillMaxWidth()
+        )
+
+        // Scrollable Content
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier
+                .fillMaxSize()
+                .verticalScroll(scrollState)
+                .padding(16.dp)
+        ) {
+            Spacer(modifier = Modifier.height(12.dp))
+
+            // Success Circle Badge
+            Box(
+                modifier = Modifier
+                    .size(56.dp)
+                    .clip(CircleShape)
+                    .background(colors.successBg),
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(
+                    imageVector = Icons.Default.CheckCircle,
+                    contentDescription = "Confirmed",
+                    tint = colors.successIcon,
+                    modifier = Modifier.size(36.dp)
+                )
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // Title
+            Text(
+                text = "Appointment confirmed",
+                style = TextStyle(
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.ExtraBold,
+                    color = colors.title
+                )
+            )
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            // Reference Row
+            Row(
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = "Reference  ",
+                    style = TextStyle(
+                        fontSize = 13.sp,
+                        color = colors.subtleText
+                    )
+                )
+                Text(
+                    text = "APPT-2026-04127",
+                    style = TextStyle(
+                        fontSize = 13.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = colors.title
+                    )
+                )
+            }
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            // Subtitle
+            Text(
+                text = "We've sent details to your email and SMS.",
+                style = TextStyle(
+                    fontSize = 13.sp,
+                    color = colors.subtleText
+                )
+            )
+
+            Spacer(modifier = Modifier.height(24.dp))
+
+            // Details Card
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(12.dp))
+                    .background(colors.cardBg)
+                    .border(1.dp, colors.cardBorder, RoundedCornerShape(12.dp))
+                    .padding(16.dp)
+            ) {
+                Column(crossAxisAlignment = CrossAxisAlignment.start) {
+                    ConfirmedDetailItem(
+                        label = "Date & time",
+                        value = "Thu, 18 Apr 2026 · 11:00 – 11:30 AM",
+                        colors = colors
+                    )
+
+                    Spacer(modifier = Modifier.height(16.dp))
+
+                    ConfirmedDetailItem(
+                        label = "Advocate",
+                        value = "Adv. M. Sharma · Family Law",
+                        colors = colors
+                    )
+
+                    Spacer(modifier = Modifier.height(16.dp))
+
+                    ConfirmedDetailItem(
+                        label = "Office",
+                        value = "Block C, Room 12, District Legal Services Authority, Pune",
+                        colors = colors
+                    )
+
+                    Spacer(modifier = Modifier.height(16.dp))
+
+                    ConfirmedDetailItem(
+                        label = "Documents to carry",
+                        value = "Aadhaar, case papers, ID proof",
+                        colors = colors
+                    )
+                }
+            }
+
+            Spacer(modifier = Modifier.height(24.dp))
+
+            // Primary Get Directions Action
+            Ux4gButton(
+                text = "Get directions",
+                onClick = onGetDirections,
+                variant = Ux4gButtonVariant.Primary,
+                size = Ux4gButtonSize.Large,
+                leadingIcon = {
+                    Icon(
+                        imageVector = Icons.Default.Directions,
+                        contentDescription = "Directions",
+                        tint = Color.White,
+                        modifier = Modifier.size(20.dp)
+                    )
+                },
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            Spacer(modifier = Modifier.height(12.dp))
+
+            // Secondary Add to Calendar Action
+            Ux4gButton(
+                text = "Add to calendar",
+                onClick = onAddToCalendar,
+                variant = Ux4gButtonVariant.Outline,
+                size = Ux4gButtonSize.Large,
+                leadingIcon = {
+                    Icon(
+                        imageVector = Icons.Default.CalendarToday,
+                        contentDescription = "Calendar",
+                        tint = colors.calendarBtnText,
+                        modifier = Modifier.size(18.dp)
+                    )
+                },
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+        }
+    }
+}
+
+@Composable
+private fun ConfirmedDetailItem(
+    label: String,
+    value: String,
+    colors: AppointmentConfirmColors
+) {
+    Column(crossAxisAlignment = CrossAxisAlignment.start) {
+        Text(
+            text = label,
+            style = TextStyle(
+                fontSize = 12.sp,
+                fontWeight = FontWeight.SemiBold,
+                color = colors.labelText
+            )
+        )
+        Spacer(modifier = Modifier.height(2.dp))
+        Text(
+            text = value,
+            style = TextStyle(
+                fontSize = 14.sp,
+                fontWeight = FontWeight.Medium,
+                color = colors.valueText
+            )
+        )
+    }
+}
+
+@Preview(showBackground = true, widthDp = 390, heightDp = 800)
+@Composable
+fun AppointmentConfirmPreview() {
+    AppointmentConfirmScreen()
+}`}
+>
+  <img
+    src="/images/patterns/consultation_slot_booking/appointment_confirm.svg"
+    alt="Appointment Confirm Pattern"
+    className="w-full max-w-[360px] rounded-2xl border border-border shadow-sm mx-auto my-4"
+  />
+</ComponentPreview>

@@ -1,0 +1,9 @@
+{
+  "title": "Consultation Slot Booking",
+  "pages": [
+    "select-advocate",
+    "select-appointment-time",
+    "confirm-appointment-v2",
+    "appointment-confirm"
+  ]
+}

@@ -1,0 +1,324 @@
+---
+title: Select Advocate
+description: Legal consultation scheduling pattern featuring authority location context, available advocate directory cards, specialization credentials, spoken languages, real-time slot availability badges, and direct booking selection
+---
+
+# Select Advocate
+
+An advocate directory and legal consultation scheduling pattern designed for public legal aid, dispute resolution, and citizen advisory portals (such as the District Legal Services Authority and Tele-Law programs).
+
+The screen assists citizens in finding the most suitable legal practitioner by displaying the administering authority and total advocates available (*"District Legal Services Authority, Pune · 12 available"*). Each advocate profile card presents crucial qualifications at a glance: practitioner name, domain specialization, years of practice experience, supported languages for multilingual consultations, and an immediate visual indicator of open appointment capacity (*"8 slots"*). Citizens can select an advocate via a full-width primary action button (`Ux4gButton`) to proceed directly to time slot selection.
+
+---
+
+<h2><MIcon name="smartphone" /> Interactive Preview</h2>
+
+### Select Advocate Overview
+
+Directory screen featuring available legal advocates, credentials, linguistic capabilities, available appointment slots, and selection triggers.
+
+<ComponentPreview
+  title="Select Advocate"
+  category="Pattern · Jetpack Compose"
+  code={`package com.example.ux4g.patterns.discovery
+
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccountBalance
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.ux4g.designsystemv1.components.Ux4gAppHeader
+import com.ux4g.designsystemv1.components.Ux4gAppHeaderVariant
+import com.ux4g.designsystemv1.components.buttons.Ux4gButton
+import com.ux4g.designsystemv1.components.buttons.Ux4gButtonSize
+import com.ux4g.designsystemv1.components.buttons.Ux4gButtonVariant
+import com.ux4g.designsystemv1.foundation.Ux4gColors
+import com.ux4g.designsystemv1.foundation.Ux4gSpace
+
+/**
+ * Color tokens for Select Advocate Screen
+ */
+data class SelectAdvocateColors(
+    val screenBackground: Color,
+    val surfaceBackground: Color,
+    val cardBorder: Color,
+    val title: Color,
+    val subtleText: Color,
+    val mutedText: Color,
+    val avatarBg: Color,
+    val avatarTint: Color,
+    val slotBadgeBg: Color,
+    val slotBadgeText: Color
+)
+
+val LightSelectAdvocateColors = SelectAdvocateColors(
+    screenBackground = Ux4gColors.neutral50,
+    surfaceBackground = Ux4gColors.neutral0,
+    cardBorder = Ux4gColors.primary500,
+    title = Ux4gColors.neutral900,
+    subtleText = Ux4gColors.neutral700,
+    mutedText = Ux4gColors.neutral500,
+    avatarBg = Ux4gColors.primary50,
+    avatarTint = Ux4gColors.primary600,
+    slotBadgeBg = Ux4gColors.green100,
+    slotBadgeText = Ux4gColors.green700
+)
+
+val DarkSelectAdvocateColors = SelectAdvocateColors(
+    screenBackground = Ux4gColors.neutral950,
+    surfaceBackground = Ux4gColors.neutral900,
+    cardBorder = Ux4gColors.primary600,
+    title = Ux4gColors.neutral50,
+    subtleText = Ux4gColors.neutral200,
+    mutedText = Ux4gColors.neutral400,
+    avatarBg = Ux4gColors.primary950,
+    avatarTint = Ux4gColors.primary300,
+    slotBadgeBg = Ux4gColors.green800,
+    slotBadgeText = Ux4gColors.green300
+)
+
+data class AdvocateItem(
+    val name: String,
+    val specialization: String,
+    val experience: String,
+    val languages: String,
+    val slots: Int
+)
+
+/**
+ * Select Advocate Screen
+ *
+ * @param onBack Invoked when citizen taps header back action
+ * @param onSelectAdvocate Invoked when citizen taps 'Select' on an advocate card
+ */
+@Composable
+fun SelectAdvocateScreen(
+    onBack: () -> Unit = {},
+    onSelectAdvocate: (AdvocateItem) -> Unit = {}
+) {
+    val isDark = isSystemInDarkTheme()
+    val colors = if (isDark) DarkSelectAdvocateColors else LightSelectAdvocateColors
+    val scrollState = rememberScrollState()
+
+    val advocates = remember {
+        listOf(
+            AdvocateItem(
+                name = "Adv. M. Sharma",
+                specialization = "Family Law",
+                experience = "12 yrs",
+                languages = "Hindi, Marathi, English",
+                slots = 8
+            ),
+            AdvocateItem(
+                name = "Adv. M. Sharma",
+                specialization = "Family Law",
+                experience = "12 yrs",
+                languages = "Hindi, Marathi, English",
+                slots = 5
+            ),
+            AdvocateItem(
+                name = "Adv. M. Sharma",
+                specialization = "Family Law",
+                experience = "12 yrs",
+                languages = "Hindi, Marathi, English",
+                slots = 3
+            )
+        )
+    }
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(colors.screenBackground)
+    ) {
+        // App Header - filled purple
+        Ux4gAppHeader(
+            title = "National Services Portal",
+            variant = Ux4gAppHeaderVariant.Filled,
+            showBackButton = true,
+            onBackPressed = onBack,
+            backgroundColor = Ux4gColors.primary600,
+            modifier = Modifier.fillMaxWidth()
+        )
+
+        // Scrollable Content
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .verticalScroll(scrollState)
+                .padding(16.dp)
+        ) {
+            Text(
+                text = "Select an advocate",
+                style = TextStyle(
+                    fontSize = 22.sp,
+                    fontWeight = FontWeight.ExtraBold,
+                    color = colors.title
+                )
+            )
+
+            Spacer(modifier = Modifier.height(4.dp))
+
+            Text(
+                text = "District Legal Services Authority, Pune · 12 available",
+                style = TextStyle(
+                    fontSize = 13.sp,
+                    color = colors.subtleText
+                )
+            )
+
+            Spacer(modifier = Modifier.height(20.dp))
+
+            // Advocate Cards List
+            advocates.forEach { advocate ->
+                AdvocateCard(
+                    advocate = advocate,
+                    colors = colors,
+                    onSelect = { onSelectAdvocate(advocate) }
+                )
+                Spacer(modifier = Modifier.height(16.dp))
+            }
+        }
+    }
+}
+
+@Composable
+private fun AdvocateCard(
+    advocate: AdvocateItem,
+    colors: SelectAdvocateColors,
+    onSelect: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Box(
+        modifier = modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(12.dp))
+            .background(colors.surfaceBackground)
+            .border(1.dp, colors.cardBorder, RoundedCornerShape(12.dp))
+            .padding(16.dp)
+    ) {
+        Column(crossAxisAlignment = CrossAxisAlignment.start) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                // Justice / Legal Balance Avatar Icon
+                Box(
+                    modifier = Modifier
+                        .size(40.dp)
+                        .clip(CircleShape)
+                        .background(colors.avatarBg),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.AccountBalance,
+                        contentDescription = "Legal Advocate",
+                        tint = colors.avatarTint,
+                        modifier = Modifier.size(20.dp)
+                    )
+                }
+
+                Spacer(modifier = Modifier.width(12.dp))
+
+                Column(modifier = Modifier.weight(1f)) {
+                    Text(
+                        text = advocate.name,
+                        style = TextStyle(
+                            fontSize = 14.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = colors.title
+                        )
+                    )
+                    Spacer(modifier = Modifier.height(2.dp))
+                    Text(
+                        text = advocate.specialization + " · " + advocate.experience,
+                        style = TextStyle(
+                            fontSize = 12.sp,
+                            color = colors.subtleText
+                        )
+                    )
+                }
+
+                Spacer(modifier = Modifier.width(8.dp))
+
+                // Available Slots Badge
+                Box(
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(4.dp))
+                        .background(colors.slotBadgeBg)
+                        .padding(horizontal = 8.dp, vertical = 3.dp)
+                ) {
+                    Text(
+                        text = advocate.slots.toString() + " slots",
+                        style = TextStyle(
+                            fontSize = 12.sp,
+                            fontWeight = FontWeight.SemiBold,
+                            color = colors.slotBadgeText
+                        )
+                    )
+                }
+            }
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            Text(
+                text = "Languages: " + advocate.languages,
+                style = TextStyle(
+                    fontSize = 12.sp,
+                    color = colors.subtleText
+                )
+            )
+
+            Spacer(modifier = Modifier.height(12.dp))
+
+            Ux4gButton(
+                text = "Select",
+                onClick = onSelect,
+                variant = Ux4gButtonVariant.Primary,
+                size = Ux4gButtonSize.Medium,
+                modifier = Modifier.fillMaxWidth()
+            )
+        }
+    }
+}
+
+@Preview(showBackground = true, widthDp = 390, heightDp = 800)
+@Composable
+fun SelectAdvocatePreview() {
+    SelectAdvocateScreen()
+}`}
+>
+  <img
+    src="/images/patterns/consultation_slot_booking/select_advocate.svg"
+    alt="Select Advocate Pattern"
+    className="w-full max-w-[360px] rounded-2xl border border-border shadow-sm mx-auto my-4"
+  />
+</ComponentPreview>

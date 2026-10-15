@@ -1,0 +1,324 @@
+---
+title: Confirm Appointment V2
+description: Legal consultation booking confirmation pattern featuring a structured reservation overview card, temporary reservation hold warning banner, and primary confirmation with fallback slot adjustment actions
+---
+
+# Confirm Appointment V2
+
+A pre-confirmation verification pattern designed to eliminate booking errors, set clear consultation logistics, and provide citizens with final transparency prior to statutory appointment reservation.
+
+The screen presents a structured appointment overview card summarizing the appointment date & time, assigned legal practitioner, physical room/office jurisdiction (*Block C, Room 12, District Legal Services Authority, Pune*), and consultation format (*In-person · 30 minutes*). An urgent, high-visibility warning banner alerts citizens to the temporary 5-minute reservation hold window, preventing unintentional slot abandonment. Clear hierarchical CTAs allow immediate confirmation via a primary button (`Ux4gButton`) or friction-free backtracking via a secondary **Choose different slot** action.
+
+---
+
+<h2><MIcon name="smartphone" /> Interactive Preview</h2>
+
+### Appointment Confirmation Overview
+
+Pre-booking review screen showing appointment logistics summary, temporary reservation timeout warning, and final confirmation action.
+
+<ComponentPreview
+  title="Confirm Appointment V2"
+  category="Pattern · Jetpack Compose"
+  code={`package com.example.ux4g.patterns.discovery
+
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Error
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.ux4g.designsystemv1.components.Ux4gAppHeader
+import com.ux4g.designsystemv1.components.Ux4gAppHeaderVariant
+import com.ux4g.designsystemv1.components.buttons.Ux4gButton
+import com.ux4g.designsystemv1.components.buttons.Ux4gButtonSize
+import com.ux4g.designsystemv1.components.buttons.Ux4gButtonVariant
+import com.ux4g.designsystemv1.foundation.Ux4gColors
+import com.ux4g.designsystemv1.foundation.Ux4gSpace
+
+/**
+ * Color tokens for Confirm Appointment V2 Screen
+ */
+data class ConfirmAppointmentV2Colors(
+    val screenBackground: Color,
+    val surfaceBackground: Color,
+    val border: Color,
+    val title: Color,
+    val subtleText: Color,
+    val cardBg: Color,
+    val cardBorder: Color,
+    val labelText: Color,
+    val valueText: Color,
+    val warningBg: Color,
+    val warningBorder: Color,
+    val warningIcon: Color,
+    val warningText: Color,
+    val secondaryBtnBorder: Color,
+    val secondaryBtnText: Color
+)
+
+val LightConfirmAppointmentV2Colors = ConfirmAppointmentV2Colors(
+    screenBackground = Ux4gColors.neutral50,
+    surfaceBackground = Ux4gColors.neutral0,
+    border = Ux4gColors.neutral200,
+    title = Ux4gColors.neutral900,
+    subtleText = Ux4gColors.neutral700,
+    cardBg = Ux4gColors.primary50,
+    cardBorder = Ux4gColors.primary300,
+    labelText = Ux4gColors.neutral700,
+    valueText = Ux4gColors.neutral900,
+    warningBg = Ux4gColors.orange50,
+    warningBorder = Ux4gColors.orange300,
+    warningIcon = Ux4gColors.orange600,
+    warningText = Ux4gColors.orange700,
+    secondaryBtnBorder = Ux4gColors.primary300,
+    secondaryBtnText = Ux4gColors.primary600
+)
+
+val DarkConfirmAppointmentV2Colors = ConfirmAppointmentV2Colors(
+    screenBackground = Ux4gColors.neutral950,
+    surfaceBackground = Ux4gColors.neutral900,
+    border = Ux4gColors.neutral800,
+    title = Ux4gColors.neutral50,
+    subtleText = Ux4gColors.neutral200,
+    cardBg = Ux4gColors.primary950,
+    cardBorder = Ux4gColors.primary600,
+    labelText = Ux4gColors.neutral200,
+    valueText = Ux4gColors.neutral50,
+    warningBg = Ux4gColors.orange950,
+    warningBorder = Ux4gColors.orange700,
+    warningIcon = Ux4gColors.orange300,
+    warningText = Ux4gColors.orange100,
+    secondaryBtnBorder = Ux4gColors.neutral600,
+    secondaryBtnText = Ux4gColors.neutral50
+)
+
+/**
+ * Confirm Appointment V2 Screen
+ *
+ * @param onBack Invoked when citizen taps header back action
+ * @param onConfirmBooking Invoked when citizen confirms appointment
+ * @param onChooseDifferentSlot Invoked when citizen wants to change the selected slot
+ */
+@Composable
+fun ConfirmAppointmentV2Screen(
+    onBack: () -> Unit = {},
+    onConfirmBooking: () -> Unit = {},
+    onChooseDifferentSlot: () -> Unit = {}
+) {
+    val isDark = isSystemInDarkTheme()
+    val colors = if (isDark) DarkConfirmAppointmentV2Colors else LightConfirmAppointmentV2Colors
+    val scrollState = rememberScrollState()
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(colors.screenBackground)
+    ) {
+        // App Header - filled purple
+        Ux4gAppHeader(
+            title = "National Services Portal",
+            variant = Ux4gAppHeaderVariant.Filled,
+            showBackButton = true,
+            onBackPressed = onBack,
+            backgroundColor = Ux4gColors.primary600,
+            modifier = Modifier.fillMaxWidth()
+        )
+
+        // Scrollable Content
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .verticalScroll(scrollState)
+                .padding(16.dp)
+        ) {
+            Text(
+                text = "Confirm appointment",
+                style = TextStyle(
+                    fontSize = 22.sp,
+                    fontWeight = FontWeight.ExtraBold,
+                    color = colors.title
+                )
+            )
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            Text(
+                text = "Review before confirming. Slot not reserved until confirmed.",
+                style = TextStyle(
+                    fontSize = 13.sp,
+                    color = colors.subtleText
+                )
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // Details Summary Card
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(12.dp))
+                    .background(colors.cardBg)
+                    .border(1.dp, colors.cardBorder, RoundedCornerShape(12.dp))
+                    .padding(14.dp)
+            ) {
+                Column(crossAxisAlignment = CrossAxisAlignment.start) {
+                    DetailItem(
+                        label = "Date & time",
+                        value = "Thu, 18 Apr 2026 · 11:00 – 11:30 AM",
+                        colors = colors
+                    )
+
+                    Spacer(modifier = Modifier.height(12.dp))
+
+                    DetailItem(
+                        label = "Advocate",
+                        value = "Adv. M. Sharma · Family Law",
+                        colors = colors
+                    )
+
+                    Spacer(modifier = Modifier.height(12.dp))
+
+                    DetailItem(
+                        label = "Office",
+                        value = "Block C, Room 12, District Legal Services Authority, Pune",
+                        colors = colors
+                    )
+
+                    Spacer(modifier = Modifier.height(12.dp))
+
+                    DetailItem(
+                        label = "Consultation type",
+                        value = "In-person · 30 minutes",
+                        colors = colors
+                    )
+                }
+            }
+
+            Spacer(modifier = Modifier.height(18.dp))
+
+            // Temporary Hold Warning Banner
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(8.dp))
+                    .background(colors.warningBg)
+                    .border(1.dp, colors.warningBorder, RoundedCornerShape(8.dp))
+                    .padding(horizontal = 16.dp, vertical = 12.dp)
+            ) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Error,
+                        contentDescription = "Warning",
+                        tint = colors.warningIcon,
+                        modifier = Modifier.size(18.dp)
+                    )
+
+                    Spacer(modifier = Modifier.width(8.dp))
+
+                    Text(
+                        text = "Your slot is held for 5 minutes — please confirm soon to avoid losing it.",
+                        style = TextStyle(
+                            fontSize = 13.sp,
+                            color = colors.warningText,
+                            lineHeight = 18.sp
+                        ),
+                        modifier = Modifier.weight(1f)
+                    )
+                }
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // Primary Confirm Booking Button
+            Ux4gButton(
+                text = "Confirm booking",
+                onClick = onConfirmBooking,
+                variant = Ux4gButtonVariant.Primary,
+                size = Ux4gButtonSize.Large,
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            Spacer(modifier = Modifier.height(12.dp))
+
+            // Secondary Change Slot Button
+            Ux4gButton(
+                text = "Choose different slot",
+                onClick = onChooseDifferentSlot,
+                variant = Ux4gButtonVariant.Outline,
+                size = Ux4gButtonSize.Large,
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+        }
+    }
+}
+
+@Composable
+private fun DetailItem(
+    label: String,
+    value: String,
+    colors: ConfirmAppointmentV2Colors
+) {
+    Column(crossAxisAlignment = CrossAxisAlignment.start) {
+        Text(
+            text = label,
+            style = TextStyle(
+                fontSize = 12.sp,
+                fontWeight = FontWeight.SemiBold,
+                color = colors.labelText
+            )
+        )
+        Spacer(modifier = Modifier.height(2.dp))
+        Text(
+            text = value,
+            style = TextStyle(
+                fontSize = 14.sp,
+                fontWeight = FontWeight.Medium,
+                color = colors.valueText
+            )
+        )
+    }
+}
+
+@Preview(showBackground = true, widthDp = 390, heightDp = 800)
+@Composable
+fun ConfirmAppointmentV2Preview() {
+    ConfirmAppointmentV2Screen()
+}`}
+>
+  <img
+    src="/images/patterns/consultation_slot_booking/confirm_appointment_v2.svg"
+    alt="Confirm Appointment V2 Pattern"
+    className="w-full max-w-[360px] rounded-2xl border border-border shadow-sm mx-auto my-4"
+  />
+</ComponentPreview>
