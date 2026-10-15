@@ -1,0 +1,466 @@
+---
+title: Inline Feedback Hint
+description: Identity verification input pattern featuring Aadhaar number entry with proactive guidance hints, automatic chunk formatting, and both default full-screen and elevated card-style variants
+---
+
+# Inline Feedback Hint
+
+An inline guidance and status communication pattern that provides citizens with proactive instructional hints during high-stakes credential intake (such as entering a 12-digit Aadhaar number for identity verification and personal detail pre-filling).
+
+Rather than remaining passive until an error occurs, the pattern offers an encouraging, informative hint below the field (*"Enter 12 digits — we will prefill your name and address"*). When citizens begin entering their UIDAI credential, the input automatically formats chunks (`XXXX XXXX XXXX`), validates the Verhoeff checksum algorithm in real-time, and seamlessly transitions to inline validation confirmation upon completion.
+
+The pattern is available in two structural configurations:
+1. **Default Style**: Clean, direct form layout anchored by the official government portal header, back navigation, guidance header, informative helper hint, and a full-width bottom verification button.
+2. **Card Style**: An elevated card container situated on a soft tinted purple background (`Ux4gColors.primary100` / `0xFFF2EFFF` in light mode, `primary800` in dark mode) with pinned bottom progression controls.
+
+---
+
+<h2><MIcon name="smartphone" /> Interactive Previews</h2>
+
+### 1. Default Style (Full Screen)
+
+Standard full-screen form input layout with official portal header, identity verification context, proactive helper hint caption, and primary verification action.
+
+<ComponentPreview
+  title="Inline Feedback Hint - Default"
+  category="Pattern · Jetpack Compose"
+  code={`package com.example.ux4g.patterns.feedback
+
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.ux4g.designsystemv1.components.Ux4gAppHeader
+import com.ux4g.designsystemv1.components.Ux4gAppHeaderAction
+import com.ux4g.designsystemv1.components.Ux4gAppHeaderVariant
+import com.ux4g.designsystemv1.components.Ux4gDivider
+import com.ux4g.designsystemv1.components.buttons.Ux4gButton
+import com.ux4g.designsystemv1.components.buttons.Ux4gButtonSize
+import com.ux4g.designsystemv1.components.buttons.Ux4gButtonVariant
+import com.ux4g.designsystemv1.components.inputfield.Ux4gAadhaarInputField
+import com.ux4g.designsystemv1.components.inputfield.Ux4gInputFieldSize
+import com.ux4g.designsystemv1.foundation.Ux4gColors
+import com.ux4g.designsystemv1.foundation.Ux4gSpace
+
+/**
+ * Color tokens for Inline Feedback Hint Screen
+ */
+data class InlineFeedbackHintColors(
+    val screenBackground: Color,
+    val surfaceBackground: Color,
+    val title: Color,
+    val subtleText: Color,
+    val primaryText: Color,
+    val headerDivider: Color
+)
+
+val LightInlineFeedbackHintColors = InlineFeedbackHintColors(
+    screenBackground = Ux4gColors.neutral0,
+    surfaceBackground = Ux4gColors.neutral0,
+    title = Ux4gColors.neutral900,
+    subtleText = Ux4gColors.neutral700,
+    primaryText = Ux4gColors.primary600,
+    headerDivider = Ux4gColors.neutral300
+)
+
+val DarkInlineFeedbackHintColors = InlineFeedbackHintColors(
+    screenBackground = Ux4gColors.neutral900,
+    surfaceBackground = Ux4gColors.neutral900,
+    title = Ux4gColors.neutral50,
+    subtleText = Ux4gColors.neutral200,
+    primaryText = Ux4gColors.primary300,
+    headerDivider = Ux4gColors.neutral700
+)
+
+/**
+ * Inline Feedback Hint Screen - Default Style
+ *
+ * @param onBack Invoked when citizen taps 'Back'
+ * @param onMenuClick Invoked when citizen taps header menu
+ * @param onVerify Invoked when citizen proceeds to verify identity
+ */
+@Composable
+fun InlineFeedbackHintScreen(
+    onBack: () -> Unit = {},
+    onMenuClick: () -> Unit = {},
+    onVerify: (String) -> Unit = {}
+) {
+    val isDark = isSystemInDarkTheme()
+    val colors = if (isDark) DarkInlineFeedbackHintColors else LightInlineFeedbackHintColors
+
+    var aadhaarValue by remember { mutableStateOf("") }
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(colors.screenBackground)
+    ) {
+        // App Header with national emblem, divider, union logo, and menu button
+        FeedbackHintAppHeader(colors = colors, onMenuClick = onMenuClick)
+
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp)
+        ) {
+            // Back Link
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier
+                    .clickable(onClick = onBack)
+                    .padding(vertical = 4.dp)
+            ) {
+                Icon(
+                    imageVector = Icons.Default.ArrowBack,
+                    contentDescription = "Back",
+                    tint = colors.primaryText,
+                    modifier = Modifier.size(16.dp)
+                )
+                Spacer(modifier = Modifier.width(4.dp))
+                Text(
+                    text = "Back",
+                    style = TextStyle(
+                        fontSize = 14.sp,
+                        fontWeight = FontWeight.Medium,
+                        color = colors.primaryText
+                    )
+                )
+            }
+
+            Spacer(modifier = Modifier.height(20.dp))
+
+            // Heading & Context Guidance
+            Text(
+                text = "Identity Verification",
+                style = TextStyle(
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.ExtraBold,
+                    color = colors.title
+                )
+            )
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            Text(
+                text = "Enter your Aadhaar number to auto-fill your personal details.",
+                style = TextStyle(
+                    fontSize = 13.sp,
+                    color = colors.subtleText,
+                    lineHeight = 18.sp
+                )
+            )
+
+            Spacer(modifier = Modifier.height(20.dp))
+
+            // Ux4gAadhaarInputField internally validates 12 digits using Verhoeff
+            Ux4gAadhaarInputField(
+                value = aadhaarValue,
+                onValueChange = { aadhaarValue = it },
+                label = "Aadhaar Number",
+                placeholder = "Enter 12-digit Aadhaar number",
+                caption = "Enter 12 digits — we will prefill your name and address",
+                size = Ux4gInputFieldSize.Large,
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            Spacer(modifier = Modifier.weight(1f))
+
+            // Verify Action Button
+            Ux4gButton(
+                text = "Verify",
+                onClick = { onVerify(aadhaarValue) },
+                variant = Ux4gButtonVariant.Primary,
+                size = Ux4gButtonSize.Large,
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+        }
+    }
+}
+
+@Composable
+private fun FeedbackHintAppHeader(
+    colors: InlineFeedbackHintColors,
+    onMenuClick: () -> Unit
+) {
+    Column {
+        Ux4gAppHeader(
+            title = "",
+            variant = Ux4gAppHeaderVariant.Light,
+            height = 64.dp,
+            horizontalPadding = Ux4gSpace.Space16,
+            actions = {
+                Ux4gAppHeaderAction(
+                    icon = Icons.Default.Menu,
+                    contentDescription = "Open Navigation Menu",
+                    onClick = onMenuClick
+                )
+            }
+        )
+        Ux4gDivider(
+            color = colors.headerDivider,
+            thickness = 1.dp
+        )
+    }
+}
+
+@Preview(name = "Light Mode", showBackground = true)
+@Composable
+fun PreviewInlineFeedbackHintScreenLight() {
+    InlineFeedbackHintScreen()
+}
+
+@Preview(name = "Dark Mode", showBackground = true)
+@Composable
+fun PreviewInlineFeedbackHintScreenDark() {
+    InlineFeedbackHintScreen()
+}`}
+>
+  <div className="flex flex-col items-center justify-center py-2">
+    <img
+      src="/images/patterns/inline_feedback_hint/inline_feedback_hint.svg"
+      alt="UX4G Inline Feedback Hint Default Pattern Preview"
+      className="max-w-full rounded-xl border border-border/60 shadow-sm"
+    />
+  </div>
+</ComponentPreview>
+
+---
+
+### 2. Card Style (Contained Card)
+
+Card-contained validation variant situated on a tinted background with the Aadhaar identity input and instructional guidance grouped inside a rounded white surface.
+
+<ComponentPreview
+  title="Inline Feedback Hint - Card Style"
+  category="Pattern · Jetpack Compose"
+  code={`package com.example.ux4g.patterns.feedback
+
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.ux4g.designsystemv1.components.Ux4gAppHeader
+import com.ux4g.designsystemv1.components.Ux4gAppHeaderAction
+import com.ux4g.designsystemv1.components.Ux4gAppHeaderVariant
+import com.ux4g.designsystemv1.components.Ux4gDivider
+import com.ux4g.designsystemv1.components.buttons.Ux4gButton
+import com.ux4g.designsystemv1.components.buttons.Ux4gButtonSize
+import com.ux4g.designsystemv1.components.buttons.Ux4gButtonVariant
+import com.ux4g.designsystemv1.components.inputfield.Ux4gAadhaarInputField
+import com.ux4g.designsystemv1.components.inputfield.Ux4gInputFieldSize
+import com.ux4g.designsystemv1.foundation.Ux4gColors
+import com.ux4g.designsystemv1.foundation.Ux4gSpace
+
+/**
+ * Inline Feedback Hint Screen - Card Style Variant
+ *
+ * @param onBack Invoked when citizen taps 'Back'
+ * @param onMenuClick Invoked when citizen taps header menu
+ * @param onVerify Invoked when citizen proceeds to verify identity
+ */
+@Composable
+fun InlineFeedbackHintCardScreen(
+    onBack: () -> Unit = {},
+    onMenuClick: () -> Unit = {},
+    onVerify: (String) -> Unit = {}
+) {
+    val isDark = isSystemInDarkTheme()
+    
+    // Tinted purple page background vs contained white card
+    val screenBackground = if (isDark) Ux4gColors.primary800 else Color(0xFFF2EFFF)
+    val cardBackground = if (isDark) Ux4gColors.neutral800 else Ux4gColors.neutral0
+    val titleColor = if (isDark) Ux4gColors.neutral50 else Ux4gColors.neutral900
+    val subtleColor = if (isDark) Ux4gColors.neutral200 else Ux4gColors.neutral700
+    val primaryColor = if (isDark) Ux4gColors.primary300 else Ux4gColors.primary600
+
+    var aadhaarValue by remember { mutableStateOf("") }
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(screenBackground)
+    ) {
+        // App Header
+        Ux4gAppHeader(
+            title = "",
+            variant = Ux4gAppHeaderVariant.Light,
+            height = 64.dp,
+            horizontalPadding = Ux4gSpace.Space16,
+            actions = {
+                Ux4gAppHeaderAction(
+                    icon = Icons.Default.Menu,
+                    contentDescription = "Open Navigation Menu",
+                    onClick = onMenuClick
+                )
+            }
+        )
+        Ux4gDivider(
+            color = if (isDark) Ux4gColors.neutral700 else Ux4gColors.neutral300,
+            thickness = 1.dp
+        )
+
+        // Form Card Container
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp)
+                .clip(RoundedCornerShape(16.dp))
+                .background(cardBackground)
+                .padding(16.dp)
+        ) {
+            Column {
+                // Back Link inside Card
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier
+                        .clickable(onClick = onBack)
+                        .padding(vertical = 4.dp)
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.ArrowBack,
+                        contentDescription = "Back",
+                        tint = primaryColor,
+                        modifier = Modifier.size(16.dp)
+                    )
+                    Spacer(modifier = Modifier.width(4.dp))
+                    Text(
+                        text = "Back",
+                        style = TextStyle(
+                            fontSize = 14.sp,
+                            fontWeight = FontWeight.Medium,
+                            color = primaryColor
+                        )
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(20.dp))
+
+                // Title
+                Text(
+                    text = "Identity Verification",
+                    style = TextStyle(
+                        fontSize = 18.sp,
+                        fontWeight = FontWeight.ExtraBold,
+                        color = titleColor
+                    )
+                )
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                // Guidance
+                Text(
+                    text = "Enter your Aadhaar number to auto-fill your personal details.",
+                    style = TextStyle(
+                        fontSize = 13.sp,
+                        color = subtleColor,
+                        lineHeight = 18.sp
+                    )
+                )
+
+                Spacer(modifier = Modifier.height(20.dp))
+
+                // UX4G Aadhaar Input with Proactive Hint
+                Ux4gAadhaarInputField(
+                    value = aadhaarValue,
+                    onValueChange = { aadhaarValue = it },
+                    label = "Aadhaar Number",
+                    placeholder = "Enter 12-digit Aadhaar number",
+                    caption = "Enter 12 digits — we will prefill your name and address",
+                    size = Ux4gInputFieldSize.Large,
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
+        }
+
+        Spacer(modifier = Modifier.weight(1f))
+
+        // Pinned Bottom Button
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp, vertical = 16.dp)
+        ) {
+            Ux4gButton(
+                text = "Verify",
+                onClick = { onVerify(aadhaarValue) },
+                variant = Ux4gButtonVariant.Primary,
+                size = Ux4gButtonSize.Large,
+                modifier = Modifier.fillMaxWidth()
+            )
+        }
+    }
+}
+
+@Preview(name = "Card Style Light Mode", showBackground = true)
+@Composable
+fun PreviewInlineFeedbackHintCardScreenLight() {
+    InlineFeedbackHintCardScreen()
+}`}
+>
+  <div className="flex flex-col items-center justify-center py-2">
+    <img
+      src="/images/patterns/inline_feedback_hint/inline_feedback_hint_cardstyle.svg"
+      alt="UX4G Inline Feedback Hint Card Style Pattern Preview"
+      className="max-w-full rounded-xl border border-border/60 shadow-sm"
+    />
+  </div>
+</ComponentPreview>

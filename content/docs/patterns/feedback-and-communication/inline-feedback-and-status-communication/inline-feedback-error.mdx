@@ -1,0 +1,505 @@
+---
+title: Inline Feedback Error
+description: Form input validation pattern demonstrating immediate field-level error feedback, descriptive error captioning, and both default full-screen and elevated card-style variants
+---
+
+# Inline Feedback Error
+
+An inline validation and status communication pattern that provides citizens with immediate, contextual error guidance when entered data fails formatting or syntax requirements (such as providing an incomplete mobile number for OTP delivery or biometric authentication).
+
+Rather than forcing citizens through a full round-trip submission before flagging mistakes, this pattern identifies syntax discrepancies immediately at the input level—highlighting the input border in accessible red (`Ux4gColors.danger500`), displaying an alert icon, and providing explicit remediation instructions (*"Enter a valid 10-digit mobile number"*).
+
+The pattern is available in two structural configurations:
+1. **Default Style**: Clean, full-screen layout anchored by the official government portal header, ghost back navigation, clear instructions, field-level error indicators, and a full-width bottom continuation button.
+2. **Card Style**: An elevated card container situated on a soft tinted purple background (`Ux4gColors.primary100` / `0xFFF2EFFF` in light mode, `primary800` in dark mode) with pinned bottom progression controls.
+
+---
+
+<h2><MIcon name="smartphone" /> Interactive Previews</h2>
+
+### 1. Default Style (Full Screen)
+
+Standard full-screen form input layout with official portal header, mobile verification guidance, real-time error validation state, and primary continuation action.
+
+<ComponentPreview
+  title="Inline Feedback Error - Default"
+  category="Pattern · Jetpack Compose"
+  code={`package com.example.ux4g.patterns.feedback
+
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.ErrorOutline
+import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.example.ux4g.R as AppR
+import com.ux4g.designsystemv1.R as Ux4gR
+import com.ux4g.designsystemv1.components.Ux4gAppHeader
+import com.ux4g.designsystemv1.components.Ux4gAppHeaderAction
+import com.ux4g.designsystemv1.components.Ux4gAppHeaderVariant
+import com.ux4g.designsystemv1.components.Ux4gDivider
+import com.ux4g.designsystemv1.components.Ux4gDividerOrientation
+import com.ux4g.designsystemv1.components.buttons.Ux4gButton
+import com.ux4g.designsystemv1.components.buttons.Ux4gButtonSize
+import com.ux4g.designsystemv1.components.buttons.Ux4gButtonVariant
+import com.ux4g.designsystemv1.components.inputfield.Ux4gInputField
+import com.ux4g.designsystemv1.components.inputfield.Ux4gInputFieldSize
+import com.ux4g.designsystemv1.components.inputfield.Ux4gInputFieldStatus
+import com.ux4g.designsystemv1.components.inputfield.Ux4gInputFieldType
+import com.ux4g.designsystemv1.foundation.Ux4gColors
+import com.ux4g.designsystemv1.foundation.Ux4gSpace
+
+/**
+ * Color tokens for Inline Feedback Error Screen
+ */
+data class InlineFeedbackErrorColors(
+    val screenBackground: Color,
+    val surfaceBackground: Color,
+    val border: Color,
+    val title: Color,
+    val subtleText: Color,
+    val primaryText: Color,
+    val errorColor: Color,
+    val headerDivider: Color,
+    val brandLogoTint: Color,
+    val emblemTint: Color?,
+    val menuButtonBackground: Color,
+    val menuButtonBorder: Color,
+    val menuButtonIcon: Color
+)
+
+val LightInlineFeedbackErrorColors = InlineFeedbackErrorColors(
+    screenBackground = Ux4gColors.neutral0,
+    surfaceBackground = Ux4gColors.neutral0,
+    border = Ux4gColors.neutral200,
+    title = Ux4gColors.neutral900,
+    subtleText = Ux4gColors.neutral700,
+    primaryText = Ux4gColors.primary600,
+    errorColor = Color(0xFFDC2626), // Ux4gColors.danger500
+    headerDivider = Ux4gColors.neutral300,
+    brandLogoTint = Ux4gColors.primary600,
+    emblemTint = null,
+    menuButtonBackground = Ux4gColors.neutral0,
+    menuButtonBorder = Ux4gColors.primary300,
+    menuButtonIcon = Ux4gColors.primary600
+)
+
+val DarkInlineFeedbackErrorColors = InlineFeedbackErrorColors(
+    screenBackground = Ux4gColors.neutral900,
+    surfaceBackground = Ux4gColors.neutral900,
+    border = Ux4gColors.neutral800,
+    title = Ux4gColors.neutral50,
+    subtleText = Ux4gColors.neutral200,
+    primaryText = Ux4gColors.primary300,
+    errorColor = Color(0xFFF87171), // Ux4gColors.danger300
+    headerDivider = Ux4gColors.neutral700,
+    brandLogoTint = Ux4gColors.primary300,
+    emblemTint = Color.White,
+    menuButtonBackground = Ux4gColors.neutral800,
+    menuButtonBorder = Ux4gColors.primary600,
+    menuButtonIcon = Ux4gColors.primary300
+)
+
+/**
+ * Inline Feedback Error Screen - Default Style
+ *
+ * @param onBack Invoked when citizen taps 'Back'
+ * @param onMenuClick Invoked when citizen taps header menu
+ * @param onContinue Invoked when citizen proceeds to the next step
+ */
+@Composable
+fun InlineFeedbackErrorScreen(
+    onBack: () -> Unit = {},
+    onMenuClick: () -> Unit = {},
+    onContinue: (String) -> Unit = {}
+) {
+    val isDark = isSystemInDarkTheme()
+    val colors = if (isDark) DarkInlineFeedbackErrorColors else LightInlineFeedbackErrorColors
+
+    var mobileNumber by remember { mutableStateOf("98765432") }
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(colors.screenBackground)
+    ) {
+        // App Header with national emblem, divider, union logo, and menu button
+        FeedbackErrorAppHeader(colors = colors, onMenuClick = onMenuClick)
+
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp)
+        ) {
+            // Back Link
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier
+                    .clickable(onClick = onBack)
+                    .padding(vertical = 4.dp)
+            ) {
+                Icon(
+                    imageVector = Icons.Default.ArrowBack,
+                    contentDescription = "Back",
+                    tint = colors.primaryText,
+                    modifier = Modifier.size(16.dp)
+                )
+                Spacer(modifier = Modifier.width(4.dp))
+                Text(
+                    text = "Back",
+                    style = TextStyle(
+                        fontSize = 14.sp,
+                        fontWeight = FontWeight.Medium,
+                        color = colors.primaryText
+                    )
+                )
+            }
+
+            Spacer(modifier = Modifier.height(20.dp))
+
+            // Heading & Guidance
+            Text(
+                text = "Enter your Mobile Number",
+                style = TextStyle(
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.ExtraBold,
+                    color = colors.title
+                )
+            )
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            Text(
+                text = "Provide your mobile number for OTP verification and updates.",
+                style = TextStyle(
+                    fontSize = 13.sp,
+                    color = colors.subtleText,
+                    lineHeight = 18.sp
+                )
+            )
+
+            Spacer(modifier = Modifier.height(20.dp))
+
+            // UX4G Input Field with Error Status State
+            Ux4gInputField(
+                value = mobileNumber,
+                onValueChange = { mobileNumber = it },
+                label = "Mobile Number",
+                prefixText = "+91",
+                status = Ux4gInputFieldStatus.Error,
+                caption = "Enter a valid 10-digit mobile number",
+                type = Ux4gInputFieldType.Number,
+                size = Ux4gInputFieldSize.Large,
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            Spacer(modifier = Modifier.weight(1f))
+
+            // Continue Action Button
+            Ux4gButton(
+                text = "Continue",
+                onClick = { onContinue(mobileNumber) },
+                variant = Ux4gButtonVariant.Primary,
+                size = Ux4gButtonSize.Large,
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+        }
+    }
+}
+
+@Composable
+private fun FeedbackErrorAppHeader(
+    colors: InlineFeedbackErrorColors,
+    onMenuClick: () -> Unit
+) {
+    Column {
+        Ux4gAppHeader(
+            title = "",
+            variant = Ux4gAppHeaderVariant.Light,
+            height = 64.dp,
+            horizontalPadding = Ux4gSpace.Space16,
+            actions = {
+                Ux4gAppHeaderAction(
+                    icon = Icons.Default.Menu,
+                    contentDescription = "Open Navigation Menu",
+                    onClick = onMenuClick
+                )
+            }
+        )
+        Ux4gDivider(
+            color = colors.headerDivider,
+            thickness = 1.dp
+        )
+    }
+}
+
+@Preview(name = "Light Mode", showBackground = true)
+@Composable
+fun PreviewInlineFeedbackErrorScreenLight() {
+    InlineFeedbackErrorScreen()
+}
+
+@Preview(name = "Dark Mode", showBackground = true)
+@Composable
+fun PreviewInlineFeedbackErrorScreenDark() {
+    InlineFeedbackErrorScreen()
+}`}
+>
+  <div className="flex flex-col items-center justify-center py-2">
+    <img
+      src="/images/patterns/inline_feedback_error/inline_feedback_error.svg"
+      alt="UX4G Inline Feedback Error Default Pattern Preview"
+      className="max-w-full rounded-xl border border-border/60 shadow-sm"
+    />
+  </div>
+</ComponentPreview>
+
+---
+
+### 2. Card Style (Contained Card)
+
+Card-contained validation variant situated on a tinted background with the input field and validation guidance grouped inside a rounded white surface.
+
+<ComponentPreview
+  title="Inline Feedback Error - Card Style"
+  category="Pattern · Jetpack Compose"
+  code={`package com.example.ux4g.patterns.feedback
+
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.ux4g.designsystemv1.components.Ux4gAppHeader
+import com.ux4g.designsystemv1.components.Ux4gAppHeaderAction
+import com.ux4g.designsystemv1.components.Ux4gAppHeaderVariant
+import com.ux4g.designsystemv1.components.Ux4gDivider
+import com.ux4g.designsystemv1.components.buttons.Ux4gButton
+import com.ux4g.designsystemv1.components.buttons.Ux4gButtonSize
+import com.ux4g.designsystemv1.components.buttons.Ux4gButtonVariant
+import com.ux4g.designsystemv1.components.inputfield.Ux4gInputField
+import com.ux4g.designsystemv1.components.inputfield.Ux4gInputFieldSize
+import com.ux4g.designsystemv1.components.inputfield.Ux4gInputFieldStatus
+import com.ux4g.designsystemv1.components.inputfield.Ux4gInputFieldType
+import com.ux4g.designsystemv1.foundation.Ux4gColors
+import com.ux4g.designsystemv1.foundation.Ux4gSpace
+
+/**
+ * Inline Feedback Error Screen - Card Style Variant
+ *
+ * @param onBack Invoked when citizen taps 'Back'
+ * @param onMenuClick Invoked when citizen taps header menu
+ * @param onContinue Invoked when citizen proceeds to the next step
+ */
+@Composable
+fun InlineFeedbackErrorCardScreen(
+    onBack: () -> Unit = {},
+    onMenuClick: () -> Unit = {},
+    onContinue: (String) -> Unit = {}
+) {
+    val isDark = isSystemInDarkTheme()
+    
+    // Tinted purple page background vs contained white card
+    val screenBackground = if (isDark) Ux4gColors.primary800 else Color(0xFFF2EFFF)
+    val cardBackground = if (isDark) Ux4gColors.neutral800 else Ux4gColors.neutral0
+    val titleColor = if (isDark) Ux4gColors.neutral50 else Ux4gColors.neutral900
+    val subtleColor = if (isDark) Ux4gColors.neutral200 else Ux4gColors.neutral700
+    val primaryColor = if (isDark) Ux4gColors.primary300 else Ux4gColors.primary600
+
+    var mobileNumber by remember { mutableStateOf("98765432") }
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(screenBackground)
+    ) {
+        // App Header
+        Ux4gAppHeader(
+            title = "",
+            variant = Ux4gAppHeaderVariant.Light,
+            height = 64.dp,
+            horizontalPadding = Ux4gSpace.Space16,
+            actions = {
+                Ux4gAppHeaderAction(
+                    icon = Icons.Default.Menu,
+                    contentDescription = "Open Navigation Menu",
+                    onClick = onMenuClick
+                )
+            }
+        )
+        Ux4gDivider(
+            color = if (isDark) Ux4gColors.neutral700 else Ux4gColors.neutral300,
+            thickness = 1.dp
+        )
+
+        // Form Card Container
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp)
+                .clip(RoundedCornerShape(16.dp))
+                .background(cardBackground)
+                .padding(16.dp)
+        ) {
+            Column {
+                // Back Link inside Card
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier
+                        .clickable(onClick = onBack)
+                        .padding(vertical = 4.dp)
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.ArrowBack,
+                        contentDescription = "Back",
+                        tint = primaryColor,
+                        modifier = Modifier.size(16.dp)
+                    )
+                    Spacer(modifier = Modifier.width(4.dp))
+                    Text(
+                        text = "Back",
+                        style = TextStyle(
+                            fontSize = 14.sp,
+                            fontWeight = FontWeight.Medium,
+                            color = primaryColor
+                        )
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(20.dp))
+
+                // Title
+                Text(
+                    text = "Enter your Mobile Number",
+                    style = TextStyle(
+                        fontSize = 18.sp,
+                        fontWeight = FontWeight.ExtraBold,
+                        color = titleColor
+                    )
+                )
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                // Guidance
+                Text(
+                    text = "Provide your mobile number for OTP verification and updates.",
+                    style = TextStyle(
+                        fontSize = 13.sp,
+                        color = subtleColor,
+                        lineHeight = 18.sp
+                    )
+                )
+
+                Spacer(modifier = Modifier.height(20.dp))
+
+                // UX4G Input Field with Error Status State
+                Ux4gInputField(
+                    value = mobileNumber,
+                    onValueChange = { mobileNumber = it },
+                    label = "Mobile Number",
+                    prefixText = "+91",
+                    status = Ux4gInputFieldStatus.Error,
+                    caption = "Enter a valid 10-digit mobile number",
+                    type = Ux4gInputFieldType.Number,
+                    size = Ux4gInputFieldSize.Large,
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
+        }
+
+        Spacer(modifier = Modifier.weight(1f))
+
+        // Pinned Bottom Button
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp, vertical = 16.dp)
+        ) {
+            Ux4gButton(
+                text = "Continue",
+                onClick = { onContinue(mobileNumber) },
+                variant = Ux4gButtonVariant.Primary,
+                size = Ux4gButtonSize.Large,
+                modifier = Modifier.fillMaxWidth()
+            )
+        }
+    }
+}
+
+@Preview(name = "Card Style Light Mode", showBackground = true)
+@Composable
+fun PreviewInlineFeedbackErrorCardScreenLight() {
+    InlineFeedbackErrorCardScreen()
+}`}
+>
+  <div className="flex flex-col items-center justify-center py-2">
+    <img
+      src="/images/patterns/inline_feedback_error/inline_feedback_error_cardstyle.svg"
+      alt="UX4G Inline Feedback Error Card Style Pattern Preview"
+      className="max-w-full rounded-xl border border-border/60 shadow-sm"
+    />
+  </div>
+</ComponentPreview>

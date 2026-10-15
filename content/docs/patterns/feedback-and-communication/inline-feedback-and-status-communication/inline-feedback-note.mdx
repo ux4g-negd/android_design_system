@@ -1,0 +1,537 @@
+---
+title: Inline Feedback Note
+description: Reviewing officer communication pattern displaying contextual officer remarks, document resubmission directives, deadline warnings, and both default full-screen and elevated card-style variants
+---
+
+# Inline Feedback Note
+
+A reviewer-to-citizen feedback pattern that displays official remarks, discrepancy explanations, and corrective instructions directly inside the citizen application journey (such as a Revenue Inspector requesting a clearer scan of an income certificate due to glare).
+
+Instead of sending generic rejection emails or cryptic status codes, this pattern presents human-authored officer observations within a prominent warning alert container. The note articulates the exact issue, provides clear remedial actions, and states precise submission timelines (*"Resubmit within 5 working days to avoid delay"*), helping citizens resolve application snags promptly without re-starting the process from scratch.
+
+The pattern is available in two structural configurations:
+1. **Default Style**: Clean, direct form layout anchored by the official government portal header, back navigation, headline guidance, reviewing officer note container, and a full-width bottom progression button.
+2. **Card Style**: An elevated card container situated on a soft tinted purple background (`Ux4gColors.primary100` / `0xFFF2EFFF` in light mode, `primary800` in dark mode) with pinned bottom progression controls.
+
+---
+
+<h2><MIcon name="smartphone" /> Interactive Previews</h2>
+
+### 1. Default Style (Full Screen)
+
+Standard full-screen officer note layout with official portal header, revenue inspector timestamped remark, document defect explanation, and primary resubmission action.
+
+<ComponentPreview
+  title="Inline Feedback Note - Default"
+  category="Pattern · Jetpack Compose"
+  code={`package com.example.ux4g.patterns.feedback
+
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Error
+import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.ux4g.designsystemv1.components.Ux4gAppHeader
+import com.ux4g.designsystemv1.components.Ux4gAppHeaderAction
+import com.ux4g.designsystemv1.components.Ux4gAppHeaderVariant
+import com.ux4g.designsystemv1.components.Ux4gDivider
+import com.ux4g.designsystemv1.components.buttons.Ux4gButton
+import com.ux4g.designsystemv1.components.buttons.Ux4gButtonSize
+import com.ux4g.designsystemv1.components.buttons.Ux4gButtonVariant
+import com.ux4g.designsystemv1.foundation.Ux4gColors
+import com.ux4g.designsystemv1.foundation.Ux4gSpace
+
+/**
+ * Color tokens for Inline Feedback Note Screen
+ */
+data class InlineFeedbackNoteColors(
+    val screenBackground: Color,
+    val surfaceBackground: Color,
+    val title: Color,
+    val subtleText: Color,
+    val primaryText: Color,
+    val bannerBackground: Color,
+    val bannerBorder: Color,
+    val bannerText: Color,
+    val bannerIcon: Color,
+    val headerDivider: Color
+)
+
+val LightInlineFeedbackNoteColors = InlineFeedbackNoteColors(
+    screenBackground = Ux4gColors.neutral0,
+    surfaceBackground = Ux4gColors.neutral0,
+    title = Ux4gColors.neutral900,
+    subtleText = Ux4gColors.neutral700,
+    primaryText = Ux4gColors.primary600,
+    bannerBackground = Ux4gColors.orange50,
+    bannerBorder = Ux4gColors.orange300,
+    bannerText = Ux4gColors.orange800,
+    bannerIcon = Ux4gColors.orange600,
+    headerDivider = Ux4gColors.neutral300
+)
+
+val DarkInlineFeedbackNoteColors = InlineFeedbackNoteColors(
+    screenBackground = Ux4gColors.neutral900,
+    surfaceBackground = Ux4gColors.neutral900,
+    title = Ux4gColors.neutral50,
+    subtleText = Ux4gColors.neutral200,
+    primaryText = Ux4gColors.primary300,
+    bannerBackground = Ux4gColors.orange900,
+    bannerBorder = Ux4gColors.orange600,
+    bannerText = Ux4gColors.orange300,
+    bannerIcon = Ux4gColors.orange400,
+    headerDivider = Ux4gColors.neutral700
+)
+
+/**
+ * Inline Feedback Note Screen - Default Style
+ *
+ * @param onBack Invoked when citizen taps 'Back'
+ * @param onMenuClick Invoked when citizen taps header menu
+ * @param onResubmit Invoked when citizen proceeds to resubmit documents
+ */
+@Composable
+fun InlineFeedbackNoteScreen(
+    onBack: () -> Unit = {},
+    onMenuClick: () -> Unit = {},
+    onResubmit: () -> Unit = {}
+) {
+    val isDark = isSystemInDarkTheme()
+    val colors = if (isDark) DarkInlineFeedbackNoteColors else LightInlineFeedbackNoteColors
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(colors.screenBackground)
+    ) {
+        // App Header
+        FeedbackNoteAppHeader(colors = colors, onMenuClick = onMenuClick)
+
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp)
+        ) {
+            // Back Link
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier
+                    .clickable(onClick = onBack)
+                    .padding(vertical = 4.dp)
+            ) {
+                Icon(
+                    imageVector = Icons.Default.ArrowBack,
+                    contentDescription = "Back",
+                    tint = colors.primaryText,
+                    modifier = Modifier.size(16.dp)
+                )
+                Spacer(modifier = Modifier.width(4.dp))
+                Text(
+                    text = "Back",
+                    style = TextStyle(
+                        fontSize = 14.sp,
+                        fontWeight = FontWeight.Medium,
+                        color = colors.primaryText
+                    )
+                )
+            }
+
+            Spacer(modifier = Modifier.height(20.dp))
+
+            // Heading & Context Guidance
+            Text(
+                text = "Note to Citizen",
+                style = TextStyle(
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.ExtraBold,
+                    color = colors.title
+                )
+            )
+
+            Spacer(modifier = Modifier.height(10.dp))
+
+            Text(
+                text = "A note written by a reviewing officer.",
+                style = TextStyle(
+                    fontSize = 13.sp,
+                    color = colors.subtleText,
+                    lineHeight = 18.sp
+                )
+            )
+
+            Spacer(modifier = Modifier.height(24.dp))
+
+            // Note Card Status Banner
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(12.dp))
+                    .background(colors.bannerBackground)
+                    .border(1.dp, colors.bannerBorder, RoundedCornerShape(12.dp))
+                    .padding(16.dp)
+            ) {
+                Row(
+                    crossAxisAlignment = CrossAxisAlignment.start,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Error,
+                        contentDescription = "Reviewer Note",
+                        tint = colors.bannerIcon,
+                        modifier = Modifier.size(20.dp)
+                    )
+                    Spacer(modifier = Modifier.width(12.dp))
+                    Column(modifier = Modifier.weight(1f)) {
+                        Text(
+                            text = "Note from Revenue Inspector - 12 April 2026, 11:34 AM",
+                            style = TextStyle(
+                                fontSize = 13.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = colors.bannerText
+                            )
+                        )
+                        Spacer(modifier = Modifier.height(6.dp))
+                        Text(
+                            text = "Please resubmit the income proof with a clearer scan. The current file shows glare on the income figure row. Resubmit within 5 working days to avoid delay.",
+                            style = TextStyle(
+                                fontSize = 13.sp,
+                                fontWeight = FontWeight.Normal,
+                                color = colors.bannerText,
+                                lineHeight = 18.sp
+                            )
+                        )
+                    }
+                }
+            }
+
+            Spacer(modifier = Modifier.weight(1f))
+
+            // Resubmit Action Button
+            Ux4gButton(
+                text = "Resubmit Documents",
+                onClick = onResubmit,
+                variant = Ux4gButtonVariant.Primary,
+                size = Ux4gButtonSize.Large,
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+        }
+    }
+}
+
+@Composable
+private fun FeedbackNoteAppHeader(
+    colors: InlineFeedbackNoteColors,
+    onMenuClick: () -> Unit
+) {
+    Column {
+        Ux4gAppHeader(
+            title = "",
+            variant = Ux4gAppHeaderVariant.Light,
+            height = 64.dp,
+            horizontalPadding = Ux4gSpace.Space16,
+            actions = {
+                Ux4gAppHeaderAction(
+                    icon = Icons.Default.Menu,
+                    contentDescription = "Open Navigation Menu",
+                    onClick = onMenuClick
+                )
+            }
+        )
+        Ux4gDivider(
+            color = colors.headerDivider,
+            thickness = 1.dp
+        )
+    }
+}
+
+@Preview(name = "Light Mode", showBackground = true)
+@Composable
+fun PreviewInlineFeedbackNoteScreenLight() {
+    InlineFeedbackNoteScreen()
+}
+
+@Preview(name = "Dark Mode", showBackground = true)
+@Composable
+fun PreviewInlineFeedbackNoteScreenDark() {
+    InlineFeedbackNoteScreen()
+}`}
+>
+  <div className="flex flex-col items-center justify-center py-2">
+    <img
+      src="/images/patterns/inline_feedback_note/inline_feedback_note.svg"
+      alt="UX4G Inline Feedback Note Default Pattern Preview"
+      className="max-w-full rounded-xl border border-border/60 shadow-sm"
+    />
+  </div>
+</ComponentPreview>
+
+---
+
+### 2. Card Style (Contained Card)
+
+Card-contained validation variant situated on a tinted background with the reviewing officer note container and instructions grouped inside a rounded white surface.
+
+<ComponentPreview
+  title="Inline Feedback Note - Card Style"
+  category="Pattern · Jetpack Compose"
+  code={`package com.example.ux4g.patterns.feedback
+
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Error
+import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.ux4g.designsystemv1.components.Ux4gAppHeader
+import com.ux4g.designsystemv1.components.Ux4gAppHeaderAction
+import com.ux4g.designsystemv1.components.Ux4gAppHeaderVariant
+import com.ux4g.designsystemv1.components.Ux4gDivider
+import com.ux4g.designsystemv1.components.buttons.Ux4gButton
+import com.ux4g.designsystemv1.components.buttons.Ux4gButtonSize
+import com.ux4g.designsystemv1.components.buttons.Ux4gButtonVariant
+import com.ux4g.designsystemv1.foundation.Ux4gColors
+import com.ux4g.designsystemv1.foundation.Ux4gSpace
+
+/**
+ * Inline Feedback Note Screen - Card Style Variant
+ *
+ * @param onBack Invoked when citizen taps 'Back'
+ * @param onMenuClick Invoked when citizen taps header menu
+ * @param onResubmit Invoked when citizen proceeds to resubmit documents
+ */
+@Composable
+fun InlineFeedbackNoteCardScreen(
+    onBack: () -> Unit = {},
+    onMenuClick: () -> Unit = {},
+    onResubmit: () -> Unit = {}
+) {
+    val isDark = isSystemInDarkTheme()
+
+    // Tinted purple page background vs contained white card
+    val screenBackground = if (isDark) Ux4gColors.primary800 else Color(0xFFF2EFFF)
+    val cardBackground = if (isDark) Ux4gColors.neutral800 else Ux4gColors.neutral0
+    val titleColor = if (isDark) Ux4gColors.neutral50 else Ux4gColors.neutral900
+    val subtleText = if (isDark) Ux4gColors.neutral200 else Ux4gColors.neutral700
+    val primaryColor = if (isDark) Ux4gColors.primary300 else Ux4gColors.primary600
+
+    val bannerBg = if (isDark) Ux4gColors.orange900 else Ux4gColors.orange50
+    val bannerBorder = if (isDark) Ux4gColors.orange600 else Ux4gColors.orange300
+    val bannerText = if (isDark) Ux4gColors.orange300 else Ux4gColors.orange800
+    val bannerIcon = if (isDark) Ux4gColors.orange400 else Ux4gColors.orange600
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(screenBackground)
+    ) {
+        // App Header
+        Ux4gAppHeader(
+            title = "",
+            variant = Ux4gAppHeaderVariant.Light,
+            height = 64.dp,
+            horizontalPadding = Ux4gSpace.Space16,
+            actions = {
+                Ux4gAppHeaderAction(
+                    icon = Icons.Default.Menu,
+                    contentDescription = "Open Navigation Menu",
+                    onClick = onMenuClick
+                )
+            }
+        )
+        Ux4gDivider(
+            color = if (isDark) Ux4gColors.neutral700 else Ux4gColors.neutral300,
+            thickness = 1.dp
+        )
+
+        // Contained Form Card
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp)
+                .clip(RoundedCornerShape(16.dp))
+                .background(cardBackground)
+                .padding(16.dp)
+        ) {
+            Column {
+                // Back Link inside Card
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier
+                        .clickable(onClick = onBack)
+                        .padding(vertical = 4.dp)
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.ArrowBack,
+                        contentDescription = "Back",
+                        tint = primaryColor,
+                        modifier = Modifier.size(16.dp)
+                    )
+                    Spacer(modifier = Modifier.width(4.dp))
+                    Text(
+                        text = "Back",
+                        style = TextStyle(
+                            fontSize = 14.sp,
+                            fontWeight = FontWeight.Medium,
+                            color = primaryColor
+                        )
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(20.dp))
+
+                // Title
+                Text(
+                    text = "Note to Citizen",
+                    style = TextStyle(
+                        fontSize = 18.sp,
+                        fontWeight = FontWeight.ExtraBold,
+                        color = titleColor
+                    )
+                )
+
+                Spacer(modifier = Modifier.height(10.dp))
+
+                // Guidance
+                Text(
+                    text = "A note written by a reviewing officer.",
+                    style = TextStyle(
+                        fontSize = 13.sp,
+                        color = subtleText,
+                        lineHeight = 18.sp
+                    )
+                )
+
+                Spacer(modifier = Modifier.height(24.dp))
+
+                // Note Status Banner
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clip(RoundedCornerShape(12.dp))
+                        .background(bannerBg)
+                        .border(1.dp, bannerBorder, RoundedCornerShape(12.dp))
+                        .padding(16.dp)
+                ) {
+                    Row(
+                        crossAxisAlignment = CrossAxisAlignment.start,
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Error,
+                            contentDescription = "Reviewer Note",
+                            tint = bannerIcon,
+                            modifier = Modifier.size(20.dp)
+                        )
+                        Spacer(modifier = Modifier.width(12.dp))
+                        Column(modifier = Modifier.weight(1f)) {
+                            Text(
+                                text = "Note from Revenue Inspector - 12 April 2026, 11:34 AM",
+                                style = TextStyle(
+                                    fontSize = 13.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    color = bannerText
+                                )
+                            )
+                            Spacer(modifier = Modifier.height(6.dp))
+                            Text(
+                                text = "Please resubmit the income proof with a clearer scan. The current file shows glare on the income figure row. Resubmit within 5 working days to avoid delay.",
+                                style = TextStyle(
+                                    fontSize = 13.sp,
+                                    fontWeight = FontWeight.Normal,
+                                    color = bannerText,
+                                    lineHeight = 18.sp
+                                )
+                            )
+                        }
+                    }
+                }
+            }
+        }
+
+        Spacer(modifier = Modifier.weight(1f))
+
+        // Pinned Bottom Button
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp, vertical = 16.dp)
+        ) {
+            Ux4gButton(
+                text = "Resubmit Documents",
+                onClick = onResubmit,
+                variant = Ux4gButtonVariant.Primary,
+                size = Ux4gButtonSize.Large,
+                modifier = Modifier.fillMaxWidth()
+            )
+        }
+    }
+}
+
+@Preview(name = "Card Style Light Mode", showBackground = true)
+@Composable
+fun PreviewInlineFeedbackNoteCardScreenLight() {
+    InlineFeedbackNoteCardScreen()
+}`}
+>
+  <div className="flex flex-col items-center justify-center py-2">
+    <img
+      src="/images/patterns/inline_feedback_note/inline_feedback_note_cardstyle.svg"
+      alt="UX4G Inline Feedback Note Card Style Pattern Preview"
+      className="max-w-full rounded-xl border border-border/60 shadow-sm"
+    />
+  </div>
+</ComponentPreview>

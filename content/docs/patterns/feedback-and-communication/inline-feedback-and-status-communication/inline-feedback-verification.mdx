@@ -1,0 +1,830 @@
+---
+title: Inline Feedback Verification
+description: Real-time document verification timeline pattern showcasing automated pipeline checks, progress metrics, status badges, and both default full-screen and elevated card-style variants
+---
+
+# Inline Feedback Verification
+
+A real-time status communication and timeline verification pattern designed to give citizens immediate transparency while backend automated systems inspect uploaded credentials (such as income certificates, domicile proofs, or disability records).
+
+Instead of displaying an indeterminate, opaque loading spinner, this pattern breaks down document verification into granular, understandable checkpoints (file limits, image legibility, OCR figure matching). Citizens see a live progress bar alongside a timeline checklist with status tags (*"Passed"*, *"Verifying"*), keeping them informed and engaged while processing occurs.
+
+The pattern is available in two structural configurations:
+1. **Default Style**: Clean, full-screen layout anchored by the official government portal header, back navigation, progress header, active document summary card, live timeline checklist, and a primary tracking action button.
+2. **Card Style**: An elevated card container situated on a soft tinted purple background (`Ux4gColors.primary100` / `0xFFF2EFFF` in light mode, `primary800` in dark mode) with pinned bottom progression controls.
+
+---
+
+<h2><MIcon name="smartphone" /> Interactive Previews</h2>
+
+### 1. Default Style (Full Screen)
+
+Standard full-screen verification status layout with official portal header, document check summary, live progress metric, sequential verification timeline, and primary status tracking action.
+
+<ComponentPreview
+  title="Inline Feedback Verification - Default"
+  category="Pattern · Jetpack Compose"
+  code={`package com.example.ux4g.patterns.feedback
+
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.CheckCircle
+import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material.icons.filled.Schedule
+import androidx.compose.material3.LinearProgressIndicator
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.ux4g.designsystemv1.components.Ux4gAppHeader
+import com.ux4g.designsystemv1.components.Ux4gAppHeaderAction
+import com.ux4g.designsystemv1.components.Ux4gAppHeaderVariant
+import com.ux4g.designsystemv1.components.Ux4gDivider
+import com.ux4g.designsystemv1.components.buttons.Ux4gButton
+import com.ux4g.designsystemv1.components.buttons.Ux4gButtonSize
+import com.ux4g.designsystemv1.components.buttons.Ux4gButtonVariant
+import com.ux4g.designsystemv1.components.tags.Ux4gTag
+import com.ux4g.designsystemv1.foundation.Ux4gColors
+import com.ux4g.designsystemv1.foundation.Ux4gSpace
+
+/**
+ * Color tokens for Inline Feedback Verification Screen
+ */
+data class InlineFeedbackVerificationColors(
+    val screenBackground: Color,
+    val cardBackground: Color,
+    val border: Color,
+    val title: Color,
+    val subtleText: Color,
+    val primaryText: Color,
+    val progressColor: Color,
+    val trackColor: Color,
+    val tagVerifyingBg: Color,
+    val tagVerifyingText: Color,
+    val tagPassedBg: Color,
+    val tagPassedText: Color,
+    val headerDivider: Color
+)
+
+val LightInlineFeedbackVerificationColors = InlineFeedbackVerificationColors(
+    screenBackground = Ux4gColors.neutral0,
+    cardBackground = Ux4gColors.neutral0,
+    border = Ux4gColors.neutral200,
+    title = Ux4gColors.neutral900,
+    subtleText = Ux4gColors.neutral700,
+    primaryText = Ux4gColors.primary600,
+    progressColor = Ux4gColors.primary600,
+    trackColor = Ux4gColors.neutral200,
+    tagVerifyingBg = Ux4gColors.orange100,
+    tagVerifyingText = Ux4gColors.orange800,
+    tagPassedBg = Ux4gColors.green100,
+    tagPassedText = Ux4gColors.green800,
+    headerDivider = Ux4gColors.neutral300
+)
+
+val DarkInlineFeedbackVerificationColors = InlineFeedbackVerificationColors(
+    screenBackground = Ux4gColors.neutral900,
+    cardBackground = Ux4gColors.neutral800,
+    border = Ux4gColors.neutral700,
+    title = Ux4gColors.neutral50,
+    subtleText = Ux4gColors.neutral200,
+    primaryText = Ux4gColors.primary300,
+    progressColor = Ux4gColors.primary300,
+    trackColor = Ux4gColors.neutral700,
+    tagVerifyingBg = Ux4gColors.orange900,
+    tagVerifyingText = Ux4gColors.orange300,
+    tagPassedBg = Ux4gColors.green900,
+    tagPassedText = Ux4gColors.green300,
+    headerDivider = Ux4gColors.neutral700
+)
+
+/**
+ * Verification Checklist Step Item
+ */
+data class VerificationCheckStep(
+    val title: String,
+    val date: String,
+    val isCompleted: Boolean
+)
+
+/**
+ * Inline Feedback Verification Screen - Default Style
+ *
+ * @param onBack Invoked when citizen taps 'Back'
+ * @param onMenuClick Invoked when citizen taps header menu
+ * @param onTrackStatus Invoked when citizen views real-time status tracker
+ */
+@Composable
+fun InlineFeedbackVerificationScreen(
+    onBack: () -> Unit = {},
+    onMenuClick: () -> Unit = {},
+    onTrackStatus: () -> Unit = {}
+) {
+    val isDark = isSystemInDarkTheme()
+    val colors = if (isDark) DarkInlineFeedbackVerificationColors else LightInlineFeedbackVerificationColors
+    val scrollState = rememberScrollState()
+
+    val steps = listOf(
+        VerificationCheckStep(
+            title = "File format and size within limits",
+            date = "22 June 2026",
+            isCompleted = true
+        ),
+        VerificationCheckStep(
+            title = "Document is readable and not blurred",
+            date = "25 June 2026",
+            isCompleted = true
+        ),
+        VerificationCheckStep(
+            title = "Figures match the declared income",
+            date = "31 June 2026",
+            isCompleted = false
+        )
+    )
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(colors.screenBackground)
+    ) {
+        // App Header
+        FeedbackVerificationAppHeader(colors = colors, onMenuClick = onMenuClick)
+
+        Column(
+            modifier = Modifier
+                .weight(1f)
+                .verticalScroll(scrollState)
+                .padding(16.dp)
+        ) {
+            // Back Link
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier
+                    .clickable(onClick = onBack)
+                    .padding(vertical = 4.dp)
+            ) {
+                Icon(
+                    imageVector = Icons.Default.ArrowBack,
+                    contentDescription = "Back",
+                    tint = colors.primaryText,
+                    modifier = Modifier.size(16.dp)
+                )
+                Spacer(modifier = Modifier.width(4.dp))
+                Text(
+                    text = "Back",
+                    style = TextStyle(
+                        fontSize = 14.sp,
+                        fontWeight = FontWeight.Medium,
+                        color = colors.primaryText
+                    )
+                )
+            }
+
+            Spacer(modifier = Modifier.height(20.dp))
+
+            // Heading & Context Guidance
+            Text(
+                text = "Verifying your Income Certificate Document",
+                style = TextStyle(
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.ExtraBold,
+                    color = colors.title
+                )
+            )
+
+            Spacer(modifier = Modifier.height(10.dp))
+
+            Text(
+                text = "We are checking your uploaded PDF in real time. Each step below updates as the system completes it — keep this page open until all checks finish.",
+                style = TextStyle(
+                    fontSize = 13.sp,
+                    color = colors.subtleText,
+                    lineHeight = 18.sp
+                )
+            )
+
+            Spacer(modifier = Modifier.height(24.dp))
+
+            // Document Card with Progress
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(12.dp))
+                    .background(colors.cardBackground)
+                    .border(1.dp, colors.border, RoundedCornerShape(12.dp))
+                    .padding(14.dp)
+            ) {
+                Column {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            text = "Income Certificate",
+                            style = TextStyle(
+                                fontSize = 16.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = colors.title
+                            )
+                        )
+                        Ux4gTag(
+                            text = "Verifying",
+                            backgroundColor = colors.tagVerifyingBg,
+                            contentColor = colors.tagVerifyingText
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.height(4.dp))
+
+                    Text(
+                        text = "PDF document · 1.2 MB",
+                        style = TextStyle(
+                            fontSize = 12.sp,
+                            color = colors.subtleText
+                        )
+                    )
+
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    Text(
+                        text = "2 of 3 checks passed — final check in progress",
+                        style = TextStyle(
+                            fontSize = 12.sp,
+                            fontWeight = FontWeight.Medium,
+                            color = colors.subtleText
+                        )
+                    )
+
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    // Progress Bar
+                    LinearProgressIndicator(
+                        progress = { 0.66f },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(6.dp)
+                            .clip(RoundedCornerShape(3.dp)),
+                        color = colors.progressColor,
+                        trackColor = colors.trackColor
+                    )
+                }
+            }
+
+            Spacer(modifier = Modifier.height(24.dp))
+
+            // Verification Timeline Checklist
+            Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
+                steps.forEachIndexed { index, step ->
+                    VerificationTimelineRow(
+                        step = step,
+                        isLast = index == steps.lastIndex,
+                        colors = colors
+                    )
+                }
+            }
+
+            Spacer(modifier = Modifier.height(24.dp))
+        }
+
+        // Pinned Track Status CTA Button
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp)
+        ) {
+            Ux4gButton(
+                text = "Track Status",
+                onClick = onTrackStatus,
+                variant = Ux4gButtonVariant.Primary,
+                size = Ux4gButtonSize.Large,
+                modifier = Modifier.fillMaxWidth()
+            )
+        }
+    }
+}
+
+@Composable
+private fun VerificationTimelineRow(
+    step: VerificationCheckStep,
+    isLast: Boolean,
+    colors: InlineFeedbackVerificationColors
+) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.Top
+    ) {
+        // Timeline Indicator Column
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier.width(28.dp)
+        ) {
+            if (step.isCompleted) {
+                Icon(
+                    imageVector = Icons.Default.CheckCircle,
+                    contentDescription = "Passed",
+                    tint = Ux4gColors.green600,
+                    modifier = Modifier.size(20.dp)
+                )
+            } else {
+                Icon(
+                    imageVector = Icons.Default.Schedule,
+                    contentDescription = "Verifying",
+                    tint = Ux4gColors.orange500,
+                    modifier = Modifier.size(20.dp)
+                )
+            }
+            if (!isLast) {
+                Box(
+                    modifier = Modifier
+                        .width(2.dp)
+                        .height(44.dp)
+                        .background(colors.border)
+                )
+            }
+        }
+
+        Spacer(modifier = Modifier.width(10.dp))
+
+        // Step Content & Status Badge
+        Column(modifier = Modifier.weight(1f)) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.Top
+            ) {
+                Column(modifier = Modifier.weight(1f)) {
+                    Text(
+                        text = step.title,
+                        style = TextStyle(
+                            fontSize = 14.sp,
+                            fontWeight = FontWeight.SemiBold,
+                            color = colors.title
+                        )
+                    )
+                    Spacer(modifier = Modifier.height(2.dp))
+                    Text(
+                        text = step.date,
+                        style = TextStyle(
+                            fontSize = 12.sp,
+                            color = colors.subtleText
+                        )
+                    )
+                }
+                Spacer(modifier = Modifier.width(8.dp))
+                if (step.isCompleted) {
+                    Ux4gTag(
+                        text = "Passed",
+                        backgroundColor = colors.tagPassedBg,
+                        contentColor = colors.tagPassedText
+                    )
+                } else {
+                    Ux4gTag(
+                        text = "Verifying",
+                        backgroundColor = colors.tagVerifyingBg,
+                        contentColor = colors.tagVerifyingText
+                    )
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun FeedbackVerificationAppHeader(
+    colors: InlineFeedbackVerificationColors,
+    onMenuClick: () -> Unit
+) {
+    Column {
+        Ux4gAppHeader(
+            title = "",
+            variant = Ux4gAppHeaderVariant.Light,
+            height = 64.dp,
+            horizontalPadding = Ux4gSpace.Space16,
+            actions = {
+                Ux4gAppHeaderAction(
+                    icon = Icons.Default.Menu,
+                    contentDescription = "Open Navigation Menu",
+                    onClick = onMenuClick
+                )
+            }
+        )
+        Ux4gDivider(
+            color = colors.headerDivider,
+            thickness = 1.dp
+        )
+    }
+}
+
+@Preview(name = "Light Mode", showBackground = true)
+@Composable
+fun PreviewInlineFeedbackVerificationScreenLight() {
+    InlineFeedbackVerificationScreen()
+}
+
+@Preview(name = "Dark Mode", showBackground = true)
+@Composable
+fun PreviewInlineFeedbackVerificationScreenDark() {
+    InlineFeedbackVerificationScreen()
+}`}
+>
+  <div className="flex flex-col items-center justify-center py-2">
+    <img
+      src="/images/patterns/inline_feedback_verification/inline_feedback_verification.svg"
+      alt="UX4G Inline Feedback Verification Default Pattern Preview"
+      className="max-w-full rounded-xl border border-border/60 shadow-sm"
+    />
+  </div>
+</ComponentPreview>
+
+---
+
+### 2. Card Style (Contained Card)
+
+Card-contained validation variant situated on a tinted background with the document verification status and chronological check timeline grouped inside a rounded white surface.
+
+<ComponentPreview
+  title="Inline Feedback Verification - Card Style"
+  category="Pattern · Jetpack Compose"
+  code={`package com.example.ux4g.patterns.feedback
+
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.CheckCircle
+import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material.icons.filled.Schedule
+import androidx.compose.material3.LinearProgressIndicator
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.ux4g.designsystemv1.components.Ux4gAppHeader
+import com.ux4g.designsystemv1.components.Ux4gAppHeaderAction
+import com.ux4g.designsystemv1.components.Ux4gAppHeaderVariant
+import com.ux4g.designsystemv1.components.Ux4gDivider
+import com.ux4g.designsystemv1.components.buttons.Ux4gButton
+import com.ux4g.designsystemv1.components.buttons.Ux4gButtonSize
+import com.ux4g.designsystemv1.components.buttons.Ux4gButtonVariant
+import com.ux4g.designsystemv1.components.tags.Ux4gTag
+import com.ux4g.designsystemv1.foundation.Ux4gColors
+import com.ux4g.designsystemv1.foundation.Ux4gSpace
+
+/**
+ * Inline Feedback Verification Screen - Card Style Variant
+ *
+ * @param onBack Invoked when citizen taps 'Back'
+ * @param onMenuClick Invoked when citizen taps header menu
+ * @param onTrackStatus Invoked when citizen views real-time status tracker
+ */
+@Composable
+fun InlineFeedbackVerificationCardScreen(
+    onBack: () -> Unit = {},
+    onMenuClick: () -> Unit = {},
+    onTrackStatus: () -> Unit = {}
+) {
+    val isDark = isSystemInDarkTheme()
+    val scrollState = rememberScrollState()
+
+    // Tinted purple page background vs contained white card
+    val screenBackground = if (isDark) Ux4gColors.primary800 else Color(0xFFF2EFFF)
+    val cardBackground = if (isDark) Ux4gColors.neutral800 else Ux4gColors.neutral0
+    val innerCardBg = if (isDark) Ux4gColors.neutral900 else Ux4gColors.neutral0
+    val titleColor = if (isDark) Ux4gColors.neutral50 else Ux4gColors.neutral900
+    val subtleColor = if (isDark) Ux4gColors.neutral200 else Ux4gColors.neutral700
+    val primaryColor = if (isDark) Ux4gColors.primary300 else Ux4gColors.primary600
+    val borderColor = if (isDark) Ux4gColors.neutral700 else Ux4gColors.neutral200
+
+    val tagVerifyingBg = if (isDark) Ux4gColors.orange900 else Ux4gColors.orange100
+    val tagVerifyingText = if (isDark) Ux4gColors.orange300 else Ux4gColors.orange800
+    val tagPassedBg = if (isDark) Ux4gColors.green900 else Ux4gColors.green100
+    val tagPassedText = if (isDark) Ux4gColors.green300 else Ux4gColors.green800
+
+    val steps = listOf(
+        VerificationCheckStep(
+            title = "File format and size within limits",
+            date = "22 June 2026",
+            isCompleted = true
+        ),
+        VerificationCheckStep(
+            title = "Document is readable and not blurred",
+            date = "25 June 2026",
+            isCompleted = true
+        ),
+        VerificationCheckStep(
+            title = "Figures match the declared income",
+            date = "31 June 2026",
+            isCompleted = false
+        )
+    )
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(screenBackground)
+    ) {
+        // App Header
+        Ux4gAppHeader(
+            title = "",
+            variant = Ux4gAppHeaderVariant.Light,
+            height = 64.dp,
+            horizontalPadding = Ux4gSpace.Space16,
+            actions = {
+                Ux4gAppHeaderAction(
+                    icon = Icons.Default.Menu,
+                    contentDescription = "Open Navigation Menu",
+                    onClick = onMenuClick
+                )
+            }
+        )
+        Ux4gDivider(
+            color = if (isDark) Ux4gColors.neutral700 else Ux4gColors.neutral300,
+            thickness = 1.dp
+        )
+
+        // Contained Form Card
+        Box(
+            modifier = Modifier
+                .weight(1f)
+                .padding(16.dp)
+                .clip(RoundedCornerShape(16.dp))
+                .background(cardBackground)
+                .verticalScroll(scrollState)
+                .padding(16.dp)
+        ) {
+            Column {
+                // Back Link inside Card
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier
+                        .clickable(onClick = onBack)
+                        .padding(vertical = 4.dp)
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.ArrowBack,
+                        contentDescription = "Back",
+                        tint = primaryColor,
+                        modifier = Modifier.size(16.dp)
+                    )
+                    Spacer(modifier = Modifier.width(4.dp))
+                    Text(
+                        text = "Back",
+                        style = TextStyle(
+                            fontSize = 14.sp,
+                            fontWeight = FontWeight.Medium,
+                            color = primaryColor
+                        )
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(20.dp))
+
+                // Title
+                Text(
+                    text = "Verifying your Income Certificate Document",
+                    style = TextStyle(
+                        fontSize = 18.sp,
+                        fontWeight = FontWeight.ExtraBold,
+                        color = titleColor
+                    )
+                )
+
+                Spacer(modifier = Modifier.height(10.dp))
+
+                // Description
+                Text(
+                    text = "We are checking your uploaded PDF in real time. Each step below updates as the system completes it — keep this page open until all checks finish.",
+                    style = TextStyle(
+                        fontSize = 13.sp,
+                        color = subtleColor,
+                        lineHeight = 18.sp
+                    )
+                )
+
+                Spacer(modifier = Modifier.height(24.dp))
+
+                // Inner Document Status Container
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clip(RoundedCornerShape(12.dp))
+                        .background(innerCardBg)
+                        .border(1.dp, borderColor, RoundedCornerShape(12.dp))
+                        .padding(14.dp)
+                ) {
+                    Column {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Text(
+                                text = "Income Certificate",
+                                style = TextStyle(
+                                    fontSize = 16.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    color = titleColor
+                                )
+                            )
+                            Ux4gTag(
+                                text = "Verifying",
+                                backgroundColor = tagVerifyingBg,
+                                contentColor = tagVerifyingText
+                            )
+                        }
+
+                        Spacer(modifier = Modifier.height(4.dp))
+
+                        Text(
+                            text = "PDF document · 1.2 MB",
+                            style = TextStyle(fontSize = 12.sp, color = subtleColor)
+                        )
+
+                        Spacer(modifier = Modifier.height(8.dp))
+
+                        Text(
+                            text = "2 of 3 checks passed — final check in progress",
+                            style = TextStyle(fontSize = 12.sp, fontWeight = FontWeight.Medium, color = subtleColor)
+                        )
+
+                        Spacer(modifier = Modifier.height(8.dp))
+
+                        LinearProgressIndicator(
+                            progress = { 0.66f },
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(6.dp)
+                                .clip(RoundedCornerShape(3.dp)),
+                            color = primaryColor,
+                            trackColor = borderColor
+                        )
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(24.dp))
+
+                // Timeline Rows
+                Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
+                    steps.forEachIndexed { index, step ->
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            verticalAlignment = Alignment.Top
+                        ) {
+                            Column(
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                modifier = Modifier.width(28.dp)
+                            ) {
+                                if (step.isCompleted) {
+                                    Icon(
+                                        imageVector = Icons.Default.CheckCircle,
+                                        contentDescription = "Passed",
+                                        tint = Ux4gColors.green600,
+                                        modifier = Modifier.size(20.dp)
+                                    )
+                                } else {
+                                    Icon(
+                                        imageVector = Icons.Default.Schedule,
+                                        contentDescription = "Verifying",
+                                        tint = Ux4gColors.orange500,
+                                        modifier = Modifier.size(20.dp)
+                                    )
+                                }
+                                if (index < steps.lastIndex) {
+                                    Box(
+                                        modifier = Modifier
+                                            .width(2.dp)
+                                            .height(44.dp)
+                                            .background(borderColor)
+                                    )
+                                }
+                            }
+
+                            Spacer(modifier = Modifier.width(10.dp))
+
+                            Column(modifier = Modifier.weight(1f)) {
+                                Row(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    horizontalArrangement = Arrangement.SpaceBetween,
+                                    verticalAlignment = Alignment.Top
+                                ) {
+                                    Column(modifier = Modifier.weight(1f)) {
+                                        Text(
+                                            text = step.title,
+                                            style = TextStyle(
+                                                fontSize = 14.sp,
+                                                fontWeight = FontWeight.SemiBold,
+                                                color = titleColor
+                                            )
+                                        )
+                                        Spacer(modifier = Modifier.height(2.dp))
+                                        Text(
+                                            text = step.date,
+                                            style = TextStyle(fontSize = 12.sp, color = subtleColor)
+                                        )
+                                    }
+                                    Spacer(modifier = Modifier.width(8.dp))
+                                    if (step.isCompleted) {
+                                        Ux4gTag(
+                                            text = "Passed",
+                                            backgroundColor = tagPassedBg,
+                                            contentColor = tagPassedText
+                                        )
+                                    } else {
+                                        Ux4gTag(
+                                            text = "Verifying",
+                                            backgroundColor = tagVerifyingBg,
+                                            contentColor = tagVerifyingText
+                                        )
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        // Pinned Bottom Action Button
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp, vertical = 16.dp)
+        ) {
+            Ux4gButton(
+                text = "Track Status",
+                onClick = onTrackStatus,
+                variant = Ux4gButtonVariant.Primary,
+                size = Ux4gButtonSize.Large,
+                modifier = Modifier.fillMaxWidth()
+            )
+        }
+    }
+}
+
+@Preview(name = "Card Style Light Mode", showBackground = true)
+@Composable
+fun PreviewInlineFeedbackVerificationCardScreenLight() {
+    InlineFeedbackVerificationCardScreen()
+}`}
+>
+  <div className="flex flex-col items-center justify-center py-2">
+    <img
+      src="/images/patterns/inline_feedback_verification/inline_feedback_verification_cardstyle.svg"
+      alt="UX4G Inline Feedback Verification Card Style Pattern Preview"
+      className="max-w-full rounded-xl border border-border/60 shadow-sm"
+    />
+  </div>
+</ComponentPreview>

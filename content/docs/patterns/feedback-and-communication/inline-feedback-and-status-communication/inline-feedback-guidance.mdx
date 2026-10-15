@@ -1,0 +1,615 @@
+---
+title: Inline Feedback Guidance
+description: Conditional intake pattern demonstrating context-sensitive guidance, document requirements, and warning alerts triggered by field selections in both default full-screen and elevated card-style variants
+---
+
+# Inline Feedback Guidance
+
+A context-sensitive guidance and inline status communication pattern that dynamically adapts form requirements and instructions based on a citizen's previous selections (such as requiring a caste certificate upload when selecting an affirmative reservation category).
+
+Rather than overwhelming citizens with a static, exhaustive list of prerequisites upfront or surprising them with rejection errors at submission, this pattern introduces conditional input fields, document upload dropzones, and alert banners in real time. This ensures citizens understand exactly why supplementary documents are required and when they will be processed.
+
+The pattern is available in two structural configurations:
+1. **Default Style**: Clean, direct form layout anchored by the official government portal header, back navigation, category selector, conditional file upload area, alert banner, and a full-width bottom progression button.
+2. **Card Style**: An elevated card container situated on a soft tinted purple background (`Ux4gColors.primary100` / `0xFFF2EFFF` in light mode, `primary800` in dark mode) with pinned bottom progression controls.
+
+---
+
+<h2><MIcon name="smartphone" /> Interactive Previews</h2>
+
+### 1. Default Style (Full Screen)
+
+Standard full-screen form input layout with official portal header, reservation category selector, conditional certificate dropzone, explanatory warning banner, and primary continuation action.
+
+<ComponentPreview
+  title="Inline Feedback Guidance - Default"
+  category="Pattern · Jetpack Compose"
+  code={`package com.example.ux4g.patterns.feedback
+
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material.icons.filled.Warning
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.ux4g.designsystemv1.components.Ux4gAppHeader
+import com.ux4g.designsystemv1.components.Ux4gAppHeaderAction
+import com.ux4g.designsystemv1.components.Ux4gAppHeaderVariant
+import com.ux4g.designsystemv1.components.Ux4gDivider
+import com.ux4g.designsystemv1.components.buttons.Ux4gButton
+import com.ux4g.designsystemv1.components.buttons.Ux4gButtonSize
+import com.ux4g.designsystemv1.components.buttons.Ux4gButtonVariant
+import com.ux4g.designsystemv1.components.fileupload.Ux4gFileUpload
+import com.ux4g.designsystemv1.components.inputfield.Ux4gInputField
+import com.ux4g.designsystemv1.components.inputfield.Ux4gInputFieldSize
+import com.ux4g.designsystemv1.foundation.Ux4gColors
+import com.ux4g.designsystemv1.foundation.Ux4gSpace
+
+/**
+ * Color tokens for Inline Feedback Guidance Screen
+ */
+data class InlineFeedbackGuidanceColors(
+    val screenBackground: Color,
+    val surfaceBackground: Color,
+    val border: Color,
+    val title: Color,
+    val subtleText: Color,
+    val primaryText: Color,
+    val warningBackground: Color,
+    val warningBorder: Color,
+    val warningText: Color,
+    val warningIcon: Color,
+    val headerDivider: Color
+)
+
+val LightInlineFeedbackGuidanceColors = InlineFeedbackGuidanceColors(
+    screenBackground = Ux4gColors.neutral0,
+    surfaceBackground = Ux4gColors.neutral0,
+    border = Ux4gColors.neutral200,
+    title = Ux4gColors.neutral900,
+    subtleText = Ux4gColors.neutral700,
+    primaryText = Ux4gColors.primary600,
+    warningBackground = Ux4gColors.orange50,
+    warningBorder = Ux4gColors.orange300,
+    warningText = Ux4gColors.orange800,
+    warningIcon = Ux4gColors.orange500,
+    headerDivider = Ux4gColors.neutral300
+)
+
+val DarkInlineFeedbackGuidanceColors = InlineFeedbackGuidanceColors(
+    screenBackground = Ux4gColors.neutral900,
+    surfaceBackground = Ux4gColors.neutral900,
+    border = Ux4gColors.neutral800,
+    title = Ux4gColors.neutral50,
+    subtleText = Ux4gColors.neutral200,
+    primaryText = Ux4gColors.primary300,
+    warningBackground = Ux4gColors.orange900,
+    warningBorder = Ux4gColors.orange600,
+    warningText = Ux4gColors.orange300,
+    warningIcon = Ux4gColors.orange400,
+    headerDivider = Ux4gColors.neutral700
+)
+
+/**
+ * Inline Feedback Guidance Screen - Default Style
+ *
+ * @param onBack Invoked when citizen taps 'Back'
+ * @param onMenuClick Invoked when citizen taps header menu
+ * @param onContinue Invoked when citizen proceeds to the next stage
+ */
+@Composable
+fun InlineFeedbackGuidanceScreen(
+    onBack: () -> Unit = {},
+    onMenuClick: () -> Unit = {},
+    onContinue: (String) -> Unit = {}
+) {
+    val isDark = isSystemInDarkTheme()
+    val colors = if (isDark) DarkInlineFeedbackGuidanceColors else LightInlineFeedbackGuidanceColors
+    val scrollState = rememberScrollState()
+
+    var category by remember { mutableStateOf("SC/ST") }
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(colors.screenBackground)
+    ) {
+        // App Header
+        FeedbackGuidanceAppHeader(colors = colors, onMenuClick = onMenuClick)
+
+        Column(
+            modifier = Modifier
+                .weight(1f)
+                .verticalScroll(scrollState)
+                .padding(16.dp)
+        ) {
+            // Back Link
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier
+                    .clickable(onClick = onBack)
+                    .padding(vertical = 4.dp)
+            ) {
+                Icon(
+                    imageVector = Icons.Default.ArrowBack,
+                    contentDescription = "Back",
+                    tint = colors.primaryText,
+                    modifier = Modifier.size(16.dp)
+                )
+                Spacer(modifier = Modifier.width(4.dp))
+                Text(
+                    text = "Back",
+                    style = TextStyle(
+                        fontSize = 14.sp,
+                        fontWeight = FontWeight.Medium,
+                        color = colors.primaryText
+                    )
+                )
+            }
+
+            Spacer(modifier = Modifier.height(20.dp))
+
+            // Heading & Context Guidance
+            Text(
+                text = "Conditional Guidance",
+                style = TextStyle(
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.ExtraBold,
+                    color = colors.title
+                )
+            )
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            Text(
+                text = "Context-sensitive info appears based on the selected field value.",
+                style = TextStyle(
+                    fontSize = 13.sp,
+                    color = colors.subtleText,
+                    lineHeight = 18.sp
+                )
+            )
+
+            Spacer(modifier = Modifier.height(24.dp))
+
+            // Reservation Category Selector Field
+            Ux4gInputField(
+                value = category,
+                onValueChange = { category = it },
+                label = "Reservation Category",
+                caption = "Select your reservation category",
+                size = Ux4gInputFieldSize.Large,
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            Spacer(modifier = Modifier.height(20.dp))
+
+            // Conditional Document Upload Dropzone
+            Ux4gFileUpload(
+                title = "Upload caste certificate",
+                allowedExtensions = listOf("PDF", "JPG", "PNG"),
+                maxSizeMb = 5,
+                onUploadClick = { /* Launch document picker */ },
+                onScanClick = { /* Launch camera scanner */ }
+            )
+
+            Spacer(modifier = Modifier.height(20.dp))
+
+            // Context-sensitive Warning Banner
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(8.dp))
+                    .background(colors.warningBackground)
+                    .border(1.dp, colors.warningBorder, RoundedCornerShape(8.dp))
+                    .padding(12.dp)
+            ) {
+                Row(
+                    crossAxisAlignment = CrossAxisAlignment.start,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Warning,
+                        contentDescription = "Warning",
+                        tint = colors.warningIcon,
+                        modifier = Modifier.size(18.dp)
+                    )
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Column(modifier = Modifier.weight(1f)) {
+                        Text(
+                            text = "Additional Document Required",
+                            style = TextStyle(
+                                fontSize = 13.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = colors.warningText
+                            )
+                        )
+                        Spacer(modifier = Modifier.height(4.dp))
+                        Text(
+                            text = "Since you selected SC category, please upload your caste certificate in the Documents step.",
+                            style = TextStyle(
+                                fontSize = 13.sp,
+                                fontWeight = FontWeight.Normal,
+                                color = colors.warningText,
+                                lineHeight = 18.sp
+                            )
+                        )
+                    }
+                }
+            }
+
+            Spacer(modifier = Modifier.height(24.dp))
+        }
+
+        // Pinned Continue Action Button
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp)
+        ) {
+            Ux4gButton(
+                text = "Continue",
+                onClick = { onContinue(category) },
+                variant = Ux4gButtonVariant.Primary,
+                size = Ux4gButtonSize.Large,
+                modifier = Modifier.fillMaxWidth()
+            )
+        }
+    }
+}
+
+@Composable
+private fun FeedbackGuidanceAppHeader(
+    colors: InlineFeedbackGuidanceColors,
+    onMenuClick: () -> Unit
+) {
+    Column {
+        Ux4gAppHeader(
+            title = "",
+            variant = Ux4gAppHeaderVariant.Light,
+            height = 64.dp,
+            horizontalPadding = Ux4gSpace.Space16,
+            actions = {
+                Ux4gAppHeaderAction(
+                    icon = Icons.Default.Menu,
+                    contentDescription = "Open Navigation Menu",
+                    onClick = onMenuClick
+                )
+            }
+        )
+        Ux4gDivider(
+            color = colors.headerDivider,
+            thickness = 1.dp
+        )
+    }
+}
+
+@Preview(name = "Light Mode", showBackground = true)
+@Composable
+fun PreviewInlineFeedbackGuidanceScreenLight() {
+    InlineFeedbackGuidanceScreen()
+}
+
+@Preview(name = "Dark Mode", showBackground = true)
+@Composable
+fun PreviewInlineFeedbackGuidanceScreenDark() {
+    InlineFeedbackGuidanceScreen()
+}`}
+>
+  <div className="flex flex-col items-center justify-center py-2">
+    <img
+      src="/images/patterns/inline_feedback_guidance/inline_feedback_guidance.svg"
+      alt="UX4G Inline Feedback Guidance Default Pattern Preview"
+      className="max-w-full rounded-xl border border-border/60 shadow-sm"
+    />
+  </div>
+</ComponentPreview>
+
+---
+
+### 2. Card Style (Contained Card)
+
+Card-contained validation variant situated on a tinted background with the conditional category selector, file upload dropzone, and contextual warning banner grouped inside a rounded white surface.
+
+<ComponentPreview
+  title="Inline Feedback Guidance - Card Style"
+  category="Pattern · Jetpack Compose"
+  code={`package com.example.ux4g.patterns.feedback
+
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material.icons.filled.Warning
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.ux4g.designsystemv1.components.Ux4gAppHeader
+import com.ux4g.designsystemv1.components.Ux4gAppHeaderAction
+import com.ux4g.designsystemv1.components.Ux4gAppHeaderVariant
+import com.ux4g.designsystemv1.components.Ux4gDivider
+import com.ux4g.designsystemv1.components.buttons.Ux4gButton
+import com.ux4g.designsystemv1.components.buttons.Ux4gButtonSize
+import com.ux4g.designsystemv1.components.buttons.Ux4gButtonVariant
+import com.ux4g.designsystemv1.components.fileupload.Ux4gFileUpload
+import com.ux4g.designsystemv1.components.inputfield.Ux4gInputField
+import com.ux4g.designsystemv1.components.inputfield.Ux4gInputFieldSize
+import com.ux4g.designsystemv1.foundation.Ux4gColors
+import com.ux4g.designsystemv1.foundation.Ux4gSpace
+
+/**
+ * Inline Feedback Guidance Screen - Card Style Variant
+ *
+ * @param onBack Invoked when citizen taps 'Back'
+ * @param onMenuClick Invoked when citizen taps header menu
+ * @param onContinue Invoked when citizen proceeds to the next stage
+ */
+@Composable
+fun InlineFeedbackGuidanceCardScreen(
+    onBack: () -> Unit = {},
+    onMenuClick: () -> Unit = {},
+    onContinue: (String) -> Unit = {}
+) {
+    val isDark = isSystemInDarkTheme()
+    val scrollState = rememberScrollState()
+
+    // Tinted purple page background vs contained white card
+    val screenBackground = if (isDark) Ux4gColors.primary800 else Color(0xFFF2EFFF)
+    val cardBackground = if (isDark) Ux4gColors.neutral800 else Ux4gColors.neutral0
+    val titleColor = if (isDark) Ux4gColors.neutral50 else Ux4gColors.neutral900
+    val subtleColor = if (isDark) Ux4gColors.neutral200 else Ux4gColors.neutral700
+    val primaryColor = if (isDark) Ux4gColors.primary300 else Ux4gColors.primary600
+
+    val warningBg = if (isDark) Ux4gColors.orange900 else Ux4gColors.orange50
+    val warningBorder = if (isDark) Ux4gColors.orange600 else Ux4gColors.orange300
+    val warningTextColor = if (isDark) Ux4gColors.orange300 else Ux4gColors.orange800
+    val warningIconColor = if (isDark) Ux4gColors.orange400 else Ux4gColors.orange500
+
+    var category by remember { mutableStateOf("SC/ST") }
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(screenBackground)
+    ) {
+        // App Header
+        Ux4gAppHeader(
+            title = "",
+            variant = Ux4gAppHeaderVariant.Light,
+            height = 64.dp,
+            horizontalPadding = Ux4gSpace.Space16,
+            actions = {
+                Ux4gAppHeaderAction(
+                    icon = Icons.Default.Menu,
+                    contentDescription = "Open Navigation Menu",
+                    onClick = onMenuClick
+                )
+            }
+        )
+        Ux4gDivider(
+            color = if (isDark) Ux4gColors.neutral700 else Ux4gColors.neutral300,
+            thickness = 1.dp
+        )
+
+        // Contained Form Card
+        Box(
+            modifier = Modifier
+                .weight(1f)
+                .padding(16.dp)
+                .clip(RoundedCornerShape(16.dp))
+                .background(cardBackground)
+                .verticalScroll(scrollState)
+                .padding(16.dp)
+        ) {
+            Column {
+                // Back Link inside Card
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier
+                        .clickable(onClick = onBack)
+                        .padding(vertical = 4.dp)
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.ArrowBack,
+                        contentDescription = "Back",
+                        tint = primaryColor,
+                        modifier = Modifier.size(16.dp)
+                    )
+                    Spacer(modifier = Modifier.width(4.dp))
+                    Text(
+                        text = "Back",
+                        style = TextStyle(
+                            fontSize = 14.sp,
+                            fontWeight = FontWeight.Medium,
+                            color = primaryColor
+                        )
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(20.dp))
+
+                // Title
+                Text(
+                    text = "Conditional Guidance",
+                    style = TextStyle(
+                        fontSize = 18.sp,
+                        fontWeight = FontWeight.ExtraBold,
+                        color = titleColor
+                    )
+                )
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                // Guidance
+                Text(
+                    text = "Context-sensitive info appears based on the selected field value.",
+                    style = TextStyle(
+                        fontSize = 13.sp,
+                        color = subtleColor,
+                        lineHeight = 18.sp
+                    )
+                )
+
+                Spacer(modifier = Modifier.height(20.dp))
+
+                // Reservation Category Input
+                Ux4gInputField(
+                    value = category,
+                    onValueChange = { category = it },
+                    label = "Reservation Category",
+                    caption = "Select your reservation category",
+                    size = Ux4gInputFieldSize.Large,
+                    modifier = Modifier.fillMaxWidth()
+                )
+
+                Spacer(modifier = Modifier.height(20.dp))
+
+                // Conditional Upload Dropzone
+                Ux4gFileUpload(
+                    title = "Upload caste certificate",
+                    allowedExtensions = listOf("PDF", "JPG", "PNG"),
+                    maxSizeMb = 5,
+                    onUploadClick = { /* Launch document picker */ },
+                    onScanClick = { /* Launch camera scanner */ }
+                )
+
+                Spacer(modifier = Modifier.height(20.dp))
+
+                // Warning Banner
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clip(RoundedCornerShape(8.dp))
+                        .background(warningBg)
+                        .border(1.dp, warningBorder, RoundedCornerShape(8.dp))
+                        .padding(12.dp)
+                ) {
+                    Row(
+                        crossAxisAlignment = CrossAxisAlignment.start,
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Warning,
+                            contentDescription = "Warning",
+                            tint = warningIconColor,
+                            modifier = Modifier.size(18.dp)
+                        )
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Column(modifier = Modifier.weight(1f)) {
+                            Text(
+                                text = "Additional Document Required",
+                                style = TextStyle(
+                                    fontSize = 13.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    color = warningTextColor
+                                )
+                            )
+                            Spacer(modifier = Modifier.height(4.dp))
+                            Text(
+                                text = "Since you selected SC category, please upload your caste certificate in the Documents step.",
+                                style = TextStyle(
+                                    fontSize = 13.sp,
+                                    fontWeight = FontWeight.Normal,
+                                    color = warningTextColor,
+                                    lineHeight = 18.sp
+                                )
+                            )
+                        }
+                    }
+                }
+            }
+        }
+
+        // Pinned Bottom Button
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp, vertical = 16.dp)
+        ) {
+            Ux4gButton(
+                text = "Continue",
+                onClick = { onContinue(category) },
+                variant = Ux4gButtonVariant.Primary,
+                size = Ux4gButtonSize.Large,
+                modifier = Modifier.fillMaxWidth()
+            )
+        }
+    }
+}
+
+@Preview(name = "Card Style Light Mode", showBackground = true)
+@Composable
+fun PreviewInlineFeedbackGuidanceCardScreenLight() {
+    InlineFeedbackGuidanceCardScreen()
+}`}
+>
+  <div className="flex flex-col items-center justify-center py-2">
+    <img
+      src="/images/patterns/inline_feedback_guidance/inline_feedback_guidance_cardstyle.svg"
+      alt="UX4G Inline Feedback Guidance Card Style Pattern Preview"
+      className="max-w-full rounded-xl border border-border/60 shadow-sm"
+    />
+  </div>
+</ComponentPreview>
