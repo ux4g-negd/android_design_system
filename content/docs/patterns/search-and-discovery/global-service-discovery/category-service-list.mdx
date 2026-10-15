@@ -1,0 +1,624 @@
+---
+title: Category Service List
+description: Sector-specific service directory pattern featuring hierarchical breadcrumbs, horizontal category filter chips, granular filter trigger, expandable service cards with SLA timelines, and dotted indicator pagination
+---
+
+# Category Service List
+
+A sector-specific service directory pattern designed for focused exploration of public schemes, welfare programs, and statutory certifications belonging to a selected domain such as *Health*, *Agriculture*, *Education*, or *Social Welfare*.
+
+The screen establishes orientation with an intuitive breadcrumb path (`Home › Services › Health`), followed by an informative heading outlining the catalog scope. Citizens can evaluate aggregate counts (*"48 services"*), trigger granular modal filters (`Ux4gButton` with `Icons.Default.Tune`), and horizontally pivot across specialized service clusters via filter chips. Each service card clearly highlights fee structures (*Free* or *Paid* tags), statutory turnaround SLAs, and a direct **Apply** call to action, accompanied by an accordion disclosure drawer revealing granular eligibility benchmarks, departmental contacts, and requisite documentation.
+
+---
+
+<h2><MIcon name="smartphone" /> Interactive Preview</h2>
+
+### Category Service List Overview
+
+Domain-level service listing screen displaying breadcrumb context, filter chips, expandable service detail cards with requirements, and bottom indicator pagination.
+
+<ComponentPreview
+  title="Category Service List"
+  category="Pattern · Jetpack Compose"
+  code={`package com.example.ux4g.patterns.discovery
+
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkVertically
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccessTime
+import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.KeyboardArrowDown
+import androidx.compose.material.icons.filled.KeyboardArrowUp
+import androidx.compose.material.icons.filled.Tune
+import androidx.compose.material3.Divider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.ux4g.designsystemv1.components.Ux4gAppHeader
+import com.ux4g.designsystemv1.components.Ux4gAppHeaderVariant
+import com.ux4g.designsystemv1.components.Ux4gPaginationDotted
+import com.ux4g.designsystemv1.components.Ux4gPaginationSize
+import com.ux4g.designsystemv1.components.Ux4gPaginationVariant
+import com.ux4g.designsystemv1.components.buttons.Ux4gButton
+import com.ux4g.designsystemv1.components.buttons.Ux4gButtonSize
+import com.ux4g.designsystemv1.components.buttons.Ux4gButtonVariant
+import com.ux4g.designsystemv1.foundation.Ux4gColors
+import com.ux4g.designsystemv1.foundation.Ux4gSpace
+
+/**
+ * Color tokens for Category Service List Screen
+ */
+data class CategoryServiceListColors(
+    val screenBackground: Color,
+    val surfaceBackground: Color,
+    val border: Color,
+    val title: Color,
+    val subtleText: Color,
+    val mutedText: Color,
+    val breadcrumbActive: Color,
+    val breadcrumbSeparator: Color,
+    val chipSelectedBg: Color,
+    val chipSelectedBorder: Color,
+    val chipSelectedText: Color,
+    val chipUnselectedBg: Color,
+    val chipUnselectedBorder: Color,
+    val chipUnselectedText: Color,
+    val tagBg: Color,
+    val tagText: Color,
+    val timeIcon: Color,
+    val dividerColor: Color
+)
+
+val LightCategoryServiceListColors = CategoryServiceListColors(
+    screenBackground = Ux4gColors.neutral50,
+    surfaceBackground = Ux4gColors.neutral0,
+    border = Ux4gColors.neutral200,
+    title = Ux4gColors.neutral900,
+    subtleText = Ux4gColors.neutral700,
+    mutedText = Ux4gColors.neutral500,
+    breadcrumbActive = Ux4gColors.primary600,
+    breadcrumbSeparator = Ux4gColors.neutral400,
+    chipSelectedBg = Ux4gColors.primary100,
+    chipSelectedBorder = Ux4gColors.primary400,
+    chipSelectedText = Ux4gColors.primary700,
+    chipUnselectedBg = Ux4gColors.neutral0,
+    chipUnselectedBorder = Ux4gColors.neutral300,
+    chipUnselectedText = Ux4gColors.neutral700,
+    tagBg = Ux4gColors.neutral100,
+    tagText = Ux4gColors.neutral700,
+    timeIcon = Ux4gColors.neutral500,
+    dividerColor = Ux4gColors.neutral200
+)
+
+val DarkCategoryServiceListColors = CategoryServiceListColors(
+    screenBackground = Ux4gColors.neutral950,
+    surfaceBackground = Ux4gColors.neutral900,
+    border = Ux4gColors.neutral800,
+    title = Ux4gColors.neutral50,
+    subtleText = Ux4gColors.neutral200,
+    mutedText = Ux4gColors.neutral400,
+    breadcrumbActive = Ux4gColors.primary300,
+    breadcrumbSeparator = Ux4gColors.neutral600,
+    chipSelectedBg = Ux4gColors.primary800,
+    chipSelectedBorder = Ux4gColors.primary600,
+    chipSelectedText = Ux4gColors.primary200,
+    chipUnselectedBg = Ux4gColors.neutral900,
+    chipUnselectedBorder = Ux4gColors.neutral800,
+    chipUnselectedText = Ux4gColors.neutral200,
+    tagBg = Ux4gColors.neutral800,
+    tagText = Ux4gColors.neutral200,
+    timeIcon = Ux4gColors.neutral400,
+    dividerColor = Ux4gColors.neutral800
+)
+
+data class ServiceListItem(
+    val id: Int,
+    val title: String,
+    val badge: String,
+    val extraFee: String? = null,
+    val time: String,
+    val details: List<Pair<Pair<String, String>, Pair<String, String>>>? = null
+)
+
+/**
+ * Category Service List Screen
+ *
+ * @param onBack Invoked when citizen taps back button
+ * @param onFilterClick Invoked when citizen opens the filters drawer/modal
+ * @param onApplyService Invoked when citizen taps 'Apply'
+ * @param onSelectChip Invoked when citizen selects a sub-category filter chip
+ */
+@Composable
+fun CategoryServiceListScreen(
+    onBack: () -> Unit = {},
+    onFilterClick: () -> Unit = {},
+    onApplyService: (String) -> Unit = {},
+    onSelectChip: (Int) -> Unit = {}
+) {
+    val isDark = isSystemInDarkTheme()
+    val colors = if (isDark) DarkCategoryServiceListColors else LightCategoryServiceListColors
+    val scrollState = rememberScrollState()
+
+    var selectedChipIndex by remember { mutableIntStateOf(0) }
+    var currentPageIndex by remember { mutableIntStateOf(0) }
+    val expandedCards = remember { mutableStateListOf(0) }
+
+    val filterChips = remember {
+        listOf("Hospitals · 12", "Certificates · 18", "Insurance · 9", "Disability · 9")
+    }
+
+    val services = remember {
+        listOf(
+            ServiceListItem(
+                id = 0,
+                title = "Ayushman Bharat Health Card",
+                badge = "Paid",
+                time = "7 days",
+                details = listOf(
+                    ("Eligibility" to "SECC 2011 families") to ("Coverage" to "₹5,00,000 per year"),
+                    ("Department" to "Health & Family Welfare") to ("Apply at" to "Empanelled hospitals"),
+                    ("Documents" to "Aadhaar, ration card") to ("Card type" to "Digital, downloadable")
+                )
+            ),
+            ServiceListItem(
+                id = 1,
+                title = "Hospital Empanelment",
+                badge = "Paid",
+                time = "30 days"
+            ),
+            ServiceListItem(
+                id = 2,
+                title = "Birth Certificate",
+                badge = "Paid",
+                time = "20 mins"
+            ),
+            ServiceListItem(
+                id = 3,
+                title = "Disability Certificate (UDID)",
+                badge = "Paid",
+                time = "15 days"
+            ),
+            ServiceListItem(
+                id = 4,
+                title = "Health Insurance Claim",
+                badge = "Paid",
+                time = "10 days"
+            ),
+            ServiceListItem(
+                id = 5,
+                title = "Vaccination Certificate",
+                badge = "Paid",
+                time = "Instant"
+            ),
+            ServiceListItem(
+                id = 6,
+                title = "Medical Reimbursement",
+                badge = "Paid",
+                extraFee = "₹ 50/-",
+                time = "21 days"
+            ),
+            ServiceListItem(
+                id = 7,
+                title = "Janani Suraksha Yojana",
+                badge = "Paid",
+                time = "On delivery"
+            )
+        )
+    }
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(colors.screenBackground)
+    ) {
+        // App Header - filled purple
+        Ux4gAppHeader(
+            title = "National Services Portal",
+            variant = Ux4gAppHeaderVariant.Filled,
+            showBackButton = true,
+            onBackPressed = onBack,
+            backgroundColor = Ux4gColors.primary600,
+            modifier = Modifier.fillMaxWidth()
+        )
+
+        // Scrollable Content
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .verticalScroll(scrollState)
+                .padding(16.dp)
+        ) {
+            // Breadcrumbs Navigation
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Home,
+                    contentDescription = "Home",
+                    tint = colors.subtleText,
+                    modifier = Modifier.size(14.dp)
+                )
+                Spacer(modifier = Modifier.width(4.dp))
+                Text(
+                    text = "Home",
+                    style = TextStyle(fontSize = 12.sp, color = colors.subtleText)
+                )
+                Text(
+                    text = "  ›  ",
+                    style = TextStyle(fontSize = 12.sp, color = colors.breadcrumbSeparator)
+                )
+                Text(
+                    text = "Services",
+                    style = TextStyle(fontSize = 12.sp, color = colors.subtleText)
+                )
+                Text(
+                    text = "  ›  ",
+                    style = TextStyle(fontSize = 12.sp, color = colors.breadcrumbSeparator)
+                )
+                Text(
+                    text = "Health",
+                    style = TextStyle(
+                        fontSize = 12.sp,
+                        fontWeight = FontWeight.SemiBold,
+                        color = colors.breadcrumbActive
+                    )
+                )
+            }
+
+            Spacer(modifier = Modifier.height(12.dp))
+
+            // Category Title + Subtitle
+            Text(
+                text = "Health services",
+                style = TextStyle(
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.ExtraBold,
+                    color = colors.title
+                )
+            )
+
+            Spacer(modifier = Modifier.height(4.dp))
+
+            Text(
+                text = "Hospitals, certificates, insurance and disability",
+                style = TextStyle(
+                    fontSize = 13.sp,
+                    color = colors.subtleText
+                )
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // Results count + Filters action button
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text(
+                    text = "48 services",
+                    style = TextStyle(
+                        fontSize = 14.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = colors.title
+                    )
+                )
+
+                Ux4gButton(
+                    text = "Filters",
+                    onClick = onFilterClick,
+                    variant = Ux4gButtonVariant.Outline,
+                    size = Ux4gButtonSize.Small,
+                    leadingIcon = {
+                        Icon(
+                            imageVector = Icons.Default.Tune,
+                            contentDescription = "Filters",
+                            tint = colors.title,
+                            modifier = Modifier.size(16.dp)
+                        )
+                    }
+                )
+            }
+
+            Spacer(modifier = Modifier.height(12.dp))
+
+            // Horizontally Scrollable Filter Chips
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .horizontalScroll(rememberScrollState())
+            ) {
+                filterChips.forEachIndexed { index, label ->
+                    val isSelected = selectedChipIndex == index
+                    Box(
+                        modifier = Modifier
+                            .clip(RoundedCornerShape(6.dp))
+                            .background(if (isSelected) colors.chipSelectedBg else colors.chipUnselectedBg)
+                            .border(
+                                1.dp,
+                                if (isSelected) colors.chipSelectedBorder else colors.chipUnselectedBorder,
+                                RoundedCornerShape(6.dp)
+                            )
+                            .clickable {
+                                selectedChipIndex = index
+                                onSelectChip(index)
+                            }
+                            .padding(horizontal = 12.dp, vertical = 6.dp)
+                    ) {
+                        Text(
+                            text = label,
+                            style = TextStyle(
+                                fontSize = 12.sp,
+                                fontWeight = if (isSelected) FontWeight.SemiBold else FontWeight.Normal,
+                                color = if (isSelected) colors.chipSelectedText else colors.chipUnselectedText
+                            )
+                        )
+                    }
+                }
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // Service Cards List
+            services.forEach { service ->
+                val isExpanded = expandedCards.contains(service.id)
+                ExpandableServiceCard(
+                    service = service,
+                    isExpanded = isExpanded,
+                    onToggleExpand = {
+                        if (isExpanded) {
+                            expandedCards.remove(service.id)
+                        } else {
+                            expandedCards.add(service.id)
+                        }
+                    },
+                    colors = colors,
+                    onApply = { onApplyService(service.title) }
+                )
+                Spacer(modifier = Modifier.height(12.dp))
+            }
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            // Dotted Indicator Pagination
+            Box(
+                contentAlignment = Alignment.Center,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Ux4gPaginationDotted(
+                    totalPageCount = 7,
+                    currentPageIndex = currentPageIndex,
+                    onPageChange = { currentPageIndex = it },
+                    showArrows = true,
+                    variant = Ux4gPaginationVariant.Default,
+                    size = Ux4gPaginationSize.Small
+                )
+            }
+
+            Spacer(modifier = Modifier.height(24.dp))
+        }
+    }
+}
+
+@Composable
+private fun ExpandableServiceCard(
+    service: ServiceListItem,
+    isExpanded: Boolean,
+    onToggleExpand: () -> Unit,
+    colors: CategoryServiceListColors,
+    onApply: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Box(
+        modifier = modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(10.dp))
+            .background(colors.surfaceBackground)
+            .border(1.dp, colors.border, RoundedCornerShape(10.dp))
+            .padding(14.dp)
+    ) {
+        Column(crossAxisAlignment = CrossAxisAlignment.start) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Column(modifier = Modifier.weight(1f)) {
+                    Text(
+                        text = service.title,
+                        style = TextStyle(
+                            fontSize = 14.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = colors.title
+                        )
+                    )
+
+                    Spacer(modifier = Modifier.height(6.dp))
+
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Box(
+                            modifier = Modifier
+                                .clip(RoundedCornerShape(4.dp))
+                                .background(colors.tagBg)
+                                .padding(horizontal = 6.dp, vertical = 2.dp)
+                        ) {
+                            Text(
+                                text = service.badge,
+                                style = TextStyle(
+                                    fontSize = 11.sp,
+                                    fontWeight = FontWeight.Medium,
+                                    color = colors.tagText
+                                )
+                            )
+                        }
+
+                        if (service.extraFee != null) {
+                            Spacer(modifier = Modifier.width(6.dp))
+                            Text(
+                                text = service.extraFee,
+                                style = TextStyle(
+                                    fontSize = 11.sp,
+                                    color = colors.subtleText
+                                )
+                            )
+                        }
+
+                        Spacer(modifier = Modifier.width(8.dp))
+
+                        Icon(
+                            imageVector = Icons.Default.AccessTime,
+                            contentDescription = "Turnaround Time",
+                            tint = colors.timeIcon,
+                            modifier = Modifier.size(13.dp)
+                        )
+
+                        Spacer(modifier = Modifier.width(3.dp))
+
+                        Text(
+                            text = service.time,
+                            style = TextStyle(
+                                fontSize = 11.sp,
+                                color = colors.subtleText
+                            )
+                        )
+                    }
+                }
+
+                Spacer(modifier = Modifier.width(8.dp))
+
+                Ux4gButton(
+                    text = "Apply",
+                    onClick = onApply,
+                    variant = Ux4gButtonVariant.Outline,
+                    size = Ux4gButtonSize.Small
+                )
+
+                Spacer(modifier = Modifier.width(4.dp))
+
+                Box(
+                    modifier = Modifier
+                        .clickable { onToggleExpand() }
+                        .padding(4.dp)
+                ) {
+                    Icon(
+                        imageVector = if (isExpanded) Icons.Default.KeyboardArrowUp else Icons.Default.KeyboardArrowDown,
+                        contentDescription = if (isExpanded) "Collapse" else "Expand",
+                        tint = colors.subtleText,
+                        modifier = Modifier.size(20.dp)
+                    )
+                }
+            }
+
+            // Accordion Drawer Content
+            AnimatedVisibility(
+                visible = isExpanded && service.details != null,
+                enter = fadeIn() + expandVertically(),
+                exit = fadeOut() + shrinkVertically()
+            ) {
+                Column {
+                    Spacer(modifier = Modifier.height(12.dp))
+                    Divider(color = colors.dividerColor, thickness = 1.dp)
+                    Spacer(modifier = Modifier.height(12.dp))
+
+                    service.details?.forEach { row ->
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(bottom = 8.dp)
+                        ) {
+                            Column(modifier = Modifier.weight(1f)) {
+                                Text(
+                                    text = row.first.first,
+                                    style = TextStyle(
+                                        fontSize = 11.sp,
+                                        color = colors.mutedText
+                                    )
+                                )
+                                Spacer(modifier = Modifier.height(2.dp))
+                                Text(
+                                    text = row.first.second,
+                                    style = TextStyle(
+                                        fontSize = 12.sp,
+                                        fontWeight = FontWeight.Medium,
+                                        color = colors.title
+                                    )
+                                )
+                            }
+
+                            Spacer(modifier = Modifier.width(12.dp))
+
+                            Column(modifier = Modifier.weight(1f)) {
+                                Text(
+                                    text = row.second.first,
+                                    style = TextStyle(
+                                        fontSize = 11.sp,
+                                        color = colors.mutedText
+                                    )
+                                )
+                                Spacer(modifier = Modifier.height(2.dp))
+                                Text(
+                                    text = row.second.second,
+                                    style = TextStyle(
+                                        fontSize = 12.sp,
+                                        fontWeight = FontWeight.Medium,
+                                        color = colors.title
+                                    )
+                                )
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Preview(showBackground = true, widthDp = 390, heightDp = 1100)
+@Composable
+fun CategoryServiceListPreview() {
+    CategoryServiceListScreen()
+}`}
+>
+  <img
+    src="/images/patterns/global_service_discovery/category_service_list.svg"
+    alt="Category Service List Pattern"
+    className="w-full max-w-[360px] rounded-2xl border border-border shadow-sm mx-auto my-4"
+  />
+</ComponentPreview>

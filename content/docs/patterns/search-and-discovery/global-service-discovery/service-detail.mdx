@@ -1,0 +1,549 @@
+---
+title: Service Detail
+description: Comprehensive service detail pattern featuring hierarchical breadcrumbs, hero entitlement card, segmented domain tabs (Overview, Eligibility, Documents, Process), bordered info callouts, and related service recommendations
+---
+
+# Service Detail
+
+A comprehensive service detail pattern delivering complete statutory transparency, eligibility criteria, required documentation, and direct application pathways for individual government services and citizen schemes.
+
+The screen establishes contextual continuity through an intuitive breadcrumb path (`Home › Certificates › Birth Certificate`). A prominent hero service card communicates essential parameters at a glance: issuing authority (*Municipal Corporation*), fee status (*Free*), standard processing turnaround (*20 mins online*), and a trust-reinforcing **Government verified** indicator, paired with a full-width primary **Apply now** trigger (`Ux4gButton`). Segmented tab navigation (*Overview*, *Eligibility*, *Documents*, *Process*) organizes extensive statutory documentation into digestible sections. Inside the overview panel, structured information callout boxes highlight key conditions, while cross-linked related services foster holistic citizen discovery.
+
+---
+
+<h2><MIcon name="smartphone" /> Interactive Preview</h2>
+
+### Service Detail Overview
+
+Individual service detail screen showcasing hero parameter card, multi-section segmented tabs, structured criteria callouts, and cross-departmental related services.
+
+<ComponentPreview
+  title="Service Detail"
+  category="Pattern · Jetpack Compose"
+  code={`package com.example.ux4g.patterns.discovery
+
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Home
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.ux4g.designsystemv1.components.Ux4gAppHeader
+import com.ux4g.designsystemv1.components.Ux4gAppHeaderVariant
+import com.ux4g.designsystemv1.components.buttons.Ux4gButton
+import com.ux4g.designsystemv1.components.buttons.Ux4gButtonSize
+import com.ux4g.designsystemv1.components.buttons.Ux4gButtonVariant
+import com.ux4g.designsystemv1.foundation.Ux4gColors
+import com.ux4g.designsystemv1.foundation.Ux4gSpace
+
+/**
+ * Color tokens for Service Detail Screen
+ */
+data class ServiceDetailColors(
+    val screenBackground: Color,
+    val surfaceBackground: Color,
+    val border: Color,
+    val title: Color,
+    val subtleText: Color,
+    val mutedText: Color,
+    val breadcrumbActive: Color,
+    val breadcrumbSeparator: Color,
+    val heroCardBg: Color,
+    val heroCardBorder: Color,
+    val verifiedBadgeColor: Color,
+    val tabActiveText: Color,
+    val tabActiveIndicator: Color,
+    val tabInactiveText: Color,
+    val tabBorderBottom: Color,
+    val infoBoxBg: Color,
+    val infoBoxBorder: Color,
+    val infoBoxTitle: Color,
+    val relatedCardBg: Color,
+    val relatedCardBorder: Color,
+    val freeTagColor: Color
+)
+
+val LightServiceDetailColors = ServiceDetailColors(
+    screenBackground = Ux4gColors.neutral50,
+    surfaceBackground = Ux4gColors.neutral0,
+    border = Ux4gColors.neutral200,
+    title = Ux4gColors.neutral900,
+    subtleText = Ux4gColors.neutral700,
+    mutedText = Ux4gColors.neutral500,
+    breadcrumbActive = Ux4gColors.primary600,
+    breadcrumbSeparator = Ux4gColors.neutral400,
+    heroCardBg = Ux4gColors.primary50,
+    heroCardBorder = Ux4gColors.primary500,
+    verifiedBadgeColor = Ux4gColors.green700,
+    tabActiveText = Ux4gColors.primary600,
+    tabActiveIndicator = Ux4gColors.primary600,
+    tabInactiveText = Ux4gColors.neutral700,
+    tabBorderBottom = Ux4gColors.neutral200,
+    infoBoxBg = Ux4gColors.primary50,
+    infoBoxBorder = Ux4gColors.primary300,
+    infoBoxTitle = Ux4gColors.primary600,
+    relatedCardBg = Ux4gColors.neutral100,
+    relatedCardBorder = Ux4gColors.neutral200,
+    freeTagColor = Ux4gColors.green600
+)
+
+val DarkServiceDetailColors = ServiceDetailColors(
+    screenBackground = Ux4gColors.neutral950,
+    surfaceBackground = Ux4gColors.neutral900,
+    border = Ux4gColors.neutral800,
+    title = Ux4gColors.neutral50,
+    subtleText = Ux4gColors.neutral200,
+    mutedText = Ux4gColors.neutral400,
+    breadcrumbActive = Ux4gColors.primary300,
+    breadcrumbSeparator = Ux4gColors.neutral600,
+    heroCardBg = Ux4gColors.primary950,
+    heroCardBorder = Ux4gColors.primary600,
+    verifiedBadgeColor = Ux4gColors.green300,
+    tabActiveText = Ux4gColors.primary300,
+    tabActiveIndicator = Ux4gColors.primary300,
+    tabInactiveText = Ux4gColors.neutral200,
+    tabBorderBottom = Ux4gColors.neutral800,
+    infoBoxBg = Ux4gColors.primary950,
+    infoBoxBorder = Ux4gColors.primary600,
+    infoBoxTitle = Ux4gColors.primary300,
+    relatedCardBg = Ux4gColors.neutral900,
+    relatedCardBorder = Ux4gColors.neutral800,
+    freeTagColor = Ux4gColors.green300
+)
+
+data class RelatedService(
+    val title: String,
+    val department: String,
+    val fee: String,
+    val time: String,
+    val isFree: Boolean
+)
+
+data class ServiceInfoSection(
+    val title: String,
+    val description: String
+)
+
+/**
+ * Service Detail Screen
+ *
+ * @param onBack Invoked when citizen taps header back action
+ * @param onApply Invoked when citizen taps 'Apply now'
+ * @param onTabSelect Invoked when citizen switches section tabs
+ * @param onApplyRelated Invoked when citizen applies for a related service
+ */
+@Composable
+fun ServiceDetailScreen(
+    onBack: () -> Unit = {},
+    onApply: () -> Unit = {},
+    onTabSelect: (Int) -> Unit = {},
+    onApplyRelated: (String) -> Unit = {}
+) {
+    val isDark = isSystemInDarkTheme()
+    val colors = if (isDark) DarkServiceDetailColors else LightServiceDetailColors
+    val scrollState = rememberScrollState()
+
+    var selectedTabIndex by remember { mutableIntStateOf(0) }
+    val tabs = remember { listOf("Overview", "Eligibility", "Documents", "Process") }
+
+    val infoSections = remember {
+        listOf(
+            ServiceInfoSection(
+                title = "Eligibility",
+                description = "Child born within municipal limits. Apply within 21 days of birth; late registration allowed with an affidavit."
+            ),
+            ServiceInfoSection(
+                title = "Required documents",
+                description = "Hospital discharge summary, both parents' Aadhaar, and proof of address."
+            ),
+            ServiceInfoSection(
+                title = "Fee",
+                description = "Free within 21 days of birth. ₹20 late fee applies thereafter."
+            ),
+            ServiceInfoSection(
+                title = "Processing time",
+                description = "20 minutes online · up to 7 working days if applied offline."
+            )
+        )
+    }
+
+    val relatedServices = remember {
+        listOf(
+            RelatedService("Death Certificate", "Municipal Corporation", "Free", "20 mins", isFree = true),
+            RelatedService("Marriage Certificate", "Registrar of Marriages", "₹100", "15 days", isFree = false),
+            RelatedService("Aadhaar Enrolment", "UIDAI", "Free", "90 days", isFree = true)
+        )
+    }
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(colors.screenBackground)
+    ) {
+        // App Header - filled purple
+        Ux4gAppHeader(
+            title = "National Services Portal",
+            variant = Ux4gAppHeaderVariant.Filled,
+            showBackButton = true,
+            onBackPressed = onBack,
+            backgroundColor = Ux4gColors.primary600,
+            modifier = Modifier.fillMaxWidth()
+        )
+
+        // Scrollable Content
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .verticalScroll(scrollState)
+        ) {
+            // Breadcrumbs Navigation
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(colors.surfaceBackground)
+                    .padding(horizontal = 16.dp, vertical = 10.dp)
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Home,
+                    contentDescription = "Home",
+                    tint = colors.subtleText,
+                    modifier = Modifier.size(14.dp)
+                )
+                Spacer(modifier = Modifier.width(4.dp))
+                Text(
+                    text = "Home",
+                    style = TextStyle(fontSize = 12.sp, color = colors.subtleText)
+                )
+                Text(
+                    text = "  ›  ",
+                    style = TextStyle(fontSize = 12.sp, color = colors.breadcrumbSeparator)
+                )
+                Text(
+                    text = "Certificates",
+                    style = TextStyle(fontSize = 12.sp, color = colors.subtleText)
+                )
+                Text(
+                    text = "  ›  ",
+                    style = TextStyle(fontSize = 12.sp, color = colors.breadcrumbSeparator)
+                )
+                Text(
+                    text = "Birth Certificate",
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    style = TextStyle(
+                        fontSize = 12.sp,
+                        fontWeight = FontWeight.SemiBold,
+                        color = colors.breadcrumbActive
+                    )
+                )
+            }
+
+            // Hero Service Card
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp)
+                    .clip(RoundedCornerShape(12.dp))
+                    .background(colors.heroCardBg)
+                    .border(1.dp, colors.heroCardBorder, RoundedCornerShape(12.dp))
+                    .padding(16.dp)
+            ) {
+                Column(crossAxisAlignment = CrossAxisAlignment.start) {
+                    Text(
+                        text = "Birth Certificate",
+                        style = TextStyle(
+                            fontSize = 18.sp,
+                            fontWeight = FontWeight.ExtraBold,
+                            color = colors.title
+                        )
+                    )
+
+                    Spacer(modifier = Modifier.height(4.dp))
+
+                    Text(
+                        text = "Municipal Corporation · Registration of Births & Deaths",
+                        style = TextStyle(
+                            fontSize = 12.sp,
+                            color = colors.subtleText
+                        )
+                    )
+
+                    Spacer(modifier = Modifier.height(12.dp))
+
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Text(
+                            text = "Free",
+                            style = TextStyle(
+                                fontSize = 12.sp,
+                                fontWeight = FontWeight.SemiBold,
+                                color = colors.verifiedBadgeColor
+                            )
+                        )
+                        Text(
+                            text = "  ·  20 mins online",
+                            style = TextStyle(
+                                fontSize = 12.sp,
+                                color = colors.subtleText
+                            )
+                        )
+
+                        Spacer(modifier = Modifier.weight(1f))
+
+                        Text(
+                            text = "Government\nverified",
+                            style = TextStyle(
+                                fontSize = 10.sp,
+                                fontWeight = FontWeight.Medium,
+                                color = colors.verifiedBadgeColor,
+                                textAlign = TextAlign.Center
+                            )
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.height(16.dp))
+
+                    Ux4gButton(
+                        text = "Apply now",
+                        onClick = onApply,
+                        variant = Ux4gButtonVariant.Primary,
+                        size = Ux4gButtonSize.Medium,
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                }
+            }
+
+            // Segmented Tabs
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .border(
+                        width = 1.dp,
+                        color = colors.tabBorderBottom
+                    )
+            ) {
+                tabs.forEachIndexed { index, tabText ->
+                    val isSelected = selectedTabIndex == index
+                    Box(
+                        contentAlignment = Alignment.Center,
+                        modifier = Modifier
+                            .weight(1f)
+                            .clickable {
+                                selectedTabIndex = index
+                                onTabSelect(index)
+                            }
+                            .padding(vertical = 10.dp)
+                    ) {
+                        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                            Text(
+                                text = tabText,
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis,
+                                style = TextStyle(
+                                    fontSize = 13.sp,
+                                    fontWeight = if (isSelected) FontWeight.SemiBold else FontWeight.Normal,
+                                    color = if (isSelected) colors.tabActiveText else colors.tabInactiveText
+                                )
+                            )
+                            Spacer(modifier = Modifier.height(8.dp))
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(2.dp)
+                                    .background(if (isSelected) colors.tabActiveIndicator else Color.Transparent)
+                            )
+                        }
+                    }
+                }
+            }
+
+            // Tab Content Body
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp)
+            ) {
+                Text(
+                    text = "About this service",
+                    style = TextStyle(
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = colors.title
+                    )
+                )
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                Text(
+                    text = "A Birth Certificate is the official record of a child's birth, issued by the local municipal body. It is required for school admission, passport, Aadhaar enrolment and accessing welfare schemes. Apply online with hospital records, or visit your nearest municipal office.",
+                    style = TextStyle(
+                        fontSize = 13.sp,
+                        color = colors.subtleText,
+                        lineHeight = 20.sp
+                    )
+                )
+
+                Spacer(modifier = Modifier.height(20.dp))
+
+                // Info Sections with left border callouts
+                infoSections.forEach { section ->
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clip(RoundedCornerShape(8.dp))
+                            .background(colors.infoBoxBg)
+                            .border(1.dp, colors.infoBoxBorder, RoundedCornerShape(8.dp))
+                            .padding(horizontal = 14.dp, vertical = 12.dp)
+                    ) {
+                        Column(crossAxisAlignment = CrossAxisAlignment.start) {
+                            Text(
+                                text = section.title,
+                                style = TextStyle(
+                                    fontSize = 13.sp,
+                                    fontWeight = FontWeight.SemiBold,
+                                    color = colors.infoBoxTitle
+                                )
+                            )
+                            Spacer(modifier = Modifier.height(4.dp))
+                            Text(
+                                text = section.description,
+                                style = TextStyle(
+                                    fontSize = 13.sp,
+                                    color = colors.title,
+                                    lineHeight = 18.sp
+                                )
+                            )
+                        }
+                    }
+                    Spacer(modifier = Modifier.height(16.dp))
+                }
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                // Related Services
+                Text(
+                    text = "Related services",
+                    style = TextStyle(
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = colors.title
+                    )
+                )
+
+                Spacer(modifier = Modifier.height(12.dp))
+
+                relatedServices.forEach { related ->
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clip(RoundedCornerShape(12.dp))
+                            .background(colors.relatedCardBg)
+                            .border(1.dp, colors.relatedCardBorder, RoundedCornerShape(12.dp))
+                            .padding(14.dp)
+                    ) {
+                        Column(crossAxisAlignment = CrossAxisAlignment.start) {
+                            Text(
+                                text = related.title,
+                                style = TextStyle(
+                                    fontSize = 14.sp,
+                                    fontWeight = FontWeight.SemiBold,
+                                    color = colors.title
+                                )
+                            )
+
+                            Spacer(modifier = Modifier.height(2.dp))
+
+                            Text(
+                                text = related.department,
+                                style = TextStyle(
+                                    fontSize = 12.sp,
+                                    color = colors.subtleText
+                                )
+                            )
+
+                            Spacer(modifier = Modifier.height(8.dp))
+
+                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                Text(
+                                    text = related.fee,
+                                    style = TextStyle(
+                                        fontSize = 12.sp,
+                                        fontWeight = FontWeight.SemiBold,
+                                        color = if (related.isFree) colors.freeTagColor else colors.title
+                                    )
+                                )
+                                Text(
+                                    text = "  ·  " + related.time,
+                                    style = TextStyle(
+                                        fontSize = 12.sp,
+                                        color = colors.subtleText
+                                    )
+                                )
+                            }
+
+                            Spacer(modifier = Modifier.height(10.dp))
+
+                            Ux4gButton(
+                                text = "Apply",
+                                onClick = { onApplyRelated(related.title) },
+                                variant = Ux4gButtonVariant.Outline,
+                                size = Ux4gButtonSize.Small
+                            )
+                        }
+                    }
+                    Spacer(modifier = Modifier.height(12.dp))
+                }
+
+                Spacer(modifier = Modifier.height(16.dp))
+            }
+        }
+    }
+}
+
+@Preview(showBackground = true, widthDp = 390, heightDp = 1200)
+@Composable
+fun ServiceDetailPreview() {
+    ServiceDetailScreen()
+}`}
+>
+  <img
+    src="/images/patterns/global_service_discovery/service_detail.svg"
+    alt="Service Detail Pattern"
+    className="w-full max-w-[360px] rounded-2xl border border-border shadow-sm mx-auto my-4"
+  />
+</ComponentPreview>

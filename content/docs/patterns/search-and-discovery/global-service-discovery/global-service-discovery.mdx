@@ -1,0 +1,636 @@
+---
+title: Global Service Discovery
+description: Omnichannel government service discovery portal pattern featuring voice-enabled search, categorized directory, featured scheme banner, popular services, personalized citizen recommendations, and eligibility assessment quiz
+---
+
+# Global Service Discovery
+
+A unified public service portal landing pattern designed to accelerate citizen service discovery, entitlements navigation, and public welfare program access across national and state government catalogs.
+
+The screen anchors discovery with an omnichannel search bar (`Ux4gSearchField` with keyword input, submit trigger, voice dictation, and autocomplete readiness), followed by a 2-column thematic category grid (*Health*, *Education*, *Agriculture*, *Land Records*, *Transport*, *Social Welfare*, *Utilities*, *Finance*). Prominent discovery sections highlight timely national interventions (*Featured Scheme* with direct eligibility assessment), high-volume public services (*Popular Services* with fee, statutory turnaround time, and direct apply actions), targeted citizen benefits (*Recommended for User*), and an intuitive assessment callout (*Find my schemes* quiz) to assist citizens uncertain of their entitlements.
+
+---
+
+<h2><MIcon name="smartphone" /> Interactive Preview</h2>
+
+### Global Service Discovery Overview
+
+Comprehensive government services portal directory featuring voice-enabled search, categorized scheme navigation, featured benefit callout, popular services, personalized recommendations, and an eligibility assessment quiz.
+
+<ComponentPreview
+  title="Global Service Discovery"
+  category="Pattern · Jetpack Compose"
+  code={`package com.example.ux4g.patterns.discovery
+
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccountBalance
+import androidx.compose.material.icons.filled.Agriculture
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Bolt
+import androidx.compose.material.icons.filled.DirectionsBus
+import androidx.compose.material.icons.filled.HealthAndSafety
+import androidx.compose.material.icons.filled.Landscape
+import androidx.compose.material.icons.filled.People
+import androidx.compose.material.icons.filled.School
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.ux4g.designsystemv1.components.Ux4gAppHeader
+import com.ux4g.designsystemv1.components.Ux4gAppHeaderVariant
+import com.ux4g.designsystemv1.components.buttons.Ux4gButton
+import com.ux4g.designsystemv1.components.buttons.Ux4gButtonSize
+import com.ux4g.designsystemv1.components.buttons.Ux4gButtonVariant
+import com.ux4g.designsystemv1.components.searchfield.Ux4gSearchField
+import com.ux4g.designsystemv1.components.searchfield.Ux4gSearchFieldButtonStyle
+import com.ux4g.designsystemv1.components.searchfield.Ux4gSearchFieldSize
+import com.ux4g.designsystemv1.components.searchfield.Ux4gSearchFieldVariant
+import com.ux4g.designsystemv1.foundation.Ux4gColors
+import com.ux4g.designsystemv1.foundation.Ux4gSpace
+
+/**
+ * Color tokens for Global Service Discovery Screen
+ */
+data class GlobalServiceDiscoveryColors(
+    val screenBackground: Color,
+    val surfaceBackground: Color,
+    val border: Color,
+    val title: Color,
+    val subtleText: Color,
+    val mutedText: Color,
+    val categoryIconBg: Color,
+    val categoryIconTint: Color,
+    val featuredBg: Color,
+    val featuredBorder: Color,
+    val featuredTag: Color,
+    val quizBg: Color,
+    val quizBorder: Color,
+    val freeBadgeColor: Color
+)
+
+val LightGlobalServiceDiscoveryColors = GlobalServiceDiscoveryColors(
+    screenBackground = Ux4gColors.neutral50,
+    surfaceBackground = Ux4gColors.neutral0,
+    border = Ux4gColors.neutral200,
+    title = Ux4gColors.neutral900,
+    subtleText = Ux4gColors.neutral700,
+    mutedText = Ux4gColors.neutral500,
+    categoryIconBg = Ux4gColors.primary50,
+    categoryIconTint = Ux4gColors.primary600,
+    featuredBg = Ux4gColors.primary50,
+    featuredBorder = Ux4gColors.primary100,
+    featuredTag = Ux4gColors.primary600,
+    quizBg = Ux4gColors.primary50,
+    quizBorder = Ux4gColors.primary300,
+    freeBadgeColor = Ux4gColors.green600
+)
+
+val DarkGlobalServiceDiscoveryColors = GlobalServiceDiscoveryColors(
+    screenBackground = Ux4gColors.neutral950,
+    surfaceBackground = Ux4gColors.neutral900,
+    border = Ux4gColors.neutral800,
+    title = Ux4gColors.neutral50,
+    subtleText = Ux4gColors.neutral200,
+    mutedText = Ux4gColors.neutral400,
+    categoryIconBg = Ux4gColors.primary950,
+    categoryIconTint = Ux4gColors.primary300,
+    featuredBg = Ux4gColors.primary950,
+    featuredBorder = Ux4gColors.primary800,
+    featuredTag = Ux4gColors.primary300,
+    quizBg = Ux4gColors.primary950,
+    quizBorder = Ux4gColors.primary600,
+    freeBadgeColor = Ux4gColors.green300
+)
+
+data class DiscoveryCategory(
+    val label: String,
+    val count: String,
+    val icon: ImageVector
+)
+
+data class DiscoveryPopularService(
+    val title: String,
+    val department: String,
+    val fee: String,
+    val duration: String,
+    val isFree: Boolean
+)
+
+data class DiscoveryRecommendedService(
+    val title: String,
+    val department: String,
+    val fee: String,
+    val benefit: String,
+    val isFree: Boolean = true
+)
+
+/**
+ * Global Service Discovery Screen
+ *
+ * @param onBack Invoked when citizen taps header back action
+ * @param onSearch Invoked when citizen submits a search term
+ * @param onSelectCategory Invoked when citizen selects a category tile
+ * @param onCheckEligibility Invoked when citizen explores the featured scheme
+ * @param onApplyService Invoked when citizen taps Apply on any service
+ * @param onTakeQuiz Invoked when citizen taps 'Find my schemes'
+ */
+@Composable
+fun GlobalServiceDiscoveryScreen(
+    onBack: () -> Unit = {},
+    onSearch: (String) -> Unit = {},
+    onSelectCategory: (String) -> Unit = {},
+    onCheckEligibility: () -> Unit = {},
+    onApplyService: (String) -> Unit = {},
+    onTakeQuiz: () -> Unit = {}
+) {
+    val isDark = isSystemInDarkTheme()
+    val colors = if (isDark) DarkGlobalServiceDiscoveryColors else LightGlobalServiceDiscoveryColors
+    val scrollState = rememberScrollState()
+
+    var searchQuery by remember { mutableStateOf("") }
+
+    val categories = remember {
+        listOf(
+            DiscoveryCategory("Health", "34 services", Icons.Filled.HealthAndSafety),
+            DiscoveryCategory("Education", "31 services", Icons.Filled.School),
+            DiscoveryCategory("Agriculture", "18 services", Icons.Filled.Agriculture),
+            DiscoveryCategory("Land Records", "12 services", Icons.Filled.Landscape),
+            DiscoveryCategory("Transport", "15 services", Icons.Filled.DirectionsBus),
+            DiscoveryCategory("Social Welfare", "27 services", Icons.Filled.People),
+            DiscoveryCategory("Utilities", "9 services", Icons.Filled.Bolt),
+            DiscoveryCategory("Finance", "21 services", Icons.Filled.AccountBalance)
+        )
+    }
+
+    val popularServices = remember {
+        listOf(
+            DiscoveryPopularService("Income Certificate", "Revenue Department", "Free", "20 mins", isFree = true),
+            DiscoveryPopularService("Caste Certificate", "Social Welfare Dept", "Free", "15 mins", isFree = true),
+            DiscoveryPopularService("Driving Licence", "Transport Department", "₹200", "30 days", isFree = false)
+        )
+    }
+
+    val recommendedServices = remember {
+        listOf(
+            DiscoveryRecommendedService("PM Kisan Samman Nidhi", "Agriculture Department", "Free", "₹6,000/yr"),
+            DiscoveryRecommendedService("Ayushman Bharat (PM-JAY)", "Health & Family Welfare", "Free", "₹5L cover"),
+            DiscoveryRecommendedService("National Pension Scheme", "Finance Ministry", "Free", "Tax benefit")
+        )
+    }
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(colors.screenBackground)
+    ) {
+        // App Header - filled purple
+        Ux4gAppHeader(
+            title = "National Services Portal",
+            variant = Ux4gAppHeaderVariant.Filled,
+            showBackButton = true,
+            onBackPressed = onBack,
+            backgroundColor = Ux4gColors.primary600,
+            modifier = Modifier.fillMaxWidth()
+        )
+
+        // Scrollable Content
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .verticalScroll(scrollState)
+        ) {
+            // Search Area
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 16.dp, top = 16.dp, end = 16.dp, bottom = 8.dp)
+            ) {
+                Text(
+                    text = "Find any government service",
+                    style = TextStyle(
+                        fontSize = 18.sp,
+                        fontWeight = FontWeight.ExtraBold,
+                        color = colors.title
+                    )
+                )
+
+                Spacer(modifier = Modifier.height(4.dp))
+
+                Text(
+                    text = "Search 3,000+ services & schemes",
+                    style = TextStyle(
+                        fontSize = 13.sp,
+                        color = colors.subtleText
+                    )
+                )
+
+                Spacer(modifier = Modifier.height(12.dp))
+
+                Ux4gSearchField(
+                    value = searchQuery,
+                    onValueChange = { searchQuery = it },
+                    variant = Ux4gSearchFieldVariant.SearchWithSubmit,
+                    size = Ux4gSearchFieldSize.Medium,
+                    buttonStyle = Ux4gSearchFieldButtonStyle.Filled,
+                    placeholder = "Search for...",
+                    showVoiceIcon = true,
+                    showClearIcon = true,
+                    onSubmitClick = onSearch,
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
+
+            // Browse by Category
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp)
+            ) {
+                Text(
+                    text = "Browse by category",
+                    style = TextStyle(
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = colors.title
+                    )
+                )
+
+                Spacer(modifier = Modifier.height(12.dp))
+
+                // 2-Column Grid of Categories
+                Column(
+                    verticalArrangement = Arrangement.spacedBy(12.dp),
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    for (i in categories.indices step 2) {
+                        Row(
+                            horizontalArrangement = Arrangement.spacedBy(12.dp),
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            CategoryTile(
+                                category = categories[i],
+                                colors = colors,
+                                onClick = { onSelectCategory(categories[i].label) },
+                                modifier = Modifier.weight(1f)
+                            )
+                            if (i + 1 < categories.size) {
+                                CategoryTile(
+                                    category = categories[i + 1],
+                                    colors = colors,
+                                    onClick = { onSelectCategory(categories[i + 1].label) },
+                                    modifier = Modifier.weight(1f)
+                                )
+                            } else {
+                                Spacer(modifier = Modifier.weight(1f))
+                            }
+                        }
+                    }
+                }
+            }
+
+            // Featured Scheme Card
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp)
+                    .clip(RoundedCornerShape(12.dp))
+                    .background(colors.featuredBg)
+                    .border(1.dp, colors.featuredBorder, RoundedCornerShape(12.dp))
+                    .padding(16.dp)
+            ) {
+                Column(crossAxisAlignment = CrossAxisAlignment.start) {
+                    Text(
+                        text = "FEATURED SCHEME",
+                        style = TextStyle(
+                            fontSize = 10.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = colors.featuredTag,
+                            letterSpacing = 1.sp
+                        )
+                    )
+
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    Text(
+                        text = "PM Awas Yojana (Urban)",
+                        style = TextStyle(
+                            fontSize = 15.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = colors.title
+                        )
+                    )
+
+                    Spacer(modifier = Modifier.height(4.dp))
+
+                    Text(
+                        text = "Subsidised housing loans — Interest subsidy up to ₹2.67 lakh.",
+                        style = TextStyle(
+                            fontSize = 12.sp,
+                            color = colors.subtleText
+                        )
+                    )
+
+                    Spacer(modifier = Modifier.height(12.dp))
+
+                    Ux4gButton(
+                        text = "Check eligibility",
+                        onClick = onCheckEligibility,
+                        variant = Ux4gButtonVariant.Primary,
+                        size = Ux4gButtonSize.Medium,
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                }
+            }
+
+            // Popular Services Section
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp)
+            ) {
+                Text(
+                    text = "Popular services",
+                    style = TextStyle(
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = colors.title
+                    )
+                )
+
+                Spacer(modifier = Modifier.height(12.dp))
+
+                popularServices.forEach { service ->
+                    ServiceItemCard(
+                        title = service.title,
+                        department = service.department,
+                        fee = service.fee,
+                        metadata = service.duration,
+                        isFree = service.isFree,
+                        colors = colors,
+                        onApply = { onApplyService(service.title) }
+                    )
+                    Spacer(modifier = Modifier.height(12.dp))
+                }
+            }
+
+            // Recommended for Ramesh Kumar Section
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp)
+            ) {
+                Text(
+                    text = "Recommended for Ramesh Kumar",
+                    style = TextStyle(
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = colors.title
+                    )
+                )
+
+                Spacer(modifier = Modifier.height(12.dp))
+
+                recommendedServices.forEach { item ->
+                    ServiceItemCard(
+                        title = item.title,
+                        department = item.department,
+                        fee = item.fee,
+                        metadata = item.benefit,
+                        isFree = item.isFree,
+                        colors = colors,
+                        onApply = { onApplyService(item.title) }
+                    )
+                    Spacer(modifier = Modifier.height(12.dp))
+                }
+            }
+
+            Spacer(modifier = Modifier.height(4.dp))
+
+            // Eligibility Quiz CTA
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp)
+                    .clip(RoundedCornerShape(12.dp))
+                    .background(colors.quizBg)
+                    .border(1.dp, colors.quizBorder, RoundedCornerShape(12.dp))
+                    .padding(16.dp)
+            ) {
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text(
+                        text = "Not sure what you're eligible for?",
+                        style = TextStyle(
+                            fontSize = 14.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = colors.title
+                        ),
+                        textAlign = TextAlign.Center
+                    )
+
+                    Spacer(modifier = Modifier.height(4.dp))
+
+                    Text(
+                        text = "Take a 2-minute quiz to find schemes you qualify for.",
+                        style = TextStyle(
+                            fontSize = 12.sp,
+                            color = colors.subtleText
+                        ),
+                        textAlign = TextAlign.Center
+                    )
+
+                    Spacer(modifier = Modifier.height(12.dp))
+
+                    Ux4gButton(
+                        text = "Find my schemes",
+                        onClick = onTakeQuiz,
+                        variant = Ux4gButtonVariant.Secondary,
+                        size = Ux4gButtonSize.Medium,
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                }
+            }
+
+            Spacer(modifier = Modifier.height(24.dp))
+        }
+    }
+}
+
+@Composable
+private fun CategoryTile(
+    category: DiscoveryCategory,
+    colors: GlobalServiceDiscoveryColors,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Box(
+        modifier = modifier
+            .clip(RoundedCornerShape(8.dp))
+            .background(colors.surfaceBackground)
+            .border(1.dp, colors.border, RoundedCornerShape(8.dp))
+            .clickable { onClick() }
+            .padding(12.dp)
+    ) {
+        Column(crossAxisAlignment = CrossAxisAlignment.start) {
+            Box(
+                modifier = Modifier
+                    .size(36.dp)
+                    .clip(CircleShape)
+                    .background(colors.categoryIconBg),
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(
+                    imageVector = category.icon,
+                    contentDescription = category.label,
+                    tint = colors.categoryIconTint,
+                    modifier = Modifier.size(20.dp)
+                )
+            }
+
+            Spacer(modifier = Modifier.height(10.dp))
+
+            Text(
+                text = category.label,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+                style = TextStyle(
+                    fontSize = 13.sp,
+                    fontWeight = FontWeight.SemiBold,
+                    color = colors.title
+                )
+            )
+
+            Spacer(modifier = Modifier.height(2.dp))
+
+            Text(
+                text = category.count,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+                style = TextStyle(
+                    fontSize = 11.sp,
+                    color = colors.subtleText
+                )
+            )
+        }
+    }
+}
+
+@Composable
+private fun ServiceItemCard(
+    title: String,
+    department: String,
+    fee: String,
+    metadata: String,
+    isFree: Boolean,
+    colors: GlobalServiceDiscoveryColors,
+    onApply: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Box(
+        modifier = modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(12.dp))
+            .background(colors.surfaceBackground)
+            .border(1.dp, colors.border, RoundedCornerShape(12.dp))
+            .padding(14.dp)
+    ) {
+        Column(crossAxisAlignment = CrossAxisAlignment.start) {
+            Text(
+                text = title,
+                style = TextStyle(
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = colors.title
+                )
+            )
+
+            Spacer(modifier = Modifier.height(2.dp))
+
+            Text(
+                text = department,
+                style = TextStyle(
+                    fontSize = 12.sp,
+                    color = colors.subtleText
+                )
+            )
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text(
+                    text = fee,
+                    style = TextStyle(
+                        fontSize = 12.sp,
+                        fontWeight = FontWeight.Medium,
+                        color = if (isFree) colors.freeBadgeColor else colors.title
+                    )
+                )
+                Text(
+                    text = "  ·  $metadata",
+                    style = TextStyle(
+                        fontSize = 12.sp,
+                        color = colors.subtleText
+                    )
+                )
+            }
+
+            Spacer(modifier = Modifier.height(10.dp))
+
+            Ux4gButton(
+                text = "Apply",
+                onClick = onApply,
+                variant = Ux4gButtonVariant.Outline,
+                size = Ux4gButtonSize.Small
+            )
+        }
+    }
+}
+
+@Preview(showBackground = true, widthDp = 390, heightDp = 1100)
+@Composable
+fun GlobalServiceDiscoveryPreview() {
+    GlobalServiceDiscoveryScreen()
+}`}
+>
+  <img
+    src="/images/patterns/global_service_discovery/global_service_discovery.svg"
+    alt="Global Service Discovery Pattern"
+    className="w-full max-w-[360px] rounded-2xl border border-border shadow-sm mx-auto my-4"
+  />
+</ComponentPreview>
