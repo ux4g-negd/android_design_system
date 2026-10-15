@@ -1,0 +1,538 @@
+---
+title: Translation Unavailable
+description: Graceful language fallback notice pattern informing citizens of pending regional translations with progress timelines, alternative actions, and both default and card-style variants
+---
+
+# Translation Unavailable
+
+A transparent fallback communication pattern designed to manage citizen expectations when a specific public service or procedural page has not yet been translated into their selected regional language.
+
+Rather than silently falling back to English without explanation or blocking service access with an error code, the **Translation Unavailable** pattern clearly informs citizens of the current localization status (*"This page is not yet available in Tamil"*), provides an estimated delivery timeline (*"We are translating Income Certificate pages — the Tamil version is coming in May 2026"*), and surfaces actionable continuation pathways (`Switch to English` and `Translate with Browser` via `Ux4gButton`).
+
+The pattern is available in two structural configurations:
+1. **Default Style**: Clean, direct layout situated on a neutral white canvas featuring the national portal header, localized status messaging, prominent amber progress card, dual primary/outline continuation buttons, and Digital India branding.
+2. **Card Style**: An elevated card presentation situated on a soft lavender canvas (`0xFFF2EFFF` / `Ux4gColors.primary100` in light mode, `primary800` in dark mode) enclosing the translation alert within a rounded container.
+
+---
+
+<h2><MIcon name="smartphone" /> Interactive Previews</h2>
+
+### 1. Default Style (Full Screen)
+
+Standard full-screen translation fallback notice on a neutral white canvas featuring the portal header, status timeline description, amber progress alert card, and dual action buttons.
+
+<ComponentPreview
+  title="Translation Unavailable - Default"
+  category="Pattern · Jetpack Compose"
+  code={`package com.example.ux4g.patterns.language
+
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Info
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.ux4g.designsystemv1.components.Ux4gAppHeader
+import com.ux4g.designsystemv1.components.Ux4gAppHeaderVariant
+import com.ux4g.designsystemv1.components.buttons.Ux4gButton
+import com.ux4g.designsystemv1.components.buttons.Ux4gButtonSize
+import com.ux4g.designsystemv1.components.buttons.Ux4gButtonVariant
+import com.ux4g.designsystemv1.foundation.Ux4gColors
+
+/**
+ * Color tokens for Translation Unavailable Screen
+ */
+data class TranslationUnavailableColors(
+    val screenBackground: Color,
+    val titleColor: Color,
+    val subtitleColor: Color,
+    val warningCardBg: Color,
+    val warningCardBorder: Color,
+    val warningIconColor: Color,
+    val warningTitleColor: Color,
+    val warningBodyColor: Color
+)
+
+val LightTranslationUnavailableColors = TranslationUnavailableColors(
+    screenBackground = Ux4gColors.neutral0,
+    titleColor = Ux4gColors.neutral900,
+    subtitleColor = Ux4gColors.neutral700,
+    warningCardBg = Color(0xFFFFF7E6),
+    warningCardBorder = Color(0xFFFFC973),
+    warningIconColor = Color(0xFFFA8C16),
+    warningTitleColor = Color(0xFFAD4E00),
+    warningBodyColor = Color(0xFFAD4E00)
+)
+
+val DarkTranslationUnavailableColors = TranslationUnavailableColors(
+    screenBackground = Ux4gColors.neutral900,
+    titleColor = Ux4gColors.neutral50,
+    subtitleColor = Ux4gColors.neutral300,
+    warningCardBg = Color(0xFF2B1D00),
+    warningCardBorder = Color(0xFF874D00),
+    warningIconColor = Color(0xFFFFC069),
+    warningTitleColor = Color(0xFFFFD591),
+    warningBodyColor = Color(0xFFFFD591)
+)
+
+/**
+ * Translation Unavailable Screen - Default Style
+ *
+ * @param requestedLanguage Name of the requested unavailable language (e.g., "Tamil")
+ * @param onSwitchToEnglish Invoked when citizen chooses to view page in English
+ * @param onTranslateWithBrowser Invoked when citizen chooses browser auto-translation
+ */
+@Composable
+fun TranslationUnavailableScreen(
+    requestedLanguage: String = "Tamil",
+    onSwitchToEnglish: () -> Unit = {},
+    onTranslateWithBrowser: () -> Unit = {}
+) {
+    val isDark = isSystemInDarkTheme()
+    val colors = if (isDark) DarkTranslationUnavailableColors else LightTranslationUnavailableColors
+    val scrollState = rememberScrollState()
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(colors.screenBackground)
+    ) {
+        // Portal App Header
+        Ux4gAppHeader(
+            title = "",
+            variant = if (isDark) Ux4gAppHeaderVariant.dark else Ux4gAppHeaderVariant.light,
+            leadingSpacing = 8.dp,
+            verticalPadding = 16.dp,
+            elevation = 2.dp
+        )
+
+        // Main Content Area
+        Column(
+            modifier = Modifier
+                .weight(1f)
+                .fillMaxWidth()
+                .verticalScroll(scrollState)
+                .padding(horizontal = 16.dp, vertical = 20.dp)
+        ) {
+            // Notice Heading
+            Text(
+                text = "This page is not yet available in \$requestedLanguage",
+                style = TextStyle(
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = colors.titleColor,
+                    lineHeight = 28.sp
+                )
+            )
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            // Subtitle with Expected Timeline
+            Text(
+                text = "We are translating Income Certificate pages — the \$requestedLanguage version is coming in May 2026.",
+                style = TextStyle(
+                    fontSize = 14.sp,
+                    color = colors.subtitleColor,
+                    lineHeight = 20.sp
+                )
+            )
+
+            Spacer(modifier = Modifier.height(24.dp))
+
+            // Warning Notice Card
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(12.dp))
+                    .background(colors.warningCardBg)
+                    .border(
+                        width = 1.dp,
+                        color = colors.warningCardBorder,
+                        shape = RoundedCornerShape(12.dp)
+                    )
+                    .padding(14.dp)
+            ) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    crossAxisAlignment = CrossAxisAlignment.Start
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Info,
+                        contentDescription = "Translation Notice",
+                        tint = colors.warningIconColor,
+                        modifier = Modifier.size(20.dp)
+                    )
+
+                    Spacer(modifier = Modifier.width(10.dp))
+
+                    Column(modifier = Modifier.weight(1f)) {
+                        Text(
+                            text = "Translation in progress",
+                            style = TextStyle(
+                                fontSize = 14.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = colors.warningTitleColor
+                            )
+                        )
+
+                        Spacer(modifier = Modifier.height(4.dp))
+
+                        Text(
+                            text = "You can read this page in English meanwhile, or use your browser to auto-translate.",
+                            style = TextStyle(
+                                fontSize = 13.sp,
+                                color = colors.warningBodyColor,
+                                lineHeight = 18.sp
+                            )
+                        )
+                    }
+                }
+            }
+
+            Spacer(modifier = Modifier.height(24.dp))
+        }
+
+        // Action Buttons Group
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp)
+        ) {
+            Ux4gButton(
+                text = "Switch to English",
+                onClick = onSwitchToEnglish,
+                variant = Ux4gButtonVariant.Primary,
+                size = Ux4gButtonSize.Large,
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            Ux4gButton(
+                text = "Translate with Browser",
+                onClick = onTranslateWithBrowser,
+                variant = Ux4gButtonVariant.Outline,
+                size = Ux4gButtonSize.Large,
+                modifier = Modifier.fillMaxWidth()
+            )
+        }
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        // Powered by Digital India Footer
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = 12.dp),
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = "Powered by - Digital India",
+                style = TextStyle(
+                    fontSize = 11.sp,
+                    color = Color(0xFF6B7280),
+                    fontWeight = FontWeight.Medium
+                )
+            )
+        }
+    }
+}
+
+@Preview(name = "Light Mode", showBackground = true)
+@Composable
+fun PreviewTranslationUnavailableScreenLight() {
+    TranslationUnavailableScreen()
+}
+
+@Preview(name = "Dark Mode", showBackground = true)
+@Composable
+fun PreviewTranslationUnavailableScreenDark() {
+    TranslationUnavailableScreen()
+}`}
+>
+  <div className="flex flex-col items-center justify-center py-2">
+    <img
+      src="/images/patterns/translation_unavailable/translation_unavailable.svg"
+      alt="UX4G Translation Unavailable Default Pattern Preview"
+      className="max-w-full rounded-xl border border-border/60 shadow-sm"
+    />
+  </div>
+</ComponentPreview>
+
+---
+
+### 2. Card Style (Contained Card)
+
+Card-contained translation fallback notice situated on a soft lavender canvas (`0xFFF2EFFF` / `Ux4gColors.primary100`), enclosing the title, timeline, and warning alert inside an elevated surface with persistent actions.
+
+<ComponentPreview
+  title="Translation Unavailable - Card Style"
+  category="Pattern · Jetpack Compose"
+  code={`package com.example.ux4g.patterns.language
+
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Info
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.ux4g.designsystemv1.components.Ux4gAppHeader
+import com.ux4g.designsystemv1.components.Ux4gAppHeaderVariant
+import com.ux4g.designsystemv1.components.buttons.Ux4gButton
+import com.ux4g.designsystemv1.components.buttons.Ux4gButtonSize
+import com.ux4g.designsystemv1.components.buttons.Ux4gButtonVariant
+import com.ux4g.designsystemv1.foundation.Ux4gColors
+
+/**
+ * Translation Unavailable Screen - Card Style Variant
+ *
+ * @param requestedLanguage Name of the requested unavailable language (e.g., "Tamil")
+ * @param onSwitchToEnglish Invoked when citizen chooses to view page in English
+ * @param onTranslateWithBrowser Invoked when citizen chooses browser auto-translation
+ */
+@Composable
+fun TranslationUnavailableCardScreen(
+    requestedLanguage: String = "Tamil",
+    onSwitchToEnglish: () -> Unit = {},
+    onTranslateWithBrowser: () -> Unit = {}
+) {
+    val isDark = isSystemInDarkTheme()
+    val canvasBg = if (isDark) Ux4gColors.primary800 else Color(0xFFF2EFFF)
+    val cardBg = if (isDark) Ux4gColors.neutral800 else Color.White
+    val cardBorder = if (isDark) Ux4gColors.neutral700 else Color(0xFFE5E7EB)
+
+    val colors = if (isDark) DarkTranslationUnavailableColors else LightTranslationUnavailableColors
+    val scrollState = rememberScrollState()
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(canvasBg)
+    ) {
+        // Portal App Header
+        Ux4gAppHeader(
+            title = "",
+            variant = if (isDark) Ux4gAppHeaderVariant.dark else Ux4gAppHeaderVariant.light,
+            leadingSpacing = 8.dp,
+            verticalPadding = 16.dp,
+            elevation = 2.dp
+        )
+
+        // Scrollable Card Container
+        Column(
+            modifier = Modifier
+                .weight(1f)
+                .fillMaxWidth()
+                .verticalScroll(scrollState)
+                .padding(16.dp)
+        ) {
+            // Elevated White Card Enclosure
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .shadow(elevation = 2.dp, shape = RoundedCornerShape(16.dp))
+                    .clip(RoundedCornerShape(16.dp))
+                    .background(cardBg)
+                    .border(width = 1.dp, color = cardBorder, shape = RoundedCornerShape(16.dp))
+                    .padding(16.dp)
+            ) {
+                Column(modifier = Modifier.fillMaxWidth()) {
+                    // Notice Heading
+                    Text(
+                        text = "This page is not yet available in \$requestedLanguage",
+                        style = TextStyle(
+                            fontSize = 20.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = colors.titleColor,
+                            lineHeight = 28.sp
+                        )
+                    )
+
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    // Subtitle with Expected Timeline
+                    Text(
+                        text = "We are translating Income Certificate pages — the \$requestedLanguage version is coming in May 2026.",
+                        style = TextStyle(
+                            fontSize = 14.sp,
+                            color = colors.subtitleColor,
+                            lineHeight = 20.sp
+                        )
+                    )
+
+                    Spacer(modifier = Modifier.height(24.dp))
+
+                    // Warning Notice Card
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clip(RoundedCornerShape(12.dp))
+                            .background(colors.warningCardBg)
+                            .border(
+                                width = 1.dp,
+                                color = colors.warningCardBorder,
+                                shape = RoundedCornerShape(12.dp)
+                            )
+                            .padding(14.dp)
+                    ) {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            crossAxisAlignment = CrossAxisAlignment.Start
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Info,
+                                contentDescription = "Translation Notice",
+                                tint = colors.warningIconColor,
+                                modifier = Modifier.size(20.dp)
+                            )
+
+                            Spacer(modifier = Modifier.width(10.dp))
+
+                            Column(modifier = Modifier.weight(1f)) {
+                                Text(
+                                    text = "Translation in progress",
+                                    style = TextStyle(
+                                        fontSize = 14.sp,
+                                        fontWeight = FontWeight.Bold,
+                                        color = colors.warningTitleColor
+                                    )
+                                )
+
+                                Spacer(modifier = Modifier.height(4.dp))
+
+                                Text(
+                                    text = "You can read this page in English meanwhile, or use your browser to auto-translate.",
+                                    style = TextStyle(
+                                        fontSize = 13.sp,
+                                        color = colors.warningBodyColor,
+                                        lineHeight = 18.sp
+                                    )
+                                )
+                            }
+                        }
+                    }
+
+                    Spacer(modifier = Modifier.height(8.dp))
+                }
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+        }
+
+        // Action Buttons Group
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp)
+        ) {
+            Ux4gButton(
+                text = "Switch to English",
+                onClick = onSwitchToEnglish,
+                variant = Ux4gButtonVariant.Primary,
+                size = Ux4gButtonSize.Large,
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            Ux4gButton(
+                text = "Translate with Browser",
+                onClick = onTranslateWithBrowser,
+                variant = Ux4gButtonVariant.Outline,
+                size = Ux4gButtonSize.Large,
+                modifier = Modifier.fillMaxWidth()
+            )
+        }
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        // Powered by Digital India Footer
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = 12.dp),
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = "Powered by - Digital India",
+                style = TextStyle(
+                    fontSize = 11.sp,
+                    color = Color(0xFF6B7280),
+                    fontWeight = FontWeight.Medium
+                )
+            )
+        }
+    }
+}
+
+@Preview(name = "Card Style Light Mode", showBackground = true)
+@Composable
+fun PreviewTranslationUnavailableCardScreenLight() {
+    TranslationUnavailableCardScreen()
+}
+
+@Preview(name = "Card Style Dark Mode", showBackground = true)
+@Composable
+fun PreviewTranslationUnavailableCardScreenDark() {
+    TranslationUnavailableCardScreen()
+}`}
+>
+  <div className="flex flex-col items-center justify-center py-2">
+    <img
+      src="/images/patterns/translation_unavailable/translation_unavailable_cardstyle.svg"
+      alt="UX4G Translation Unavailable Card Style Pattern Preview"
+      className="max-w-full rounded-xl border border-border/60 shadow-sm"
+    />
+  </div>
+</ComponentPreview>

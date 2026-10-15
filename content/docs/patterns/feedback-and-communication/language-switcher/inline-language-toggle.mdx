@@ -1,0 +1,623 @@
+---
+title: Inline Language Toggle
+description: In-context multilingual toggle pattern featuring horizontal choice chips, dynamic script localization, persistent form state, and both full-screen and card-style variants
+---
+
+# Inline Language Toggle
+
+An in-context multilingual form pattern that empowers citizens to switch their active language directly on transactional pages without losing previously entered form data.
+
+Unlike dedicated full-screen configuration pages, the **Inline Language Toggle** embeds language options as a horizontally scrollable sequence of interactive choice chips (`Ux4gChoiceChip`) directly above citizen data entry fields. When a citizen switches language (e.g., from *English* to *हिन्दी*, *தமிழ்*, *తెలుగు*, or *मराठी*), form field labels and input hints update instantaneously in the selected script while preserving user-entered values (*Ramesh Kumar*, *Suresh Kumar*, *2,40,000*).
+
+The pattern is available in two structural configurations:
+1. **Default Style**: Full-screen transactional form layout on a clean neutral white canvas featuring the national portal header, inline chip group, localized field labels with edit controls, and Digital India footer attribution.
+2. **Card Style**: Elevated card presentation situated on a soft lavender canvas (`0xFFE2DCFF` / `Ux4gColors.primary100` in light mode, `primary800` in dark mode) enclosing the localized form elements within a rounded container.
+
+---
+
+<h2><MIcon name="smartphone" /> Interactive Previews</h2>
+
+### 1. Default Style (Full Screen)
+
+Standard multilingual transactional layout on a clean neutral canvas with portal header, horizontal language chips, dynamic localized field labels, and persistent form inputs.
+
+<ComponentPreview
+  title="Inline Language Toggle - Default"
+  category="Pattern · Jetpack Compose"
+  code={`package com.example.ux4g.patterns.language
+
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Edit
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.ux4g.designsystemv1.components.Ux4gAppHeader
+import com.ux4g.designsystemv1.components.Ux4gAppHeaderVariant
+import com.ux4g.designsystemv1.components.Ux4gDivider
+import com.ux4g.designsystemv1.components.chips.Ux4gChoiceChip
+import com.ux4g.designsystemv1.components.chips.Ux4gChoiceChipSize
+import com.ux4g.designsystemv1.foundation.Ux4gColors
+
+/**
+ * Localized labels data class for multilingual form presentation
+ */
+data class LanguageOption(
+    val id: String,
+    val name: String,
+    val applicantLabel: String,
+    val fatherLabel: String,
+    val incomeLabel: String
+)
+
+val availableLanguages = listOf(
+    LanguageOption(
+        id = "en",
+        name = "English",
+        applicantLabel = "Applicant name",
+        fatherLabel = "Father's / husband's name",
+        incomeLabel = "Annual family income (₹)"
+    ),
+    LanguageOption(
+        id = "hi",
+        name = "हिन्दी",
+        applicantLabel = "आवेदक का नाम",
+        fatherLabel = "पिता / पति का नाम",
+        incomeLabel = "वार्षिक पारिवारिक आय (₹)"
+    ),
+    LanguageOption(
+        id = "ta",
+        name = "தமிழ்",
+        applicantLabel = "விண்ணப்பதாரர் பெயர்",
+        fatherLabel = "தந்தை / கணவர் பெயர்",
+        incomeLabel = "ஆண்டு குடும்ப வருமானம் (₹)"
+    ),
+    LanguageOption(
+        id = "te",
+        name = "తెలుగు",
+        applicantLabel = "దరఖాస్తుదారు పేరు",
+        fatherLabel = "తండ్రి / భర్త పేరు",
+        incomeLabel = "వార్షిక కుటుంబ ఆదాయం (₹)"
+    ),
+    LanguageOption(
+        id = "mr",
+        name = "मराठी",
+        applicantLabel = "अर्जदाराचे नाव",
+        fatherLabel = "वडिलांचे / पतीचे नाव",
+        incomeLabel = "वार्षिक कौटुंबिक उत्पन्न (₹)"
+    )
+)
+
+/**
+ * Color tokens for Inline Language Toggle Screen
+ */
+data class InlineToggleColors(
+    val screenBackground: Color,
+    val titleColor: Color,
+    val subtitleColor: Color,
+    val labelColor: Color,
+    val fieldBackground: Color,
+    val fieldBorder: Color,
+    val fieldValueColor: Color,
+    val fieldIconColor: Color
+)
+
+val LightInlineToggleColors = InlineToggleColors(
+    screenBackground = Ux4gColors.neutral0,
+    titleColor = Ux4gColors.neutral900,
+    subtitleColor = Ux4gColors.neutral700,
+    labelColor = Ux4gColors.neutral800,
+    fieldBackground = Ux4gColors.neutral0,
+    fieldBorder = Ux4gColors.neutral200,
+    fieldValueColor = Ux4gColors.neutral900,
+    fieldIconColor = Color(0xFF6B7280)
+)
+
+val DarkInlineToggleColors = InlineToggleColors(
+    screenBackground = Ux4gColors.neutral900,
+    titleColor = Ux4gColors.neutral50,
+    subtitleColor = Ux4gColors.neutral300,
+    labelColor = Ux4gColors.neutral200,
+    fieldBackground = Ux4gColors.neutral900,
+    fieldBorder = Ux4gColors.neutral700,
+    fieldValueColor = Ux4gColors.neutral50,
+    fieldIconColor = Ux4gColors.neutral400
+)
+
+/**
+ * Inline Language Toggle Screen - Default Style
+ *
+ * @param onLanguageChange Invoked when citizen selects a language chip
+ * @param onEditField Invoked when citizen taps edit on a form field
+ */
+@Composable
+fun InlineLanguageToggleScreen(
+    onLanguageChange: (LanguageOption) -> Unit = {},
+    onEditField: (String) -> Unit = {}
+) {
+    val isDark = isSystemInDarkTheme()
+    val colors = if (isDark) DarkInlineToggleColors else LightInlineToggleColors
+    val scrollState = rememberScrollState()
+    val chipScrollState = rememberScrollState()
+
+    var selectedIndex by remember { mutableIntStateOf(0) }
+    val currentLang = availableLanguages.getOrElse(selectedIndex) { availableLanguages[0] }
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(colors.screenBackground)
+    ) {
+        // Portal App Header
+        Ux4gAppHeader(
+            title = "",
+            variant = if (isDark) Ux4gAppHeaderVariant.dark else Ux4gAppHeaderVariant.light,
+            leadingSpacing = 8.dp,
+            verticalPadding = 16.dp,
+            elevation = 2.dp
+        )
+
+        // Scrollable Transactional Form Body
+        Column(
+            modifier = Modifier
+                .weight(1f)
+                .fillMaxWidth()
+                .verticalScroll(scrollState)
+                .padding(horizontal = 16.dp, vertical = 20.dp)
+        ) {
+            // Screen Title
+            Text(
+                text = "Apply for Income Certificate",
+                style = TextStyle(
+                    fontSize = 22.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = colors.titleColor
+                )
+            )
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            // Subtitle / Instruction
+            Text(
+                text = "Use the language switcher to change the form language. Your entered details will stay saved.",
+                style = TextStyle(
+                    fontSize = 14.sp,
+                    color = colors.subtitleColor,
+                    lineHeight = 20.sp
+                )
+            )
+
+            Spacer(modifier = Modifier.height(20.dp))
+
+            // Horizontally Scrollable Language Choice Chips
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .horizontalScroll(chipScrollState),
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                availableLanguages.forEachIndexed { index, lang ->
+                    Ux4gChoiceChip(
+                        text = lang.name,
+                        selected = selectedIndex == index,
+                        onClick = {
+                            selectedIndex = index
+                            onLanguageChange(lang)
+                        },
+                        size = Ux4gChoiceChipSize.Default
+                    )
+                }
+
+                // Overflow "+3 more" chip
+                Ux4gChoiceChip(
+                    text = "+3 more",
+                    selected = false,
+                    onClick = { /* Open full language selector modal */ },
+                    size = Ux4gChoiceChipSize.Default
+                )
+            }
+
+            Spacer(modifier = Modifier.height(24.dp))
+
+            // Form Field 1: Applicant Name
+            FormFieldItem(
+                label = currentLang.applicantLabel,
+                value = "Ramesh Kumar",
+                colors = colors,
+                onEdit = { onEditField("applicantName") }
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // Form Field 2: Father's / Husband's Name
+            FormFieldItem(
+                label = currentLang.fatherLabel,
+                value = "Suresh Kumar",
+                colors = colors,
+                onEdit = { onEditField("fatherName") }
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // Form Field 3: Annual Family Income
+            FormFieldItem(
+                label = currentLang.incomeLabel,
+                value = "2,40,000",
+                colors = colors,
+                onEdit = { onEditField("income") }
+            )
+
+            Spacer(modifier = Modifier.height(24.dp))
+        }
+
+        // Powered by Digital India Footer
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = 16.dp),
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = "Powered by - Digital India",
+                style = TextStyle(
+                    fontSize = 11.sp,
+                    color = Color(0xFF6B7280),
+                    fontWeight = FontWeight.Medium
+                )
+            )
+        }
+    }
+}
+
+/**
+ * Reusable Form Field Component with persistent value and edit action
+ */
+@Composable
+fun FormFieldItem(
+    label: String,
+    value: String,
+    colors: InlineToggleColors,
+    onEdit: () -> Unit
+) {
+    Column(modifier = Modifier.fillMaxWidth()) {
+        Text(
+            text = label,
+            style = TextStyle(
+                fontSize = 13.sp,
+                fontWeight = FontWeight.SemiBold,
+                color = colors.labelColor
+            )
+        )
+
+        Spacer(modifier = Modifier.height(6.dp))
+
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .clip(RoundedCornerShape(10.dp))
+                .background(colors.fieldBackground)
+                .border(
+                    width = 1.dp,
+                    color = colors.fieldBorder,
+                    shape = RoundedCornerShape(10.dp)
+                )
+                .clickable { onEdit() }
+                .padding(horizontal = 14.dp, vertical = 13.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Text(
+                text = value,
+                style = TextStyle(
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.Medium,
+                    color = colors.fieldValueColor
+                ),
+                modifier = Modifier.weight(1f)
+            )
+
+            Icon(
+                imageVector = Icons.Outlined.Edit,
+                contentDescription = "Edit field",
+                tint = colors.fieldIconColor,
+                modifier = Modifier.size(18.dp)
+            )
+        }
+    }
+}
+
+@Preview(name = "Light Mode", showBackground = true)
+@Composable
+fun PreviewInlineLanguageToggleScreenLight() {
+    InlineLanguageToggleScreen()
+}
+
+@Preview(name = "Dark Mode", showBackground = true)
+@Composable
+fun PreviewInlineLanguageToggleScreenDark() {
+    InlineLanguageToggleScreen()
+}`}
+>
+  <div className="flex flex-col items-center justify-center py-2">
+    <img
+      src="/images/patterns/inline_language_toggle/inline_language_toggle.svg"
+      alt="UX4G Inline Language Toggle Default Pattern Preview"
+      className="max-w-full rounded-xl border border-border/60 shadow-sm"
+    />
+  </div>
+</ComponentPreview>
+
+---
+
+### 2. Card Style (Contained Card)
+
+Card-contained inline language switching presentation situated on a soft lavender canvas (`0xFFE2DCFF` / `Ux4gColors.primary100`), enclosing the title, language chips, and localized fields within an elevated surface.
+
+<ComponentPreview
+  title="Inline Language Toggle - Card Style"
+  category="Pattern · Jetpack Compose"
+  code={`package com.example.ux4g.patterns.language
+
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Edit
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.ux4g.designsystemv1.components.Ux4gAppHeader
+import com.ux4g.designsystemv1.components.Ux4gAppHeaderVariant
+import com.ux4g.designsystemv1.components.chips.Ux4gChoiceChip
+import com.ux4g.designsystemv1.components.chips.Ux4gChoiceChipSize
+import com.ux4g.designsystemv1.foundation.Ux4gColors
+
+/**
+ * Inline Language Toggle Screen - Card Style Variant
+ *
+ * @param onLanguageChange Invoked when citizen selects a language chip
+ * @param onEditField Invoked when citizen taps edit on a form field
+ */
+@Composable
+fun InlineLanguageToggleCardScreen(
+    onLanguageChange: (LanguageOption) -> Unit = {},
+    onEditField: (String) -> Unit = {}
+) {
+    val isDark = isSystemInDarkTheme()
+    val canvasBg = if (isDark) Ux4gColors.primary800 else Color(0xFFE2DCFF)
+    val cardBg = if (isDark) Ux4gColors.neutral800 else Color.White
+    val cardBorder = if (isDark) Ux4gColors.neutral700 else Color(0xFFE5E7EB)
+
+    val colors = if (isDark) DarkInlineToggleColors else LightInlineToggleColors
+    val scrollState = rememberScrollState()
+    val chipScrollState = rememberScrollState()
+
+    var selectedIndex by remember { mutableIntStateOf(0) }
+    val currentLang = availableLanguages.getOrElse(selectedIndex) { availableLanguages[0] }
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(canvasBg)
+    ) {
+        // Portal App Header
+        Ux4gAppHeader(
+            title = "",
+            variant = if (isDark) Ux4gAppHeaderVariant.dark else Ux4gAppHeaderVariant.light,
+            leadingSpacing = 8.dp,
+            verticalPadding = 16.dp,
+            elevation = 2.dp
+        )
+
+        // Scrollable Card Container Body
+        Column(
+            modifier = Modifier
+                .weight(1f)
+                .fillMaxWidth()
+                .verticalScroll(scrollState)
+                .padding(16.dp)
+        ) {
+            // Elevated White Card Enclosure
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .shadow(elevation = 2.dp, shape = RoundedCornerShape(16.dp))
+                    .clip(RoundedCornerShape(16.dp))
+                    .background(cardBg)
+                    .border(width = 1.dp, color = cardBorder, shape = RoundedCornerShape(16.dp))
+                    .padding(16.dp)
+            ) {
+                Column(modifier = Modifier.fillMaxWidth()) {
+                    // Screen Title
+                    Text(
+                        text = "Apply for Income Certificate",
+                        style = TextStyle(
+                            fontSize = 22.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = colors.titleColor
+                        )
+                    )
+
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    // Subtitle / Instruction
+                    Text(
+                        text = "Use the language switcher to change the form language. Your entered details will stay saved.",
+                        style = TextStyle(
+                            fontSize = 14.sp,
+                            color = colors.subtitleColor,
+                            lineHeight = 20.sp
+                        )
+                    )
+
+                    Spacer(modifier = Modifier.height(20.dp))
+
+                    // Horizontally Scrollable Language Choice Chips
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .horizontalScroll(chipScrollState),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        availableLanguages.forEachIndexed { index, lang ->
+                            Ux4gChoiceChip(
+                                text = lang.name,
+                                selected = selectedIndex == index,
+                                onClick = {
+                                    selectedIndex = index
+                                    onLanguageChange(lang)
+                                },
+                                size = Ux4gChoiceChipSize.Default
+                            )
+                        }
+
+                        // Overflow "+3 more" chip
+                        Ux4gChoiceChip(
+                            text = "+3 more",
+                            selected = false,
+                            onClick = { /* Open full language selector modal */ },
+                            size = Ux4gChoiceChipSize.Default
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.height(24.dp))
+
+                    // Form Field 1: Applicant Name
+                    FormFieldItem(
+                        label = currentLang.applicantLabel,
+                        value = "Ramesh Kumar",
+                        colors = colors,
+                        onEdit = { onEditField("applicantName") }
+                    )
+
+                    Spacer(modifier = Modifier.height(16.dp))
+
+                    // Form Field 2: Father's / Husband's Name
+                    FormFieldItem(
+                        label = currentLang.fatherLabel,
+                        value = "Suresh Kumar",
+                        colors = colors,
+                        onEdit = { onEditField("fatherName") }
+                    )
+
+                    Spacer(modifier = Modifier.height(16.dp))
+
+                    // Form Field 3: Annual Family Income
+                    FormFieldItem(
+                        label = currentLang.incomeLabel,
+                        value = "2,40,000",
+                        colors = colors,
+                        onEdit = { onEditField("income") }
+                    )
+
+                    Spacer(modifier = Modifier.height(8.dp))
+                }
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+        }
+
+        // Powered by Digital India Footer
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = 16.dp),
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = "Powered by - Digital India",
+                style = TextStyle(
+                    fontSize = 11.sp,
+                    color = Color(0xFF6B7280),
+                    fontWeight = FontWeight.Medium
+                )
+            )
+        }
+    }
+}
+
+@Preview(name = "Card Style Light Mode", showBackground = true)
+@Composable
+fun PreviewInlineLanguageToggleCardScreenLight() {
+    InlineLanguageToggleCardScreen()
+}
+
+@Preview(name = "Card Style Dark Mode", showBackground = true)
+@Composable
+fun PreviewInlineLanguageToggleCardScreenDark() {
+    InlineLanguageToggleCardScreen()
+}`}
+>
+  <div className="flex flex-col items-center justify-center py-2">
+    <img
+      src="/images/patterns/inline_language_toggle/inline_language_toggle_cardstyle.svg"
+      alt="UX4G Inline Language Toggle Card Style Pattern Preview"
+      className="max-w-full rounded-xl border border-border/60 shadow-sm"
+    />
+  </div>
+</ComponentPreview>

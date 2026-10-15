@@ -3,6 +3,7 @@
   "pages": [
     "inline-feedback-and-status-communication",
     "service-completion-and-feedback",
-    "contact-and-support"
+    "contact-and-support",
+    "language-switcher"
   ]
 }

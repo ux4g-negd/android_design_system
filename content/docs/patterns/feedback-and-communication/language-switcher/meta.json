@@ -1,0 +1,9 @@
+{
+  "title": "Language Switcher",
+  "pages": [
+    "language-switcher",
+    "inline-language-toggle",
+    "all-scheduled-languages",
+    "translation-unavailable"
+  ]
+}

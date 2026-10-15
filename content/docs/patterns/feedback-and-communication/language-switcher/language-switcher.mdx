@@ -1,0 +1,462 @@
+---
+title: Language Switcher
+description: Official multilingual interface language selection pattern featuring single-select language dropdown, native script rendering, immediate locale update, and both default full-screen and elevated card-style variants
+---
+
+# Language Switcher
+
+An essential citizen accessibility pattern that enables citizens across India's linguistic landscape to interact with digital public services in their preferred regional language.
+
+The pattern presents a prominent interface language selector (`Ux4gSelectionDropdown`) featuring bilingual labels displaying both native scripts and English phonetics (*"हिंदी (Hindi)"*, *"मराठी (Marathi)"*, *"தமிழ் (Tamil)"*, *"తెలుగు (Telugu)"*, *"বাংলা (Bengali)"*, *"English (United States)"*). It guarantees immediate real-time locale switching without requiring a destructive full page reload or loss of active form session data.
+
+The pattern is available in two structural configurations:
+1. **Default Style**: Clean, direct layout situated on a neutral white canvas featuring the official government portal header, language selection dropdown, browser auto-detect disclaimer, and Digital India branding.
+2. **Card Style**: An elevated card variant situated on a soft lavender canvas (`0xFFF2EFFF` / `Ux4gColors.primary100` in light mode, `primary800` in dark mode) with enclosed card container and footer attribution.
+
+---
+
+<h2><MIcon name="smartphone" /> Interactive Previews</h2>
+
+### 1. Default Style (Full Screen)
+
+Standard multilingual interface selection layout on a clean neutral background with portal header, native language selector, and auto-detection disclaimer.
+
+<ComponentPreview
+  title="Language Switcher - Default"
+  category="Pattern · Jetpack Compose"
+  code={`package com.example.ux4g.patterns.language
+
+import androidx.compose.foundation.background
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.ux4g.designsystemv1.components.Ux4gAppHeader
+import com.ux4g.designsystemv1.components.Ux4gAppHeaderVariant
+import com.ux4g.designsystemv1.components.Ux4gDivider
+import com.ux4g.designsystemv1.components.dropdowns.Ux4gDropdownMode
+import com.ux4g.designsystemv1.components.dropdowns.Ux4gDropdownOption
+import com.ux4g.designsystemv1.components.dropdowns.Ux4gSelectionDropdown
+import com.ux4g.designsystemv1.foundation.Ux4gColors
+import com.ux4g.designsystemv1.foundation.Ux4gSpace
+
+/**
+ * Color tokens for Language Switcher Screen
+ */
+data class LanguageSwitcherColors(
+    val screenBackground: Color,
+    val titleColor: Color,
+    val subtitleColor: Color,
+    val labelColor: Color,
+    val hintColor: Color,
+    val headerDivider: Color
+)
+
+val LightLanguageSwitcherColors = LanguageSwitcherColors(
+    screenBackground = Ux4gColors.neutral0,
+    titleColor = Ux4gColors.neutral900,
+    subtitleColor = Ux4gColors.neutral700,
+    labelColor = Ux4gColors.neutral900,
+    hintColor = Color(0xFF6B7280),
+    headerDivider = Ux4gColors.neutral300
+)
+
+val DarkLanguageSwitcherColors = LanguageSwitcherColors(
+    screenBackground = Ux4gColors.neutral900,
+    titleColor = Ux4gColors.neutral50,
+    subtitleColor = Ux4gColors.neutral300,
+    labelColor = Ux4gColors.neutral50,
+    hintColor = Ux4gColors.neutral400,
+    headerDivider = Ux4gColors.neutral700
+)
+
+val officialLanguages = listOf(
+    Ux4gDropdownOption("en", "English (United States)"),
+    Ux4gDropdownOption("hi", "हिंदी (Hindi)"),
+    Ux4gDropdownOption("mr", "मराठी (Marathi)"),
+    Ux4gDropdownOption("ta", "தமிழ் (Tamil)"),
+    Ux4gDropdownOption("te", "తెలుగు (Telugu)"),
+    Ux4gDropdownOption("bn", "বাংলা (Bengali)")
+)
+
+/**
+ * Language Switcher Screen - Default Style
+ *
+ * @param onLanguageChange Invoked when citizen selects a language option
+ */
+@Composable
+fun LanguageSwitcherScreen(
+    onLanguageChange: (String) -> Unit = {}
+) {
+    val isDark = isSystemInDarkTheme()
+    val colors = if (isDark) DarkLanguageSwitcherColors else LightLanguageSwitcherColors
+
+    var selectedLanguageIds by remember { mutableStateOf(listOf("en")) }
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(colors.screenBackground)
+    ) {
+        // App Header
+        Column {
+            Ux4gAppHeader(
+                title = "",
+                variant = Ux4gAppHeaderVariant.Light,
+                height = 64.dp,
+                horizontalPadding = Ux4gSpace.Space16
+            )
+            Ux4gDivider(
+                color = colors.headerDivider,
+                thickness = 1.dp
+            )
+        }
+
+        // Scrollable Language Selection Content
+        Column(
+            modifier = Modifier
+                .weight(1f)
+                .verticalScroll(rememberScrollState())
+                .padding(horizontal = 16.dp, vertical = 20.dp)
+        ) {
+            // Heading & Subtitle
+            Text(
+                text = "Choose your interface language",
+                style = TextStyle(
+                    fontSize = 22.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = colors.titleColor
+                )
+            )
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            Text(
+                text = "Switch the portal to a language you read most comfortably. You can change this anytime from the header.",
+                style = TextStyle(
+                    fontSize = 14.sp,
+                    color = colors.subtitleColor,
+                    lineHeight = 20.sp
+                )
+            )
+
+            Spacer(modifier = Modifier.height(24.dp))
+
+            // Interface Language Label
+            Text(
+                text = "Interface Language",
+                style = TextStyle(
+                    fontSize = 13.sp,
+                    fontWeight = FontWeight.SemiBold,
+                    color = colors.labelColor
+                )
+            )
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            // Language Dropdown
+            Ux4gSelectionDropdown(
+                options = officialLanguages,
+                selectedOptionIds = selectedLanguageIds,
+                onSelectionChange = {
+                    selectedLanguageIds = it
+                    it.firstOrNull()?.let { langId -> onLanguageChange(langId) }
+                },
+                placeholder = "Select Language",
+                mode = Ux4gDropdownMode.Single,
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            Spacer(modifier = Modifier.height(12.dp))
+
+            // Informational Auto-detect Caption
+            Text(
+                text = "Auto-detected from your browser preferences. Changing this updates the portal immediately — no page reload needed.",
+                style = TextStyle(
+                    fontSize = 13.sp,
+                    color = colors.hintColor,
+                    lineHeight = 18.sp
+                )
+            )
+
+            Spacer(modifier = Modifier.height(24.dp))
+        }
+
+        // Powered by Digital India Footer
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = 16.dp),
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = "Powered by - Digital India",
+                style = TextStyle(
+                    fontSize = 11.sp,
+                    color = Color(0xFF6B7280),
+                    fontWeight = FontWeight.Medium
+                )
+            )
+        }
+    }
+}
+
+@Preview(name = "Light Mode", showBackground = true)
+@Composable
+fun PreviewLanguageSwitcherScreenLight() {
+    LanguageSwitcherScreen()
+}
+
+@Preview(name = "Dark Mode", showBackground = true)
+@Composable
+fun PreviewLanguageSwitcherScreenDark() {
+    LanguageSwitcherScreen()
+}`}
+>
+  <div className="flex flex-col items-center justify-center py-2">
+    <img
+      src="/images/patterns/language_switcher/language_switcher.svg"
+      alt="UX4G Language Switcher Default Pattern Preview"
+      className="max-w-full rounded-xl border border-border/60 shadow-sm"
+    />
+  </div>
+</ComponentPreview>
+
+---
+
+### 2. Card Style (Contained Card)
+
+Card-contained language selection layout situated on a soft lavender canvas (`0xFFF2EFFF` / `Ux4gColors.primary100`) with dropdown and auto-detect hint enclosed within a rounded surface.
+
+<ComponentPreview
+  title="Language Switcher - Card Style"
+  category="Pattern · Jetpack Compose"
+  code={`package com.example.ux4g.patterns.language
+
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.ux4g.designsystemv1.components.Ux4gAppHeader
+import com.ux4g.designsystemv1.components.Ux4gAppHeaderVariant
+import com.ux4g.designsystemv1.components.Ux4gDivider
+import com.ux4g.designsystemv1.components.dropdowns.Ux4gDropdownMode
+import com.ux4g.designsystemv1.components.dropdowns.Ux4gDropdownOption
+import com.ux4g.designsystemv1.components.dropdowns.Ux4gSelectionDropdown
+import com.ux4g.designsystemv1.foundation.Ux4gColors
+import com.ux4g.designsystemv1.foundation.Ux4gSpace
+
+/**
+ * Language Switcher Screen - Card Style Variant
+ *
+ * @param onLanguageChange Invoked when citizen selects a language option
+ */
+@Composable
+fun LanguageSwitcherCardScreen(
+    onLanguageChange: (String) -> Unit = {}
+) {
+    val isDark = isSystemInDarkTheme()
+
+    // Tinted lavender canvas vs contained white card
+    val screenBackground = if (isDark) Ux4gColors.primary800 else Color(0xFFF2EFFF)
+    val cardBackground = if (isDark) Ux4gColors.neutral800 else Ux4gColors.neutral0
+    val cardBorder = if (isDark) Ux4gColors.neutral700 else Ux4gColors.neutral200
+    val titleColor = if (isDark) Ux4gColors.neutral50 else Ux4gColors.neutral900
+    val subtitleColor = if (isDark) Ux4gColors.neutral300 else Ux4gColors.neutral700
+    val labelColor = if (isDark) Ux4gColors.neutral50 else Ux4gColors.neutral900
+    val hintColor = if (isDark) Ux4gColors.neutral400 else Color(0xFF6B7280)
+    val headerDivider = if (isDark) Ux4gColors.neutral700 else Ux4gColors.neutral300
+
+    var selectedLanguageIds by remember { mutableStateOf(listOf("en")) }
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(screenBackground)
+    ) {
+        // App Header
+        Column {
+            Ux4gAppHeader(
+                title = "",
+                variant = Ux4gAppHeaderVariant.Light,
+                height = 64.dp,
+                horizontalPadding = Ux4gSpace.Space16
+            )
+            Ux4gDivider(
+                color = headerDivider,
+                thickness = 1.dp
+            )
+        }
+
+        // Scrollable Area Containing Elevated Card
+        Column(
+            modifier = Modifier
+                .weight(1f)
+                .verticalScroll(rememberScrollState())
+                .padding(horizontal = 16.dp, vertical = 20.dp)
+        ) {
+            // Elevated Main Card Container
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .shadow(elevation = 6.dp, shape = RoundedCornerShape(16.dp))
+                    .clip(RoundedCornerShape(16.dp))
+                    .background(cardBackground)
+                    .border(1.dp, cardBorder, RoundedCornerShape(16.dp))
+                    .padding(20.dp)
+            ) {
+                Column {
+                    // Heading & Subtitle
+                    Text(
+                        text = "Choose your interface language",
+                        style = TextStyle(
+                            fontSize = 22.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = titleColor
+                        )
+                    )
+
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    Text(
+                        text = "Switch the portal to a language you read most comfortably. You can change this anytime from the header.",
+                        style = TextStyle(
+                            fontSize = 14.sp,
+                            color = subtitleColor,
+                            lineHeight = 20.sp
+                        )
+                    )
+
+                    Spacer(modifier = Modifier.height(24.dp))
+
+                    // Interface Language Label
+                    Text(
+                        text = "Interface Language",
+                        style = TextStyle(
+                            fontSize = 13.sp,
+                            fontWeight = FontWeight.SemiBold,
+                            color = labelColor
+                        )
+                    )
+
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    // Language Dropdown
+                    Ux4gSelectionDropdown(
+                        options = officialLanguages,
+                        selectedOptionIds = selectedLanguageIds,
+                        onSelectionChange = {
+                            selectedLanguageIds = it
+                            it.firstOrNull()?.let { langId -> onLanguageChange(langId) }
+                        },
+                        placeholder = "Select Language",
+                        mode = Ux4gDropdownMode.Single,
+                        modifier = Modifier.fillMaxWidth()
+                    )
+
+                    Spacer(modifier = Modifier.height(12.dp))
+
+                    // Informational Auto-detect Caption
+                    Text(
+                        text = "Auto-detected from your browser preferences. Changing this updates the portal immediately — no page reload needed.",
+                        style = TextStyle(
+                            fontSize = 13.sp,
+                            color = hintColor,
+                            lineHeight = 18.sp
+                        )
+                    )
+                }
+            }
+
+            Spacer(modifier = Modifier.height(20.dp))
+        }
+
+        // Powered by Digital India Footer
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = 16.dp),
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = "Powered by - Digital India",
+                style = TextStyle(
+                    fontSize = 11.sp,
+                    color = Color(0xFF6B7280),
+                    fontWeight = FontWeight.Medium
+                )
+            )
+        }
+    }
+}
+
+@Preview(name = "Card Style Light Mode", showBackground = true)
+@Composable
+fun PreviewLanguageSwitcherCardScreenLight() {
+    LanguageSwitcherCardScreen()
+}
+
+@Preview(name = "Card Style Dark Mode", showBackground = true)
+@Composable
+fun PreviewLanguageSwitcherCardScreenDark() {
+    LanguageSwitcherCardScreen()
+}`}
+>
+  <div className="flex flex-col items-center justify-center py-2">
+    <img
+      src="/images/patterns/language_switcher/language_switcher_cardstyle.svg"
+      alt="UX4G Language Switcher Card Style Pattern Preview"
+      className="max-w-full rounded-xl border border-border/60 shadow-sm"
+    />
+  </div>
+</ComponentPreview>

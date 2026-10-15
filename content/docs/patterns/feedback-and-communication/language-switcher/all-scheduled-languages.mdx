@@ -1,0 +1,698 @@
+---
+title: All Scheduled Languages
+description: Comprehensive multilingual selection pattern covering India's 22 Eighth Schedule constitutional languages plus English with native script rendering, bilingual subtitles, and both default and card-style variants
+---
+
+# All Scheduled Languages
+
+A constitutional citizen accessibility pattern providing comprehensive localization support across all 22 official languages recognized in the Eighth Schedule to the Constitution of India, plus English.
+
+The **All Scheduled Languages** pattern provides a unified, accessible selection interface featuring native scripts alongside English phonetic subtitles (*English / United States*, *हिंदी / Hindi*, *मराठी / Marathi*, *தமிழ் / Tamil*, *తెలుగు / Telugu*, *বাংলা / Bengali*, *ગુજરાતી / Gujarati*, *ಕನ್ನಡ / Kannada*, *മലയാളം / Malayalam*, *ଓଡ଼ିଆ / Odia*, *ਪੰਜਾਬੀ / Punjabi*, *অসমীয়া / Assamese*, *संस्कृतम् / Sanskrit*, *اردو / Urdu*, *नेपाली / Nepali*, *मैथिली / Maithili*, *संथाली / Santali*, *डोगरी / Dogri*, *कोंकणी / Konkani*, *बोडो / Bodo*, *सिन्धी / Sindhi*, *कश्मीरी / Kashmiri*, *मणिपुरी / Manipuri*). It features an interactive language trigger and an integrated scrollable selection list with real-time feedback.
+
+The pattern is available in two structural configurations:
+1. **Default Style**: Clean full-screen presentation on a neutral canvas featuring the official government portal header, language trigger, expanded bilingual selection panel, and Digital India branding.
+2. **Card Style**: An elevated card presentation situated on a soft lavender canvas (`0xFFE2DCFF` / `Ux4gColors.primary100` in light mode, `primary800` in dark mode) enclosing the full scheduled language list within a rounded container.
+
+---
+
+<h2><MIcon name="smartphone" /> Interactive Previews</h2>
+
+### 1. Default Style (Full Screen)
+
+Standard full-screen multilingual selection layout on a clean neutral background with portal header, language dropdown trigger, and scrollable list of all 22 scheduled languages plus English.
+
+<ComponentPreview
+  title="All Scheduled Languages - Default"
+  category="Pattern · Jetpack Compose"
+  code={`package com.example.ux4g.patterns.language
+
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.KeyboardArrowDown
+import androidx.compose.material.icons.filled.KeyboardArrowUp
+import androidx.compose.material.icons.outlined.Language
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.ux4g.designsystemv1.components.Ux4gAppHeader
+import com.ux4g.designsystemv1.components.Ux4gAppHeaderVariant
+import com.ux4g.designsystemv1.foundation.Ux4gColors
+
+/**
+ * Representation of a scheduled language option
+ */
+data class ScheduledLanguage(
+    val name: String,
+    val sub: String
+)
+
+val allScheduledLanguages = listOf(
+    ScheduledLanguage("English", "United States"),
+    ScheduledLanguage("हिंदी", "Hindi"),
+    ScheduledLanguage("मराठी", "Marathi"),
+    ScheduledLanguage("தமிழ்", "Tamil"),
+    ScheduledLanguage("తెలుగు", "Telugu"),
+    ScheduledLanguage("বাংলা", "Bengali"),
+    ScheduledLanguage("ગુજરાતી", "Gujarati"),
+    ScheduledLanguage("ಕನ್ನಡ", "Kannada"),
+    ScheduledLanguage("മലയാളം", "Malayalam"),
+    ScheduledLanguage("ଓଡ଼ିଆ", "Odia"),
+    ScheduledLanguage("ਪੰਜਾਬੀ", "Punjabi"),
+    ScheduledLanguage("অসমীয়া", "Assamese"),
+    ScheduledLanguage("संस्कृतम्", "Sanskrit"),
+    ScheduledLanguage("اردو", "Urdu"),
+    ScheduledLanguage("नेपाली", "Nepali"),
+    ScheduledLanguage("मैथिली", "Maithili"),
+    ScheduledLanguage("संथाली", "Santali"),
+    ScheduledLanguage("डोगरी", "Dogri"),
+    ScheduledLanguage("कोंकणी", "Konkani"),
+    ScheduledLanguage("बोडो", "Bodo"),
+    ScheduledLanguage("सिन्धी", "Sindhi"),
+    ScheduledLanguage("कश्मीरी", "Kashmiri"),
+    ScheduledLanguage("मणिपुरी", "Manipuri")
+)
+
+/**
+ * Color tokens for All Scheduled Languages Screen
+ */
+data class ScheduledLanguageColors(
+    val screenBackground: Color,
+    val titleColor: Color,
+    val subtitleColor: Color,
+    val labelColor: Color,
+    val triggerBackground: Color,
+    val triggerBorder: Color,
+    val triggerText: Color,
+    val listBackground: Color,
+    val listBorder: Color,
+    val selectedItemBg: Color,
+    val selectedItemText: Color,
+    val selectedItemSub: Color,
+    val itemText: Color,
+    val itemSub: Color,
+    val itemDivider: Color
+)
+
+val LightScheduledLanguageColors = ScheduledLanguageColors(
+    screenBackground = Ux4gColors.neutral0,
+    titleColor = Ux4gColors.neutral900,
+    subtitleColor = Ux4gColors.neutral700,
+    labelColor = Ux4gColors.neutral800,
+    triggerBackground = Ux4gColors.neutral0,
+    triggerBorder = Color(0xFF432CBB),
+    triggerText = Ux4gColors.neutral900,
+    listBackground = Ux4gColors.neutral0,
+    listBorder = Ux4gColors.neutral200,
+    selectedItemBg = Color(0xFFF3F0FF),
+    selectedItemText = Color(0xFF432CBB),
+    selectedItemSub = Color(0xFF6352D0),
+    itemText = Ux4gColors.neutral900,
+    itemSub = Color(0xFF6B7280),
+    itemDivider = Color(0xFFF3F4F6)
+)
+
+val DarkScheduledLanguageColors = ScheduledLanguageColors(
+    screenBackground = Ux4gColors.neutral900,
+    titleColor = Ux4gColors.neutral50,
+    subtitleColor = Ux4gColors.neutral300,
+    labelColor = Ux4gColors.neutral200,
+    triggerBackground = Ux4gColors.neutral900,
+    triggerBorder = Ux4gColors.primary400,
+    triggerText = Ux4gColors.neutral50,
+    listBackground = Ux4gColors.neutral900,
+    listBorder = Ux4gColors.neutral700,
+    selectedItemBg = Ux4gColors.primary800.copy(alpha = 0.4f),
+    selectedItemText = Ux4gColors.primary300,
+    selectedItemSub = Ux4gColors.primary200,
+    itemText = Ux4gColors.neutral50,
+    itemSub = Ux4gColors.neutral400,
+    itemDivider = Ux4gColors.neutral800
+)
+
+/**
+ * All Scheduled Languages Screen - Default Style
+ *
+ * @param onLanguageSelected Invoked when citizen selects a language option
+ */
+@Composable
+fun AllScheduledLanguagesScreen(
+    onLanguageSelected: (ScheduledLanguage) -> Unit = {}
+) {
+    val isDark = isSystemInDarkTheme()
+    val colors = if (isDark) DarkScheduledLanguageColors else LightScheduledLanguageColors
+    val scrollState = rememberScrollState()
+
+    var selectedIndex by remember { mutableIntStateOf(0) }
+    var isDropdownOpen by remember { mutableStateOf(true) }
+    val selectedLang = allScheduledLanguages.getOrElse(selectedIndex) { allScheduledLanguages[0] }
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(colors.screenBackground)
+    ) {
+        // Portal App Header
+        Ux4gAppHeader(
+            title = "",
+            variant = if (isDark) Ux4gAppHeaderVariant.dark else Ux4gAppHeaderVariant.light,
+            leadingSpacing = 8.dp,
+            verticalPadding = 16.dp,
+            elevation = 2.dp
+        )
+
+        // Screen Body
+        Column(
+            modifier = Modifier
+                .weight(1f)
+                .fillMaxWidth()
+                .verticalScroll(scrollState)
+                .padding(horizontal = 16.dp, vertical = 20.dp)
+        ) {
+            // Heading Title
+            Text(
+                text = "All scheduled languages",
+                style = TextStyle(
+                    fontSize = 22.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = colors.titleColor
+                )
+            )
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            // Subtitle Description
+            Text(
+                text = "India's 22 scheduled languages plus English.\nTap any tile to switch.",
+                style = TextStyle(
+                    fontSize = 14.sp,
+                    color = colors.subtitleColor,
+                    lineHeight = 20.sp
+                )
+            )
+
+            Spacer(modifier = Modifier.height(20.dp))
+
+            // Interface Language Label
+            Text(
+                text = "Interface Language",
+                style = TextStyle(
+                    fontSize = 13.sp,
+                    fontWeight = FontWeight.SemiBold,
+                    color = colors.labelColor
+                )
+            )
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            // Dropdown Trigger Field
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(10.dp))
+                    .background(colors.triggerBackground)
+                    .border(
+                        width = 1.8.dp,
+                        color = colors.triggerBorder,
+                        shape = RoundedCornerShape(10.dp)
+                    )
+                    .clickable { isDropdownOpen = !isDropdownOpen }
+                    .padding(horizontal = 14.dp, vertical = 12.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Icon(
+                    imageVector = Icons.Outlined.Language,
+                    contentDescription = "Language",
+                    tint = colors.triggerText,
+                    modifier = Modifier.size(20.dp)
+                )
+
+                Spacer(modifier = Modifier.width(10.dp))
+
+                Text(
+                    text = selectedLang.name,
+                    style = TextStyle(
+                        fontSize = 14.sp,
+                        fontWeight = FontWeight.Medium,
+                        color = colors.triggerText
+                    ),
+                    modifier = Modifier.weight(1f)
+                )
+
+                Icon(
+                    imageVector = if (isDropdownOpen) Icons.Default.KeyboardArrowUp else Icons.Default.KeyboardArrowDown,
+                    contentDescription = if (isDropdownOpen) "Collapse list" else "Expand list",
+                    tint = colors.subtitleColor,
+                    modifier = Modifier.size(20.dp)
+                )
+            }
+
+            Spacer(modifier = Modifier.height(12.dp))
+
+            // Expandable Dropdown Language List
+            if (isDropdownOpen) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .heightIn(max = 340.dp)
+                        .shadow(elevation = 2.dp, shape = RoundedCornerShape(10.dp))
+                        .clip(RoundedCornerShape(10.dp))
+                        .background(colors.listBackground)
+                        .border(
+                            width = 1.dp,
+                            color = colors.listBorder,
+                            shape = RoundedCornerShape(10.dp)
+                        )
+                ) {
+                    val listScrollState = rememberScrollState()
+
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .verticalScroll(listScrollState)
+                    ) {
+                        allScheduledLanguages.forEachIndexed { index, lang ->
+                            val isSelected = selectedIndex == index
+
+                            Column(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .background(if (isSelected) colors.selectedItemBg else Color.Transparent)
+                                    .clickable {
+                                        selectedIndex = index
+                                        onLanguageSelected(lang)
+                                    }
+                                    .padding(horizontal = 16.dp, vertical = 10.dp)
+                            ) {
+                                Text(
+                                    text = lang.name,
+                                    style = TextStyle(
+                                        fontSize = 14.sp,
+                                        fontWeight = FontWeight.SemiBold,
+                                        color = if (isSelected) colors.selectedItemText else colors.itemText
+                                    )
+                                )
+
+                                Spacer(modifier = Modifier.height(2.dp))
+
+                                Text(
+                                    text = lang.sub,
+                                    style = TextStyle(
+                                        fontSize = 12.sp,
+                                        color = if (isSelected) colors.selectedItemSub else colors.itemSub
+                                    )
+                                )
+                            }
+
+                            if (index < allScheduledLanguages.size - 1) {
+                                HorizontalDivider(
+                                    thickness = 0.8.dp,
+                                    color = colors.itemDivider
+                                )
+                            }
+                        }
+                    }
+                }
+            }
+
+            Spacer(modifier = Modifier.height(24.dp))
+        }
+
+        // Powered by Digital India Footer
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = 16.dp),
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = "Powered by - Digital India",
+                style = TextStyle(
+                    fontSize = 11.sp,
+                    color = Color(0xFF6B7280),
+                    fontWeight = FontWeight.Medium
+                )
+            )
+        }
+    }
+}
+
+@Preview(name = "Light Mode", showBackground = true)
+@Composable
+fun PreviewAllScheduledLanguagesScreenLight() {
+    AllScheduledLanguagesScreen()
+}
+
+@Preview(name = "Dark Mode", showBackground = true)
+@Composable
+fun PreviewAllScheduledLanguagesScreenDark() {
+    AllScheduledLanguagesScreen()
+}`}
+>
+  <div className="flex flex-col items-center justify-center py-2">
+    <img
+      src="/images/patterns/all_scheduled_languages/all_scheduled_languages.svg"
+      alt="UX4G All Scheduled Languages Default Pattern Preview"
+      className="max-w-full rounded-xl border border-border/60 shadow-sm"
+    />
+  </div>
+</ComponentPreview>
+
+---
+
+### 2. Card Style (Contained Card)
+
+Card-contained scheduled languages presentation situated on a soft lavender canvas (`0xFFE2DCFF` / `Ux4gColors.primary100`), enclosing the title, description, language trigger, and scrollable bilingual directory inside a rounded container surface.
+
+<ComponentPreview
+  title="All Scheduled Languages - Card Style"
+  category="Pattern · Jetpack Compose"
+  code={`package com.example.ux4g.patterns.language
+
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.KeyboardArrowDown
+import androidx.compose.material.icons.filled.KeyboardArrowUp
+import androidx.compose.material.icons.outlined.Language
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.ux4g.designsystemv1.components.Ux4gAppHeader
+import com.ux4g.designsystemv1.components.Ux4gAppHeaderVariant
+import com.ux4g.designsystemv1.foundation.Ux4gColors
+
+/**
+ * All Scheduled Languages Screen - Card Style Variant
+ *
+ * @param onLanguageSelected Invoked when citizen selects a language option
+ */
+@Composable
+fun AllScheduledLanguagesCardScreen(
+    onLanguageSelected: (ScheduledLanguage) -> Unit = {}
+) {
+    val isDark = isSystemInDarkTheme()
+    val canvasBg = if (isDark) Ux4gColors.primary800 else Color(0xFFE2DCFF)
+    val cardBg = if (isDark) Ux4gColors.neutral800 else Color.White
+    val cardBorder = if (isDark) Ux4gColors.neutral700 else Color(0xFFE5E7EB)
+
+    val colors = if (isDark) DarkScheduledLanguageColors else LightScheduledLanguageColors
+    val scrollState = rememberScrollState()
+
+    var selectedIndex by remember { mutableIntStateOf(0) }
+    var isDropdownOpen by remember { mutableStateOf(true) }
+    val selectedLang = allScheduledLanguages.getOrElse(selectedIndex) { allScheduledLanguages[0] }
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(canvasBg)
+    ) {
+        // Portal App Header
+        Ux4gAppHeader(
+            title = "",
+            variant = if (isDark) Ux4gAppHeaderVariant.dark else Ux4gAppHeaderVariant.light,
+            leadingSpacing = 8.dp,
+            verticalPadding = 16.dp,
+            elevation = 2.dp
+        )
+
+        // Scrollable Card Container Body
+        Column(
+            modifier = Modifier
+                .weight(1f)
+                .fillMaxWidth()
+                .verticalScroll(scrollState)
+                .padding(16.dp)
+        ) {
+            // Elevated White Card Enclosure
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .shadow(elevation = 2.dp, shape = RoundedCornerShape(16.dp))
+                    .clip(RoundedCornerShape(16.dp))
+                    .background(cardBg)
+                    .border(width = 1.dp, color = cardBorder, shape = RoundedCornerShape(16.dp))
+                    .padding(16.dp)
+            ) {
+                Column(modifier = Modifier.fillMaxWidth()) {
+                    // Heading Title
+                    Text(
+                        text = "All scheduled languages",
+                        style = TextStyle(
+                            fontSize = 22.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = colors.titleColor
+                        )
+                    )
+
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    // Subtitle Description
+                    Text(
+                        text = "India's 22 scheduled languages plus English.\nTap any tile to switch.",
+                        style = TextStyle(
+                            fontSize = 14.sp,
+                            color = colors.subtitleColor,
+                            lineHeight = 20.sp
+                        )
+                    )
+
+                    Spacer(modifier = Modifier.height(20.dp))
+
+                    // Interface Language Label
+                    Text(
+                        text = "Interface Language",
+                        style = TextStyle(
+                            fontSize = 13.sp,
+                            fontWeight = FontWeight.SemiBold,
+                            color = colors.labelColor
+                        )
+                    )
+
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    // Dropdown Trigger Field
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clip(RoundedCornerShape(10.dp))
+                            .background(if (isDark) Ux4gColors.neutral900 else Color.White)
+                            .border(
+                                width = 1.8.dp,
+                                color = colors.triggerBorder,
+                                shape = RoundedCornerShape(10.dp)
+                            )
+                            .clickable { isDropdownOpen = !isDropdownOpen }
+                            .padding(horizontal = 14.dp, vertical = 12.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Icon(
+                            imageVector = Icons.Outlined.Language,
+                            contentDescription = "Language",
+                            tint = colors.triggerText,
+                            modifier = Modifier.size(20.dp)
+                        )
+
+                        Spacer(modifier = Modifier.width(10.dp))
+
+                        Text(
+                            text = selectedLang.name,
+                            style = TextStyle(
+                                fontSize = 14.sp,
+                                fontWeight = FontWeight.Medium,
+                                color = colors.triggerText
+                            ),
+                            modifier = Modifier.weight(1f)
+                        )
+
+                        Icon(
+                            imageVector = if (isDropdownOpen) Icons.Default.KeyboardArrowUp else Icons.Default.KeyboardArrowDown,
+                            contentDescription = if (isDropdownOpen) "Collapse list" else "Expand list",
+                            tint = colors.subtitleColor,
+                            modifier = Modifier.size(20.dp)
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.height(12.dp))
+
+                    // Expandable Dropdown Language List
+                    if (isDropdownOpen) {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .heightIn(max = 320.dp)
+                                .shadow(elevation = 2.dp, shape = RoundedCornerShape(10.dp))
+                                .clip(RoundedCornerShape(10.dp))
+                                .background(if (isDark) Ux4gColors.neutral900 else Color.White)
+                                .border(
+                                    width = 1.dp,
+                                    color = colors.listBorder,
+                                    shape = RoundedCornerShape(10.dp)
+                                )
+                        ) {
+                            val listScrollState = rememberScrollState()
+
+                            Column(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .verticalScroll(listScrollState)
+                            ) {
+                                allScheduledLanguages.forEachIndexed { index, lang ->
+                                    val isSelected = selectedIndex == index
+
+                                    Column(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .background(if (isSelected) colors.selectedItemBg else Color.Transparent)
+                                            .clickable {
+                                                selectedIndex = index
+                                                onLanguageSelected(lang)
+                                            }
+                                            .padding(horizontal = 16.dp, vertical = 10.dp)
+                                    ) {
+                                        Text(
+                                            text = lang.name,
+                                            style = TextStyle(
+                                                fontSize = 14.sp,
+                                                fontWeight = FontWeight.SemiBold,
+                                                color = if (isSelected) colors.selectedItemText else colors.itemText
+                                            )
+                                        )
+
+                                        Spacer(modifier = Modifier.height(2.dp))
+
+                                        Text(
+                                            text = lang.sub,
+                                            style = TextStyle(
+                                                fontSize = 12.sp,
+                                                color = if (isSelected) colors.selectedItemSub else colors.itemSub
+                                            )
+                                        )
+                                    }
+
+                                    if (index < allScheduledLanguages.size - 1) {
+                                        HorizontalDivider(
+                                            thickness = 0.8.dp,
+                                            color = colors.itemDivider
+                                        )
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    Spacer(modifier = Modifier.height(8.dp))
+                }
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+        }
+
+        // Powered by Digital India Footer
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = 16.dp),
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = "Powered by - Digital India",
+                style = TextStyle(
+                    fontSize = 11.sp,
+                    color = Color(0xFF6B7280),
+                    fontWeight = FontWeight.Medium
+                )
+            )
+        }
+    }
+}
+
+@Preview(name = "Card Style Light Mode", showBackground = true)
+@Composable
+fun PreviewAllScheduledLanguagesCardScreenLight() {
+    AllScheduledLanguagesCardScreen()
+}
+
+@Preview(name = "Card Style Dark Mode", showBackground = true)
+@Composable
+fun PreviewAllScheduledLanguagesCardScreenDark() {
+    AllScheduledLanguagesCardScreen()
+}`}
+>
+  <div className="flex flex-col items-center justify-center py-2">
+    <img
+      src="/images/patterns/all_scheduled_languages/all_scheduled_languages_cardstyle.svg"
+      alt="UX4G All Scheduled Languages Card Style Pattern Preview"
+      className="max-w-full rounded-xl border border-border/60 shadow-sm"
+    />
+  </div>
+</ComponentPreview>
