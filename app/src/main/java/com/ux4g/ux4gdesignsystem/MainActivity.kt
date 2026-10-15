@@ -2713,6 +2713,362 @@ fun MainContent(
             }
         }
 
+        // 17B. Side Menu / Navigation Drawer Showcase (Ux4gSideMenu & Ux4gDrawer)
+        Ux4gCard(modifier = Modifier.fillMaxWidth()) {
+            Column(
+                modifier = Modifier.padding(16.dp),
+                verticalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+                Text(
+                    text = "Side Menu / Drawer (Ux4gSideMenu & Ux4gDrawer)",
+                    style = Ux4gTheme.typography.tS_strong
+                )
+                Text(
+                    text = "Fully responsive navigation drawer matching UX4G guidelines across 6 visual presets, collapsible tree guides, real-time search, department cards, and action callouts.",
+                    style = Ux4gTheme.typography.bS_default,
+                    color = Ux4gColors.neutral600
+                )
+
+                var activePreset by remember { mutableStateOf<String?>(null) }
+                var menuPosition by remember { mutableStateOf(Ux4gSideMenuPosition.Left) }
+                var showInlinePreview by remember { mutableStateOf(false) }
+
+                // Position Selector (Left vs Right)
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = "Slide Position:",
+                        style = Ux4gTheme.typography.lS_strong,
+                        color = Ux4gTheme.colorScheme.primary
+                    )
+                    Ux4gButton(
+                        onClick = { menuPosition = Ux4gSideMenuPosition.Left },
+                        text = "Left Drawer",
+                        variant = if (menuPosition == Ux4gSideMenuPosition.Left) Ux4gButtonVariant.Primary else Ux4gButtonVariant.Outline,
+                        size = Ux4gButtonSize.Small
+                    )
+                    Ux4gButton(
+                        onClick = { menuPosition = Ux4gSideMenuPosition.Right },
+                        text = "Right Drawer",
+                        variant = if (menuPosition == Ux4gSideMenuPosition.Right) Ux4gButtonVariant.Primary else Ux4gButtonVariant.Outline,
+                        size = Ux4gButtonSize.Small
+                    )
+                }
+
+                // ── 6 Core Presets Trigger Buttons ───────────────────────────
+                Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                    Text(
+                        text = "Core Application Presets:",
+                        style = Ux4gTheme.typography.lS_strong,
+                        color = Ux4gTheme.colorScheme.primary
+                    )
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        Ux4gButton(
+                            onClick = { activePreset = "standard" },
+                            text = "Standard Gov",
+                            variant = Ux4gButtonVariant.Outline,
+                            size = Ux4gButtonSize.Small,
+                            modifier = Modifier.weight(1f)
+                        )
+                        Ux4gButton(
+                            onClick = { activePreset = "officer" },
+                            text = "Officer Inbox",
+                            variant = Ux4gButtonVariant.Outline,
+                            size = Ux4gButtonSize.Small,
+                            modifier = Modifier.weight(1f)
+                        )
+                    }
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        Ux4gButton(
+                            onClick = { activePreset = "profile" },
+                            text = "Citizen Profile",
+                            variant = Ux4gButtonVariant.Outline,
+                            size = Ux4gButtonSize.Small,
+                            modifier = Modifier.weight(1f)
+                        )
+                        Ux4gButton(
+                            onClick = { activePreset = "dept" },
+                            text = "Dept Switcher",
+                            variant = Ux4gButtonVariant.Outline,
+                            size = Ux4gButtonSize.Small,
+                            modifier = Modifier.weight(1f)
+                        )
+                    }
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        Ux4gButton(
+                            onClick = { activePreset = "action" },
+                            text = "Action Banner",
+                            variant = Ux4gButtonVariant.Outline,
+                            size = Ux4gButtonSize.Small,
+                            modifier = Modifier.weight(1f)
+                        )
+                        Ux4gButton(
+                            onClick = { activePreset = "simple" },
+                            text = "Citizen Simple",
+                            variant = Ux4gButtonVariant.Outline,
+                            size = Ux4gButtonSize.Small,
+                            modifier = Modifier.weight(1f)
+                        )
+                    }
+                }
+
+                // Toggle Inline Embedded Preview
+                Ux4gButton(
+                    onClick = { showInlinePreview = !showInlinePreview },
+                    text = if (showInlinePreview) "Hide Embedded Preview" else "Show Embedded Live Preview",
+                    variant = Ux4gButtonVariant.Tonal,
+                    size = Ux4gButtonSize.Small,
+                    modifier = Modifier.fillMaxWidth()
+                )
+
+                if (showInlinePreview) {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(520.dp)
+                            .clip(RoundedCornerShape(8.dp))
+                            .border(1.dp, Ux4gColors.neutral300, RoundedCornerShape(8.dp)),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Ux4gSideMenuPresets.Standard()
+                    }
+                }
+
+                // ── Animated Slide-out Modal Side Menus ───────────────────────
+                when (activePreset) {
+                    "standard" -> {
+                        Ux4gSideMenuModal(
+                            isOpen = true,
+                            onDismissRequest = { activePreset = null },
+                            position = menuPosition
+                        )
+                    }
+                    "officer" -> {
+                        Ux4gSideMenuModal(
+                            isOpen = true,
+                            onDismissRequest = { activePreset = null },
+                            position = menuPosition,
+                            headerType = Ux4gSideMenuHeaderType.CompactUser,
+                            title = "Ramesh Kumar",
+                            subtitle = "ramesh.kumar@gov.in",
+                            showSearch = false,
+                            sections = listOf(
+                                Ux4gSideMenuSection(
+                                    key = "mailbox",
+                                    title = "MAILBOX",
+                                    items = listOf(
+                                        Ux4gSideMenuItem(
+                                            key = "inbox",
+                                            label = "Inbox",
+                                            iconVector = Icons.Outlined.Email,
+                                            badge = 9,
+                                            badgeColor = Ux4gColors.primary600
+                                        ),
+                                        Ux4gSideMenuItem(
+                                            key = "assigned-to-me",
+                                            label = "Assigned to me",
+                                            iconVector = Icons.Outlined.AssignmentInd
+                                        )
+                                    )
+                                ),
+                                Ux4gSideMenuSection(
+                                    key = "folders",
+                                    title = "FOLDERS",
+                                    actionText = "Customize inbox",
+                                    items = listOf(
+                                        Ux4gSideMenuItem(key = "sent", label = "Sent", iconVector = Icons.Filled.ArrowForward),
+                                        Ux4gSideMenuItem(key = "drafts", label = "Drafts", iconVector = Icons.Outlined.EditNote),
+                                        Ux4gSideMenuItem(key = "archive", label = "Archive", iconVector = Icons.Outlined.Layers),
+                                        Ux4gSideMenuItem(key = "rejected-applications", label = "Rejected applications", iconVector = Icons.Outlined.ErrorOutline)
+                                    )
+                                )
+                            ),
+                            footerItems = listOf(
+                                Ux4gSideMenuItem(key = "inbox-settings", label = "Inbox settings", iconVector = Icons.Filled.MoreVert)
+                            ),
+                            showSignOut = false,
+                            bottomBranding = Ux4gSideMenuBottomBranding(
+                                title = "Revenue Department",
+                                subtitle = "Kanpur division"
+                            )
+                        )
+                    }
+                    "profile" -> {
+                        Ux4gSideMenuModal(
+                            isOpen = true,
+                            onDismissRequest = { activePreset = null },
+                            position = menuPosition,
+                            headerType = Ux4gSideMenuHeaderType.ProminentUser,
+                            title = "Ramesh Kumar",
+                            subtitle = "Citizen",
+                            userMetaText = "12 applications · 3 actions required",
+                            userActionButtonText = "View profile",
+                            showSearch = false,
+                            sections = listOf(
+                                Ux4gSideMenuSection(
+                                    key = "account",
+                                    title = "ACCOUNT",
+                                    items = listOf(
+                                        Ux4gSideMenuItem(key = "profile-settings", label = "Profile & settings", iconVector = Icons.Outlined.AccountCircle),
+                                        Ux4gSideMenuItem(key = "saved-items", label = "Saved items", iconVector = Icons.Outlined.Layers)
+                                    )
+                                ),
+                                Ux4gSideMenuSection(
+                                    key = "applications",
+                                    title = "APPLICATIONS",
+                                    items = listOf(
+                                        Ux4gSideMenuItem(key = "my-applications", label = "My applications", iconVector = Icons.Outlined.Assignment),
+                                        Ux4gSideMenuItem(key = "track-application", label = "Track an application", iconVector = Icons.Outlined.LocationOn)
+                                    )
+                                ),
+                                Ux4gSideMenuSection(
+                                    key = "support",
+                                    title = "SUPPORT",
+                                    items = listOf(
+                                        Ux4gSideMenuItem(key = "help-support", label = "Help & support", iconVector = Icons.Outlined.HelpOutline)
+                                    )
+                                )
+                            ),
+                            showSignOut = true
+                        )
+                    }
+                    "dept" -> {
+                        Ux4gSideMenuModal(
+                            isOpen = true,
+                            onDismissRequest = { activePreset = null },
+                            position = menuPosition,
+                            headerType = Ux4gSideMenuHeaderType.Plain,
+                            title = "Departments",
+                            subtitle = "Choose a department to work in.",
+                            selectedKey = "dept-revenue",
+                            showSearch = false,
+                            sections = listOf(
+                                Ux4gSideMenuSection(
+                                    items = listOf(
+                                        Ux4gSideMenuItem(
+                                            key = "dept-revenue",
+                                            label = "Revenue Department",
+                                            subtitle = "Current department",
+                                            avatarInitials = "RD",
+                                            isCard = true
+                                        ),
+                                        Ux4gSideMenuItem(
+                                            key = "dept-transport",
+                                            label = "Transport Department",
+                                            subtitle = "transport.up.gov.in",
+                                            avatarInitials = "TD",
+                                            tag = "3 applications pending",
+                                            isCard = true
+                                        )
+                                    )
+                                )
+                            ),
+                            footerItems = listOf(
+                                Ux4gSideMenuItem(key = "request-access", label = "Request department access", iconVector = Icons.Filled.Add),
+                                Ux4gSideMenuItem(key = "settings", label = "Settings", iconVector = Icons.Filled.MoreVert),
+                                Ux4gSideMenuItem(key = "help", label = "Help & support", iconVector = Icons.Outlined.HelpOutline)
+                            ),
+                            showSignOut = false
+                        )
+                    }
+                    "action" -> {
+                        Ux4gSideMenuModal(
+                            isOpen = true,
+                            onDismissRequest = { activePreset = null },
+                            position = menuPosition,
+                            title = "Revenue Department",
+                            subtitle = "Kanpur division",
+                            showSearch = false,
+                            showSignOut = false,
+                            sections = listOf(
+                                Ux4gSideMenuSection(
+                                    key = "services",
+                                    title = "SERVICES",
+                                    items = listOf(
+                                        Ux4gSideMenuItem(key = "dashboard", label = "Dashboard", iconVector = Icons.Filled.GridView),
+                                        Ux4gSideMenuItem(
+                                            key = "applications",
+                                            label = "Applications",
+                                            iconVector = Icons.Outlined.Assignment,
+                                            defaultExpanded = true,
+                                            children = listOf(
+                                                Ux4gSideMenuItem(key = "new-applications", label = "New applications"),
+                                                Ux4gSideMenuItem(key = "under-review", label = "Under review"),
+                                                Ux4gSideMenuItem(key = "approved-applications", label = "Approved applications")
+                                            )
+                                        ),
+                                        Ux4gSideMenuItem(
+                                            key = "inbox",
+                                            label = "Inbox",
+                                            iconVector = Icons.Outlined.Email,
+                                            badge = 8,
+                                            badgeColor = Ux4gColors.primary600
+                                        )
+                                    )
+                                ),
+                                Ux4gSideMenuSection(
+                                    key = "workspace",
+                                    title = "WORKSPACE",
+                                    items = listOf(
+                                        Ux4gSideMenuItem(key = "priority-applications", label = "Priority applications", iconVector = Icons.Filled.PriorityHigh),
+                                        Ux4gSideMenuItem(key = "archive", label = "Archive", iconVector = Icons.Outlined.Layers)
+                                    )
+                                )
+                            ),
+                            actionCard = Ux4gSideMenuActionCard(
+                                title = "Verify your Aadhaar",
+                                description = "Complete identity verification to continue.",
+                                buttonText = "Verify now"
+                            )
+                        )
+                    }
+                    "simple" -> {
+                        Ux4gSideMenuModal(
+                            isOpen = true,
+                            onDismissRequest = { activePreset = null },
+                            position = menuPosition,
+                            headerType = Ux4gSideMenuHeaderType.CompactUser,
+                            title = "Ramesh Kumar",
+                            subtitle = "Citizen",
+                            showSearch = false,
+                            sections = listOf(
+                                Ux4gSideMenuSection(
+                                    items = listOf(
+                                        Ux4gSideMenuItem(key = "my-applications", label = "My applications", iconVector = Icons.Outlined.Assignment),
+                                        Ux4gSideMenuItem(key = "my-documents", label = "My documents", iconVector = Icons.Outlined.Layers),
+                                        Ux4gSideMenuItem(key = "notifications", label = "Notifications", iconVector = Icons.Outlined.Notifications, badge = 3, badgeColor = Ux4gColors.primary600)
+                                    )
+                                ),
+                                Ux4gSideMenuSection(
+                                    items = listOf(
+                                        Ux4gSideMenuItem(key = "profile-settings", label = "Profile & settings", iconVector = Icons.Outlined.AccountCircle),
+                                        Ux4gSideMenuItem(key = "help-support", label = "Help & support", iconVector = Icons.Outlined.HelpOutline)
+                                    )
+                                )
+                            ),
+                            showSignOut = true,
+                            bottomBranding = Ux4gSideMenuBottomBranding(
+                                title = "Revenue Department",
+                                subtitle = "Government of India"
+                            )
+                        )
+                    }
+                }
+            }
+        }
+
         // 18. Bottom Navigation Bar Showcase (Official 4 Core Variants & Indicators Matrix)
         Ux4gCard(modifier = Modifier.fillMaxWidth()) {
             Column(
