@@ -21,6 +21,11 @@
           "name": "Migration & Parity",
           "url": "https://android.ux4g.gov.in/migration",
           "path": "/migration"
+        },
+        {
+          "name": "Changes Logs",
+          "url": "https://android.ux4g.gov.in/changelog",
+          "path": "/changelog"
         }
       ]
     },
