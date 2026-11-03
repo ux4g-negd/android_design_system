@@ -195,19 +195,67 @@ article:has(.flutter-welcome-bg),
   display: none !important;
 }
 
-/* ── Flutter Widgetbook Left Sidebar Styling ──────────────────────────── */
+/* ── Flutter Widgetbook Left Sidebar & Responsive Side Menu Drawer ────── */
 aside[data-fd-sidebar],
 #nd-sidebar,
-.fd-sidebar {
+#nd-sidebar-mobile,
+.fd-sidebar,
+[data-sidebar-panel],
+div:has(> aside[data-fd-sidebar]) {
   background-color: #FFFFFF !important;
   border-right: 1px solid #EEF2F6 !important;
 }
 
 .dark aside[data-fd-sidebar],
 .dark #nd-sidebar,
-.dark .fd-sidebar {
+.dark #nd-sidebar-mobile,
+.dark .fd-sidebar,
+.dark [data-sidebar-panel],
+.dark div:has(> aside[data-fd-sidebar]) {
   background-color: #0F172A !important;
   border-right: 1px solid rgba(255, 255, 255, 0.08) !important;
+}
+
+/* Responsive Side Menu Drawer Widths for Mobile, Tablet & Desktop */
+#nd-sidebar-mobile,
+[data-sidebar-panel] {
+  width: min(85vw, 320px) !important;
+  max-width: 85vw !important;
+}
+
+@media (min-width: 640px) and (max-width: 767px) {
+  #nd-sidebar-mobile,
+  [data-sidebar-panel] {
+    width: min(75vw, 340px) !important;
+    max-width: 75vw !important;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 1024px) {
+  aside[data-fd-sidebar],
+  #nd-sidebar,
+  .fd-sidebar {
+    width: 250px !important;
+    min-width: 250px !important;
+  }
+}
+
+@media (min-width: 1025px) and (max-width: 1440px) {
+  aside[data-fd-sidebar],
+  #nd-sidebar,
+  .fd-sidebar {
+    width: 268px !important;
+    min-width: 268px !important;
+  }
+}
+
+@media (min-width: 1441px) {
+  aside[data-fd-sidebar],
+  #nd-sidebar,
+  .fd-sidebar {
+    width: 284px !important;
+    min-width: 284px !important;
+  }
 }
 
 /* Pill Search Input */
@@ -245,9 +293,13 @@ button[data-search] kbd {
 /* Sidebar Navigation Items */
 aside[data-fd-sidebar] a,
 #nd-sidebar a,
+#nd-sidebar-mobile a,
 .fd-sidebar a,
+[data-sidebar-panel] a,
 aside[data-fd-sidebar] button,
-#nd-sidebar button {
+#nd-sidebar button,
+#nd-sidebar-mobile button,
+[data-sidebar-panel] button {
   border-radius: 8px !important;
   font-size: 13.5px !important;
   transition: all 0.15s ease;
@@ -255,7 +307,9 @@ aside[data-fd-sidebar] button,
 
 aside[data-fd-sidebar] a[data-active="true"],
 #nd-sidebar a[data-active="true"],
-.fd-sidebar a[data-active="true"] {
+#nd-sidebar-mobile a[data-active="true"],
+.fd-sidebar a[data-active="true"],
+[data-sidebar-panel] a[data-active="true"] {
   background-color: #DCE7FE !important;
   color: #1E3A8A !important;
   font-weight: 600 !important;
@@ -263,7 +317,9 @@ aside[data-fd-sidebar] a[data-active="true"],
 
 .dark aside[data-fd-sidebar] a[data-active="true"],
 .dark #nd-sidebar a[data-active="true"],
-.dark .fd-sidebar a[data-active="true"] {
+.dark #nd-sidebar-mobile a[data-active="true"],
+.dark .fd-sidebar a[data-active="true"],
+.dark [data-sidebar-panel] a[data-active="true"] {
   background-color: rgba(79, 70, 229, 0.25) !important;
   color: #C7D2FE !important;
   font-weight: 600 !important;
@@ -280,22 +336,49 @@ main,
   max-width: 100% !important;
 }
 
+/* Headings wrapping & Fumadocs anchor flex fix */
+h1, h2, h3, h4, h5, h6,
+.prose h1, .prose h2, .prose h3, .prose h4, .prose h5, .prose h6,
+.group\/heading {
+  min-width: 0 !important;
+  max-width: 100% !important;
+  overflow-wrap: anywhere !important;
+  word-break: break-word !important;
+  flex-wrap: wrap !important;
+}
+
+h1 a, h2 a, h3 a, h4 a, h5 a, h6 a,
+.group\/heading > a {
+  min-width: 0 !important;
+  max-width: 100% !important;
+  overflow-wrap: anywhere !important;
+  word-break: break-word !important;
+}
+
 .prose p,
 .prose li,
-.prose span,
-.prose h1,
-.prose h2,
-.prose h3,
-.prose h4,
-.prose h5,
-.prose h6 {
+.prose span {
   min-width: 0;
   max-width: 100%;
 }
 
-/* Ensure inline code in paragraphs wraps if long, but doesn't force character breaks */
+/* Ensure inline code in headings wraps cleanly without clipping on narrow screens */
+:is(h1, h2, h3, h4, h5, h6) code,
+.group\/heading code,
+.prose :is(h1, h2, h3, h4, h5, h6) code {
+  overflow-wrap: anywhere !important;
+  word-break: break-word !important;
+  white-space: normal !important;
+  display: inline !important;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+  max-width: 100% !important;
+}
+
+/* Ensure inline code in paragraphs & lists wraps if long */
 .prose p > code:not(table code),
-.prose li > code:not(table code) {
+.prose li > code:not(table code),
+.prose span > code:not(table code) {
   overflow-wrap: break-word;
   word-break: normal;
   display: inline;

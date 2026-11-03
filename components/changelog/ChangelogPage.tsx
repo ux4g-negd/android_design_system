@@ -1,7 +1,6 @@
 'use client';
 
 import React, { useState, useMemo } from 'react';
-import Link from 'next/link';
 import {
   ANDROID_CHANGELOG_DATA,
   type ChangelogRelease,
@@ -679,24 +678,6 @@ export function ChangelogPage() {
           })}
         </div>
       )}
-
-      {/* ── 5. Footer Info ────────────────────────────────────────── */}
-      <div className="rounded-xl border border-[#E2E8F0] dark:border-[#334155] bg-[#F8FAFC] dark:bg-[#1E293B] p-5 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs sm:text-sm text-slate-600 dark:text-slate-400">
-        <div>
-          <span>Looking to install or migrate from XML / Material 3? Check the </span>
-          <Link href="/getting-started" className="text-[#4F46E5] dark:text-indigo-400 font-semibold hover:underline">
-            Quick Start Guide
-          </Link>
-          <span> or </span>
-          <Link href="/migration" className="text-[#4F46E5] dark:text-indigo-400 font-semibold hover:underline">
-            Migration &amp; Parity Matrix
-          </Link>
-          .
-        </div>
-        <div className="text-xs text-slate-500 dark:text-slate-400 font-medium">
-          UX4G Android • Official Design System
-        </div>
-      </div>
     </div>
   );
 }
