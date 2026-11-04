@@ -1,0 +1,1036 @@
+---
+title: Payment
+description: Citizen-facing payment method selection screen featuring multi-step progression, dynamic payment methods (UPI, Net Banking, Cards, CSC Centre), statutory 256-bit SSL transaction encryption assurance banner, and card-style variant
+---
+
+# Payment
+
+A secure payment method selection pattern for citizen-facing digital public services. This screen represents the payment stage in a multi-step public service workflow (such as certificate issuances, municipal tax collection, application fees, or trade licenses).
+
+It allows citizens to choose among standard national payment channels—**UPI**, **Net Banking**, **Debit / Credit Card**, and **CSC Centre cash payments** (ensuring access for non-digitally enabled or rural citizens). The screen provides explicit statutory security guarantees via an SSL encryption notice, an active multi-step stepper, and clear forward/backward journey progression.
+
+---
+
+<h2><MIcon name="smartphone" /> Interactive Previews</h2>
+
+### 1. Default Style (Full Screen)
+
+Standard full-screen payment selection layout with multi-step progression, selectable payment channels with radio group feedback, interactive UPI ID input, and 256-bit SSL encryption trust assurance.
+
+<ComponentPreview
+  title="Payment - Default Style"
+  category="Pattern · Jetpack Compose"
+  code={`package com.example.ux4g.patterns.payment
+
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Lock
+import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.example.ux4g.R as AppR
+import com.ux4g.designsystemv1.R as Ux4gR
+import com.ux4g.designsystemv1.components.Ux4gAppHeader
+import com.ux4g.designsystemv1.components.Ux4gAppHeaderAction
+import com.ux4g.designsystemv1.components.Ux4gAppHeaderVariant
+import com.ux4g.designsystemv1.components.Ux4gDivider
+import com.ux4g.designsystemv1.components.Ux4gDividerOrientation
+import com.ux4g.designsystemv1.components.buttons.Ux4gButton
+import com.ux4g.designsystemv1.components.buttons.Ux4gButtonSize
+import com.ux4g.designsystemv1.components.buttons.Ux4gButtonVariant
+import com.ux4g.designsystemv1.components.inputfield.Ux4gInputField
+import com.ux4g.designsystemv1.components.radiobutton.Ux4gRadioButton
+import com.ux4g.designsystemv1.components.radiobutton.Ux4gRadioButtonSize
+import com.ux4g.designsystemv1.components.statusbanner.Ux4gBannerVariant
+import com.ux4g.designsystemv1.components.statusbanner.Ux4gStatusBanner
+import com.ux4g.designsystemv1.components.steppers.StepperLinePlacement
+import com.ux4g.designsystemv1.components.steppers.StepperOrientation
+import com.ux4g.designsystemv1.components.steppers.Ux4gStepItem
+import com.ux4g.designsystemv1.components.steppers.Ux4gStepper
+import com.ux4g.designsystemv1.foundation.Ux4gColors
+import com.ux4g.designsystemv1.foundation.Ux4gSpace
+
+/**
+ * Color tokens for the full-screen Payment pattern.
+ */
+data class PaymentColors(
+    val screenBackground: Color,
+    val border: Color,
+    val title: Color,
+    val subtleText: Color,
+    val mutedText: Color,
+    val headerDivider: Color,
+    val brandLogoTint: Color,
+    val emblemTint: Color?,
+    val menuButtonBackground: Color,
+    val menuButtonBorder: Color,
+    val menuButtonIcon: Color,
+    val optionSelectedBg: Color,
+    val optionUnselectedBg: Color,
+    val optionSelectedTitle: Color,
+    val optionUnselectedTitle: Color,
+    val optionSelectedSub: Color,
+    val optionUnselectedSub: Color,
+    val securityBannerBg: Color,
+    val securityBannerBorder: Color,
+    val securityBannerIcon: Color,
+    val securityBannerText: Color,
+    val footerLogoTint: Color?
+)
+
+val LightPaymentColors = PaymentColors(
+    screenBackground = Ux4gColors.neutral50,
+    border = Ux4gColors.neutral200,
+    title = Ux4gColors.gray900,
+    subtleText = Ux4gColors.neutral500,
+    mutedText = Ux4gColors.neutral400,
+    headerDivider = Ux4gColors.neutral300,
+    brandLogoTint = Ux4gColors.primary600,
+    emblemTint = null,
+    menuButtonBackground = Ux4gColors.neutral0,
+    menuButtonBorder = Ux4gColors.primary300,
+    menuButtonIcon = Ux4gColors.primary600,
+    optionSelectedBg = Ux4gColors.primary50,
+    optionUnselectedBg = Ux4gColors.neutral100,
+    optionSelectedTitle = Ux4gColors.primary900,
+    optionUnselectedTitle = Ux4gColors.gray800,
+    optionSelectedSub = Ux4gColors.primary700,
+    optionUnselectedSub = Ux4gColors.neutral500,
+    securityBannerBg = Color(0xFFE6FFFB),
+    securityBannerBorder = Color(0xFF91E8E0),
+    securityBannerIcon = Color(0xFF13C2C2),
+    securityBannerText = Color(0xFF006D75),
+    footerLogoTint = null
+)
+
+val DarkPaymentColors = PaymentColors(
+    screenBackground = Ux4gColors.neutral900,
+    border = Ux4gColors.neutral700,
+    title = Ux4gColors.neutral0,
+    subtleText = Ux4gColors.neutral400,
+    mutedText = Ux4gColors.neutral500,
+    headerDivider = Ux4gColors.neutral700,
+    brandLogoTint = Ux4gColors.primary300,
+    emblemTint = ColorFilter.tint(Color.White).let { Color.White },
+    menuButtonBackground = Ux4gColors.neutral800,
+    menuButtonBorder = Ux4gColors.neutral700,
+    menuButtonIcon = Ux4gColors.neutral0,
+    optionSelectedBg = Ux4gColors.primary900,
+    optionUnselectedBg = Ux4gColors.neutral800,
+    optionSelectedTitle = Ux4gColors.primary100,
+    optionUnselectedTitle = Ux4gColors.neutral100,
+    optionSelectedSub = Ux4gColors.primary300,
+    optionUnselectedSub = Ux4gColors.neutral400,
+    securityBannerBg = Color(0xFF002329),
+    securityBannerBorder = Color(0xFF00474F),
+    securityBannerIcon = Color(0xFF13C2C2),
+    securityBannerText = Color(0xFF87E8DE),
+    footerLogoTint = Color.White
+)
+
+/**
+ * Data model for payment method options.
+ */
+data class PaymentOptionItem(
+    val id: String,
+    val title: String,
+    val subtitle: String
+)
+
+/**
+ * Default Full Screen Payment selection pattern.
+ *
+ * @param amountText Total fee payable (e.g. "Rs 41.30").
+ * @param onPayClick Callback triggered when user taps the primary pay action.
+ * @param onBackClick Callback triggered when user navigates back to the review step.
+ * @param onMenuClick Callback triggered for top navigation menu icon.
+ */
+@Composable
+fun PaymentScreen(
+    modifier: Modifier = Modifier,
+    isDarkTheme: Boolean = isSystemInDarkTheme(),
+    amountText: String = "Rs 41.30",
+    onPayClick: (method: String, upiId: String) -> Unit = { _, _ -> },
+    onBackClick: () -> Unit = {},
+    onMenuClick: () -> Unit = {}
+) {
+    val colors = if (isDarkTheme) DarkPaymentColors else LightPaymentColors
+
+    var selectedMethod by remember { mutableStateOf("upi") }
+    var upiId by remember { mutableStateOf("") }
+
+    val paymentOptions = remember {
+        listOf(
+            PaymentOptionItem("upi", "UPI", "Pay with any UPI app"),
+            PaymentOptionItem("netbanking", "Net Banking", "60+ banks supported"),
+            PaymentOptionItem("card", "Debit / Credit Card", "Visa, MasterCard, RuPay"),
+            PaymentOptionItem("csc", "CSC Centre", "Pay in cash at your nearest CSC")
+        )
+    }
+
+    val steps = remember {
+        listOf(
+            Ux4gStepItem(title = "Personal info", statusLabel = "Completed"),
+            Ux4gStepItem(title = "Documents", statusLabel = "Completed"),
+            Ux4gStepItem(title = "Review", statusLabel = "Completed"),
+            Ux4gStepItem(title = "Payment", statusLabel = "In progress")
+        )
+    }
+
+    Box(
+        modifier = modifier
+            .fillMaxSize()
+            .background(colors.screenBackground)
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState())
+        ) {
+            PaymentBrandHeader(colors = colors, onMenuClick = onMenuClick)
+
+            Ux4gDivider(color = colors.border)
+
+            // Horizontal Progress Stepper
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = Ux4gSpace.Space16, vertical = Ux4gSpace.Space10)
+            ) {
+                Ux4gStepper(
+                    totalSteps = 4,
+                    currentStep = 4,
+                    steps = steps,
+                    orientation = StepperOrientation.Horizontal,
+                    linePlacement = StepperLinePlacement.Center
+                )
+            }
+
+            // Main Content Area
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = Ux4gSpace.Space16, vertical = Ux4gSpace.Space12)
+            ) {
+                Text(
+                    text = "Choose payment method",
+                    style = TextStyle(
+                        fontSize = 22.sp,
+                        fontWeight = FontWeight.ExtraBold,
+                        color = colors.title,
+                        letterSpacing = (-0.3).sp,
+                        lineHeight = 28.sp
+                    )
+                )
+                Spacer(Modifier.height(4.dp))
+                Text(
+                    text = "Select how you would like to pay $amountText.",
+                    style = TextStyle(
+                        fontSize = 13.sp,
+                        color = colors.subtleText,
+                        lineHeight = 18.sp
+                    )
+                )
+
+                Spacer(Modifier.height(Ux4gSpace.Space20))
+
+                // Payment Options List
+                paymentOptions.forEach { option ->
+                    val isSelected = option.id == selectedMethod
+                    PaymentOptionTile(
+                        item = option,
+                        isSelected = isSelected,
+                        colors = colors,
+                        onSelect = { selectedMethod = option.id }
+                    )
+                    Spacer(Modifier.height(Ux4gSpace.Space8))
+                }
+
+                // Dynamic UPI ID Input Field
+                if (selectedMethod == "upi") {
+                    Spacer(Modifier.height(Ux4gSpace.Space4))
+                    Ux4gInputField(
+                        value = upiId,
+                        onValueChange = { upiId = it },
+                        label = "UPI ID",
+                        placeholder = "username@bank / mobile@upi",
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                    Spacer(Modifier.height(Ux4gSpace.Space16))
+                }
+
+                // Security Assurance Banner powered by Ux4gStatusBanner
+                Ux4gStatusBanner(
+                    variant = Ux4gBannerVariant.InfoLight,
+                    title = "Payment transactions are secured by 256-bit SSL encryption. We do not store your card details.",
+                    leadingIcon = {
+                        Icon(
+                            imageVector = Icons.Default.Lock,
+                            contentDescription = "Secured",
+                            tint = colors.securityBannerIcon,
+                            modifier = Modifier.size(18.dp)
+                        )
+                    },
+                    backgroundColor = colors.securityBannerBg,
+                    borderColor = colors.securityBannerBorder,
+                    titleStyle = TextStyle(
+                        fontSize = 12.sp,
+                        fontWeight = FontWeight.Medium,
+                        color = colors.securityBannerText,
+                        lineHeight = 16.sp
+                    ),
+                    margin = PaddingValues(0.dp),
+                    modifier = Modifier.fillMaxWidth()
+                )
+
+                Spacer(Modifier.height(Ux4gSpace.Space20))
+
+                // Action Buttons
+                Ux4gButton(
+                    text = "Pay $amountText",
+                    onClick = { onPayClick(selectedMethod, upiId) },
+                    variant = Ux4gButtonVariant.Primary,
+                    size = Ux4gButtonSize.Large,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(48.dp)
+                )
+                Spacer(Modifier.height(Ux4gSpace.Space12))
+
+                Box(
+                    modifier = Modifier.fillMaxWidth(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Ux4gButton(
+                        text = "Back",
+                        onClick = onBackClick,
+                        variant = Ux4gButtonVariant.Ghost,
+                        size = Ux4gButtonSize.Medium,
+                        modifier = Modifier.height(44.dp)
+                    )
+                }
+            }
+
+            Spacer(Modifier.weight(1f, fill = false))
+            PaymentBrandFooter(colors = colors)
+        }
+    }
+}
+
+@Composable
+private fun PaymentOptionTile(
+    item: PaymentOptionItem,
+    isSelected: Boolean,
+    colors: PaymentColors,
+    onSelect: () -> Unit
+) {
+    val bg = if (isSelected) colors.optionSelectedBg else colors.optionUnselectedBg
+    val titleColor = if (isSelected) colors.optionSelectedTitle else colors.optionUnselectedTitle
+    val subColor = if (isSelected) colors.optionSelectedSub else colors.optionUnselectedSub
+
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(12.dp))
+            .background(bg)
+            .clickable(onClick = onSelect)
+            .padding(horizontal = 16.dp, vertical = 14.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Ux4gRadioButton(
+            value = item.id,
+            groupValue = if (isSelected) item.id else "",
+            onValueChange = { onSelect() },
+            size = Ux4gRadioButtonSize.Medium
+        )
+        Spacer(Modifier.width(12.dp))
+        Column(modifier = Modifier.weight(1f)) {
+            Text(
+                text = item.title,
+                style = TextStyle(
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.SemiBold,
+                    color = titleColor
+                )
+            )
+            Spacer(Modifier.height(2.dp))
+            Text(
+                text = item.subtitle,
+                style = TextStyle(
+                    fontSize = 12.sp,
+                    color = subColor
+                )
+            )
+        }
+    }
+}
+
+
+@Composable
+private fun PaymentBrandHeader(colors: PaymentColors, onMenuClick: () -> Unit) {
+    Column {
+        Ux4gAppHeader(
+            title = "",
+            variant = Ux4gAppHeaderVariant.Light,
+            height = 64.dp,
+            horizontalPadding = Ux4gSpace.Space16,
+            leadingSpacing = Ux4gSpace.Space8,
+            leadingWidgets = listOf(
+                {
+                    Image(
+                        painter = painterResource(Ux4gR.drawable.ic_national_emblem),
+                        contentDescription = "National Emblem of India",
+                        colorFilter = colors.emblemTint?.let { ColorFilter.tint(it) },
+                        modifier = Modifier.height(32.dp)
+                    )
+                },
+                {
+                    Ux4gDivider(
+                        color = colors.headerDivider,
+                        orientation = Ux4gDividerOrientation.Vertical,
+                        modifier = Modifier.height(28.dp)
+                    )
+                },
+                {
+                    Image(
+                        painter = painterResource(Ux4gR.drawable.ic_union_logo),
+                        contentDescription = "Brand Logo",
+                        colorFilter = ColorFilter.tint(colors.brandLogoTint),
+                        modifier = Modifier.height(32.dp)
+                    )
+                }
+            ),
+            actions = listOf(
+                Ux4gAppHeaderAction(
+                    icon = {
+                        Box(
+                            modifier = Modifier
+                                .size(40.dp)
+                                .clip(RoundedCornerShape(6.dp))
+                                .background(colors.menuButtonBackground)
+                                .border(1.dp, colors.menuButtonBorder, RoundedCornerShape(6.dp)),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Icon(
+                                imageVector = Icons.Filled.Menu,
+                                contentDescription = "Menu",
+                                tint = colors.menuButtonIcon,
+                                modifier = Modifier.size(20.dp)
+                            )
+                        }
+                    },
+                    onClick = onMenuClick
+                )
+            )
+        )
+    }
+}
+
+@Composable
+private fun PaymentBrandFooter(colors: PaymentColors) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = Ux4gSpace.Space8, bottom = Ux4gSpace.Space20),
+        horizontalArrangement = Arrangement.Center,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(
+            text = "Powered by -",
+            style = TextStyle(
+                fontSize = 11.sp,
+                fontWeight = FontWeight.Medium,
+                color = colors.mutedText
+            )
+        )
+        Spacer(Modifier.width(Ux4gSpace.Space8))
+        Image(
+            painter = painterResource(AppR.drawable.ic_digital_india),
+            contentDescription = "Digital India",
+            colorFilter = colors.footerLogoTint?.let { ColorFilter.tint(it) },
+            modifier = Modifier.height(22.dp)
+        )
+    }
+}
+
+@Preview(showBackground = true, widthDp = 390, heightDp = 844)
+@Composable
+fun PaymentScreenPreview() {
+    PaymentScreen()
+}`}
+>
+  <img
+    src="/images/patterns/payment/payment.svg"
+    alt="Payment Pattern - Default Style"
+    className="w-full max-w-[360px] rounded-2xl border border-border shadow-sm mx-auto my-4"
+  />
+</ComponentPreview>
+
+---
+
+### 2. Card Style Variant
+
+Elevated card container on a soft purple canvas (`Ux4gColors.primary100` / `primary800`) with smooth elevation shadow, rounded contours, and embedded SSL transaction protection notice.
+
+<ComponentPreview
+  title="Payment - Card Style Variant"
+  category="Pattern · Jetpack Compose"
+  code={`package com.example.ux4g.patterns.payment
+
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Lock
+import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.example.ux4g.R as AppR
+import com.ux4g.designsystemv1.R as Ux4gR
+import com.ux4g.designsystemv1.components.Ux4gAppHeader
+import com.ux4g.designsystemv1.components.Ux4gAppHeaderAction
+import com.ux4g.designsystemv1.components.Ux4gAppHeaderVariant
+import com.ux4g.designsystemv1.components.Ux4gDivider
+import com.ux4g.designsystemv1.components.Ux4gDividerOrientation
+import com.ux4g.designsystemv1.components.buttons.Ux4gButton
+import com.ux4g.designsystemv1.components.buttons.Ux4gButtonSize
+import com.ux4g.designsystemv1.components.buttons.Ux4gButtonVariant
+import com.ux4g.designsystemv1.components.inputfield.Ux4gInputField
+import com.ux4g.designsystemv1.components.radiobutton.Ux4gRadioButton
+import com.ux4g.designsystemv1.components.radiobutton.Ux4gRadioButtonSize
+import com.ux4g.designsystemv1.components.statusbanner.Ux4gBannerVariant
+import com.ux4g.designsystemv1.components.statusbanner.Ux4gStatusBanner
+import com.ux4g.designsystemv1.components.steppers.StepperLinePlacement
+import com.ux4g.designsystemv1.components.steppers.StepperOrientation
+import com.ux4g.designsystemv1.components.steppers.Ux4gStepItem
+import com.ux4g.designsystemv1.components.steppers.Ux4gStepper
+import com.ux4g.designsystemv1.foundation.Ux4gColors
+import com.ux4g.designsystemv1.foundation.Ux4gSpace
+
+/**
+ * Color tokens for the Card-style Payment pattern.
+ */
+data class PaymentCardColors(
+    val canvasBackground: Color,
+    val cardBackground: Color,
+    val cardBorder: Color,
+    val title: Color,
+    val subtleText: Color,
+    val mutedText: Color,
+    val headerDivider: Color,
+    val brandLogoTint: Color,
+    val emblemTint: Color?,
+    val menuButtonBackground: Color,
+    val menuButtonBorder: Color,
+    val menuButtonIcon: Color,
+    val optionSelectedBg: Color,
+    val optionUnselectedBg: Color,
+    val optionSelectedTitle: Color,
+    val optionUnselectedTitle: Color,
+    val optionSelectedSub: Color,
+    val optionUnselectedSub: Color,
+    val securityBannerBg: Color,
+    val securityBannerBorder: Color,
+    val securityBannerIcon: Color,
+    val securityBannerText: Color,
+    val footerLogoTint: Color?
+)
+
+val LightPaymentCardColors = PaymentCardColors(
+    canvasBackground = Ux4gColors.primary100,
+    cardBackground = Ux4gColors.neutral0,
+    cardBorder = Ux4gColors.neutral200,
+    title = Ux4gColors.gray900,
+    subtleText = Ux4gColors.neutral500,
+    mutedText = Ux4gColors.neutral400,
+    headerDivider = Ux4gColors.neutral300,
+    brandLogoTint = Ux4gColors.primary600,
+    emblemTint = null,
+    menuButtonBackground = Ux4gColors.neutral0,
+    menuButtonBorder = Ux4gColors.primary300,
+    menuButtonIcon = Ux4gColors.primary600,
+    optionSelectedBg = Ux4gColors.primary50,
+    optionUnselectedBg = Ux4gColors.neutral100,
+    optionSelectedTitle = Ux4gColors.primary900,
+    optionUnselectedTitle = Ux4gColors.gray800,
+    optionSelectedSub = Ux4gColors.primary700,
+    optionUnselectedSub = Ux4gColors.neutral500,
+    securityBannerBg = Color(0xFFE6FFFB),
+    securityBannerBorder = Color(0xFF91E8E0),
+    securityBannerIcon = Color(0xFF13C2C2),
+    securityBannerText = Color(0xFF006D75),
+    footerLogoTint = null
+)
+
+val DarkPaymentCardColors = PaymentCardColors(
+    canvasBackground = Ux4gColors.primary900,
+    cardBackground = Ux4gColors.neutral800,
+    cardBorder = Ux4gColors.neutral700,
+    title = Ux4gColors.neutral0,
+    subtleText = Ux4gColors.neutral400,
+    mutedText = Ux4gColors.neutral500,
+    headerDivider = Ux4gColors.neutral700,
+    brandLogoTint = Ux4gColors.primary300,
+    emblemTint = ColorFilter.tint(Color.White).let { Color.White },
+    menuButtonBackground = Ux4gColors.neutral800,
+    menuButtonBorder = Ux4gColors.neutral700,
+    menuButtonIcon = Ux4gColors.neutral0,
+    optionSelectedBg = Ux4gColors.primary950,
+    optionUnselectedBg = Ux4gColors.neutral700,
+    optionSelectedTitle = Ux4gColors.primary100,
+    optionUnselectedTitle = Ux4gColors.neutral100,
+    optionSelectedSub = Ux4gColors.primary300,
+    optionUnselectedSub = Ux4gColors.neutral400,
+    securityBannerBg = Color(0xFF002329),
+    securityBannerBorder = Color(0xFF00474F),
+    securityBannerIcon = Color(0xFF13C2C2),
+    securityBannerText = Color(0xFF87E8DE),
+    footerLogoTint = Color.White
+)
+
+/**
+ * Card Style Payment selection pattern variant.
+ *
+ * @param amountText Total fee payable (e.g. "Rs 41.30").
+ * @param onPayClick Callback triggered when user taps the primary pay action.
+ * @param onBackClick Callback triggered when user navigates back to the review step.
+ * @param onMenuClick Callback triggered for top navigation menu icon.
+ */
+@Composable
+fun PaymentCardScreen(
+    modifier: Modifier = Modifier,
+    isDarkTheme: Boolean = isSystemInDarkTheme(),
+    amountText: String = "Rs 41.30",
+    onPayClick: (method: String, upiId: String) -> Unit = { _, _ -> },
+    onBackClick: () -> Unit = {},
+    onMenuClick: () -> Unit = {}
+) {
+    val colors = if (isDarkTheme) DarkPaymentCardColors else LightPaymentCardColors
+
+    var selectedMethod by remember { mutableStateOf("upi") }
+    var upiId by remember { mutableStateOf("") }
+
+    val paymentOptions = remember {
+        listOf(
+            PaymentOptionItem("upi", "UPI", "Pay with any UPI app"),
+            PaymentOptionItem("netbanking", "Net Banking", "60+ banks supported"),
+            PaymentOptionItem("card", "Debit / Credit Card", "Visa, MasterCard, RuPay"),
+            PaymentOptionItem("csc", "CSC Centre", "Pay in cash at your nearest CSC")
+        )
+    }
+
+    val steps = remember {
+        listOf(
+            Ux4gStepItem(title = "Personal info", statusLabel = "Completed"),
+            Ux4gStepItem(title = "Documents", statusLabel = "Completed"),
+            Ux4gStepItem(title = "Review", statusLabel = "Completed"),
+            Ux4gStepItem(title = "Payment", statusLabel = "In progress")
+        )
+    }
+
+    Box(
+        modifier = modifier
+            .fillMaxSize()
+            .background(colors.canvasBackground)
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState())
+        ) {
+            PaymentCardBrandHeader(colors = colors, onMenuClick = onMenuClick)
+
+            Ux4gDivider(color = colors.cardBorder)
+
+            // Horizontal Stepper
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = Ux4gSpace.Space16, vertical = Ux4gSpace.Space10)
+            ) {
+                Ux4gStepper(
+                    totalSteps = 4,
+                    currentStep = 4,
+                    steps = steps,
+                    orientation = StepperOrientation.Horizontal,
+                    linePlacement = StepperLinePlacement.Center
+                )
+            }
+
+            // Elevated Card Container
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = Ux4gSpace.Space16, vertical = Ux4gSpace.Space12)
+            ) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .shadow(elevation = 8.dp, shape = RoundedCornerShape(16.dp))
+                        .clip(RoundedCornerShape(16.dp))
+                        .background(colors.cardBackground)
+                        .border(1.dp, colors.cardBorder, RoundedCornerShape(16.dp))
+                        .padding(horizontal = Ux4gSpace.Space16, vertical = Ux4gSpace.Space20)
+                ) {
+                    Column(modifier = Modifier.fillMaxWidth()) {
+                        Text(
+                            text = "Choose payment method",
+                            style = TextStyle(
+                                fontSize = 22.sp,
+                                fontWeight = FontWeight.ExtraBold,
+                                color = colors.title,
+                                letterSpacing = (-0.3).sp,
+                                lineHeight = 28.sp
+                            )
+                        )
+                        Spacer(Modifier.height(4.dp))
+                        Text(
+                            text = "Select how you would like to pay $amountText.",
+                            style = TextStyle(
+                                fontSize = 13.sp,
+                                color = colors.subtleText,
+                                lineHeight = 18.sp
+                            )
+                        )
+
+                        Spacer(Modifier.height(Ux4gSpace.Space20))
+
+                        // Payment Options List
+                        paymentOptions.forEach { option ->
+                            val isSelected = option.id == selectedMethod
+                            PaymentOptionTileCard(
+                                item = option,
+                                isSelected = isSelected,
+                                colors = colors,
+                                onSelect = { selectedMethod = option.id }
+                            )
+                            Spacer(Modifier.height(Ux4gSpace.Space8))
+                        }
+
+                        // Dynamic UPI ID Input Field
+                        if (selectedMethod == "upi") {
+                            Spacer(Modifier.height(Ux4gSpace.Space4))
+                            Ux4gInputField(
+                                value = upiId,
+                                onValueChange = { upiId = it },
+                                label = "UPI ID",
+                                placeholder = "username@bank / mobile@upi",
+                                modifier = Modifier.fillMaxWidth()
+                            )
+                            Spacer(Modifier.height(Ux4gSpace.Space16))
+                        }
+
+                        // Security Assurance Banner powered by Ux4gStatusBanner
+                        Ux4gStatusBanner(
+                            variant = Ux4gBannerVariant.InfoLight,
+                            title = "Payment transactions are secured by 256-bit SSL encryption. We do not store your card details.",
+                            leadingIcon = {
+                                Icon(
+                                    imageVector = Icons.Default.Lock,
+                                    contentDescription = "Secured",
+                                    tint = colors.securityBannerIcon,
+                                    modifier = Modifier.size(18.dp)
+                                )
+                            },
+                            backgroundColor = colors.securityBannerBg,
+                            borderColor = colors.securityBannerBorder,
+                            titleStyle = TextStyle(
+                                fontSize = 12.sp,
+                                fontWeight = FontWeight.Medium,
+                                color = colors.securityBannerText,
+                                lineHeight = 16.sp
+                            ),
+                            margin = PaddingValues(0.dp),
+                            modifier = Modifier.fillMaxWidth()
+                        )
+
+                        Spacer(Modifier.height(Ux4gSpace.Space20))
+
+                        // Action Buttons
+                        Ux4gButton(
+                            text = "Pay $amountText",
+                            onClick = { onPayClick(selectedMethod, upiId) },
+                            variant = Ux4gButtonVariant.Primary,
+                            size = Ux4gButtonSize.Large,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(48.dp)
+                        )
+                        Spacer(Modifier.height(Ux4gSpace.Space12))
+
+                        Box(
+                            modifier = Modifier.fillMaxWidth(),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Ux4gButton(
+                                text = "Back",
+                                onClick = onBackClick,
+                                variant = Ux4gButtonVariant.Ghost,
+                                size = Ux4gButtonSize.Medium,
+                                modifier = Modifier.height(44.dp)
+                            )
+                        }
+                    }
+                }
+            }
+
+            Spacer(Modifier.weight(1f, fill = false))
+            PaymentCardBrandFooter(colors = colors)
+        }
+    }
+}
+
+@Composable
+private fun PaymentOptionTileCard(
+    item: PaymentOptionItem,
+    isSelected: Boolean,
+    colors: PaymentCardColors,
+    onSelect: () -> Unit
+) {
+    val bg = if (isSelected) colors.optionSelectedBg else colors.optionUnselectedBg
+    val titleColor = if (isSelected) colors.optionSelectedTitle else colors.optionUnselectedTitle
+    val subColor = if (isSelected) colors.optionSelectedSub else colors.optionUnselectedSub
+
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(12.dp))
+            .background(bg)
+            .clickable(onClick = onSelect)
+            .padding(horizontal = 16.dp, vertical = 14.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Ux4gRadioButton(
+            value = item.id,
+            groupValue = if (isSelected) item.id else "",
+            onValueChange = { onSelect() },
+            size = Ux4gRadioButtonSize.Medium
+        )
+        Spacer(Modifier.width(12.dp))
+        Column(modifier = Modifier.weight(1f)) {
+            Text(
+                text = item.title,
+                style = TextStyle(
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.SemiBold,
+                    color = titleColor
+                )
+            )
+            Spacer(Modifier.height(2.dp))
+            Text(
+                text = item.subtitle,
+                style = TextStyle(
+                    fontSize = 12.sp,
+                    color = subColor
+                )
+            )
+        }
+    }
+}
+
+
+@Composable
+private fun PaymentCardBrandHeader(colors: PaymentCardColors, onMenuClick: () -> Unit) {
+    Column {
+        Ux4gAppHeader(
+            title = "",
+            variant = Ux4gAppHeaderVariant.Light,
+            height = 64.dp,
+            horizontalPadding = Ux4gSpace.Space16,
+            leadingSpacing = Ux4gSpace.Space8,
+            leadingWidgets = listOf(
+                {
+                    Image(
+                        painter = painterResource(Ux4gR.drawable.ic_national_emblem),
+                        contentDescription = "National Emblem of India",
+                        colorFilter = colors.emblemTint?.let { ColorFilter.tint(it) },
+                        modifier = Modifier.height(32.dp)
+                    )
+                },
+                {
+                    Ux4gDivider(
+                        color = colors.headerDivider,
+                        orientation = Ux4gDividerOrientation.Vertical,
+                        modifier = Modifier.height(28.dp)
+                    )
+                },
+                {
+                    Image(
+                        painter = painterResource(Ux4gR.drawable.ic_union_logo),
+                        contentDescription = "Brand Logo",
+                        colorFilter = ColorFilter.tint(colors.brandLogoTint),
+                        modifier = Modifier.height(32.dp)
+                    )
+                }
+            ),
+            actions = listOf(
+                Ux4gAppHeaderAction(
+                    icon = {
+                        Box(
+                            modifier = Modifier
+                                .size(40.dp)
+                                .clip(RoundedCornerShape(6.dp))
+                                .background(colors.menuButtonBackground)
+                                .border(1.dp, colors.menuButtonBorder, RoundedCornerShape(6.dp)),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Icon(
+                                imageVector = Icons.Filled.Menu,
+                                contentDescription = "Menu",
+                                tint = colors.menuButtonIcon,
+                                modifier = Modifier.size(20.dp)
+                            )
+                        }
+                    },
+                    onClick = onMenuClick
+                )
+            )
+        )
+    }
+}
+
+@Composable
+private fun PaymentCardBrandFooter(colors: PaymentCardColors) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = Ux4gSpace.Space8, bottom = Ux4gSpace.Space20),
+        horizontalArrangement = Arrangement.Center,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(
+            text = "Powered by -",
+            style = TextStyle(
+                fontSize = 11.sp,
+                fontWeight = FontWeight.Medium,
+                color = colors.mutedText
+            )
+        )
+        Spacer(Modifier.width(Ux4gSpace.Space8))
+        Image(
+            painter = painterResource(AppR.drawable.ic_digital_india),
+            contentDescription = "Digital India",
+            colorFilter = colors.footerLogoTint?.let { ColorFilter.tint(it) },
+            modifier = Modifier.height(22.dp)
+        )
+    }
+}
+
+@Preview(showBackground = true, widthDp = 390, heightDp = 844)
+@Composable
+fun PaymentCardScreenPreview() {
+    PaymentCardScreen()
+}`}
+>
+  <img
+    src="/images/patterns/payment/payment_cardstyle.svg"
+    alt="Payment Pattern - Card Style Variant"
+    className="w-full max-w-[360px] rounded-2xl border border-border shadow-sm mx-auto my-4"
+  />
+</ComponentPreview>
+
+---
+
+<h2><MIcon name="tune" /> Component Parameters</h2>
+
+### 1. `PaymentScreen` (Default Full Screen)
+
+| Prop | Type | Default | Description |
+| :--- | :--- | :--- | :--- |
+| `modifier` | `Modifier` | `Modifier` | Compose layout modifier applied to the parent container. |
+| `isDarkTheme` | `Boolean` | `isSystemInDarkTheme()` | Controls whether dark mode theme palette is used. |
+| `amountText` | `String` | `"Rs 41.30"` | Statutory total transaction amount displayed on button and subtitle. |
+| `onPayClick` | `(method: String, upiId: String) -> Unit` | `{ _, _ -> }` | Invoked when citizen taps the primary "Pay" button with chosen method and UPI ID. |
+| `onBackClick` | `() -> Unit` | `{}` | Invoked when citizen navigates back to previous application review step. |
+| `onMenuClick` | `() -> Unit` | `{}` | Invoked when citizen taps the header menu icon. |
+
+### 2. `PaymentCardScreen` (Card Variant)
+
+| Prop | Type | Default | Description |
+| :--- | :--- | :--- | :--- |
+| `modifier` | `Modifier` | `Modifier` | Layout modifier applied to the outer canvas layout. |
+| `isDarkTheme` | `Boolean` | `isSystemInDarkTheme()` | Controls whether dark mode theme palette is used. |
+| `amountText` | `String` | `"Rs 41.30"` | Statutory total transaction amount displayed on button and subtitle. |
+| `onPayClick` | `(method: String, upiId: String) -> Unit` | `{ _, _ -> }` | Invoked when citizen taps the primary "Pay" button with chosen method and UPI ID. |
+| `onBackClick` | `() -> Unit` | `{}` | Invoked when citizen navigates back to review step. |
+| `onMenuClick` | `() -> Unit` | `{}` | Invoked when citizen taps the header menu icon. |
+
+### 3. `PaymentOptionItem` Model
+
+| Property | Type | Description |
+| :--- | :--- | :--- |
+| `id` | `String` | Unique key identifying payment option (`"upi"`, `"netbanking"`, `"card"`, `"csc"`). |
+| `title` | `String` | Human-readable payment method name (`"UPI"`, `"Net Banking"`, etc.). |
+| `subtitle` | `String` | Descriptive helper text clarifying supported issuers or instructions. |
+

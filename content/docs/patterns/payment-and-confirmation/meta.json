@@ -1,6 +1,8 @@
 {
   "title": "Payment and Confirmation",
   "pages": [
+    "choose-payment-method",
+    "payment",
     "payment-processing",
     "payment-successful",
     "payment-failed",
