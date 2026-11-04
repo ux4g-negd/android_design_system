@@ -22,13 +22,10 @@ export function OverviewPage() {
               Android Documentation | UX4G Design System
             </h1>
 
-            {/* Version & Beta Tags */}
+            {/* Version Tag */}
             <div className="flex items-center gap-2 mt-3">
               <div className="inline-flex items-center px-3.5 py-1 rounded-full text-[13px] font-[700] bg-[#EDE9FE] dark:bg-[#312E81]/50 text-[#6D28D9] dark:text-[#C4B5FD] border border-[#DDD6FE] dark:border-[#6366F1]/30">
                 3.0
-              </div>
-              <div className="inline-flex items-center px-3.5 py-1 rounded-full text-[13px] font-[700] bg-[#EDE9FE] dark:bg-[#312E81]/50 text-[#6D28D9] dark:text-[#C4B5FD] border border-[#DDD6FE] dark:border-[#6366F1]/30">
-                BETA
               </div>
             </div>
 
